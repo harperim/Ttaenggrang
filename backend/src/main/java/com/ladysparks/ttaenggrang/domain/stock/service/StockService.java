@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -119,7 +120,6 @@ public class StockService {
 
 
     }
-
 
 
     // 주식 매수 로직
@@ -344,154 +344,202 @@ public class StockService {
         return studentStocks;
     }
 
-
-
-
-    // 주식 시장 관리 (개장 or 폐장) 및 가격 변동 처리
-    public boolean manageMarket(boolean openMarket) {
-        LocalDateTime today = LocalDateTime.now();
-        LocalTime currentTime = today.toLocalTime();
-
-        // 주말 및 공휴일 확인
-        if (today.getDayOfWeek().getValue() >= 6) { // 토요일 또는 일요일
-            throw new IllegalArgumentException("주말에는 주식시장이 열리지 않습니다.");
-        }
-        if (holidayService.isHoliday(today.toLocalDate())) {
-            throw new IllegalArgumentException("오늘은 공휴일 또는 예약된 휴장일입니다.");
-        }
-
-        List<Stock> stocks = stockRepository.findAll();  // Stock 객체들을 DB에서 조회
-        if (stocks.isEmpty()) {
-            throw new IllegalArgumentException("주식 목록이 비어 있습니다.");
-        }
-
-        // 주식 시장 열렸다고 출력
-        if (openMarket) {
-            System.out.println("주식 시장이 열렸습니다.");
-            for (Stock stock : stocks) {
-                stock.setIsMarketActive(true);  // 시장 개장
-            }
-        } else {
-            // 주식 시장 비활성화 처리
-            System.out.println("주식 시장이 비활성화되었습니다.");
-            for (Stock stock : stocks) {
-                stock.setIsMarketActive(false); // 시장 비활성화
-            }
-        }
-
-        // 거래량 계산 및 가격 변동 처리
-        for (Stock stock : stocks) {
-            if (stock.getIsMarketActive()) { // 시장이 활성화 상태일 때
-                // 개장 시간과 폐장 시간 확인 후 거래량 계산
-                if (currentTime.isAfter(stock.getOpenTime()) && currentTime.isBefore(stock.getCloseTime())) {
-                    // 거래량 계산 (매수량 및 매도량)
-                    int totalBuyVolumeInRange = stockHistoryRepository.getTotalBuyVolumeInRange(stock.getId(), stock.getOpenTime(), stock.getCloseTime());
-                    int totalSellVolumeInRange = stockHistoryRepository.getTotalSellVolumeInRange(stock.getId(), stock.getOpenTime(), stock.getCloseTime());
-
-                    // 가격 변동 및 거래 기록 저장
-                    Stock updatedStock = updateStockPrice(stock, totalBuyVolumeInRange, totalSellVolumeInRange);  // 가격 변동
-                    saveStockHistory(stock, totalBuyVolumeInRange, totalSellVolumeInRange);  // 거래 기록 저장
-
-                    System.out.println(stock.getName() + " 주식 가격이 변동되었습니다.");
-                    System.out.println("새 가격: " + updatedStock.getPrice_per() + "원");
-                }
-            }
-        }
-
-        stockRepository.saveAll(stocks);  // DB에 업데이트된 주식 정보 저장
-        return openMarket;
-    }
+//
+//
+//
+//    // 주식 시장 관리 (개장 or 폐장) 및 가격 변동 처리
+//    public boolean manageMarket(boolean openMarket) {
+//        LocalDateTime today = LocalDateTime.now();
+//        LocalTime currentTime = today.toLocalTime();
+//
+//        // 주말 및 공휴일 확인
+//        if (today.getDayOfWeek().getValue() >= 6) { // 토요일 또는 일요일
+//            throw new IllegalArgumentException("주말에는 주식시장이 열리지 않습니다.");
+//        }
+//        if (holidayService.isHoliday(today.toLocalDate())) {
+//            throw new IllegalArgumentException("오늘은 공휴일 또는 예약된 휴장일입니다.");
+//        }
+//
+//        List<Stock> stocks = stockRepository.findAll();  // Stock 객체들을 DB에서 조회
+//        if (stocks.isEmpty()) {
+//            throw new IllegalArgumentException("주식 목록이 비어 있습니다.");
+//        }
+//
+//        // 주식 시장 열렸다고 출력
+//        if (openMarket) {
+//            System.out.println("주식 시장이 열렸습니다.");
+//            for (Stock stock : stocks) {
+//                stock.setIsMarketActive(true);  // 시장 개장
+//            }
+//        } else {
+//            // 주식 시장 비활성화 처리
+//            System.out.println("주식 시장이 비활성화되었습니다.");
+//            for (Stock stock : stocks) {
+//                stock.setIsMarketActive(false); // 시장 비활성화
+//            }
+//        }
+//
+//        // 거래량 계산 및 가격 변동 처리
+//        for (Stock stock : stocks) {
+//            if (stock.getIsMarketActive()) { // 시장이 활성화 상태일 때
+//                // 개장 시간과 폐장 시간 확인 후 거래량 계산
+//                if (currentTime.isAfter(stock.getOpenTime()) && currentTime.isBefore(stock.getCloseTime())) {
+//                    // 거래량 계산 (매수량 및 매도량)
+//                    int totalBuyVolumeInRange = stockHistoryRepository.getTotalBuyVolumeInRange(stock.getId(), stock.getOpenTime(), stock.getCloseTime());
+//                    int totalSellVolumeInRange = stockHistoryRepository.getTotalSellVolumeInRange(stock.getId(), stock.getOpenTime(), stock.getCloseTime());
+//
+//                    // 가격 변동 및 거래 기록 저장
+//                    Stock updatedStock = updateStockPrice(stock, totalBuyVolumeInRange, totalSellVolumeInRange);  // 가격 변동
+//                    saveStockHistory(stock, totalBuyVolumeInRange, totalSellVolumeInRange);  // 거래 기록 저장
+//
+//                    System.out.println(stock.getName() + " 주식 가격이 변동되었습니다.");
+//                    System.out.println("새 가격: " + updatedStock.getPrice_per() + "원");
+//                }
+//            }
+//        }
+//
+//        stockRepository.saveAll(stocks);  // DB에 업데이트된 주식 정보 저장
+//        return openMarket;
+//    }
 
 
     // 가격 변동 처리 (폐장 시 적용)
-    private Stock updateStockPrice(Stock stock, int totalBuyVolumeInRange, int totalSellVolumeInRange) {
-        if (totalBuyVolumeInRange > 0 || totalSellVolumeInRange > 0) {
-            double priceChangeRate = calculatePriceChange(totalBuyVolumeInRange, totalSellVolumeInRange);
-            double newPrice = stock.getPrice_per() * (1 + priceChangeRate);
-            stock.setPrice_per((int) Math.round(newPrice));
-        }
-
-        // 거래 기록 저장을 위해 가격 변동 처리 후 saveStockHistory 호출
-        saveStockHistory(stock, totalBuyVolumeInRange, totalSellVolumeInRange);  // 거래 기록 저장
-        System.out.println(stock.getName() + " 주식 가격이 변동되었습니다.");
-        System.out.println("새 가격: " + stock.getPrice_per() + "원");
-
-        return stock;
-    }
-
-    // 주식 거래 기록 저장
-    private void saveStockHistory(Stock stock, int totalBuyVolumeInRange, int totalSellVolumeInRange) {
-        StockHistory stockHistory = new StockHistory();
-
-        stockHistory.setStock(stock);
-        stockHistory.setBuyVolume(totalBuyVolumeInRange);  // 매수량
-        stockHistory.setSellVolume(totalSellVolumeInRange);  // 매도량
-        stockHistory.setDate(Timestamp.valueOf(LocalDateTime.now()));  // 거래 시간 설정
-        stockHistory.setPrice(stock.getPrice_per());  // 변동된 가격 반영
-
-        // 거래 기록을 저장합니다
-        stockHistoryRepository.save(stockHistory);
-        System.out.println("주식 거래 기록이 저장되었습니다.");
-    }
-
-
-    // 가격 변동 계산
-    private double calculatePriceChange(int buyVolume, int sellVolume) {
-        // 거래량에 따른 가격 변동률 계산
-        double changeRate = (double) (buyVolume - sellVolume) / (buyVolume + sellVolume);
-        changeRate = Math.max(-0.10, Math.min(0.10, changeRate)); // 가격 변동률을 -10% ~ +10%로 제한
-        return changeRate;
-    }
-    // 주식 거래 시 거래가 가능한지 확인
-    private void validateMarketActive(Long stockId) {
-        Stock stock = stockRepository.findById(stockId)
-                .orElseThrow(() -> new IllegalArgumentException("주식 정보가 없습니다."));
-
-        if (!stock.getIsMarketActive()) {
-            throw new IllegalArgumentException("주식 시장이 비활성화되어 거래할 수 없습니다.");
-        }
-    }
-
-
-    // 주식 시장이 열렸는지 닫혔는지 확인
-    public boolean isMarketOpen() {
-        // 시장이 열려있는지 여부를 판단하는 로직
+    @Transactional
+    public List<StockDTO> updateStockPricesForMarketOpening() {
+        // 모든 주식 정보를 불러오고, 시장 활성 상태를 고정 (9시~17시에는 true)
         List<Stock> stocks = stockRepository.findAll();
+        List<StockDTO> stockDTOList = new ArrayList<>();
 
-        // 주식 목록이 비어있으면 기본적으로 시장이 닫힌 상태로 간주
-        if (stocks.isEmpty()) {
+        for (Stock stock : stocks) {
+            // 시장은 고정적으로 활성(true)로 설정 (개장 시간, 폐장 시간 변경 불가)
+            stock.setIsMarketActive(true);
+            stockRepository.save(stock);
+
+            double oldPrice = stock.getPrice_per();
+            try {
+                updateStockPrice(stock); // 개별 주식 가격 업데이트
+
+                double newPrice = stock.getPrice_per(); // 업데이트된 가격
+                double changeRate = calculateChangeRate(oldPrice, newPrice); // 변동률 계산
+
+                // ETF 또는 일반 주식 정보에 필요한 필드들을 DTO로 설정
+                stockDTOList.add(StockDTO.builder()
+                        .id(stock.getId())
+                        .name(stock.getName())
+                        .price_per((int) newPrice)
+                        .changeRate((int) changeRate)
+                        .isMarketActive(stock.getIsMarketActive())
+                        .total_qty(stock.getTotal_qty())
+                        .remain_qty(stock.getRemain_qty())
+                        .description(stock.getDescription())
+                        .build());
+            } catch (Exception e) {
+                System.err.println("주식 가격 업데이트 중 오류 발생: " + e.getMessage());
+                throw new IllegalArgumentException("주식 가격 업데이트 중 오류 발생: " + e.getMessage(), e);
+            }
+        }
+
+        return stockDTOList;
+    }
+
+
+
+    // 개별 주식 가격 업데이트 (폐장 시 호출)
+    private StockDTO updateStockPrice(Stock stock) {
+        // 폐장 시점(평일 15시 이후)에, 전날의 매수·매도량 조회
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        int dailyBuyVolume = stockTransactionRepository.getBuyVolumeForStockYesterday(stock.getId(), TransType.BUY, yesterday);
+        int dailySellVolume = stockTransactionRepository.getSellVolumeForStockYesterday(stock.getId(), TransType.SELL, yesterday);
+
+        // 이전 가격 저장
+        double oldPrice = stock.getPrice_per();
+
+        // 거래량이 없는 경우 변동 없음
+        if (dailyBuyVolume == 0 && dailySellVolume == 0) {
+            System.out.println("거래량 없음, 가격 유지: " + stock.getName());
+            stock.setChangeRate(0);
+        } else {
+            // 매수량, 매도량에 따른 새로운 가격 계산
+            double newPrice = calculatePriceChangeBasedOnTransaction(dailyBuyVolume, dailySellVolume, stock.getPrice_per());
+            // 가격 변동 적용
+            stock.setPrice_per((int) Math.round(newPrice));
+            stock.setPriceChangeTime(LocalDateTime.now());
+            System.out.println("가격 변동 적용: " + stock.getName());
+
+            // 변동률 계산 및 적용
+            double changeRate = calculateChangeRate(oldPrice, newPrice);
+            stock.setChangeRate((int) (Math.round(changeRate * 100) / 100.0));
+        }
+
+        // 가격 변동 이력 저장
+        StockHistory history = new StockHistory();
+        history.setStock(stock);
+        history.setPrice(stock.getPrice_per());
+        history.setBuyVolume(dailyBuyVolume);
+        history.setSellVolume(dailySellVolume);
+        history.setDate(Timestamp.valueOf(LocalDateTime.now().minusDays(1)));
+        stockHistoryRepository.save(history);
+
+        // 주식 정보 저장
+        stockRepository.save(stock);
+        System.out.println("주식 가격 업데이트 완료: " + stock.getName());
+
+        // 업데이트된 Stock 정보를 DTO로 변환하여 반환
+        return StockDTO.fromEntity(stock);
+    }
+
+
+
+    // 변동률 계산 로직: (신가격 - 이전가격) / 이전가격 * 100
+    public double calculateChangeRate(double oldPrice, double newPrice) {
+        if (oldPrice == 0) return 0;
+        return (newPrice - oldPrice) / oldPrice * 100;
+    }
+
+    // 매수량, 매도량에 따른 가격 변동 계산 (초등학생용 간단 계산)
+    // (매수량 - 매도량) / (매수량 + 매도량) 결과를 -10% ~ +10%로 제한하여 적용
+    public double calculatePriceChangeBasedOnTransaction(int buyVolume, int sellVolume, double currentPrice) {
+        if (buyVolume == 0 && sellVolume == 0) {
+            return currentPrice;
+        }
+
+        try {
+            double changeRate = (double) (buyVolume - sellVolume) / (buyVolume + sellVolume);
+            // 변동률을 ±10%로 제한
+            changeRate = Math.max(-0.10, Math.min(0.10, changeRate));
+            return currentPrice * (1 + changeRate);
+        } catch (ArithmeticException e) {
+            throw new IllegalArgumentException("매수량과 매도량의 합이 0입니다. 가격 계산이 불가능합니다.");
+        }
+    }
+
+
+
+    // 주식시장 활성화 여부 조회 (선생님이 설정한 값)
+    public boolean isMarketActive() {
+        Stock stock = stockRepository.findById(1L).orElseThrow(() -> new RuntimeException("Stock not found"));
+        return stock.getIsMarketActive();  // 선생님이 설정한 값
+    }
+
+    //주식시장 활성화/비활성화 설정 (선생님이 버튼으로 설정)
+    @Transactional
+    public void setMarketActive(boolean isActive) {
+        Stock stock = stockRepository.findById(1L).orElseThrow(() -> new RuntimeException("Stock not found"));
+        stock.setIsMarketActive(isActive);
+        stockRepository.save(stock);
+    }
+
+    // 현재 주식 거래 가능 여부 조회 (시장 활성화 + 시간 체크)
+    public boolean isTradingAllowed() {
+        Stock stock = stockRepository.findById(1L).orElseThrow(() -> new RuntimeException("Stock not found"));
+
+        // 시장이 비활성화 상태면 시간과 상관없이 거래 불가
+        if (!stock.getIsMarketActive()) {
             return false;
         }
 
-        // 첫 번째 주식의 시장 상태로 전체 시장 상태를 판단
-        return stocks.get(0).getIsMarketActive();
-    }
-
-    // 주식의 개장 시간과 폐장 시간을 변경
-    @Transactional
-    public void updateMarketTimeForAllStocks(LocalTime newOpenTime, LocalTime newCloseTime) {
-        List<Stock> stocks = stockRepository.findAll();
-        for (Stock stock : stocks) {
-            stock.setOpenTime(newOpenTime);
-            stock.setCloseTime(newCloseTime);
-        }
-        stockRepository.saveAll(stocks);
-        stockRepository.flush();
-    }
-
-
-    // 주식의 폐장 시간만 변경하는 메서드
-    public void updateCloseTime(Long stockId, LocalTime newCloseTime) {
-        // 주식 정보 가져오기
-        Stock stock = stockRepository.findById(stockId)
-                .orElseThrow(() -> new IllegalArgumentException("주식 정보가 없습니다."));
-
-        // 기존의 개장 시간은 그대로 두고, 폐장 시간만 변경
-        stock.setCloseTime(newCloseTime);
-
-        // DB에 변경된 주식 시간 저장
-        stockRepository.save(stock);
-        System.out.println(stock.getName() + "의 폐장 시간이 " + newCloseTime + "로 변경되었습니다.");
+        // 거래 가능 시간: 9시 ~ 17시
+        LocalTime currentTime = LocalTime.now();
+        return !currentTime.isBefore(LocalTime.of(9, 0)) && !currentTime.isAfter(LocalTime.of(17, 0));
     }
 }
-
