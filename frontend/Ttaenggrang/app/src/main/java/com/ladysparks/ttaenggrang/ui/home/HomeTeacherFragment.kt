@@ -66,27 +66,10 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
 
     private fun initObserver() {
         homeViewModel.nationInfoData.observe(viewLifecycleOwner) { response ->
-            response?.let {
-                if(it.isPossible == false){
-                    BaseTwoButtonDialog(
-                        context = requireContext(),
-                        title = "국가 정보 등록 필요",
-                        message = "국가 정보 등록 페이지로 이동합니다",
-                        showCloseButton = false,
-                        positiveButtonText = "확인",
-                        onPositiveClick = {
-                            NavigationManager.moveFragment(NavigationManager.FRAGMENT_NATION)
-                        }
-                    ).show()
-
-                }else{
-                    showToast("국가 정보 있음")
-                    binding.textNationalRevenue.text = response.treasuryIncome.toString()
-                    binding.textAvgBalance.text = response.averageStudentBalance.toString()
-                    binding.textActiveProducts.text = response.activeItemCount.toString() + "개"
-                    binding.textSavingGoal.text = response.classSavingsGoal.toString()
-                }
-            }
+//            binding.textNationalRevenue.text = response.treasuryIncome.toString()
+//            binding.textAvgBalance.text = response.averageStudentBalance.toString()
+//            binding.textActiveProducts.text = response.activeItemCount.toString() + "개"
+//            binding.textSavingGoal.text = response.classSavingsGoal.toString()
         }
     }
 

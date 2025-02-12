@@ -13,20 +13,6 @@ import com.ladysparks.ttaenggrang.util.ApiErrorParser
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel(){
-//    private val _registerJobResult = MutableLiveData<Boolean>()
-//    val registerJobResult: LiveData<Boolean> get() = _registerJobResult
-//    fun registerJob(jobData: JobDto){
-//        viewModelScope.launch {
-//            runCatching {
-//                RetrofitUtil.teacherService.registerJob(jobData)
-//            }.onSuccess {
-//                _registerJobResult.value = true
-//                fetchJobList()
-//            }.onFailure {
-//                _registerJobResult.value = false
-//            }
-//        }
-//    }
 
     private val _nationInfoList = MutableLiveData<NationInfoResponse>()
     val nationInfoData: LiveData<NationInfoResponse> get() = _nationInfoList
@@ -36,18 +22,9 @@ class HomeViewModel : ViewModel(){
             runCatching {
                 RetrofitUtil.teacherService.getNationInfo()
             }.onSuccess {
-                _nationInfoList.value = _nationInfoList.value?.copy(isPossible = false)
+                _nationInfoList.value = it.data
             }.onFailure {
-                val errorMessage = ApiErrorParser.extractErrorMessage(it)
-                if (errorMessage.contains("등록된 국가가 없습니다.")) {
-                    _nationInfoList.value = NationInfoResponse(
-                        treasuryIncome = 0,
-                        averageStudentBalance = 0.0,
-                        activeItemCount = 0,
-                        classSavingsGoal = 0,
-                        isPossible = false // 국가 정보 없음
-                    )
-                }
+
             }
         }
     }
