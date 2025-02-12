@@ -65,7 +65,7 @@ public class Etf {
 
     //주식
     @OneToMany(targetEntity = Stock.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "stock_id")
+    @JoinColumn(name = "etf_id")
     private List<Stock> stocks;
 
     //ETF 거래 내역
