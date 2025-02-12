@@ -4,7 +4,6 @@ import com.ladysparks.ttaenggrang.domain.bank.dto.BankAccountDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankAccount;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.BankAccountMapper;
 import com.ladysparks.ttaenggrang.domain.bank.repository.BankAccountRepository;
-import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ public class BankAccountService {
 
     private final BankAccountRepository bankAccountRepository;
     private final BankAccountMapper bankAccountMapper;
-    private final StudentService studentService;
 
     // 은행 계좌 [등록]
     @Transactional
@@ -41,10 +39,7 @@ public class BankAccountService {
     }
 
     // 은행 계좌 [조회]
-    public BankAccountDTO findBankAccount() {
-        Long studentId = studentService.getCurrentStudentId();
-        Long bankAccountId = studentService.findBankAccountIdById(studentId);
-
+    public BankAccountDTO findBankAccount(Long bankAccountId) {
         BankAccount bankAccount = bankAccountRepository.findById(bankAccountId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 계좌를 찾을 수 없습니다. ID: " + bankAccountId));
 

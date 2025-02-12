@@ -1,7 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.etf.service;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
-import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransactionType;
+import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
 import com.ladysparks.ttaenggrang.domain.etf.dto.EtfTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;

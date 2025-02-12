@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.student.repository;
 
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,5 +34,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findNationIdById(Long studentId);;
 
     int countByTeacherId(long teacherId);
+
+    @Query("SELECT s.job.id FROM Student s WHERE s.id = :studentId")
+    Long findJobIdById(Long studentId);
 
 }

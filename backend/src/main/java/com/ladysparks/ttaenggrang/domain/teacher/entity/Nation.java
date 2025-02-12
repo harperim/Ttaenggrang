@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.naming.Name;
 import java.sql.Timestamp;
 
 @Entity
@@ -24,12 +23,12 @@ public class Nation {
     private String nationName;
 
     @Column(nullable = false)
-    private Integer population;
+    private int population;
 
     @Column(nullable = false)
     private String currency;
 
-    private Integer savingsGoalAmount;
+    private int savingsGoalAmount;
 
     private int nationalTreasury;
 

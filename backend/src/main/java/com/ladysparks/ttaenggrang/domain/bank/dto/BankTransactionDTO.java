@@ -1,7 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.bank.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransactionType;
+import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
