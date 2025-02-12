@@ -13,6 +13,8 @@ import retrofit2.http.Path
 
 interface TeacherService {
 
+    // init
+
     @POST("teachers/single-create")
     suspend fun singleCreate(@Body singleStudent: StudentSingleCreateRequest): ApiResponse<Any>
 
