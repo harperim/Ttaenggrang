@@ -48,7 +48,7 @@ public class SwaggerConfig {
     public GroupedOpenApi teacherApi() {
         return GroupedOpenApi.builder()
                 .group("Teacher")
-                .pathsToMatch("/teachers/**")
+                .pathsToMatch("/teachers/**", "/salaries/**")
                 .build();
     }
 
@@ -139,5 +139,4 @@ public class SwaggerConfig {
                 .pathsToMatch("/notifications/**")
                 .build();
     }
-
 }
