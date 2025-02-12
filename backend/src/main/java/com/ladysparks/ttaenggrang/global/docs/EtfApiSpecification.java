@@ -38,10 +38,10 @@ public interface EtfApiSpecification {
     public ResponseEntity<ApiResponse<EtfDTO>> updateEtfPrice(
             @PathVariable("etfId") int etfId);
 
-    @Operation(summary = "ETF 등록", description = "💡 새로운 ETF를 등록합니다.")
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse<EtfDTO>> addEtf(@RequestParam Long studentId,
-                                                      @RequestParam List<Long> stockIds);
+//    @Operation(summary = "ETF 등록", description = "💡 새로운 ETF를 등록합니다.")
+//    @PostMapping("/create")
+//    public ResponseEntity<ApiResponse<EtfDTO>> addEtf(@RequestParam Long studentId,
+//                                                      @RequestParam List<Long> stockIds);
 
 
 

@@ -19,17 +19,17 @@ import java.util.Optional;
 public class EtfController  {
     private final EtfService etfService; // StockService 주입
 
-    //ETF 생성
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse<EtfDTO>> addEtf(@RequestParam Long studentId,
-                                                      @RequestParam List<Long> stockIds) {
-        // ETF 생성 서비스 호출
-        EtfDTO createdEtfDTO = etfService.createETF(studentId, stockIds);
-
-        // ETF 생성 후 성공적인 응답 반환
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(createdEtfDTO));
-    }
+//    //ETF 생성
+//    @PostMapping("/create")
+//    public ResponseEntity<ApiResponse<EtfDTO>> addEtf(@RequestParam Long studentId,
+//                                                      @RequestParam List<Long> stockIds) {
+//        // ETF 생성 서비스 호출
+//        EtfDTO createdEtfDTO = etfService.createETF(studentId, stockIds);
+//
+//        // ETF 생성 후 성공적인 응답 반환
+//        return ResponseEntity.status(HttpStatus.CREATED)
+//                .body(ApiResponse.created(createdEtfDTO));
+//    }
 
     // 주식 목록 전체 조회
     @GetMapping
