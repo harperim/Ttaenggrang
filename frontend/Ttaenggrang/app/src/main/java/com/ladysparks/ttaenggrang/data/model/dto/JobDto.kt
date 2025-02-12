@@ -7,8 +7,9 @@ data class JobDto(
     val jobDescription: String?,
     val baseSalary: Int,
     val maxPeople: Int?,
-    val salaryDate: String?,
-    val students: Any? // ? 우선 job dto 에 맞게 구성
+    val salaryDate: String? = null,
+    val students: Any? = null, // ? 우선 job dto 에 맞게 구성
+    val studentIds: List<Int>? = null
 ) {
     // 직업 생성시 필요한 보조 생성자
     constructor(

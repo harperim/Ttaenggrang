@@ -43,6 +43,7 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
     private lateinit var homeViewModel: HomeViewModel
 
     // Adapter
+    // BaseTableRowModel 사용법1 :  index, clickEvent 없는 버전
     private lateinit var studentAdapter: BaseTableAdapter
     private lateinit var alarmAdapter: AlarmAdapter
 

@@ -34,6 +34,9 @@ interface TeacherService {
     /***
      * 직업 정보 관련
      */
+    @GET("teachers/jobs/class")
+    suspend fun getJobList(): ApiResponse<List<JobDto>>
+
     @POST("teachers/jobs/create")
     suspend fun registerJob(@Body jobs: JobDto): ApiResponse<JobDto>
 

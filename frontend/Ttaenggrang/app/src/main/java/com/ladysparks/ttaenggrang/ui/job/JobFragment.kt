@@ -14,6 +14,7 @@ import com.ladysparks.ttaenggrang.databinding.DialogIncentiveBinding
 import com.ladysparks.ttaenggrang.databinding.DialogJobRegisterBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentJobBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
+import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
 
 class JobFragment : BaseFragment<FragmentJobBinding>(FragmentJobBinding::bind, R.layout.fragment_job) {
@@ -22,8 +23,9 @@ class JobFragment : BaseFragment<FragmentJobBinding>(FragmentJobBinding::bind, R
     private lateinit var jobViewModel: JobViewModel
 
     // 직업 정보 리스트
+    // BaseTableRowModel 사용법 2 :  index, clickEvent 있는 버전
     private lateinit var jobAdapter: BaseTableAdapter
-    val jobTableHeader = listOf("직업명", "직업설명", "기본급", "인원제한")
+    private val jobTableHeader = listOf("직업명", "직업설명", "기본급", "인원제한")
 
     // 직업 등록 Dialog
     private lateinit var registerDialog: AlertDialog
@@ -39,7 +41,6 @@ class JobFragment : BaseFragment<FragmentJobBinding>(FragmentJobBinding::bind, R
 
         // Adapter, Observer 설정이 끝난 이후, 데이터 요청 실행
         jobViewModel.fetchJobList()
-
     }
 
 
@@ -53,40 +54,48 @@ class JobFragment : BaseFragment<FragmentJobBinding>(FragmentJobBinding::bind, R
         } else{
             BaseTableAdapter(jobTableHeader, emptyList(), null)
         }
-
         binding.recyclerJob.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerJob.adapter = jobAdapter
     }
 
     private fun initObserver() {
-        // 직업 정보 리스트
+        // 1. observer :직업 정보 리스트
         jobViewModel.jobList.observe(viewLifecycleOwner) { jobList ->
+
+            if(jobList.isNullOrEmpty()){
+                binding.recyclerJob.visibility = View.GONE
+                binding.textNullJob.visibility = View.VISIBLE
+                return@observe
+            }
+
+            binding.recyclerJob.visibility = View.VISIBLE
+            binding.textNullJob.visibility = View.GONE
+
+            // BaseTableRowModel 사용법 2
             val jobList = jobList.mapIndexed { index, job ->
                 BaseTableRowModel(
                     listOf(
-                        job.job?.jobName ?: "",
-                        job.job?.jobDescription?: "",
-                        job.job?.baseSalary.toString() ?: "",
-                        job.job?.maxPeople.toString() ?: ""
+                        job.jobName ?: "",
+                        job.jobDescription?: "",
+                        job.baseSalary.toString() ?: "",
+                        job.maxPeople.toString() ?: ""
                     )
                 )
             }
 
             // 5. Adapter 에 신규 데이터 업데이트
             jobAdapter.updateData(jobTableHeader, jobList)
-
-            binding.textNullJob.visibility = View.GONE
-            binding.recyclerJob.visibility = View.VISIBLE
         }
 
-        // 직업 등록 요청
-        jobViewModel.registerJobResult.observe(viewLifecycleOwner) { isSuccess ->
-            if(isSuccess){
-                showToast("등록 성공 : DB 갱신 필요")
+        // 2. observer 직업 등록 요청
+        jobViewModel.registerJobResult.observe(viewLifecycleOwner) { response ->
+            if(response != null){
+                jobViewModel.fetchJobList()
                 registerDialog.dismiss()
             }else{
-                showToast("등록 실패")
+                showToast("Error !")
             }
+
         }
     }
 
