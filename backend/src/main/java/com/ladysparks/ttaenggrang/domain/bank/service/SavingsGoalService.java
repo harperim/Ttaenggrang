@@ -1,7 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.bank.service;
 
-import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsGoal;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsGoalDTO;
+import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsGoal;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.SavingsGoalMapper;
 import com.ladysparks.ttaenggrang.domain.bank.repository.SavingsGoalRepository;
 import jakarta.persistence.EntityNotFoundException;

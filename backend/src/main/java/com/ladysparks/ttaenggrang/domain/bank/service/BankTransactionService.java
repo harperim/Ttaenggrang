@@ -5,7 +5,7 @@ import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.bank.dto.StudentDailyAverageFinancialDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankAccount;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction;
-import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransactionType;
+import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.BankAccountMapper;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.BankTransactionMapper;
 import com.ladysparks.ttaenggrang.domain.bank.repository.BankTransactionRepository;
@@ -54,7 +54,7 @@ public class BankTransactionService {
 
     public BankTransactionDTO processSingleTransaction(BankTransactionDTO bankTransactionDTO) {
         // 1. 거래할 계좌 조회
-        BankAccountDTO bankAccountDTO = bankAccountService.findBankAccount();
+        BankAccountDTO bankAccountDTO = bankAccountService.findBankAccount(bankTransactionDTO.getBankAccountId());
 
         // 2. 거래 전 잔액 확인
         int balanceBefore = bankAccountDTO.getBalance();
@@ -124,7 +124,7 @@ public class BankTransactionService {
         }
 
         // 1. 송신자(출금 계좌) 조회
-        BankAccountDTO senderBankAccountDTO = bankAccountService.findBankAccount();
+        BankAccountDTO senderBankAccountDTO = bankAccountService.findBankAccount(bankTransactionDTO.getBankAccountId());
         Long senderBankAccountId = senderBankAccountDTO.getId();
 
         // 2. 수신자(입금 계좌) 조회
@@ -393,6 +393,10 @@ public class BankTransactionService {
                         BankTransactionType.STOCK_SELL,
                         BankTransactionType.ETF_SELL
                 ));
+    }
+
+    public int getBankTransactionsByType(Long studentId, List<BankTransactionType> typeList) {
+        return bankTransactionRepository.getTotalAmountByType(studentId, typeList);
     }
 
 }

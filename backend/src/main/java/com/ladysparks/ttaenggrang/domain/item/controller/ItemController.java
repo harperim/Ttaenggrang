@@ -45,7 +45,7 @@ public class ItemController implements ItemApiSpecification {
     }
 
     // 학생의 판매 아이템 [조회]
-    @GetMapping("/seller")
+    @GetMapping("/sale")
     public ResponseEntity<ApiResponse<List<ItemDTO>>> itemListBySeller() {
         List<ItemDTO> itemDtoList = itemService.findItemListBySeller();
         return ResponseEntity.ok(ApiResponse.success(itemDtoList));
