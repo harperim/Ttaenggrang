@@ -6,6 +6,7 @@ import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
 import com.ladysparks.ttaenggrang.domain.item.entity.Item;
 import com.ladysparks.ttaenggrang.domain.item.entity.ItemTransaction;
 import com.ladysparks.ttaenggrang.domain.item.dto.ItemTransactionDTO;
+import com.ladysparks.ttaenggrang.domain.item.entity.SellerType;
 import com.ladysparks.ttaenggrang.domain.item.mapper.ItemTransactionMapper;
 import com.ladysparks.ttaenggrang.domain.item.repository.ItemRepository;
 import com.ladysparks.ttaenggrang.domain.item.repository.ItemTransactionRepository;
@@ -40,7 +41,8 @@ public class ItemTransactionService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 아이템을 찾을 수 없습니다. ID: " + itemTransactionDTO.getItemId()));
 
         // 2. 판매자와 구매자 조회
-        Long sellerId = item.getSellerTeacher().getId(); // 판매자
+        Long sellerId = item.getSellerType() == SellerType.STUDENT ? item.getSellerStudent().getId() : item.getSellerTeacher().getId();
+
         Long buyerId = studentService.getCurrentStudentId();
 
         // 3. 판매자와 구매자가 동일한 경우 거래 불가
@@ -101,6 +103,7 @@ public class ItemTransactionService {
         Long buyerId = studentService.getCurrentStudentId();
         return itemTransactionRepository.findByBuyerId(buyerId)
                 .stream()
+                .filter(transaction -> transaction.getQuantity() > 0) // quantity가 0인 경우 제외
                 .map(itemTransactionMapper::toDto)
                 .collect(Collectors.toList());
     }
