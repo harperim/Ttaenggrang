@@ -1,6 +1,8 @@
 package com.ladysparks.ttaenggrang.domain.teacher.controller;
 
+import com.ladysparks.ttaenggrang.domain.teacher.dto.IncentiveDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
+import com.ladysparks.ttaenggrang.domain.teacher.service.IncentiveService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.SalaryService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.global.docs.SalaryApiSpecification;
@@ -11,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +24,7 @@ public class SalaryController implements SalaryApiSpecification {
 
     private final TeacherRepository teacherRepository;
     private final SalaryService salaryService;
+    private final IncentiveService incentiveService;
 
     // (+) 현재 로그인한 교사의 ID 가져오는 메서드
     private long getTeacherIdFromSecurityContext() {
@@ -47,6 +51,12 @@ public class SalaryController implements SalaryApiSpecification {
     @PostMapping("/distribute-base")
     public ResponseEntity<ApiResponse<String>> distributeBaseSalary() {
         ApiResponse<String> response = salaryService.distributeBaseSalary();
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @PostMapping("/incentives")
+    public ResponseEntity<ApiResponse<String>> giveIncentive(@RequestBody IncentiveDTO incentiveDTO) {
+        ApiResponse<String> response = incentiveService.giveIncentive(incentiveDTO);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 }
