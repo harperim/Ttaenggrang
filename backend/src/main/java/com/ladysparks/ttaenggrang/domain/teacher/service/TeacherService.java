@@ -3,6 +3,7 @@ package com.ladysparks.ttaenggrang.domain.teacher.service;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherLoginDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherResponseDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherSignupDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Nation;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.global.config.JwtTokenProvider;

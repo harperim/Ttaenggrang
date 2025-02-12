@@ -28,7 +28,7 @@ public interface ItemApiSpecification {
             - 상품 이미지 URL은 AWS S3에 이미지를 업로드하고 생성된 URL입니다.
             - 로그인된 아이템
             """)
-    ResponseEntity<ApiResponse<ItemDTO>> ItemAdd(@RequestBody ItemDTO itemDto);
+    ResponseEntity<ApiResponse<ItemDTO>> itemAdd(@RequestBody ItemDTO itemDto);
 
     @Operation(summary = "학급 내 판매 아이템 [전체 조회]", description = """
             💡 (학생/교사) 학급 내 전체 판매 아이템을 조회합니다.
@@ -47,7 +47,7 @@ public interface ItemApiSpecification {
             - **createdAt** : 아이템 생성일
             - **updatedAt** : 아이템 수정일
             """)
-    ResponseEntity<ApiResponse<List<ItemDTO>>> ItemList();
+    ResponseEntity<ApiResponse<List<ItemDTO>>> itemList();
 
     @Operation(summary = "학급 내 판매 아이템 [상세 조회]", description = """
             💡 판매 중인 아이템을 조회합니다.
@@ -66,7 +66,7 @@ public interface ItemApiSpecification {
             - **createdAt** : 아이템 생성일
             - **updatedAt** : 아이템 수정일
             """)
-    ResponseEntity<ApiResponse<ItemDTO>> ItemDetails(@PathVariable("itemId") Long itemId);
+    ResponseEntity<ApiResponse<ItemDTO>> itemDetails(@PathVariable("itemId") Long itemId);
 
     @Operation(summary = "판매 아이템 [전체 조회]", description = """
             💡 (학생/교사) 본인이 판매 중인 전체 아이템을 조회합니다.
@@ -85,7 +85,7 @@ public interface ItemApiSpecification {
             - **createdAt** : 아이템 생성일
             - **updatedAt** : 아이템 수정일
             """)
-    ResponseEntity<ApiResponse<List<ItemDTO>>> ItemListBySeller();
+    ResponseEntity<ApiResponse<List<ItemDTO>>> itemListBySeller();
 
 //    @Operation(summary = "학급 내 판매 아이템 (교사) [전체 조회]", description = """
 //            💡 교사가 학급 내 전체 판매 아이템을 조회합니다.

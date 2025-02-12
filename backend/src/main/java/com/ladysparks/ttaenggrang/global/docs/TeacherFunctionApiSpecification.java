@@ -21,6 +21,7 @@ public interface TeacherFunctionApiSpecification {
     @Operation(summary = "직업 [등록]", description = """
             💡 교사가 새로운 직업을 등록합니다.
             
+            **[ 응답 필드 ]**
             - **jobName** : 직업명
             - **jobDescription** : 수행할 역할을 설명합니다.
             - **baseSalary** : 기본급
@@ -42,18 +43,25 @@ public interface TeacherFunctionApiSpecification {
             **[ 규칙 ]**
             - 계정 당 1개의 국가만 생성할 수 있습니다.
             - 만약 다른 국가를 개설하고 싶다면 기존 국가 정보를 삭제해야 합니다.
+            - savingsGoalAmount을 입력하지 않으면 100000으로 저장됩니다.
+            - nationalTreasury를 입력하지 않으면 0으로 저장됩니다.
             """)
     ResponseEntity<ApiResponse<NationDTO>> createNation(@RequestBody @Valid NationDTO nationDTO);
 
     @Operation(summary = "국가 [조회]", description = """
             💡 교사가 국가 정보를 조회합니다.
             
+            **[ 응답 필드 ]**
             - **nationName** : 국가명
             - **population** : 인구 수 (학생 수)
             - **currency** : 통화 단위
             - **savingsGoalAmount** : 학급 별 목표 저축액
             - **nationalTreasury** : 국고
             - **establishedDate** : 설립일 (국가 정보 등록한 날짜로 자동 생성)
+            
+            **[ 규칙 ]**
+            - 계정 당 1개의 국가만 생성할 수 있습니다.
+            - 만약 다른 국가를 개설하고 싶다면 기존 국가 정보를 삭제해야 합니다.
             """)
     ResponseEntity<ApiResponse<NationDTO>> getNationByTeacher();
 
@@ -63,6 +71,7 @@ public interface TeacherFunctionApiSpecification {
     @Operation(summary = "직업 [학생 전체 조회]", description = """
             💡 직업 ID를 입력하면 해당 직업을 가진 우리반 학생들을 조회할 수 있습니다.
             
+            **[ 응답 필드 ]**
             - **id** : 직업 고유 ID
             - **username** : 학생 ID
             - **name** : 학생 실명

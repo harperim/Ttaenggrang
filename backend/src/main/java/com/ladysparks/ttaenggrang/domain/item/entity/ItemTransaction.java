@@ -32,4 +32,7 @@ public class ItemTransaction {
     @CreationTimestamp
     private Timestamp createdAt;
 
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 }

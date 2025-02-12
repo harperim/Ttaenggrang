@@ -4,6 +4,7 @@ import com.ladysparks.ttaenggrang.domain.item.entity.ItemTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ItemTransactionRepository extends JpaRepository<ItemTransaction, Long> {
 
@@ -12,6 +13,8 @@ public interface ItemTransactionRepository extends JpaRepository<ItemTransaction
     List<ItemTransaction> findByItem_SellerTeacher_id(Long sellerId);
 
     List<ItemTransaction> findByBuyerId(Long buyerId);
+
+    Optional<ItemTransaction> findItemTransactionByItem_Id(Long itemId);
 
 }
 

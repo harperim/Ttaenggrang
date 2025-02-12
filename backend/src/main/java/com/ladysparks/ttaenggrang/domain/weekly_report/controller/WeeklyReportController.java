@@ -23,12 +23,12 @@ public class WeeklyReportController implements WeeklyReportApiSpecification {
     private final WeeklyFinancialSummaryService weeklyFinancialSummaryService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<WeeklyFinancialSummaryDTO>> WeeklyReportDetails() {
+    public ResponseEntity<ApiResponse<WeeklyFinancialSummaryDTO>> weeklyReportDetails() {
         return ResponseEntity.ok(ApiResponse.success(weeklyFinancialSummaryService.getThisWeekReport()));
     }
 
     @GetMapping("/growth")
-    public ResponseEntity<ApiResponse<StudentFinancialSummaryDTO>> WeeklyReportGrowthList() {
+    public ResponseEntity<ApiResponse<StudentFinancialSummaryDTO>> weeklyReportGrowthList() {
         StudentFinancialSummaryDTO summaryDTO = weeklyFinancialSummaryService.getStudentWeeklySummary();
         return ResponseEntity.ok(ApiResponse.success(summaryDTO));
     }

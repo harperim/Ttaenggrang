@@ -9,6 +9,7 @@ import com.ladysparks.ttaenggrang.domain.item.dto.ItemTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.item.mapper.ItemTransactionMapper;
 import com.ladysparks.ttaenggrang.domain.item.repository.ItemRepository;
 import com.ladysparks.ttaenggrang.domain.item.repository.ItemTransactionRepository;
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import jakarta.persistence.EntityNotFoundException;
@@ -39,7 +40,7 @@ public class ItemTransactionService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 아이템을 찾을 수 없습니다. ID: " + itemTransactionDTO.getItemId()));
 
         // 2. 판매자와 구매자 조회
-        Long sellerId = item.getSellerStudent().getId();
+        Long sellerId = item.getSellerTeacher().getId(); // 판매자
         Long buyerId = studentService.getCurrentStudentId();
 
         // 3. 판매자와 구매자가 동일한 경우 거래 불가
@@ -102,6 +103,25 @@ public class ItemTransactionService {
                 .stream()
                 .map(itemTransactionMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 아이템 사용 (수량 차감 및 트랜잭션 기록)
+     */
+    public ItemTransactionDTO useItem(Long itemTransactionId) {
+        // 아이템 거래 내역 조회
+        ItemTransaction itemTransaction = itemTransactionRepository.findById(itemTransactionId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 아이템이 존재하지 않습니다."));
+
+        // 수량 차감
+        if (itemTransaction.getQuantity() - 1 < 0) {
+            throw new IllegalArgumentException("남은 수량이 부족합니다.");
+        }
+
+        itemTransaction.updateQuantity(itemTransaction.getQuantity() - 1);
+        itemTransactionRepository.save(itemTransaction);
+
+        return itemTransactionMapper.toDto(itemTransaction);
     }
 
 }

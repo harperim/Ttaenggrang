@@ -4,21 +4,18 @@ import com.ladysparks.ttaenggrang.global.docs.BankAccountApiSpecification;
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankAccountDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankAccountService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/bank-accounts")
 public class BankAccountController implements BankAccountApiSpecification {
 
     private final BankAccountService bankAccountService;
-
-    @Autowired
-    public BankAccountController(BankAccountService bankAccountService) {
-        this.bankAccountService = bankAccountService;
-    }
 
     // 은행 계좌 [등록]
     /*

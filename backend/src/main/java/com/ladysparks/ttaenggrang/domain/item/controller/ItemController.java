@@ -25,28 +25,28 @@ public class ItemController implements ItemApiSpecification {
 
     // 판매 아이템 [등록]
     @PostMapping
-    public ResponseEntity<ApiResponse<ItemDTO>> ItemAdd(@RequestBody @Valid ItemDTO itemDto) {
+    public ResponseEntity<ApiResponse<ItemDTO>> itemAdd(@RequestBody @Valid ItemDTO itemDto) {
         ItemDTO savedItem = itemService.addItem(itemDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(savedItem));
     }
 
     // 판매 아이템 [전체 조회]
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ItemDTO>>> ItemList() {
+    public ResponseEntity<ApiResponse<List<ItemDTO>>> itemList() {
         List<ItemDTO> itemDtoList = itemService.findItemList();
         return ResponseEntity.ok(ApiResponse.success(itemDtoList));
     }
 
     // 판매 아이템 [상세 조회]
     @GetMapping("/{itemId}")
-    public ResponseEntity<ApiResponse<ItemDTO>> ItemDetails(@PathVariable("itemId") Long itemId) {
+    public ResponseEntity<ApiResponse<ItemDTO>> itemDetails(@PathVariable("itemId") Long itemId) {
         ItemDTO itemDTO = itemService.findItem(itemId);
         return ResponseEntity.ok(ApiResponse.success(itemDTO));
     }
 
     // 학생의 판매 아이템 [조회]
     @GetMapping("/seller")
-    public ResponseEntity<ApiResponse<List<ItemDTO>>> ItemListBySeller() {
+    public ResponseEntity<ApiResponse<List<ItemDTO>>> itemListBySeller() {
         List<ItemDTO> itemDtoList = itemService.findItemListBySeller();
         return ResponseEntity.ok(ApiResponse.success(itemDtoList));
     }
