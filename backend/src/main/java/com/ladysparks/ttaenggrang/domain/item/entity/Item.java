@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.item.entity;
 
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -22,8 +23,16 @@ public class Item {
     private Long id;
 
     @ManyToOne // Many: Item, One: Student
-    @JoinColumn(nullable = false, name = "seller_id") // FK
-    private Student seller; // DB는 오브젝트를 저장할 수 없다. FK, 자바는 오브젝트를 저장할 수 있다. // 참조 할 테이블
+    @JoinColumn(name = "seller_student_id") // FK
+    private Student sellerStudent; // DB는 오브젝트를 저장할 수 없다. FK, 자바는 오브젝트를 저장할 수 있다. // 참조 할 테이블
+
+    @ManyToOne // Many: Item, One: Student
+    @JoinColumn(name = "seller_teacher_id") // FK
+    private Teacher sellerTeacher; // DB는 오브젝트를 저장할 수 없다. FK, 자바는 오브젝트를 저장할 수 있다. // 참조 할 테이블
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SellerType sellerType;
 
     @Column(nullable = false, length = 100) // Column과 반대로 테이블에 컬럼으로 생성되지 않는 필드의 경우엔 @Transient 어노테이션을 적용
     private String name;

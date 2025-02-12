@@ -113,7 +113,7 @@
             style="@style/heading3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="456,000원"
+            android:text="-"
             android:textColor="@color/mainOrange" />
 
 
@@ -148,7 +148,7 @@
             style="@style/heading3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="456,000원"
+            android:text="-"
             android:textColor="@color/mainOrange" />
 
     </LinearLayout>
@@ -196,7 +196,7 @@
             style="@style/heading3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3개"
+            android:text="-"
             android:textColor="@color/mainOrange" />
 
     </LinearLayout>
@@ -268,7 +268,7 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:backgroundTint="@color/mainGreen"
-                android:src="@drawable/ic_chevron_right" />
+                android:background="@drawable/ic_chevron_right" />
 
 
         </LinearLayout>
@@ -306,11 +306,12 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/textSavingGoal"
             style="@style/heading3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
-            android:text="100,000"
+            android:text="-"
             android:textColor="@color/mainOrange"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

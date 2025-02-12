@@ -115,17 +115,6 @@ class JobFragment : BaseFragment<FragmentJobBinding>(FragmentJobBinding::bind, R
             // 등록 요청
             jobViewModel.registerJob(jobData)
 
-//            // 결과값 여부에 따라 다이얼로그 창이 닫혀야하기 때문에
-//            jobViewModel.registerJobResult.observe(viewLifecycleOwner) { isSuccess ->
-//                if(isSuccess){
-//                    showToast("등록 성공")
-//                    dialog.dismiss()
-//                }else{
-//                    showToast("등록 실패")
-//                }
-//            }
-            //선택된 학생에 대한 인센티브 지급 API요청
-//            dialog.dismiss()
         }
         registerDialog.show() // 다이얼로그 띄우기
     }

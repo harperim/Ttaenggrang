@@ -15,7 +15,6 @@ import com.ladysparks.ttaenggrang.data.model.response.StudentSignInResponse
 import com.ladysparks.ttaenggrang.data.model.response.TeacherSignInResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.databinding.ActivityLoginBinding
-import com.ladysparks.ttaenggrang.util.ErrorDialog
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
@@ -60,7 +59,7 @@ class LoginActivity : BaseActivity() {
         binding.tempBtnTeacher.setOnClickListener {
             lifecycleScope.launch {
                 runCatching {
-                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "aa@aa.com", password = "1234"))
+                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "ssafy1@ssafy.com", password = "1234"))
                 }.onSuccess {
                     showToast("교사 로그인 성공")
 

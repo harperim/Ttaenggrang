@@ -485,7 +485,9 @@ public class StudentService {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID를 가진 학생이 존재하지 않습니다."));
 
-        return nationService.findNationByTeacherId(student.getTeacher().getId()).getId();
+        return nationService.findNationByTeacherId(student.getTeacher().getId())
+                .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."))
+                .getId();
     }
 
     public Long findBankAccountIdById(Long studentId) {
@@ -574,7 +576,8 @@ public class StudentService {
 
         // 학생의 국가 정보 조회
         Long teacherId = findTeacherIdByStudentId(studentId);
-        NationDTO nationDTO = nationService.findNationByTeacherId(teacherId);
+        NationDTO nationDTO = nationService.findNationByTeacherId(teacherId)
+                .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
 
         SavingsAchievementDTO savingsAchievementDTO = SavingsAchievementDTO.builder()
                 .studentId(studentId)
@@ -603,4 +606,14 @@ public class StudentService {
         return savingsAchievementDTO;
     }
 
+    public String findNameById(Long teacherId) {
+        return studentRepository.findById(teacherId)
+                .map(Student::getName)
+                .orElseThrow(() -> new NotFoundException("등록된 학생이 없습니다."));
+    }
+
+    public Student findById(Long studentId) {
+        return studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 학생이 존재하지 않습니다."));
+    }
 }

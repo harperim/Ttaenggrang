@@ -7,10 +7,7 @@ import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StudentStockDTO;
-import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
-import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
-import com.ladysparks.ttaenggrang.domain.stock.entity.StockTransaction;
-import com.ladysparks.ttaenggrang.domain.stock.entity.TransType;
+import com.ladysparks.ttaenggrang.domain.stock.entity.*;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockHistoryRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
@@ -74,6 +71,7 @@ public class StockService {
                 .description(stockDTO.getDescription())
                 .created_at(Timestamp.valueOf(LocalDateTime.now()))
                 .updated_at(Timestamp.valueOf(LocalDateTime.now()))
+
                 .category(category)  // 카테고리 설정
                 .build();
 

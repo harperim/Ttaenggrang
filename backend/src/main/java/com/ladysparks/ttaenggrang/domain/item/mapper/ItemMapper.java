@@ -13,13 +13,36 @@ public interface ItemMapper {
     ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
 
     // Entity → DTO 변환
-    @Mapping(source = "seller.id", target = "sellerId")
-    @Mapping(source = "seller.name", target = "sellerName")
-    ItemDTO toDto(Item bankAccount);
+    @Mapping(source = "sellerStudent.id", target = "sellerId")
+    @Mapping(source = "sellerStudent.name", target = "sellerName")
+    ItemDTO toStudentSellerDto(Item item);
 
     // DTO → Entity 변환
     @Mapping(target = "id", ignore = true) // ID는 자동 생성되므로 무시
-    @Mapping(source = "sellerId", target = "seller.id")
-    Item toEntity(ItemDTO itemDTO);
+    @Mapping(source = "sellerId", target = "sellerStudent.id")
+    @Mapping(source = "sellerName", target = "sellerStudent.name")
+    Item toStudentSellerEntity(ItemDTO itemDTO);
+
+    // Entity → DTO 변환
+    @Mapping(source = "sellerTeacher.id", target = "sellerId")
+    @Mapping(source = "sellerTeacher.name", target = "sellerName")
+    ItemDTO toTeacherSellerDto(Item item);
+
+    // DTO → Entity 변환
+    @Mapping(target = "id", ignore = true) // ID는 자동 생성되므로 무시
+    @Mapping(source = "sellerId", target = "sellerTeacher.id")
+    @Mapping(source = "sellerName", target = "sellerTeacher.name")
+    Item toTeacherSellerEntity(ItemDTO itemDTO);
+
+    // **공통 toDto 메서드 추가**
+    default ItemDTO toDto(Item item) {
+        if (item.getSellerTeacher() != null) {
+            return toTeacherSellerDto(item);
+        } else if (item.getSellerStudent() != null) {
+            return toStudentSellerDto(item);
+        } else {
+            return null; // sellerTeacher와 sellerStudent가 없는 경우 처리
+        }
+    }
 
 }

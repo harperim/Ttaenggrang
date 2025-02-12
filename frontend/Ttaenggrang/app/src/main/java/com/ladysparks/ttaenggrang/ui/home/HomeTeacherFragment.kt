@@ -1,6 +1,8 @@
 package com.ladysparks.ttaenggrang.ui.home
 
 import android.app.Dialog
+import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -19,12 +21,17 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.ladysparks.ttaenggrang.MainActivity
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
 import com.ladysparks.ttaenggrang.data.model.dto.AlarmDto
+import com.ladysparks.ttaenggrang.databinding.DialogBaseConfirmCancelBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.databinding.FragmentHomeTeacherBinding
+import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
+import com.ladysparks.ttaenggrang.util.NavigationManager
+import com.ladysparks.ttaenggrang.util.showToast
 import java.util.Date
 
 
@@ -32,30 +39,38 @@ import java.util.Date
 class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHomeTeacherBinding::bind, R.layout.fragment_home_teacher) {
 
     private lateinit var homeViewModel: HomeViewModel
-
-
     private lateinit var alarmAdapter: AlarmAdapter
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         // ViewModel
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-
 
         // 초기화 기타 기능 작성
         // ViewModel
         initAdapter()
         fetchAlarmList()
 
+        initObserver()
+
         // 샘플 데이터
         sampleDataAlarmList()
         sampleDataDynamicTable()
         sampleBarChart()
         initEvent()
+
+        // 데이터 요청
+        homeViewModel.fetchNationData()
+    }
+
+    private fun initObserver() {
+        homeViewModel.nationInfoData.observe(viewLifecycleOwner) { response ->
+//            binding.textNationalRevenue.text = response.treasuryIncome.toString()
+//            binding.textAvgBalance.text = response.averageStudentBalance.toString()
+//            binding.textActiveProducts.text = response.activeItemCount.toString() + "개"
+//            binding.textSavingGoal.text = response.classSavingsGoal.toString()
+        }
     }
 
     private fun sampleBarChart() {

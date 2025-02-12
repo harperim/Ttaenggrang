@@ -4,6 +4,7 @@ import com.ladysparks.ttaenggrang.data.model.request.StudentMultiCreateRequest
 import com.ladysparks.ttaenggrang.data.model.request.StudentSingleCreateRequest
 import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.dto.JobDto
+import com.ladysparks.ttaenggrang.data.model.response.NationInfoResponse
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -24,6 +25,9 @@ interface TeacherService {
     @GET("teachers/students/{studentId}")
     suspend fun getStudentDetail(@Path("studentId") studentId: String): ApiResponse<Any>
 
+    // Home 정보 조회
+    @GET("teachers/{teacherId}/dashboard")
+    suspend fun getNationInfo(): ApiResponse<NationInfoResponse>
 
     /***
      * 직업 정보 관련

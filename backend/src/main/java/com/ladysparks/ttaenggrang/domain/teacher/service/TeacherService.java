@@ -3,6 +3,7 @@ package com.ladysparks.ttaenggrang.domain.teacher.service;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherLoginDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherResponseDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherSignupDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Nation;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.global.config.JwtTokenProvider;
@@ -126,6 +127,12 @@ public class TeacherService {
                 .collect(Collectors.toList());
 
         return responseDTOs;
+    }
+
+    public String findNameById(Long teacherId) {
+        return teacherRepository.findById(teacherId)
+                .map(Teacher::getName)
+                .orElseThrow(() -> new NotFoundException("등록된 교사가 없습니다."));
     }
 
 }
