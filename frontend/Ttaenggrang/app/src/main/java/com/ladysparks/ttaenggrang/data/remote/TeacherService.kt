@@ -4,7 +4,7 @@ import com.ladysparks.ttaenggrang.data.model.request.StudentMultiCreateRequest
 import com.ladysparks.ttaenggrang.data.model.request.StudentSingleCreateRequest
 import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.dto.JobDto
-import com.ladysparks.ttaenggrang.data.model.response.NationInfoResponse
+import com.ladysparks.ttaenggrang.data.model.response.EconomySummaryResponse
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,7 +21,7 @@ interface TeacherService {
     @POST("teachers/quick-create")
     suspend fun multiCreate(@Body multiStudent: StudentMultiCreateRequest): ApiResponse<Any>
 
-    @GET("teachers/students")
+    @GET("teachers/students") // 반학생 전체 조회
     suspend fun getStudentList(): ApiResponse<List<StudentMultiCreateResponse>>
 
     @GET("teachers/students/{studentId}")
@@ -29,12 +29,13 @@ interface TeacherService {
 
     // Home 정보 조회
     @GET("teachers/{teacherId}/dashboard")
-    suspend fun getNationInfo(): ApiResponse<NationInfoResponse>
+    suspend fun getEconomySummary(): ApiResponse<EconomySummaryResponse>
 
     /***
      * 직업 정보 관련
      */
     @POST("teachers/jobs/create")
     suspend fun registerJob(@Body jobs: JobDto): ApiResponse<JobDto>
+
 
 }

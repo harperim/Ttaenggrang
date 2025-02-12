@@ -2,18 +2,12 @@ package com.ladysparks.ttaenggrang
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.ladysparks.ttaenggrang.base.BaseActivity
 import com.ladysparks.ttaenggrang.data.dummy.JobDummyData.jobList
 import com.ladysparks.ttaenggrang.data.dummy.TaxDummyData.taxList
 import com.ladysparks.ttaenggrang.data.model.dto.NationInfoDto
-import com.ladysparks.ttaenggrang.data.model.response.NationInfoResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
-import com.ladysparks.ttaenggrang.databinding.ActivityMainBinding
 import com.ladysparks.ttaenggrang.databinding.ActivityNationSetupBinding
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
