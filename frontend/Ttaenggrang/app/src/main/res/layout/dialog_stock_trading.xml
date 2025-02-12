@@ -20,16 +20,18 @@
         <TextView
             android:id="@+id/textDialogTitle"
             style="@style/heading3"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="주식 거래하기"
+            app:layout_constraintEnd_toStartOf="@id/btnCancel"
+            app:layout_constraintBottom_toTopOf="@id/textDialogContent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textDialogContent"
             style="@style/body1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="주식 매도와 매수를 통해 자산을 운용하세요."
             android:textColor="@color/black200"
@@ -44,6 +46,7 @@
             android:layout_height="24dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_close"
+            app:layout_constraintStart_toEndOf="@id/textDialogTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -85,7 +88,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textTitle1">
 
+
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textDialogStockTitle"
                 style="@style/body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -124,6 +130,7 @@
             app:layout_constraintTop_toBottomOf="@id/textTitle2">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textDialogStockPrice"
                 style="@style/body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -162,6 +169,7 @@
             app:layout_constraintTop_toBottomOf="@id/textTitle3">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textDialogMyStock"
                 style="@style/body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -200,6 +208,7 @@
             app:layout_constraintTop_toBottomOf="@id/textTitle4">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textDialogStockTrade"
                 style="@style/body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -302,6 +311,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintDialogBody">
 
         <!--매도-->

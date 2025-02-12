@@ -5,18 +5,19 @@ import com.ladysparks.ttaenggrang.domain.bank.dto.BankAccountDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankAccount;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.BankAccountMapper;
 import com.ladysparks.ttaenggrang.domain.bank.repository.BankAccountRepository;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.JobInfoDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.*;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Nation;
 import com.ladysparks.ttaenggrang.domain.student.dto.SavingsAchievementDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentLoginRequestDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentLoginResponseDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.MultipleStudentCreateDTO;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.SingleStudentCreateDTO;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
+import com.ladysparks.ttaenggrang.domain.teacher.repository.JobRespository;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
+import com.ladysparks.ttaenggrang.domain.teacher.service.NationService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.domain.weekly_report.service.InvestmentService;
 import com.ladysparks.ttaenggrang.global.config.JwtTokenProvider;
@@ -50,18 +51,25 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
     private final TeacherService teacherService;
+    private final NationService nationService;
     private final InvestmentService investmentService;
     private final RedisGoalService redisGoalService;
     private final PasswordEncoder passwordEncoder;
     private final BankAccountRepository bankAccountRepository; // ✅ 추가
     private final JwtTokenProvider jwtTokenProvider;
     private final SecurityUtil securityUtil;
+    private final JobRespository jobRespository;
 
     public Long getCurrentStudentId() {
         String username = securityUtil.getCurrentUser();
         return studentRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID를 가진 학생을 찾을 수 없습니다."))
                 .getId();
+    }
+
+    public Optional<Long> getOptionalCurrentStudentId() {
+        String username = securityUtil.getCurrentUser();
+        return studentRepository.findByUsername(username).map(Student::getId);
     }
 
     // ✅ 프로필 이미지 URL 업데이트 메서드
@@ -194,6 +202,15 @@ public class StudentService {
             // 🔥 파일에서 이름이 있는 경우, 해당 이름 사용
             String studentName = (i <= namesFromFile.size()) ? namesFromFile.get(i - 1) : null;
 
+            // 4. 기본 직업 "시민"으로 설정
+            Job defaultJob = jobRespository.findByJobName("시민")
+                    .orElseGet(() -> {
+                        Job newJob = Job.builder()
+                                .jobName("시민")
+                                .baseSalary(1000)
+                                .build();
+                        return jobRespository.save(newJob);
+                    });
 
             // 5️⃣ 학생 계정 생성 (은행 계좌 연결)
             Student student = Student.builder()
@@ -202,10 +219,16 @@ public class StudentService {
                     .teacher(teacher)
                     .bankAccount(bankAccount) // ✅ **저장된 계좌 연결**
                     .name(studentName)  // 이름 저장
-                    .nation(teacher.getNation())
+                    .job(defaultJob)
                     .build();
 
             studentRepository.save(student); // ✅ **저장된 bankAccount를 참조하는 상태에서 저장**
+
+            // 6. 직업 정보 jobinfoDTO로 변환
+            JobInfoDTO jobInfoDTO = JobInfoDTO.builder()
+                    .jobName(defaultJob.getJobName())
+                    .baseSalary(defaultJob.getBaseSalary())
+                    .build();
 
             // 6️⃣ 생성된 계정 리스트에 추가
             createdStudents.add(new StudentResponseDTO(
@@ -215,7 +238,7 @@ public class StudentService {
                     student.getProfileImageUrl(),
                     student.getTeacher(),
                     student.getBankAccount(),
-                    null,
+                    jobInfoDTO,
                     null  // 초기 생성 시 토큰은 null로 설정
 
             ));
@@ -249,18 +272,34 @@ public class StudentService {
         BankAccount bankAccount = BankAccountMapper.INSTANCE.toEntity(bankAccountDTO);
         bankAccount = bankAccountRepository.save(bankAccount);
 
-        // 4. 학생 계정 생성 (은행 계좌 연결)
+        // 4. 기본 직업 "시민"으로 설정
+        Job defaultJob = jobRespository.findByJobName("시민")
+                .orElseGet(() -> {
+                    Job newJob = Job.builder()
+                            .jobName("시민")
+                            .baseSalary(1000)
+                            .build();
+                    return jobRespository.save(newJob);
+                });
+
+        // 5. 학생 계정 생성 (은행 계좌 연결)
         Student student = Student.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .teacher(teacher)
                 .bankAccount(bankAccount)
-                .nation(teacher.getNation())
+                .job(defaultJob)
                 .build();
 
         studentRepository.save(student);
 
-        // 5. 생성된 학생 정보 반환
+        // 6. 직업 정보 jobinfoDTO로 변환
+        JobInfoDTO jobInfoDTO = JobInfoDTO.builder()
+                .jobName(defaultJob.getJobName())
+                .baseSalary(defaultJob.getBaseSalary())
+                .build();
+
+        // 6. 생성된 학생 정보 반환
         return new StudentResponseDTO(
                 student.getId(),
                 student.getUsername(),
@@ -268,7 +307,7 @@ public class StudentService {
                 student.getProfileImageUrl(),
                 teacher,
                 bankAccount,
-                null,
+                jobInfoDTO,
                 null  // 토큰 값은 로그인 후 부여
         );
     }
@@ -446,9 +485,7 @@ public class StudentService {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID를 가진 학생이 존재하지 않습니다."));
 
-        return Optional.ofNullable(student.getTeacher().getNation())
-                .map(Nation::getId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 학생은 국가 정보가 등록되어 있지 않습니다."));
+        return nationService.findNationByTeacherId(student.getTeacher().getId()).getId();
     }
 
     public Long findBankAccountIdById(Long studentId) {
@@ -499,6 +536,16 @@ public class StudentService {
         return student.getTeacher().getId();
     }
 
+    public void getAllSavingsAchievementRates(Long studentId, Long teacherId) {
+        List<Student> students = studentRepository.findAllByTeacherId(teacherId);
+        for (Student student : students) {
+            SavingsAchievementDTO cacheSavingsAchievementDTO = redisGoalService.getGoalAchievement(teacherId, student.getId());
+            if (cacheSavingsAchievementDTO.getSavingsAchievementRate() == null) {
+                calculateSavingsAchievementRate();
+            }
+        }
+    }
+
     /**
      * 특정 학생의 저축 목표 달성률을 조회
      */
@@ -526,16 +573,14 @@ public class StudentService {
                 .orElseThrow(() -> new NotFoundException("해당 ID의 학생이 존재하지 않습니다."));
 
         // 학생의 국가 정보 조회
-        Nation nation = student.getNation();
-        if (nation == null) {
-            throw new NotFoundException("해당 학생의 국가 정보가 존재하지 않습니다.");
-        }
+        Long teacherId = findTeacherIdByStudentId(studentId);
+        NationDTO nationDTO = nationService.findNationByTeacherId(teacherId);
 
         SavingsAchievementDTO savingsAchievementDTO = SavingsAchievementDTO.builder()
                 .studentId(studentId)
                 .build();
 
-        int savingsGoalAmount = nation.getSavingsGoalAmount(); // 국가에서 설정한 목표 저축 금액
+        int savingsGoalAmount = nationDTO.getSavingsGoalAmount(); // 국가에서 설정한 목표 저축 금액
         double achievementRate = 0.0; // 목표 저축 금액이 0이면 달성률도 0
 
         if (savingsGoalAmount != 0) {

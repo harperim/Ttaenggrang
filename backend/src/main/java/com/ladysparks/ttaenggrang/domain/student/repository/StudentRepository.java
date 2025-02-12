@@ -32,4 +32,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Optional<Student> findNationIdById(Long studentId);;
 
+    int countByTeacherId(long teacherId);
+
 }

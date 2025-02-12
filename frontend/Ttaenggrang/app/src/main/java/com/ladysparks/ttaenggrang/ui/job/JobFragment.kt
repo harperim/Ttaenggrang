@@ -2,15 +2,132 @@ package com.ladysparks.ttaenggrang.ui.job
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
+import com.ladysparks.ttaenggrang.base.BaseTableAdapter
+import com.ladysparks.ttaenggrang.data.model.dto.JobDto
+import com.ladysparks.ttaenggrang.databinding.DialogIncentiveBinding
+import com.ladysparks.ttaenggrang.databinding.DialogJobRegisterBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentJobBinding
+import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
+import com.ladysparks.ttaenggrang.util.showToast
 
 class JobFragment : BaseFragment<FragmentJobBinding>(FragmentJobBinding::bind, R.layout.fragment_job) {
+
+    // ViewModel
+    private lateinit var jobViewModel: JobViewModel
+
+    // 직업 정보 리스트
+    private lateinit var jobAdapter: BaseTableAdapter
+    val jobTableHeader = listOf("직업명", "직업설명", "기본급", "인원제한")
+
+    // 직업 등록 Dialog
+    private lateinit var registerDialog: AlertDialog
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        jobViewModel = ViewModelProvider(this).get(JobViewModel::class.java)
+
+        initAdapter()
+        initObserver()
+        initEvent()
+
+        // Adapter, Observer 설정이 끝난 이후, 데이터 요청 실행
+        jobViewModel.fetchJobList()
+
+    }
+
+
+    private fun initAdapter() {
+        val isRowClickable = true
+
+        jobAdapter = if (isRowClickable){
+            BaseTableAdapter(jobTableHeader, emptyList()){ rowIndex, rowData ->
+                showToast("${rowIndex} Click Event !")
+            }
+        } else{
+            BaseTableAdapter(jobTableHeader, emptyList(), null)
+        }
+
+        binding.recyclerJob.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerJob.adapter = jobAdapter
+    }
+
+    private fun initObserver() {
+        // 직업 정보 리스트
+        jobViewModel.jobList.observe(viewLifecycleOwner) { jobList ->
+            val jobList = jobList.mapIndexed { index, job ->
+                BaseTableRowModel(
+                    listOf(
+                        job.job?.jobName ?: "",
+                        job.job?.jobDescription?: "",
+                        job.job?.baseSalary.toString() ?: "",
+                        job.job?.maxPeople.toString() ?: ""
+                    )
+                )
+            }
+
+            // 5. Adapter 에 신규 데이터 업데이트
+            jobAdapter.updateData(jobTableHeader, jobList)
+
+            binding.textNullJob.visibility = View.GONE
+            binding.recyclerJob.visibility = View.VISIBLE
+        }
+
+        // 직업 등록 요청
+        jobViewModel.registerJobResult.observe(viewLifecycleOwner) { isSuccess ->
+            if(isSuccess){
+                showToast("등록 성공 : DB 갱신 필요")
+                registerDialog.dismiss()
+            }else{
+                showToast("등록 실패")
+            }
+        }
+    }
+
+    // 기본 Button Evetn 정의
+    private fun initEvent() {
+        binding.btnRegisterJob.setOnClickListener {  requestRegisterJob() }
+    }
+
+    private fun requestRegisterJob() {
+        val dialogBinding = DialogJobRegisterBinding.inflate(layoutInflater)
+        registerDialog = AlertDialog.Builder(requireContext())
+            .setView(dialogBinding.root)
+            .create()
+
+        dialogBinding.btnCancel.setOnClickListener { registerDialog.dismiss() }
+        dialogBinding.btnRegister.setOnClickListener {
+
+            // 객체 생성
+            val jobData = JobDto(
+                jobName = dialogBinding.editJobName.text.toString(),
+                jobDescription = dialogBinding.editJobDescription.text.toString(),
+                baseSalary = dialogBinding.editBaseSalary.text.toString().toInt(),
+                maxPeople = dialogBinding.editMaxPeople.text.toString().toInt()
+            )
+
+            // 등록 요청
+            jobViewModel.registerJob(jobData)
+
+//            // 결과값 여부에 따라 다이얼로그 창이 닫혀야하기 때문에
+//            jobViewModel.registerJobResult.observe(viewLifecycleOwner) { isSuccess ->
+//                if(isSuccess){
+//                    showToast("등록 성공")
+//                    dialog.dismiss()
+//                }else{
+//                    showToast("등록 실패")
+//                }
+//            }
+            //선택된 학생에 대한 인센티브 지급 API요청
+//            dialog.dismiss()
+        }
+        registerDialog.show() // 다이얼로그 띄우기
     }
 
 }

@@ -7,6 +7,7 @@ import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherDashboardDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class TeacherDashboardService {
         Long teacherId = teacherService.getCurrentTeacherId();
 
         NationDTO nationDTO = nationService.findNationByTeacherId(teacherId);
+
         int nationalTreasuryIncome = nationDTO.getNationalTreasury();
         int averageStudentBalance = (int) bankAccountService.getAverageBalanceByTeacherId(teacherId);
         int activeItemCount = itemService.findActiveItemListByTeacher().size();

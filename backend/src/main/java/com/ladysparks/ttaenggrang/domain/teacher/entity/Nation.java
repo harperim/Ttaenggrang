@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.naming.Name;
 import java.sql.Timestamp;
 
 @Entity
@@ -42,5 +43,4 @@ public class Nation {
     @OneToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
-
 }

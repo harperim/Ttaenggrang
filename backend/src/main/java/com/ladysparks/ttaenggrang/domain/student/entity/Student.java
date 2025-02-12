@@ -55,10 +55,6 @@ public class Student {
     @JoinColumn(name = "job_id")
     private Job job;
 
-    @ManyToOne
-    @JoinColumn(name = "nation_id")
-    private Nation nation;
-
     public Student(Long id) {
         this.id = id;
     }

@@ -3,10 +3,14 @@ package com.ladysparks.ttaenggrang
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowInsets
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
 import com.ladysparks.ttaenggrang.base.BaseActivity
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.databinding.ActivityMainBinding
@@ -29,6 +33,9 @@ import kotlinx.coroutines.launch
 
 
 class MainActivity : BaseActivity() {
+    companion object {
+        const val CHANNEL_ID = "ttaenggrang_fcm_channel" // ✅ 채널 ID 정의
+    }
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
@@ -83,6 +90,7 @@ class MainActivity : BaseActivity() {
             true
         }
     }
+
 
     private fun initData() {
         val headerView = binding.navigationView.getHeaderView(0)

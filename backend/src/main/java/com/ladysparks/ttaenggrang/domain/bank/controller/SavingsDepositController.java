@@ -4,10 +4,8 @@ import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsDepositDTO;
 import com.ladysparks.ttaenggrang.domain.bank.service.SavingsDepositService;
 import com.ladysparks.ttaenggrang.global.docs.SavingsDepositApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +33,7 @@ public class SavingsDepositController implements SavingsDepositApiSpecification 
     }
 
     // 미납 내역 조회
-    @GetMapping("/failed")
+    @GetMapping("/fail")
     public ResponseEntity<ApiResponse<List<SavingsDepositDTO>>> SavingsDepositsFailedList() {
         List<SavingsDepositDTO> failedDeposits = savingsDepositService.findFailedDeposits();
         return ResponseEntity.ok(ApiResponse.success(failedDeposits));

@@ -15,10 +15,12 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(value={"id", "nationalTreasury", "establishedDate", "profileImageUrl", "teacher"}, allowGetters=true)
+@JsonIgnoreProperties(value={"id", "teacherId", "nationalTreasury", "establishedDate", "profileImageUrl", "teacher"}, allowGetters=true)
 public class NationDTO {
 
     private Long id;
+
+    private Long teacherId;
 
     @NotBlank(message = "국가 이름은 필수 항목입니다.")
     private String nationName;

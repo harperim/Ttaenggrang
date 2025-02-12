@@ -30,8 +30,8 @@ public interface SavingsProductApiSpecification {
             """)
     ResponseEntity<ApiResponse<SavingsProductDTO>> savingsProductAdd(SavingsProductDTO savingsProductDTO);
 
-    @Operation(summary = "적금 상품 [조회]", description = """
-            💡 교사가 등록한 전체 적금 상품을 조회합니다.
+    @Operation(summary = "적금 상품 목록 [조회]", description = """
+            💡 전체 적금 상품 목록을 조회합니다.
 
             **[ 응답 필드 ]**
             - **name** : 적금 상품명
@@ -41,6 +41,10 @@ public interface SavingsProductApiSpecification {
             - **amount** : 적금 금액
             - **saleStartDate** : 노출 시작일
             - **saleEndDate** : 노출 종료일
+            
+            **[ 규칙 ]**
+            - 교사로 로그인할 경우 해당 교사가 등록한 적금 상품 목록을 조회합니다.
+            - 학생으로 로그인한 경우 학생을 관리하는 교사가 등록한 적금 상품 목록을 조회합니다.
             """)
     ResponseEntity<ApiResponse<List<SavingsProductDTO>>> savingsProductList();
 

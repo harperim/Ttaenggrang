@@ -4,6 +4,9 @@ import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsProductDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsProduct;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.SavingsProductMapper;
 import com.ladysparks.ttaenggrang.domain.bank.repository.SavingsProductRepository;
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
+import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -12,6 +15,7 @@ import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +25,7 @@ public class SavingsProductService {
     private final SavingsProductRepository savingsProductRepository;
     private final SavingsProductMapper savingsProductMapper;
     private final TeacherService teacherService;
+    private final StudentService studentService;
 
     // 적금 상품 [등록]
     @Transactional
@@ -48,7 +53,17 @@ public class SavingsProductService {
 
     // 적금 상품 [조회]
     public List<SavingsProductDTO> findSavingsProducts() {
-        Long teacherId = teacherService.getCurrentTeacherId();
+        Optional<Long> currentTeacherId = teacherService.getOptionalCurrentTeacherId();
+        Optional<Long> currentStudentId = studentService.getOptionalCurrentStudentId();
+
+        Long teacherId = 0L;
+        if (currentTeacherId.isPresent()) { // 교사 로그인
+            teacherId = currentTeacherId.get();
+        } else if (currentStudentId.isPresent()) { // 학생 로그인
+            teacherId = studentService.findTeacherIdByStudentId(currentStudentId.get());
+        } else {
+            throw new IllegalArgumentException("현재 인증된 사용자를 찾을 수 없습니다.");
+        }
 
         List<SavingsProduct> savingsProducts = savingsProductRepository.findByTeacherId(teacherId);
 

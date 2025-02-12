@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.global.docs;
 
+import com.ladysparks.ttaenggrang.domain.teacher.dto.JobClassDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.NationDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.JobCreateDTO;
@@ -7,6 +8,7 @@ import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.mapstruct.SubclassMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,7 +61,7 @@ public interface TeacherFunctionApiSpecification {
     ResponseEntity<ApiResponse<Void>> deleteNation();
 
     @Operation(summary = "직업 [학생 전체 조회]", description = """
-            💡직업 ID를 입력하면 해당 직업을 가진 우리반 학생들을 조회할 수 있습니다.
+            💡 직업 ID를 입력하면 해당 직업을 가진 우리반 학생들을 조회할 수 있습니다.
             
             - **id** : 직업 고유 ID
             - **username** : 학생 ID
@@ -70,4 +72,10 @@ public interface TeacherFunctionApiSpecification {
             - **token : 학생 로그인 시 토큰 값
             """)
     ResponseEntity<ApiResponse<List<StudentResponseDTO>>> getStudentsByJobIdAndTeacher(@PathVariable Long jobId);
+
+    @Operation(summary = "우리 반 직업 정보 [조회]", description = """
+            💡 우리 반에서 사용하고 있는 직업 정보를 조회합니다.
+            """)
+    ResponseEntity<ApiResponse<List<JobClassDTO>>> getClassJobs();
+
 }

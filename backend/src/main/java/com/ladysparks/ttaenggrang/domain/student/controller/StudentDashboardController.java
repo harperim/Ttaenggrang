@@ -35,6 +35,7 @@ public class StudentDashboardController implements StudentDashboardApiSpecificat
     public ResponseEntity<ApiResponse<List<SavingsAchievementDTO>>> TopStudentList(@RequestParam int topN) {
         Long studentId = studentService.getCurrentStudentId();
         Long teacherId = studentService.findTeacherIdByStudentId(studentId);
+        studentService.getAllSavingsAchievementRates(studentId, teacherId);
         List<SavingsAchievementDTO> topStudents = redisGoalService.getTopStudents(teacherId, topN);
         return ResponseEntity.ok(ApiResponse.success(topStudents));
     }

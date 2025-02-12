@@ -128,7 +128,7 @@ public class SwaggerConfig {
     public GroupedOpenApi voteApi() {
         return GroupedOpenApi.builder()
                 .group("Vote")
-                .pathsToMatch("/votes/**", "/salaries/**")
+                .pathsToMatch("/votes/**")
                 .build();
     }
 

@@ -36,5 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
+<<<<<<< HEAD
 ### env 파일 ###
 .env
+=======
+>>>>>>> develop

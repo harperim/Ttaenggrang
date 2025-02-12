@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.vote.entity;
 
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,4 +29,8 @@ public class Vote {
 
     @Enumerated(EnumType.STRING)
     private VoteStatus status;  // 투표 상태 (ACTIVE / INACTIVE)
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 }

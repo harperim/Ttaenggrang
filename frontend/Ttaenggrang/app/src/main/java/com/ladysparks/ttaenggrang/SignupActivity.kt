@@ -4,14 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
-import android.widget.EditText
-import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.ladysparks.ttaenggrang.base.BaseActivity
+import com.ladysparks.ttaenggrang.data.dummy.JobDummyData.jobList
+import com.ladysparks.ttaenggrang.data.dummy.TaxDummyData.taxList
 import com.ladysparks.ttaenggrang.data.model.request.TeacherSignUpRequest
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.databinding.ActivitySignupBinding
+import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -69,25 +69,13 @@ class SignupActivity : BaseActivity() {
 
 
     private fun signUp() {
-        // Test 위한 하드코딩 데이터
-//        val user = TeacherSignUpRequest(
-//            id = 0,
-//            email = "test2@example.com",
-//            password1 = "1234",
-//            password2 = "1234",
-//            name = "test3",
-//            school = "SSAFY University3",
-//            createdAt = Date().time
-//        )
-
         // 1. input Data가져오기
-        var email = binding.editEmailSignup.text.toString().trim()
-        var password1 = binding.editPasswordSignup.text.toString().trim()
-        var password2 = binding.editPasswordcheckSignup.text.toString().trim()
-        var name = binding.editNameSignup.text.toString().trim()
-        var school = binding.editSchoolSignup.text.toString().trim()
-        var createdAt = Date().time
-        // ...
+        val email = binding.editEmailSignup.text.toString().trim()
+        val password1 = binding.editPasswordSignup.text.toString().trim()
+        val password2 = binding.editPasswordcheckSignup.text.toString().trim()
+        val name = binding.editNameSignup.text.toString().trim()
+        val school = binding.editSchoolSignup.text.toString().trim()
+        val createdAt = Date().time
 
         // 1-2. 모든 필드가 작성되었는지 확인
         if (email.isEmpty() || name.isEmpty() || school.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
@@ -110,10 +98,42 @@ class SignupActivity : BaseActivity() {
                 RetrofitUtil.authService.signupTeacher(user)
             }.onSuccess { data ->
                 showToast("회원 가입 완료 ! ${data}")
-                startActivity(Intent(this@SignupActivity, LoginActivity::class.java))
+                setBaseJobData()
             }.onFailure { exception ->
-                showToast("회원가입 실패 ! ${exception}")
-                Log.e("AlarmViewModel", "Error fetching alarms ${exception}")
+                showErrorDialog(exception)
+            }
+        }
+    }
+
+    /**
+     * 교사가 사용하기 위한 기본 데이터 추가 : 직업 + 세금
+     */
+
+    private fun setBaseJobData() {
+        lifecycleScope.launch {
+            runCatching {
+                jobList.forEach { job ->
+                    RetrofitUtil.teacherService.registerJob(job)
+                }
+            }.onSuccess {
+                setBaseTaxData()
+            }.onFailure {
+                showErrorDialog(it)
+            }
+        }
+    }
+
+    private fun setBaseTaxData(){
+        lifecycleScope.launch {
+            runCatching {
+                taxList.forEach { tax ->
+                    RetrofitUtil.taxService.registerTax(tax)
+                }
+            }.onSuccess {
+                showToast("모든 데이터 생성이 끝났습니다.")
+                startActivity(Intent(this@SignupActivity, LoginActivity::class.java))
+            }.onFailure {
+                showErrorDialog(it)
             }
         }
     }

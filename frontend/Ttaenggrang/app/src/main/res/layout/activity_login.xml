@@ -194,11 +194,12 @@
 
     <Button
         android:id="@+id/tempBtnTeacher"
-        android:layout_marginTop="@dimen/spacing_20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:text="임시 : 선생님 로그인"
         app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/constraintLayout"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import java.util.Arrays;
 
+import com.ladysparks.ttaenggrang.domain.notification.dto.BroadcastNotificationDTO;
 import com.ladysparks.ttaenggrang.domain.notification.dto.FcmMessage;
 import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationDTO;
 import com.ladysparks.ttaenggrang.global.utill.Constants;
@@ -104,15 +105,22 @@ public class FirebaseCloudMessageService {
 
     // 클라이언트 토큰 관리
     public void addToken(String token) {
-        if(Constants.clientTokens.contains(token) == false) {
+        if(!Constants.clientTokens.contains(token)) {
             Constants.clientTokens.add(token);
         }
     }
 
     // 등록된 모든 토큰을 이용해서 broadcasting
-    public int broadCastMessage(NotificationDTO notificationDTO) throws IOException {
+    public int broadCastMessage(BroadcastNotificationDTO broadcastNotificationDTO) throws IOException {
         for(String token: Constants.clientTokens) {
             // Notification 테이블에 저장 루 FCM 메시지를 전송
+            NotificationDTO notificationDTO = NotificationDTO.builder()
+                    .senderTeacherId(broadcastNotificationDTO.getTeacherId())
+                    .notificationType(broadcastNotificationDTO.getNotificationType())
+                    .title(broadcastNotificationDTO.getTitle())
+                    .message(broadcastNotificationDTO.getMessage())
+                    .status(broadcastNotificationDTO.getStatus())
+                    .build();
             NotificationDTO savedNotificationDTO = notificationService.saveNotification(notificationDTO);
 
             String message = makeMessage(savedNotificationDTO);

@@ -2,6 +2,8 @@ package com.ladysparks.ttaenggrang.domain.vote.controller;
 
 import com.ladysparks.ttaenggrang.domain.vote.dto.VoteCreateDTO;
 import com.ladysparks.ttaenggrang.domain.vote.entity.Vote;
+import com.ladysparks.ttaenggrang.domain.vote.entity.VoteItem;
+import com.ladysparks.ttaenggrang.domain.vote.entity.VoteItemResponseDTO;
 import com.ladysparks.ttaenggrang.domain.vote.service.VoteService;
 import com.ladysparks.ttaenggrang.global.docs.VoteApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -12,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/votes")
@@ -54,6 +58,20 @@ public class VoteController implements VoteApiSpecification {
     @PostMapping("/stop")
     public ResponseEntity<ApiResponse<String>> stopCurrentVote() {
         ApiResponse<String> response = voteService.stopCurrentVote();
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    // 투표 항목 조회 (우리 반 아이들)
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse<List<VoteItemResponseDTO>>> getVoteItems() {
+        ApiResponse<List<VoteItemResponseDTO>> response = voteService.getCurrentVoteItems();
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    // 학생 투표
+    @PostMapping("/student")
+    public ResponseEntity<ApiResponse<String>> castStudentVote(@RequestParam Long voteItemId) {
+        ApiResponse<String> response = voteService.castStudentVote(voteItemId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 }

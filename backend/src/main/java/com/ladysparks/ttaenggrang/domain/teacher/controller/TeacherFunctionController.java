@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.teacher.controller;
 
+import com.ladysparks.ttaenggrang.domain.teacher.dto.JobClassDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.JobCreateDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.NationDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
@@ -54,7 +55,9 @@ public class TeacherFunctionController implements TeacherFunctionApiSpecificatio
     // 직업 [등록]
     @PostMapping("/jobs/create")
     public ResponseEntity<ApiResponse<JobCreateDTO>> createJob(@RequestBody @Valid JobCreateDTO jobCreateDTO) {
-        ApiResponse<JobCreateDTO> response = jobService.createJob(jobCreateDTO);
+        long teacherId = getTeacherIdFromSecurityContext();
+
+        ApiResponse<JobCreateDTO> response = jobService.createJob(jobCreateDTO, teacherId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
@@ -64,6 +67,15 @@ public class TeacherFunctionController implements TeacherFunctionApiSpecificatio
         long teacherId = getTeacherIdFromSecurityContext();
 
         ApiResponse<List<StudentResponseDTO>> response = studentService.getStudentsByJobIdAndTeacher(teacherId, jobId);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    // 우리 반 직업 정보 [조회]
+    @GetMapping("/jobs/class")
+    public ResponseEntity<ApiResponse<List<JobClassDTO>>> getClassJobs() {
+        long teacherId = getTeacherIdFromSecurityContext();
+
+        ApiResponse<List<JobClassDTO>> response = jobService.getClassJobs(teacherId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
@@ -96,6 +108,5 @@ public class TeacherFunctionController implements TeacherFunctionApiSpecificatio
         ApiResponse<Void> response = nationService.deleteNation(teacherId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-
 
 }

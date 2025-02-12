@@ -5,11 +5,9 @@ import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.JobInfoDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
+import com.ladysparks.ttaenggrang.domain.vote.dto.RankInfoDTO;
 import com.ladysparks.ttaenggrang.domain.vote.dto.VoteCreateDTO;
-import com.ladysparks.ttaenggrang.domain.vote.entity.Vote;
-import com.ladysparks.ttaenggrang.domain.vote.entity.VoteItem;
-import com.ladysparks.ttaenggrang.domain.vote.entity.VoteMode;
-import com.ladysparks.ttaenggrang.domain.vote.entity.VoteStatus;
+import com.ladysparks.ttaenggrang.domain.vote.entity.*;
 import com.ladysparks.ttaenggrang.domain.vote.repository.VoteItemRepository;
 import com.ladysparks.ttaenggrang.domain.vote.repository.VoteRepository;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -18,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,6 +54,8 @@ public class VoteService {
                 .endDate(voteCreateDTO.getEndDate())
                 .voteMode(voteCreateDTO.getVoteMode())
                 .status(VoteStatus.IN_PROGRESS)
+                .teacher(teacherRepository.findById(teacherId)
+                        .orElseThrow(() -> new IllegalArgumentException("교사를 찾을 수 없습니다.")))
                 .build();
 
         voteRepository.save(vote);
@@ -102,7 +103,7 @@ public class VoteService {
                                 null  // 토큰 값은 필요 시 추가
                         );
                     })
-                    .collect(Collectors.toList());
+                    .toList();
             }
 
             // 5. 투표 정보 + 학생 리스트를 DTO로 변환해서 반환
@@ -112,31 +113,76 @@ public class VoteService {
             response.setEndDate(vote.getEndDate());
             response.setVoteMode(vote.getVoteMode());
             response.setVoteStatus(vote.getStatus());
-            response.setStudents(studentResponseList);  // ✅ 학생 리스트 포함 (null일 수도 있음)
+//            response.setStudents(studentResponseList);  // ✅ 학생 리스트 포함 (null일 수도 있음)
 
             return ApiResponse.success("새 투표가 성공적으로 생성되었습니다!", response);
         }
 
     // ✅ 진행 중인 투표 조회 메서드
     public ApiResponse<VoteCreateDTO> getCurrentVote() {
-        Optional<Vote> currentVote = voteRepository.findByStatus(VoteStatus.IN_PROGRESS);
+        Optional<Vote> currentVoteOpt = voteRepository.findByStatus(VoteStatus.IN_PROGRESS);
 
-        if (currentVote.isEmpty()) {
-            return ApiResponse.error(HttpStatus.NOT_FOUND.value(), "진행 중인 투표가 없습니다.", null);
+        // 진행 중인 투표가 없는 경우, 완료된 마지막 투표 결과 조회
+        if (currentVoteOpt.isEmpty()) {
+            Optional<Vote> lastCompletedVote = voteRepository.findTopByStatusOrderByEndDateDesc(VoteStatus.COMPLETED);
+            if (lastCompletedVote.isEmpty()) {
+                return ApiResponse.error(HttpStatus.NOT_FOUND.value(), "진행 중인 투표가 없습니다.", null);
+            }
+
+            Vote completedVote = lastCompletedVote.get();
+            VoteCreateDTO response = buildVoteResult(completedVote);
+            return ApiResponse.success("완료된 투표 결과 조회 성공", response);
         }
 
-        Vote vote = currentVote.get();
+        // 진행 중인 투표가 있는 경우
+        Vote currentVote = currentVoteOpt.get();
 
-        // 투표 정보를 DTO로 변환
-        VoteCreateDTO response = new VoteCreateDTO();
-        response.setId(vote.getId());
-        response.setTitle(vote.getTitle());
-        response.setStartDate(vote.getStartDate());
-        response.setEndDate(vote.getEndDate());
-        response.setVoteMode(vote.getVoteMode());
-        response.setVoteStatus(vote.getStatus());
+        // 자동으로 투표 종료 시간 체크 후 상태 업데이트
+        if (currentVote.getEndDate().before(new Timestamp(System.currentTimeMillis()))) {
+            currentVote.setStatus(VoteStatus.COMPLETED);
+            voteRepository.save(currentVote);
+            VoteCreateDTO response = buildVoteResult(currentVote);
+            return ApiResponse.success("투표가 종료되었으며 결과를 반환합니다.", response);
+        }
 
+        // 진행 중인 투표 정보 반환
+        VoteCreateDTO response = buildVoteResult(currentVote);
         return ApiResponse.success("진행 중인 투표 정보 조회 성공", response);
+    }
+
+    // 투표 결과를 DTO로 변환하는 메서드
+    private VoteCreateDTO buildVoteResult(Vote vote) {
+        List<VoteItem> voteItems = voteItemRepository.findByVoteId(vote.getId());
+
+        // 상위 3명 정렬
+        List<VoteItem> top3Items = voteItems.stream()
+                .sorted((v1, v2) -> Integer.compare(v2.getVoteCount(), v1.getVoteCount()))
+                .limit(3)
+                .toList();
+
+        // 전체 인원 및 투표 참여 인원 계산
+        int totalStudents = studentRepository.countByTeacherId(vote.getTeacher().getId());
+        int totalVotes = voteItems.stream().mapToInt(VoteItem::getVoteCount).sum();
+
+        // DTO로 변환
+        VoteCreateDTO voteResultDTO = new VoteCreateDTO();
+        voteResultDTO.setId(vote.getId());
+        voteResultDTO.setTitle(vote.getTitle());
+        voteResultDTO.setStartDate(vote.getStartDate());
+        voteResultDTO.setEndDate(vote.getEndDate());
+        voteResultDTO.setVoteMode(vote.getVoteMode());
+        voteResultDTO.setVoteStatus(vote.getStatus());
+        voteResultDTO.setTotalStudents(totalStudents);
+        voteResultDTO.setTotalVotes(totalVotes);
+
+        // 상위 3명의 학생 정보 추가
+        for (int i = 0; i < top3Items.size(); i++) {
+            VoteItem item = top3Items.get(i);
+            RankInfoDTO rankInfoDTO = new RankInfoDTO(i + 1, item.getVoteCount(), item.getStudent().getName());
+            voteResultDTO.getTopRanks().add(rankInfoDTO);
+        }
+
+        return voteResultDTO;
     }
 
     // ✅ 진행 중인 투표 종료 메서드
@@ -154,6 +200,57 @@ public class VoteService {
 
         return ApiResponse.success("진행 중인 투표가 성공적으로 종료되었습니다.");
     }
+
+    // 투표 항목 조회 (우리 반 친구들 목록)
+    public ApiResponse<List<VoteItemResponseDTO>> getCurrentVoteItems() {
+        // 진행 중인 투표 조회
+        Optional<Vote> currentVoteOpt = voteRepository.findByStatus(VoteStatus.IN_PROGRESS);
+
+        if (currentVoteOpt.isEmpty()) {
+            return ApiResponse.error(HttpStatus.NOT_FOUND.value(), "진행 중인 투표가 없습니다.", null);
+        }
+
+        Vote currentVote = currentVoteOpt.get();
+
+        // 투표 항목 조회
+        List<VoteItem> voteItems = voteItemRepository.findByVoteId(currentVote.getId());
+
+        if (voteItems.isEmpty()) {
+            return ApiResponse.error(HttpStatus.NOT_FOUND.value(), "투표 항목이 없습니다.", null);
+        }
+
+        // VoteItemResponseDTO로 변환
+        List<VoteItemResponseDTO> response = voteItems.stream().map(item -> new VoteItemResponseDTO(
+                item.getId(),
+                item.getStudent().getId(),
+                item.getStudent().getName(),
+                item.getStudent().getProfileImageUrl(),
+                item.getVoteCount()
+        )).toList();
+
+        return ApiResponse.success("투표 항목 조회 성공", response);
+    }
+
+
+    // 학생 투표 : 우리반 친구 선택해서 제출하면, 해당 학생의 투표 수 증가
+    @Transactional
+    public ApiResponse<String> castStudentVote(Long voteItemId) {
+        // 선택한 투표 항목 조회
+        VoteItem voteItem = voteItemRepository.findById(voteItemId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 투표 항목을 찾을 수 없습니다."));
+
+        // 투표 상태 확인 (진행 중인지)
+        if (voteItem.getVote().getStatus() != VoteStatus.IN_PROGRESS) {
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "투표가 종료되어 투표할 수 없습니다.", null);
+        }
+
+        // 투표 수 증가
+        voteItem.setVoteCount(voteItem.getVoteCount() + 1);
+        voteItemRepository.save(voteItem);
+
+        return ApiResponse.success("투표가 성공적으로 완료되었습니다.");
+    }
+
 
 }
 

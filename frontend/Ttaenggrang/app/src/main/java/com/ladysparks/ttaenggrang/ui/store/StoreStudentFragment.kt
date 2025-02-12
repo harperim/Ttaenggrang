@@ -32,47 +32,47 @@ class StoreStudentFragment : BaseFragment<FragmentStoreStudentBinding>(
     }
 
     private fun getStudentItemList() {
-        lifecycleScope.launch {
-            runCatching {
-                RetrofitUtil.storeService.getStudentItemList()
-            }.onSuccess {
-                // 확인 다시
-                Log.d("Success", "${it}")
-                val itemList = it.data ?: emptyList()
-                if (itemList.isNotEmpty()) {
-                    binding.textNullItemList.visibility = View.GONE
-                    binding.recyclerItemList.visibility = View.VISIBLE
-                } else {
-                    binding.textNullItemList.visibility = View.VISIBLE
-                    binding.recyclerItemList.visibility = View.GONE
-                }
-            }.onFailure { throwable ->
-                Log.e("API Error", "Failed to fetch itemList", throwable)
-
-            }
-        }
+//        lifecycleScope.launch {
+//            runCatching {
+//                RetrofitUtil.storeService.getStudentItemList()
+//            }.onSuccess {
+//                // 확인 다시
+//                Log.d("Success", "${it}")
+//                val itemList = it.data ?: emptyList()
+//                if (itemList.isNotEmpty()) {
+//                    binding.textNullItemList.visibility = View.GONE
+//                    binding.recyclerItemList.visibility = View.VISIBLE
+//                } else {
+//                    binding.textNullItemList.visibility = View.VISIBLE
+//                    binding.recyclerItemList.visibility = View.GONE
+//                }
+//            }.onFailure { throwable ->
+//                Log.e("API Error", "Failed to fetch itemList", throwable)
+//
+//            }
+//        }
     }
 
     private fun getStudentPurchaseHistory() {
-        lifecycleScope.launch {
-            runCatching {
-                RetrofitUtil.storeService.getStudentPurchaseHistory()
-            }.onSuccess {
-                Log.d("Success", "${it}")
-                val purchaseHistory = it.data ?: emptyList()
-
-                // 정확하게는 구매한 아이템 중에 구매 수량이 1 이상인 것이 있으면 아이템이 보이게 해야 한다
-                if (purchaseHistory.isNotEmpty()) {
-                    binding.textNullMyItem.visibility = View.GONE
-                    binding.recyclerMyItem.visibility = View.VISIBLE
-                } else {
-                    binding.textNullMyItem.visibility = View.VISIBLE
-                    binding.recyclerMyItem.visibility = View.GONE
-                }
-            }.onFailure { throwable ->
-                Log.e("API Error", "Failed to fetch myItem", throwable)
-            }
-        }
+//        lifecycleScope.launch {
+//            runCatching {
+//                RetrofitUtil.storeService.getStudentPurchaseHistory()
+//            }.onSuccess {
+//                Log.d("Success", "${it}")
+//                val purchaseHistory = it.data ?: emptyList()
+//
+//                // 정확하게는 구매한 아이템 중에 구매 수량이 1 이상인 것이 있으면 아이템이 보이게 해야 한다
+//                if (purchaseHistory.isNotEmpty()) {
+//                    binding.textNullMyItem.visibility = View.GONE
+//                    binding.recyclerMyItem.visibility = View.VISIBLE
+//                } else {
+//                    binding.textNullMyItem.visibility = View.VISIBLE
+//                    binding.recyclerMyItem.visibility = View.GONE
+//                }
+//            }.onFailure { throwable ->
+//                Log.e("API Error", "Failed to fetch myItem", throwable)
+//            }
+//        }
     }
 
     // 구매 성공 다이얼로그 생성 함수

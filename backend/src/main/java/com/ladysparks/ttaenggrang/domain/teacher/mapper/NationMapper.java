@@ -12,9 +12,14 @@ public interface NationMapper {
 
     NationMapper INSTANCE = Mappers.getMapper(NationMapper.class);
 
+    @Mapping(source = "teacher.id", target = "teacherId")
     NationDTO toDto(Nation nation);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(source = "teacherId", target = "teacher.id")
     Nation toEntity(NationDTO nationDTO);
+
+    @Mapping(source = "teacherId", target = "teacher.id")
+    Nation toEditedEntity(NationDTO nationDTO);
 
 }
