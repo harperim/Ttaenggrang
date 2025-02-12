@@ -24,7 +24,6 @@ public class NationService {
 
     private final NationMapper nationMapper;
     private final NationRepository nationRepository;
-    private final TeacherService teacherService;
     private final TeacherRepository teacherRepository;
 
     public ApiResponse<NationDTO> createNation(Long teacherId, NationDTO nationDTO) {
@@ -121,6 +120,10 @@ public class NationService {
     public Optional<NationDTO> findNationByTeacherId(Long teacherId) {
         return nationRepository.findByTeacher_Id(teacherId)
                 .map(nationMapper::toDto);
+    }
+
+    public int findSavingsGoalAmountByTeacherId(Long teacherId) {
+        return nationRepository.findSavingsGoalAmountByTeacher_Id(teacherId).orElse(0);
     }
 
 }

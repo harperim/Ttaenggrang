@@ -1,7 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.item.service;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
-import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransactionType;
+import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
 import com.ladysparks.ttaenggrang.domain.item.entity.Item;
 import com.ladysparks.ttaenggrang.domain.item.entity.ItemTransaction;

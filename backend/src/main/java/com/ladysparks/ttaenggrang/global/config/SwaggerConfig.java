@@ -72,7 +72,7 @@ public class SwaggerConfig {
     public GroupedOpenApi bankApi() {
         return GroupedOpenApi.builder()
                 .group("Bank")
-                .pathsToMatch("/bank-accounts/**", "/bank-transactions/**", "/savings-products/**", "/savings-subscriptions/**", "/savings-deposits/**")
+                .pathsToMatch("/bank-accounts/**", "/bank-transactions/**", "/savings-products/**", "/savings-subscriptions/**", "/savings-deposits/**", "/savings-payouts/**")
                 .build();
     }
 
