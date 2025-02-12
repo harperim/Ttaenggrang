@@ -1,0 +1,6 @@
+spring:
+  data:
+    redis:
+      host: localhost # local 환경
+      port: 6379
+      password: "ssafy"

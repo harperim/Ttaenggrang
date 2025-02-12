@@ -33,4 +33,8 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
                              @Param("startDate") Timestamp startDate,
                              @Param("endDate") Timestamp endDate);
 
+
+    // 사용자 ID와 주식 ID로 거래내역을 조회하는 메서드 정의
+    List<StockTransaction> findByStudentIdAndStockId(Long studentId, Long stockId);
+
 }

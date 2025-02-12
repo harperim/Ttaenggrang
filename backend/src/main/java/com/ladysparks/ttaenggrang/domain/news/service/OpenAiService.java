@@ -1,10 +1,11 @@
 package com.ladysparks.ttaenggrang.domain.news.service;
 
-import com.google.api.client.util.Value;
+
 import com.ladysparks.ttaenggrang.domain.news.dto.NewsDTO;
 import com.ladysparks.ttaenggrang.domain.news.entity.NewsType;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +16,19 @@ import org.springframework.http.HttpHeaders;
 
 @Service
 public class OpenAiService {
-    @Value("${openai.api.key}")
-    private String apiKey;
+
+    @Value("${news.api-key}")
+    private String apiKey;  // application.yml에서 API 키 값을 주입
 
     private static final String API_URL = "https://api.openai.com/v1/completions";
 
-    // 수정된 generateNews 메서드
     public NewsDTO generateNews(String prompt) {
-        // 1. RestTemplate 초기화 (API 호출을 위한 HTTP 클라이언트)
+        // RestTemplate 초기화 (API 호출을 위한 HTTP 클라이언트)
         RestTemplate restTemplate = new RestTemplate();
 
         // Spring의 HttpHeaders를 사용
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + apiKey);
+        headers.set("Authorization", "Bearer " + apiKey);  // apiKey를 실제 값으로 설정
         headers.set("Content-Type", "application/json");
 
         // 요청 본문 설정 (전달받은 프롬프트 사용)
@@ -42,7 +43,6 @@ public class OpenAiService {
         // 응답 본문 파싱
         String responseBody = response.getBody();
 
-        // JSON 파싱하여 실제 텍스트 부분을 추출
         try {
             JSONObject jsonResponse = new JSONObject(responseBody);
             JSONArray choices = jsonResponse.getJSONArray("choices");

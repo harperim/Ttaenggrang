@@ -40,9 +40,9 @@ public interface EtfApiSpecification {
 
     @Operation(summary = "ETF 등록", description = "💡 새로운 ETF를 등록합니다.")
     @PostMapping("/create")
-    public ResponseEntity<EtfDTO> createEtf(
-            @Parameter(description = "ETF 등록에 필요한 정보") @RequestBody EtfDTO etfDTO
-    );
+    public ResponseEntity<ApiResponse<EtfDTO>> addEtf(@RequestParam Long studentId,
+                                                      @RequestParam List<Long> stockIds);
+
 
 
 
