@@ -7,8 +7,8 @@ data class StockTransactionDto(
     @SerializedName("share_count") val shareCount: Int,
     @SerializedName("trans_date") val transDate: String,
     @SerializedName("purchase_prc") val purchasePrc: Int,
-    @SerializedName("total_amt") val totalAmt: Int,
-    @SerializedName("return_amt") val returnAmt: Int,
+    @SerializedName("total_amt") val totalAmt: Int, // 총 거래 금액
+    //@SerializedName("return_amt") val returnAmt: Int,
     val transType: TransType,
     @SerializedName("owned_qty") val ownedQty: Int,
     val studentId: Int,

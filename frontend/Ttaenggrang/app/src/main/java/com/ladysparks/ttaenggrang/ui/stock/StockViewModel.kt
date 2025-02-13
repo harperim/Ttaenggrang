@@ -56,113 +56,75 @@ class StockViewModel : ViewModel() {
     val expectedPayment: LiveData<Int> get() = _expectedPayment
 
     // 결제 후 내 자산 (임시 하드코딩된 자산 값 사용)
-    private val _myAsset = MutableLiveData<Int>(100000) // ✅ 현재 내 자산 (하드코딩된 값)
-    val myAsset: LiveData<Int> get() = _myAsset
+//    private val _myAsset = MutableLiveData<Int>(100000) // ✅ 현재 내 자산 (하드코딩된 값)
+//    val myAsset: LiveData<Int> get() = _myAsset
 
     // 거래 후 내 보유 현금 계산
-    private val _updatedMyAsset = MutableLiveData<Int>()
-    val updatedMyAsset: LiveData<Int> get() = _updatedMyAsset
+    private val _updatedBalance = MutableLiveData<Int>()
+    val updatedBalance: LiveData<Int> get() = _updatedBalance
 
     // 거래 후 내 보유 주식 수
     private val _updatedOwnedStock = MutableLiveData<Int>()
     val updatedOwnedStock: LiveData<Int> get() = _updatedOwnedStock
 
-    private val _balance = MutableLiveData<Int>() // ✅ 거래 가능 현금
+    // 거래 가능 현금
+    private val _balance = MutableLiveData<Int>()
     val balance: LiveData<Int> get() = _balance
 
 
     // 주식 데이터 조회
-    fun fetchAllStocks() {
-        viewModelScope.launch {
-            try {
-                val stocks = stockService.getAllStocks()
-                _stockList.postValue(stocks)
-
-                //  주식 목록을 불러온 후 첫 번째 주식을 선택
-                if (stocks.isNotEmpty()) {
-                    _selectedStock.postValue(stocks[0])
-                }
-
-            } catch (e: Exception) {
-                Log.e("StockViewModel", "주식 목록 불러오기 실패", e)
-            }
+    fun fetchAllStocks() = viewModelScope.launch {
+        runCatching {
+            stockService.getAllStocks()
+        }.onSuccess { stocks ->
+            _stockList.postValue(stocks)
+            if (stocks.isNotEmpty()) _selectedStock.postValue(stocks[0]) // 주식화면 로딩되면 바로 0번째 아이템을 노출
+        }.onFailure { e ->
+            Log.e("StockViewModel", "주식 목록 불러오기 실패", e)
         }
     }
 
     // 학생이 보유한 주식 목록 조회
-    fun fetchOwnedStocks(studentId: Int) {
-        viewModelScope.launch {
-            try {
-                val response = stockService.getStudentStocks(studentId) // ✅ 서비스 수정 반영
-                _ownedStocks.postValue(response) // ✅ LiveData 업데이트
-            } catch (e: Exception) {
-                Log.e("StockViewModel", "보유 주식 조회 실패", e)
-                _ownedStocks.postValue(emptyList())
-            }
+    fun fetchOwnedStocks(studentId: Int) = viewModelScope.launch {
+        runCatching {
+            stockService.getStudentStocks(studentId)
+        }.onSuccess { stocks ->
+            _ownedStocks.postValue(stocks)
+        }.onFailure { e ->
+            Log.e("StockViewModel", "보유 주식 조회 실패", e)
+            _ownedStocks.postValue(emptyList())
         }
     }
 
-    // 학생 ID 조회 후 주식 매도 요청
-    fun sellStock(stockId: Int, shareCount: Int, studentId: Int) {
-        viewModelScope.launch {
-            try {
-                // ✅ `sellStock()` 요청 실행
-                val sellResponse = stockService.sellStock(stockId, shareCount, studentId)
-
-                if (sellResponse.isSuccessful) {
-                    val transactionData = sellResponse.body()?.data
-                    val totalAmount = transactionData?.returnAmt ?: 0
-
-                    // ✅ 서버 요청 전에 amount 값이 올바른지 확인
-                    Log.d("StockViewModel", "매도 응답 returnAmt: $totalAmount")
-                    // ✅ 매도 성공 후 보유 주식 수 업데이트
-                    _sellTransaction.postValue(transactionData)
-
-                    Log.d("TAG", "sellStock: 매도요청 amount: $totalAmount")
-
-                    // ✅ 서버에 매도 내역 전송
-                    val bankTransaction = BankTransactionDto(
-                        type = TransactionType.STOCK_SELL,
-                        amount = totalAmount,
-                        description = "주식 매도: $stockId",
-                        receiverId = studentId)
-
-                    val transactionResponse = bankService.sendBankTransaction(bankTransaction)
-
-                    // ✅ 응답에서 새로운 balance 가져오기
-                    if (transactionResponse.isSuccessful) {
-                        _balance.postValue(transactionResponse.body()?.data?.amount ?: 0)
-                    }
-
-                    Log.d("StockViewModel", "매도 성공: ${transactionData?.shareCount}주")
-                } else {
-                    _errorMessage.postValue("매도 요청 실패 (HTTP ${sellResponse.code()})")
-                }
-            } catch (e: Exception) {
-                _errorMessage.postValue("네트워크 오류 발생: ${e.message}")
-                Log.e("StockViewModel", "네트워크 오류", e)
-            }
+    // 주식 매도
+    fun sellStock(stockId: Int, shareCount: Int, studentId: Int) = viewModelScope.launch {
+        runCatching {
+            stockService.sellStock(stockId, shareCount, studentId)
+        }.onSuccess { response ->
+            // 사용자가 입력한 값을 totalAmt에 넣음
+            val transactionData = response.body()?.data
+            // 데이터 동기화
+            _sellTransaction.postValue(transactionData)
+            fetchBalance()
+        }.onFailure { e ->
+            Log.e("StockViewModel", "매도 요청 실패", e)
+            _errorMessage.postValue("매도 요청 실패: ${e.message}")
         }
     }
-
 
     // 매수 기능
-    fun buyStock(stockId: Int, shareCount: Int, studentId: Int) {
-        viewModelScope.launch {
-            try {
-                val buyResponse = stockService.buyStock(stockId, shareCount, studentId)
-
-                if (buyResponse.isSuccessful) {
-                    val transactionData = buyResponse.body()?.data
-                    _buyTransaction.postValue(transactionData)
-                    Log.d("StockViewModel", "매수 성공: ${transactionData?.shareCount}주")
-                } else {
-                    _errorMessage.postValue("매수 요청 실패 (HTTP ${buyResponse.code()})")
-                }
-            } catch (e: Exception) {
-                _errorMessage.postValue("네트워크 오류 발생: ${e.message}")
-                Log.e("StockViewModel", "네트워크 오류", e)
-            }
+    fun buyStock(stockId: Int, shareCount: Int, studentId: Int) = viewModelScope.launch {
+        runCatching {
+            stockService.buyStock(stockId, shareCount, studentId)
+        }.onSuccess { response ->
+            val transactionData = response.body()?.data
+            //데이터 동기화
+            _buyTransaction.postValue(transactionData)
+            Log.d("StockViewModel", "매수 성공: ${response.body()?.data?.shareCount}주")
+            fetchBalance()
+        }.onFailure { e ->
+            Log.e("StockViewModel", "매수 요청 실패", e)
+            _errorMessage.postValue("매수 요청 실패: ${e.message}")
         }
     }
 
@@ -173,80 +135,58 @@ class StockViewModel : ViewModel() {
     }
 
     //주식장 열기(교사)
-    fun updateMarketStatus(openMarket: Boolean) {
-        Log.d("TAG", "updateMarketStatus: 1단계!!!!")
-        viewModelScope.launch {
-            try {
-                val response = stockService.setMarketStatus(openMarket) // API 호출
-                if (response.isSuccessful) {
-                    Log.d("TAG", "updateMarketStatus: 성공!!!!")
-                    _isMarketActive.value = response.body()?.data // 응답 값 반영
-                } else {
-                    Log.d("TAG", "updateMarketStatus: 실패!!!!")
-                    _isMarketActive.value = false // 실패 시 기본값 설정
-                }
-            } catch (e: Exception) {
-                Log.d("TAG", "updateMarketStatus: 에러!!!!")
-                _isMarketActive.value = false // 오류 발생 시 기본값 설정
-            }
+    fun updateMarketStatus(openMarket: Boolean) = viewModelScope.launch {
+        runCatching {
+            stockService.setMarketStatus(openMarket)
+        }.onSuccess { response ->
+            _isMarketActive.postValue(response.body()?.data ?: false)
+        }.onFailure {
+            _isMarketActive.postValue(false)
         }
     }
 
     // 주식장 열림 확인(학생). 변경사항이 있을때만 ui 업데이트
-    fun fetchMarketStatus() {
-        viewModelScope.launch {
-            try {
-                val response = stockService.getMarketStatus()
-                if (response.isSuccessful) {
-                    val newStatus = response.body()?.data ?: false
-                    if (_isMarketActive.value != newStatus) {
-                        _isMarketActive.postValue(newStatus)
-                    }
-                } else {
-                    _isMarketActive.postValue(false)
-                }
-            } catch (e: Exception) {
-                _isMarketActive.postValue(false)
+    fun fetchMarketStatus() = viewModelScope.launch {
+        runCatching {
+            stockService.getMarketStatus()
+        }.onSuccess { response ->
+            val newStatus = response.body()?.data ?: false
+            if (_isMarketActive.value != newStatus) {
+                _isMarketActive.postValue(newStatus)
             }
+        }.onFailure {
+            _isMarketActive.postValue(false)
         }
     }
 
+    // confirmDialog 에서 계산을 위한 뷰모델
     fun updateTradeAmount(amount: Int, stockPrice: Int, ownedStock: Int, transactionType: TransType) {
         _tradeAmount.postValue(amount)
 
-        // ✅ 예상 결제 금액 계산
         val calculatedPayment = stockPrice * amount
         _expectedPayment.postValue(calculatedPayment)
 
-        // ✅ 매도 후 보유 현금 증가, 매수 후 보유 현금 감소
-        _updatedMyAsset.postValue(if (transactionType == TransType.SELL) {
-            (_myAsset.value ?: 0) + calculatedPayment
-        } else {
-            (_myAsset.value ?: 0) - calculatedPayment
-        })
+        _updatedBalance.postValue(
+            if (transactionType == TransType.SELL) (_balance.value ?: 0) + calculatedPayment
+            else (_balance.value ?: 0) - calculatedPayment
+        )
 
-        // ✅ 매도 후 보유 주식 감소, 매수 후 보유 주식 증가
-        _updatedOwnedStock.postValue(if (transactionType == TransType.SELL) {
-            ownedStock - amount
-        } else {
-            ownedStock + amount
-        })
+        _updatedOwnedStock.postValue(
+            if (transactionType == TransType.SELL) ownedStock - amount
+            else ownedStock + amount
+        )
     }
 
-    // ✅ 서버에서 거래 가능 현금 가져오기
-    fun fetchBalance() {
-        viewModelScope.launch {
-            try {
-                val response = bankService.getBankAccount()
-                Log.d("TAG", "fetchBalance: 뱅크!!!!!!${response.body()?.data}")
-                if (response.isSuccessful) {
-                    _balance.postValue(response.body()?.data?.balance ?: 0) // ✅ balance 값만 저장
-                } else {
-                    _balance.postValue(0) // ✅ 실패 시 0으로 설정
-                }
-            } catch (e: Exception) {
-                _balance.postValue(0) // ✅ 오류 발생 시 0으로 설정
-            }
+    // 주식 화면에 거래가능 현금 표시
+    fun fetchBalance() = viewModelScope.launch {
+        runCatching {
+            bankService.getBankAccount()
+        }.onSuccess { response ->
+            Log.d("StockViewModel", "fetchBalance: ${response.body()?.data?.balance}")
+            _balance.postValue(response.body()?.data?.balance ?: 0)
+        }.onFailure { e ->
+            Log.e("StockViewModel", "거래 가능 현금 조회 실패", e)
+            _balance.postValue(0)
         }
     }
 }

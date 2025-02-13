@@ -178,19 +178,19 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
             }
         }
 
-
+        // 매수 버튼 구현
         dialogBinding.btnBuy.setOnClickListener {
             val inputText = dialogBinding.textDialogStockTrade.text.toString().trim()
             val buyCount = inputText.toIntOrNull() ?: 0
-
             val totalCost = stock.pricePer * buyCount // ✅ 총 매수 예상 비용
-            val myAsset = viewModel.myAsset.value ?: 0 // ✅ 현재 보유 현금
+            val balance = viewModel.balance.value ?: 0 // ✅ 현재 보유 현금
 
+            // 예외처리
             when {
                 buyCount <= 0 -> {
                     Toast.makeText(requireContext(), "올바른 수량을 입력하세요.", Toast.LENGTH_SHORT).show()
                 }
-                totalCost > myAsset -> { // ✅ 보유 현금보다 많은 금액을 매수하려 하면 예외 처리
+                totalCost > balance -> { // ✅ 보유 현금보다 많은 금액을 매수하려 하면 예외 처리
                     Toast.makeText(requireContext(), "보유 현금이 부족합니다.", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
@@ -215,7 +215,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
-        // ✅ 다이얼로그 타이틀 설정 (매도 or 매수)
+        // 다이얼로그 타이틀 설정 (매도 or 매수)
         confirmDialogBinding.textDialogTitle.text = if (transactionType == TransType.SELL) "매도 하시겠습니까?" else "매수 하시겠습니까?"
 
         // 예상 결제 금액
@@ -223,8 +223,8 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
             confirmDialogBinding.textContent1.text = "$amount" // ✅ 예상 결제 금액 표시
         }
 
-        // ✅ 거래 후 보유 현금 표시
-        viewModel.updatedMyAsset.observe(confirmDialogBinding.root.context as LifecycleOwner) { updatedAsset ->
+        // 거래 후 보유 현금 표시
+        viewModel.updatedBalance.observe(confirmDialogBinding.root.context as LifecycleOwner) { updatedAsset ->
             confirmDialogBinding.textContent2.text = "$updatedAsset"
         }
 
