@@ -309,54 +309,100 @@ public class EtfService {//s
         // DTO 변환 후 반환
         return EtfTransactionDTO.fromEntity(transaction, updatedOwnedQty);
     }
-
-//    //가격 변동
+////가격 변동
 //    @Transactional
-//    public List<ChangeResponseDTO> updateETFPricesForMarketOpening() {
-//        List<Etf> etfs = etfRepository.findAll();
-//        List<ChangeResponseDTO> etfDTOList = new ArrayList<>();
+//    public List<ChangeResponseDTO> updateEtfPricesForMarketOpening() {
+//        List<Stock> stocks = stockRepository.findAll();
+//        List<ChangeResponseDTO> stockDTOList = new ArrayList<>();
 //
-//        for (Etf etf : etfs) {
-//            double oldPrice = etf.getPrice_per();
+//        for (Stock stock : stocks) {
+//            double oldPrice = stock.getPrice_per();
 //            try {
-//                updateETFPrice(etf);  // ETF 가격 업데이트
+//                // ETF 가격 변동 처리
+//                updateEtfPrice(stock); // ETF 가격 업데이트
 //
-//                double newPrice = etf.getPrice_per();
-//                double changeRate = calculateChangeRate(oldPrice, newPrice);
+//                double newPrice = stock.getPrice_per(); // 업데이트된 가격
+//                double changeRate = calculateChangeRate(oldPrice, newPrice); // 변동률 계산
 //
-//                etfDTOList.add(ChangeResponseDTO.builder()
-//                        .id(etf.getId())
-//                        .name(etf.getName())
+//                stockDTOList.add(ChangeResponseDTO.builder()
+//                        .id(stock.getId())
+//                        .name(stock.getName())
 //                        .price_per((int) newPrice)
 //                        .changeRate((int) changeRate)
-//                        .isMarketActive(true)
-//                        .description(etf.getDescription())
+//                        .total_qty(stock.getTotal_qty())
+//                        .remain_qty(stock.getRemain_qty())
+//                        .description(stock.getDescription())
 //                        .build());
-//
 //            } catch (Exception e) {
 //                System.err.println("ETF 가격 업데이트 중 오류 발생: " + e.getMessage());
+//                throw new IllegalArgumentException("ETF 가격 업데이트 중 오류 발생: " + e.getMessage(), e);
 //            }
 //        }
-//        return etfDTOList;
-//    }
-////
-////    // 개별 ETF 가격 업데이트 (ETF는 기초 지수를 따라 움직인다)
-////    private EtfDTO updateETFPrice(Etf etf) {
-////        double indexChangeRate = marketIndexService.getIndexChangeRate(etf.getIndexId()); // 지수 변동률
-////        double managementFee = 0.001;  // 운용 비용 (예: 0.1%)
-////
-////        double newPrice = etf.getPrice() * (1 + indexChangeRate - managementFee);
-////        etf.setPrice((int) Math.round(newPrice));
-////        etf.setPriceChangeTime(LocalDateTime.now());
-////
-////        etfRepository.save(etf);
-////    }
 //
-//    // 변동률 계산
-//    public double calculateChangeRate(double oldPrice, double newPrice) {
-//        if (oldPrice == 0) return 0;
-//        return (newPrice - oldPrice) / oldPrice * 100;
+//        return stockDTOList;
 //    }
+//
+//    // ETF 가격 업데이트 로직
+//    private StockDTO updateEtfPrice(Stock stock) {
+//        LocalDate yesterday = LocalDate.now().minusDays(1);
+//        int dailyBuyVolume = stockTransactionRepository.getBuyVolumeForStockYesterday(stock.getId(), TransType.BUY, yesterday);
+//        int dailySellVolume = stockTransactionRepository.getSellVolumeForStockYesterday(stock.getId(), TransType.SELL, yesterday);
+//
+//        double oldPrice = stock.getPrice_per();
+//
+//        if (dailyBuyVolume == 0 && dailySellVolume == 0) {
+//            System.out.println("거래량 없음, 가격 유지: " + stock.getName());
+//            stock.setChangeRate(0);
+//        } else {
+//            // 매수량, 매도량에 따른 새로운 가격 계산 (ETF 비중 고려)
+//            double newPrice = calculateEtfPriceChange(stock, dailyBuyVolume, dailySellVolume);
+//            stock.setPrice_per((int) Math.round(newPrice));
+//            stock.setPriceChangeTime(LocalDateTime.now());
+//            System.out.println("ETF 가격 변동 적용: " + stock.getName());
+//
+//            // 변동률 계산 및 적용
+//            double changeRate = calculateChangeRate(oldPrice, newPrice);
+//            stock.setChangeRate((int) (Math.round(changeRate * 100) / 100.0));
+//        }
+//
+//        StockHistory history = new StockHistory();
+//        history.setStock(stock);
+//        history.setPrice(stock.getPrice_per());
+//        history.setBuyVolume(dailyBuyVolume);
+//        history.setSellVolume(dailySellVolume);
+//        history.setDate(Timestamp.valueOf(LocalDateTime.now().minusDays(1)));
+//        stockHistoryRepository.save(history);
+//
+//        stockRepository.save(stock);
+//        System.out.println("ETF 가격 업데이트 완료: " + stock.getName());
+//
+//        return StockDTO.fromEntity(stock);
+//    }
+//
+//
+//    // ETF 가격 변동 계산: 주식의 가격 변동과 ETF의 비중을 반영하여 새로운 ETF 가격 계산
+//    public double calculateEtfPriceChange(Stock stock, int dailyBuyVolume, int dailySellVolume) {
+//        double currentPrice = stock.getPrice_per();
+//        double weight = stock.getWeight().doubleValue();
+//
+//        if (dailyBuyVolume == 0 && dailySellVolume == 0) {
+//            return currentPrice; // 거래량이 없으면 가격 유지
+//        }
+//
+//        try {
+//            // 매수량, 매도량에 따른 가격 변동률 계산
+//            double changeRate = (double) (dailyBuyVolume - dailySellVolume) / (dailyBuyVolume + dailySellVolume);
+//            changeRate = Math.max(-0.10, Math.min(0.10, changeRate)); // ±10%로 제한
+//            double newPrice = currentPrice * (1 + changeRate);
+//
+//            // ETF의 주식 가격 변동을 반영하여 ETF 가격 계산
+//            double weightedPriceChange = newPrice * weight;
+//            return weightedPriceChange;
+//        } catch (ArithmeticException e) {
+//            throw new IllegalArgumentException("매수량과 매도량의 합이 0입니다. 가격 계산이 불가능합니다.");
+//        }
+//    }
+//
 
 
 

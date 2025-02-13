@@ -35,7 +35,7 @@ public class StockDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime closeTime;
 
-    private Boolean isMarketActive;  // 시장 활성화 여부
+//    private Boolean isMarketActive;  // 시장 활성화 여부
 
 
     private LocalDateTime priceChangeTime;  // 가격 변동 시간
@@ -67,7 +67,7 @@ public class StockDTO {
                 .created_at(stockDto.getCreated_at())
                 .updated_at(stockDto.getUpdated_at())
                 .changeRate(stockDto.getChangeRate())
-                .isMarketActive(stockDto.getIsMarketActive())  // 주식장 활성화 여부
+//                .isMarketActive(stockDto.getIsMarketActive())  // 주식장 활성화 여부
                 .priceChangeTime(stockDto.getPriceChangeTime())  // 가격 변동 시
                 .build();
     }
@@ -84,7 +84,7 @@ public class StockDTO {
                 .created_at(stock.getCreated_at())
                 .updated_at(stock.getUpdated_at())
                 .changeRate(stock.getChangeRate())
-                .isMarketActive(stock.getIsMarketActive())  // 주식장 활성화 여부
+//                .isMarketActive(stock.getIsMarketActive())  // 주식장 활성화 여부
                 .priceChangeTime(stock.getPriceChangeTime());  // 가격 변동 시
 
         // 카테고리 정보가 있으면 추가
