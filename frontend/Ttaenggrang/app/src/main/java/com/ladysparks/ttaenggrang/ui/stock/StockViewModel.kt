@@ -128,7 +128,6 @@ class StockViewModel : ViewModel() {
         }
     }
 
-
     // ✅ 특정 주식 선택 (리사이클러뷰에서 클릭 시 호출됨)
     fun selectStock(stock: StockDto) {
         _selectedStock.value = stock
