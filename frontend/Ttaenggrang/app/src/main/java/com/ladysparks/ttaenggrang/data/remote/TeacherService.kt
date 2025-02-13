@@ -6,6 +6,7 @@ import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.dto.JobDto
 import com.ladysparks.ttaenggrang.data.model.response.EconomySummaryResponse
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
+import com.ladysparks.ttaenggrang.data.model.response.WeekAvgSummaryResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -14,7 +15,6 @@ import retrofit2.http.Path
 interface TeacherService {
 
     // init
-
     @POST("teachers/single-create")
     suspend fun singleCreate(@Body singleStudent: StudentSingleCreateRequest): ApiResponse<Any>
 
@@ -30,6 +30,10 @@ interface TeacherService {
     // Home 정보 조회
     @GET("teachers/{teacherId}/dashboard")
     suspend fun getEconomySummary(): ApiResponse<EconomySummaryResponse>
+
+    @GET("teachers/{teacherId}/dashboard/daily-average-income-expense")
+    suspend fun getWeekAvgSummary(): ApiResponse<List<WeekAvgSummaryResponse>>
+
 
     /***
      * 직업 정보 관련
