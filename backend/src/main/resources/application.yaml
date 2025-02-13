@@ -17,9 +17,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
-
-      ddl-auto=update:properties:
+    properties:
       hibernate:
+        show_sql: true
         format_sql: false
         dialect: org.hibernate.dialect.MySQL8Dialect
         jdbc:

@@ -22,8 +22,7 @@ public class TaxController implements TaxApiSpecification {
     // 세금 항목 [등록]
     @PostMapping
     public ResponseEntity<ApiResponse<TaxDTO>> taxAdd(@RequestBody @Valid TaxDTO taxDTO) {
-        TaxDTO savedTaxDTO = taxService.addTax(taxDTO);
-        ApiResponse<TaxDTO> response = ApiResponse.created(savedTaxDTO);
+        ApiResponse<TaxDTO> response = taxService.addTax(taxDTO);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
