@@ -31,6 +31,7 @@ import com.ladysparks.ttaenggrang.databinding.DialogStudentRegistrationBinding
 import com.ladysparks.ttaenggrang.databinding.DialogVoteParticipationBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStudentsBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
+import com.ladysparks.ttaenggrang.ui.component.IncentiveDialogFragment
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
 import kotlinx.coroutines.launch
@@ -206,33 +207,14 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
     }
 
     private fun showIncentiveDialog() {
-        val dialogBinding = DialogIncentiveBinding.inflate(layoutInflater)
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogBinding.root)
-            .create()
+        val studentMap = studentListCache.associateBy({ it.name ?: "이름 없음" }, { it.id ?: -1 }) // 학생 데이터
+        val dialog = IncentiveDialogFragment.newInstance(studentMap)
 
-        // 1단계: 학생이름과 ID 를 매핑하는 Map 생성
-        val studentMap = studentListCache.associateBy({ it.name ?: "이름 없음" }, { it.id })
-
-        // 2단계 : 스피너에 표시할 학생 이름 리스트만 따로 생성
-        val studentNames = studentMap.keys.toList()
-
-        //val jobList = studentListCache.map { it }
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, studentNames)
-        dialogBinding.studentSpinner.adapter = adapter
-        dialogBinding.btDialogCancel.setOnClickListener {
-            dialog.dismiss() // 취소 버튼 클릭 시 다이얼로그 닫기
-        }
-        dialogBinding.btnDialogConfirm.setOnClickListener {
-            val selectedStudent = dialogBinding.studentSpinner.selectedItem.toString()
-            val price = dialogBinding.editBonus.toString().toIntOrNull()
-            studentsViewModel.processStudentBonus(studentId = studentMap[selectedStudent]!!, incentive = price ?: 0)
-
-            //선택된 학생에 대한 인센티브 지급 API요청
-            dialog.dismiss()
+        dialog.setOnConfirmListener { studentId, price ->
+            studentsViewModel.processStudentBonus(studentId, price) // ✅ API 호출
         }
 
-        dialog.show() // 다이얼로그 띄우기
+        dialog.show(parentFragmentManager, "IncentiveDialog")
     }
 
 
