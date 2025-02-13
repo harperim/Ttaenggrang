@@ -33,7 +33,7 @@ public class JobService {
                 .orElseThrow(() -> new IllegalArgumentException("교사를 찾을 수 없습니다."));
 
         // 1. 직업 중복 체크
-        Optional<Job> existingJob = jobRespository.findByJobName(jobCreateDTO.getJobName());
+        Optional<Job> existingJob = jobRespository.findByJobNameAndTeacherId(jobCreateDTO.getJobName(), teacherId);
         if (existingJob.isPresent()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "직업 이름이 이미 존재합니다.", null);
         }
