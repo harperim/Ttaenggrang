@@ -10,7 +10,6 @@ import com.ladysparks.ttaenggrang.domain.item.entity.SellerType;
 import com.ladysparks.ttaenggrang.domain.item.mapper.ItemTransactionMapper;
 import com.ladysparks.ttaenggrang.domain.item.repository.ItemRepository;
 import com.ladysparks.ttaenggrang.domain.item.repository.ItemTransactionRepository;
-import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import jakarta.persistence.EntityNotFoundException;
@@ -90,7 +89,7 @@ public class ItemTransactionService {
     }
 
     // 모든 판매 내역 조회
-    public List<ItemTransactionDTO> findItemTransactionsBySeller() {
+    public List<ItemTransactionDTO> findItemTransactionListBySeller() {
         Optional<Long> currentTeacherId = teacherService.getOptionalCurrentTeacherId();
         Optional<Long> currentStudentId = studentService.getOptionalCurrentStudentId();
 

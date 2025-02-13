@@ -1,6 +1,5 @@
 package com.ladysparks.ttaenggrang.domain.item.controller;
 
-import com.ladysparks.ttaenggrang.domain.item.entity.ItemTransaction;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.global.docs.ItemTransactionApiSpecification;
 import com.ladysparks.ttaenggrang.domain.item.dto.ItemTransactionDTO;
@@ -37,7 +36,7 @@ public class ItemTransactionController implements ItemTransactionApiSpecificatio
     // 아이템 판매 내역 [전체 조회]
     @GetMapping("/sale")
     public ResponseEntity<ApiResponse<List<ItemTransactionDTO>>> itemTransactionBySellerList() {
-        List<ItemTransactionDTO> itemTransactionDTOList = itemTransactionService.findItemTransactionsBySeller();
+        List<ItemTransactionDTO> itemTransactionDTOList = itemTransactionService.findItemTransactionListBySeller();
         return ResponseEntity.ok(ApiResponse.success(itemTransactionDTOList));
     }
 
