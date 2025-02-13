@@ -1,7 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.student.repository;
 
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
-import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentManagementDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -37,5 +37,14 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("SELECT s.job.id FROM Student s WHERE s.id = :studentId")
     Long findJobIdById(Long studentId);
+
+    @Query("SELECT new com.ladysparks.ttaenggrang.domain.teacher.dto.StudentManagementDTO( " +
+            "s.id, s.name, s.username, " +
+            "COALESCE(j.jobName, ''), COALESCE(j.baseSalary, 0), COALESCE(b.balance, 0)) " +
+            "FROM Student s " +
+            "LEFT JOIN s.job j " +
+            "LEFT JOIN s.bankAccount b " +
+            "WHERE s.teacher.id = :teacherId")
+    List<StudentManagementDTO> getStudentManagementListByTeacherId(@Param("teacherId") Long teacherId);
 
 }

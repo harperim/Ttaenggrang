@@ -7,10 +7,7 @@ import com.ladysparks.ttaenggrang.domain.bank.service.BankAccountService;
 import com.ladysparks.ttaenggrang.domain.student.dto.*;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.JobInfoDTO;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.MultipleStudentCreateDTO;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.NationDTO;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.SingleStudentCreateDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.*;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.JobRespository;
@@ -613,6 +610,10 @@ public class StudentService {
 
     public Long findJobIdByStudentId(Long studentId) {
         return studentRepository.findJobIdById(studentId);
+    }
+
+    public List<StudentManagementDTO> getStudentManagementListByTeacherId(Long teacherId) {
+        return studentRepository.getStudentManagementListByTeacherId(teacherId);
     }
 
 }
