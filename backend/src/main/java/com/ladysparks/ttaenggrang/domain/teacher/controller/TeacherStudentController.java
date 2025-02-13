@@ -33,7 +33,7 @@ public class TeacherStudentController implements TeacherStudentApiSpecificaion {
     public ResponseEntity<ApiResponse<List<StudentResponseDTO>>> createStudents(
             @RequestParam("baseId") String baseId,
             @RequestParam("studentCount") int studentCount,
-            @RequestPart("file")MultipartFile file) {  // 🔥 파일과 함께 데이터를 받으려면 ModelAttribute 사용
+            @RequestPart(required = false) MultipartFile file) {  // 🔥 파일과 함께 데이터를 받으려면 ModelAttribute 사용
 
         // ✅ 현재 로그인한 교사의 ID 가져오기
         Long teacherId = getTeacherIdFromSecurityContext();

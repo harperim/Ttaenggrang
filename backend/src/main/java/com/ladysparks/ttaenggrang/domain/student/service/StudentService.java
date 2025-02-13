@@ -194,7 +194,7 @@ public class StudentService {
             BankAccount bankAccount = bankAccountMapper.toUpdatedEntity(bankAccountService.addBankAccount(bankAccountDTO)); // DB에 먼저 저장
 
             // 🔥 파일에서 이름이 있는 경우, 해당 이름 사용
-            String studentName = (i <= namesFromFile.size()) ? namesFromFile.get(i - 1) : null;
+            String studentName = (i <= namesFromFile.size()) ? namesFromFile.get(i - 1) : "학생" + i;
 
             // 4. 기본 직업 "시민"으로 설정
             Job defaultJob = jobRespository.findByJobName("시민")
