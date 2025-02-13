@@ -1,10 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.stock.controller;
 
-import com.ladysparks.ttaenggrang.domain.stock.dto.OpenResponseDTO;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StockTransactionDTO;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StudentStockDTO;
+import com.ladysparks.ttaenggrang.domain.stock.dto.*;
 import com.ladysparks.ttaenggrang.global.docs.StockApiSpecification;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.service.StockService;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +67,7 @@ public class StockController implements StockApiSpecification {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(dto));
     }
 
-    //주식 매도
+    // 주식 매도
     @PostMapping("/{stockId}/sell")
     public ResponseEntity<ApiResponse<StockTransactionDTO>> sellStock(@PathVariable("stockId") Long stockId,
                                                                      @RequestParam("share_count") int shareCount,
@@ -81,6 +78,8 @@ public class StockController implements StockApiSpecification {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(dto));
     }
+
+
     //학생 보유 주식 조회
     @GetMapping("/student/{studentId}")
     public ResponseEntity<List<StudentStockDTO>> getStudentStocks(@PathVariable Long studentId) {
@@ -89,56 +88,32 @@ public class StockController implements StockApiSpecification {
     }
 
 
-
-    // 주식장 활성화 / 비활성화
-    @PostMapping("/manage")
-    public ResponseEntity<Map<String, Boolean>> manageStockMarket(@RequestParam boolean openMarket) {
-        // 주식 시장 관리 서비스 호출
-        boolean marketStatus = stockService.manageMarket(openMarket);
-
-        // 응답 데이터 준비
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("isMarketActive", marketStatus);
-
-        // 응답 반환
-        return ResponseEntity.ok(response);
+    // 주식시장 활성화 여부 조회 (선생님이 설정한 값)
+    @GetMapping("/isMarketActive")
+    public boolean isMarketActive() {
+        return stockService.isMarketActive();
     }
 
-    // 주식 활성화/ 비활성화 버튼 조회
-    @GetMapping("/status")
-    public ResponseEntity<ApiResponse<Boolean>> checkMarketStatus() {
-        boolean isMarketOpen = stockService.isMarketOpen();
-        return ResponseEntity.ok(ApiResponse.success(isMarketOpen)); // true이면 열림, false이면 닫힘
+    // 주식시장 활성화/비활성화 설정 (선생님이 버튼으로 변경 가능)
+    @PostMapping("/setMarketActive")
+    public void setMarketActive(@RequestParam boolean isActive) {
+        stockService.setMarketActive(isActive);
+    }
+
+    // 현재 주식 거래 가능 여부 조회 (시장 활성화 + 9~17시)
+    @GetMapping("/isTradingAllowed")
+    public boolean isTradingAllowed() {
+        return stockService.isTradingAllowed();
+    }
+
+    // 주식 가격 및 변동률 조회
+    @GetMapping("/prices")
+    public ResponseEntity<List<ChangeResponseDTO>> getStockPrices() {
+        List<ChangeResponseDTO> stockPrices = stockService.updateStockPricesForMarketOpening();
+        return ResponseEntity.ok(stockPrices);
     }
 
 
-    // 주식 개장, 폐장 시장 변경
-    @PutMapping("/update-market-time")
-    public ResponseEntity<ApiResponse<StockDTO>> updateMarketTimeForAllStocks(@RequestBody StockDTO stockDTO) {
-        LocalTime newOpenTime = stockDTO.getOpenTime();
-        LocalTime newCloseTime = stockDTO.getCloseTime();
-
-        // 시간 값이 제대로 파싱되었는지 확인
-        if (newOpenTime == null || newCloseTime == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        stockService.updateMarketTimeForAllStocks(newOpenTime, newCloseTime);
-
-        // 성공적으로 변경된 StockDTO 객체 반환
-        stockDTO.setOpenTime(newOpenTime);
-        stockDTO.setCloseTime(newCloseTime);
-        return ResponseEntity.ok(ApiResponse.success(stockDTO));
-    }
-    // 주식의 폐장 시간만 변경하는 메서드
-//    @PutMapping("/{stockId}/update-close-time")
-//    public ResponseEntity<String> updateCloseTime(
-//            @PathVariable Long stockId,
-//            @RequestParam("closeTime") @DateTimeFormat(pattern = "HH:mm") LocalTime newCloseTime) {
-//
-//        stockService.updateCloseTime(stockId, newCloseTime);
-//        return ResponseEntity.ok(stockId + "의 폐장 시간이 " + newCloseTime + "로 변경되었습니다.");
-//    }
 }
 
 
