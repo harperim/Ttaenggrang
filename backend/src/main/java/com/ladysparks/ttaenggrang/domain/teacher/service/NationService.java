@@ -74,10 +74,10 @@ public class NationService {
         NationDTO nationDTO = findNationByTeacherId(teacherId)
                 .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
 
-        Nation nation = nationMapper.toEntity(nationDTO);
-        NationDTO responseDTO = nationMapper.toDto(nation);
+//        Nation nation = nationMapper.toEntity(nationDTO);
+//        NationDTO responseDTO = nationMapper.toDto(nation);
 
-        return ApiResponse.success("국가 정보 조회 성공", responseDTO);
+        return ApiResponse.success("국가 정보 조회 성공", nationDTO);
     }
 
     @PersistenceContext
