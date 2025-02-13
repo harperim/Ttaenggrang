@@ -194,7 +194,7 @@ public class StudentService {
             BankAccount bankAccount = bankAccountMapper.toUpdatedEntity(bankAccountService.addBankAccount(bankAccountDTO)); // DB에 먼저 저장
 
             // 🔥 파일에서 이름이 있는 경우, 해당 이름 사용
-            String studentName = (i <= namesFromFile.size()) ? namesFromFile.get(i - 1) : null;
+            String studentName = (i <= namesFromFile.size()) ? namesFromFile.get(i - 1) : "학생" + i;
 
             // 4. 기본 직업 "시민"으로 설정
             Job defaultJob = jobRespository.findByJobName("시민")
@@ -375,12 +375,12 @@ public class StudentService {
         return ApiResponse.success("직업을 가진 학생 목록 조회 성공", responseDTOs);
     }
 
-    // ✅ 교사 ID로 우리반 학생 전체 조회
+    // ✅ 교사 ID로 우리 반 학생 전체 조회
     public ApiResponse<List<StudentResponseDTO>> getMyClassStudents(Long teacherId) {
         List<Student> students = studentRepository.findAllByTeacherId(teacherId);
 
         if (students.isEmpty()) {
-            return ApiResponse.error(404, "우리반 학생이 없습니다.", null);
+            return ApiResponse.error(404, "우리 반 학생이 없습니다.", null);
         }
 
         List<StudentResponseDTO> responseDTOs = students.stream()
@@ -411,10 +411,10 @@ public class StudentService {
                 })
                 .collect(Collectors.toList());
 
-        return ApiResponse.success("우리반 학생 목록 조회 성공", responseDTOs);
+        return ApiResponse.success("우리 반 학생 목록 조회 성공", responseDTOs);
     }
 
-    // ✅ 교사 ID와 학생 ID로 우리반 학생 상세 조회
+    // ✅ 교사 ID와 학생 ID로 우리 반 학생 상세 조회
     public ApiResponse<StudentResponseDTO> getStudentById(Long teacherId, Long studentId) {
 
         // 1️⃣ 학생 조회 (해당 교사의 반에 속한 학생인지 확인)
@@ -506,12 +506,12 @@ public class StudentService {
         return studentRepository.findBankAccountIdById(studentId);
     }
 
-    // ✅ 교사 ID로 우리반 학생 전체 조회
+    // ✅ 교사 ID로 우리 반 학생 전체 조회
     public List<StudentResponseDTO> findAllByTeacherId(Long teacherId) {
         List<Student> students = studentRepository.findAllByTeacherId(teacherId);
 
         if (students.isEmpty()) {
-            throw new IllegalArgumentException("우리반 학생이 없습니다.");
+            throw new IllegalArgumentException("우리 반 학생이 없습니다.");
         }
 
         List<StudentResponseDTO> responseDTOs = students.stream()

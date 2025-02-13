@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class JobClassDTO {  // 우리반 직업 정보
+public class JobClassDTO {  // 우리 반 직업 정보
     private Long id;
     private String jobName;
     private String jobDescription;

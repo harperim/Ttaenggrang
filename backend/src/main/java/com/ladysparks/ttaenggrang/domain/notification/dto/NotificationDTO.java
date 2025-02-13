@@ -1,8 +1,8 @@
 package com.ladysparks.ttaenggrang.domain.notification.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.ladysparks.ttaenggrang.domain.notification.entity.NotificationStatus;
-import com.ladysparks.ttaenggrang.domain.notification.entity.NotificationType;
+import com.ladysparks.ttaenggrang.domain.notification.entity.Notification.NotificationStatus;
+import com.ladysparks.ttaenggrang.domain.notification.entity.Notification.NotificationType;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

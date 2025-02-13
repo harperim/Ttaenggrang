@@ -1,14 +1,12 @@
-package com.ladysparks.ttaenggrang.global.docs;
+package com.ladysparks.ttaenggrang.global.docs.bank;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankAccountDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "Bank-Account", description = "은행 계좌 관련 API")
+@Tag(name = "[학생] 은행 계좌", description = "은행 계좌 관련 API")
 public interface BankAccountApiSpecification {
 
     /*
@@ -16,8 +14,10 @@ public interface BankAccountApiSpecification {
     ResponseEntity<ApiResponse<BankAccountDTO>> BankAccountAdd(@RequestBody BankAccountDTO bankAccountDto);
     */
 
-    @Operation(summary = "은행 계좌 [조회]", description = """
+    @Operation(summary = "(학생) 은행 계좌 [조회]", description = """
             💡 학생의 은행 계좌 정보를 조회합니다.
+            
+            ---
 
             **[ 응답 필드 ]**
             - **id** : 은행 계좌 ID

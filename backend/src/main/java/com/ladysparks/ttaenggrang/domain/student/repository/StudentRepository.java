@@ -22,10 +22,10 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 //    // 특정 직업을 가진 학생 목록 조회
 //    List<Student> findByJobId(Long jobId);
 
-    // 교사의 ID를 기준으로 학생 목록 조회 (우리반 학생 전체 조회)
+    // 교사의 ID를 기준으로 학생 목록 조회 (우리 반 학생 전체 조회)
     List<Student> findAllByTeacherId(Long teacherId);
 
-    // 교사의 ID와 학생 ID를 기준으로 특정 학생 조회 (우리반 특정 학생 조회)
+    // 교사의 ID와 학생 ID를 기준으로 특정 학생 조회 (우리 반 특정 학생 조회)
     Optional<Student> findByIdAndTeacherId(Long studentId, Long teacherId);
 
     // 교사ID 와 직업ID로 학생 목록 조회 (특정 직업을 가진 학생 목록 조회)

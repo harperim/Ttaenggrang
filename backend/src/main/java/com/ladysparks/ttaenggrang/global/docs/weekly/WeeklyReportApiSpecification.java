@@ -1,4 +1,4 @@
-package com.ladysparks.ttaenggrang.global.docs;
+package com.ladysparks.ttaenggrang.global.docs.weekly;
 
 import com.ladysparks.ttaenggrang.domain.weekly_report.dto.StudentFinancialSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.weekly_report.dto.WeeklyFinancialSummaryDTO;
@@ -7,11 +7,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "Weekly-Report", description = "주간 금융 리포트 관련 API")
+@Tag(name = "[학생] 주간 통계 보고서", description = "주간 금융 리포트 관련 API")
 public interface WeeklyReportApiSpecification {
 
-    @Operation(summary = "학생 주간 금융 리포트 [조회]", description = """
+    @Operation(summary = "(학생) 이번 주 금융 활동 요약 [조회]", description = """
             💡 특정 학생의 이번주 금융 활동을 분석하여 주간 리포트를 제공합니다.
+            
+            ---
     
             **[ 응답 필드 ]**
             - **studentId** : 학생 ID
@@ -27,8 +29,10 @@ public interface WeeklyReportApiSpecification {
             """)
     ResponseEntity<ApiResponse<WeeklyFinancialSummaryDTO>> weeklyReportDetails();
 
-    @Operation(summary = "이번주 내 금융 성적표 [조회]", description = """
+    @Operation(summary = "(학생) 이번주 내 금융 성적표 [조회]", description = """
            💡 특정 학생의 **지난주, 이번주, 반 평균** 저축 증가율, 투자 수익율, 지출 증가율을 반환합니다.
+           
+           ---
     
            **[ 응답 필드 ]**
            - **lastWeekSummary**: 해당 학생의 지난주 저축 증가율, 투자 수익율, 지출 증가율

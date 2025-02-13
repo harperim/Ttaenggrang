@@ -1,4 +1,4 @@
-package com.ladysparks.ttaenggrang.global.docs;
+package com.ladysparks.ttaenggrang.global.docs.bank;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -6,15 +6,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@Tag(name = "Bank-Transaction", description = "은행 계좌 거래 내역 관련 API")
+@Tag(name = "[학생] 은행 계좌 거래", description = "은행 계좌 거래 내역 관련 API")
 public interface BankTransactionApiSpecification {
 
-    @Operation(summary = "은행 계좌 거래 [등록]", description = """
+    @Operation(summary = "(학생) 은행 계좌 거래 [등록]", description = """
             💡 은행 계좌 거래를 진행합니다.
+            
+            ---
 
             **[ 요청 필드 ]**
             - **type** : 거래 타입
@@ -37,7 +38,9 @@ public interface BankTransactionApiSpecification {
             - **description** : 거래 내용
             - **receiverId** (선택) : 거래 대상 학생 ID (입금 받는 학생)
             
-            **[ 규칙 ]**
+            ---
+            
+            **[ 설명 ]**
             - 은행 계좌 거래 시 자동으로 해당 은행 계좌 잔액에 반영됩니다.
             - 거래 타입이 **TRANSFER**, **ITEM**인 경우, receiverId에 거래 대상 학생 ID를 포함해야 합니다.
                 - 송금, 아이템 거래 시 두 계좌에서 거래가 발생해야 합니다. (총 2건의 등록 발생 -> 백엔드에서 구현)
@@ -47,8 +50,10 @@ public interface BankTransactionApiSpecification {
             """)
     ResponseEntity<ApiResponse<BankTransactionDTO>> bankTransactionAdd(@RequestBody BankTransactionDTO bankTransactionDTO);
 
-    @Operation(summary = "은행 계좌 거래 내역 [전체 조회]", description = """
+    @Operation(summary = "(학생) 은행 계좌 거래 내역 [전체 조회]", description = """
             💡 학생의 은행 계좌 거래 내역을 조회합니다.
+            
+            ---
 
             **[ 응답 필드 ]**
             - **id** : 은행 계좌 거래 ID

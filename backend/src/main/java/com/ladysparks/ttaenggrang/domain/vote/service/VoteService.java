@@ -244,7 +244,7 @@ public class VoteService {
     }
 
 
-    // 학생 투표 : 우리반 친구 선택해서 제출하면, 해당 학생의 투표 수 증가
+    // 학생 투표 : 우리 반 친구 선택해서 제출하면, 해당 학생의 투표 수 증가
     @Transactional
     public ApiResponse<String> castStudentVote(Long voteItemId) {
         try {

@@ -1,35 +1,32 @@
-package com.ladysparks.ttaenggrang.global.docs;
+package com.ladysparks.ttaenggrang.global.docs.stock;
 
 import com.ladysparks.ttaenggrang.domain.stock.dto.*;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 
-@Tag(name = "Stock", description = "주식 API")
+@Tag(name = "[교사/학생] 주식", description = "주식 API")
 public interface StockApiSpecification {
 
-    @Operation(summary = "주식 전체 조회", description = "💡 전체 주식을 조회합니다.")
+    @Operation(summary = "(교사/학생) 주식 전체 조회", description = "💡 전체 주식을 조회합니다.")
     @GetMapping
     public ResponseEntity<List<StockDTO>> getStocks();
 
-    @Operation(summary = "주식 상세 조회", description = "💡 주식 ID로 주식을 조회합니다.")
+    @Operation(summary = "(교사/학생) 주식 상세 조회", description = "💡 주식 ID로 주식을 조회합니다.")
     @GetMapping
     public ResponseEntity<ApiResponse<StockDTO>> getStock(@PathVariable("stockId") Long stockId);
 
-    @Operation(summary = "주식 등록", description = "주식을 등록 합니다")
+    @Operation(summary = "(교사) 주식 등록", description = "주식을 등록 합니다")
     @PostMapping
     public ResponseEntity<ApiResponse<StockDTO>> addStock(@RequestBody StockDTO stockDto);
 
 
-    @Operation(summary = "주식 매수", description = "💡 주식 ID와 수량으로 주식을 매수합니다.")
+    @Operation(summary = "(학생) 주식 매수", description = "💡 주식 ID와 수량으로 주식을 매수합니다.")
     @PostMapping("/{stockId}/buy")
     public ResponseEntity<ApiResponse<StockTransactionDTO>> buyStock(@PathVariable("stockId") Long stockId,
                                                                      @RequestParam("share_count") int shareCount,

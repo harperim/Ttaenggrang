@@ -1,14 +1,8 @@
 package com.ladysparks.ttaenggrang.domain.news.controller;
 
-import com.ladysparks.ttaenggrang.domain.news.dto.NewsDTO;
 //import com.ladysparks.ttaenggrang.domain.news.service.NewsService;
 //import com.ladysparks.ttaenggrang.domain.news.service.OpenAiService;
-import com.ladysparks.ttaenggrang.global.docs.NewsApiSpecification;
-import com.ladysparks.ttaenggrang.global.response.ApiResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
 
 //@RestController
 //@RequiredArgsConstructor

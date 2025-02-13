@@ -6,7 +6,7 @@ import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentManagementDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherDashboardDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherDashboardService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
-import com.ladysparks.ttaenggrang.global.docs.TeacherDashboardApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.home.TeacherDashboardApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class TeacherDashboardController implements TeacherDashboardApiSpecificat
     private final BankTransactionService bankTransactionService;
     private final TeacherService teacherService;
 
-    @GetMapping("/daily-average-income-expense")
+    @GetMapping("/daily-average")
     public ResponseEntity<ApiResponse<List<StudentDailyAverageFinancialDTO>>> dailyAverageIncomeAndExpenseDetails() {
         List<StudentDailyAverageFinancialDTO> response = bankTransactionService.getDailyAverageIncomeAndExpense();
         return ResponseEntity.ok(ApiResponse.success(response));

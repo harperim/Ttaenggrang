@@ -2,10 +2,8 @@ package com.ladysparks.ttaenggrang.domain.vote.controller;
 
 import com.ladysparks.ttaenggrang.domain.vote.dto.VoteCreateDTO;
 import com.ladysparks.ttaenggrang.domain.vote.dto.VoteItemResponseDTO;
-import com.ladysparks.ttaenggrang.domain.vote.entity.VoteItem;
-import com.ladysparks.ttaenggrang.domain.vote.repository.VoteItemRepository;
 import com.ladysparks.ttaenggrang.domain.vote.service.VoteService;
-import com.ladysparks.ttaenggrang.global.docs.VoteApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.nation.VoteApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

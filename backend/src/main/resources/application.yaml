@@ -27,13 +27,13 @@ spring:
     show-sql:
         true
   sql:
-    init:
-      mode: always  # 서버 실행 시 init.sql 실행
+    init: 실행 시 init.sql 실행
   springdoc: # Swagger
     swagger-ui:
       groups-order: DESC # path, query, body, response 순으로 출력
       tags-sorter: alpha # 태그를 알파벳 순으로 정렬
-      operations-sorter: method  # method: delete - get - patch - post - put 순으로 정렬, alpha: 알파벳 순으로 정렬 가능
+      operations-sorter: meth
+      mode: always  # 서버od  # method: delete - get - patch - post - put 순으로 정렬, alpha: 알파벳 순으로 정렬 가능
     paths-to-match:
       - /api/** # swagger-ui에 표시할 api의 엔드포인트 패턴
     api-docs:

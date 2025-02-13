@@ -4,6 +4,7 @@ import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -31,12 +32,11 @@ public class TaxPayment {
     @Column(nullable = false)
     private int amount;
 
-    @CreationTimestamp
+    @CreatedDate
     private LocalDate paymentDate;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TaxPaymentStatus status;
+    private boolean isOverdue;
 
     @CreationTimestamp
     private Timestamp createdAt;

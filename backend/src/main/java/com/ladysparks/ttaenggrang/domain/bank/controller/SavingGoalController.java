@@ -1,6 +1,5 @@
 package com.ladysparks.ttaenggrang.domain.bank.controller;
 
-import com.ladysparks.ttaenggrang.global.docs.SavingGoalApiSpecification;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsGoalDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import com.ladysparks.ttaenggrang.domain.bank.service.SavingsGoalService;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/savings-goals")
-public class SavingGoalController implements SavingGoalApiSpecification {
+public class SavingGoalController {
 
     private final SavingsGoalService savingsGoalService;
 
