@@ -5,6 +5,7 @@ import com.ladysparks.ttaenggrang.domain.stock.category.CategoryRepository;
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
+import com.ladysparks.ttaenggrang.domain.stock.dto.ChangeResponseDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StudentStockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.entity.*;
@@ -405,10 +406,10 @@ public class StockService {
 
     // 가격 변동 처리 (폐장 시 적용)
     @Transactional
-    public List<StockDTO> updateStockPricesForMarketOpening() {
+    public List<ChangeResponseDTO> updateStockPricesForMarketOpening() {
         // 모든 주식 정보를 불러오고, 시장 활성 상태를 고정 (9시~17시에는 true)
         List<Stock> stocks = stockRepository.findAll();
-        List<StockDTO> stockDTOList = new ArrayList<>();
+        List<ChangeResponseDTO> stockDTOList = new ArrayList<>();
 
         for (Stock stock : stocks) {
             // 시장은 고정적으로 활성(true)로 설정 (개장 시간, 폐장 시간 변경 불가)
@@ -423,7 +424,7 @@ public class StockService {
                 double changeRate = calculateChangeRate(oldPrice, newPrice); // 변동률 계산
 
                 // ETF 또는 일반 주식 정보에 필요한 필드들을 DTO로 설정
-                stockDTOList.add(StockDTO.builder()
+                stockDTOList.add(ChangeResponseDTO.builder()
                         .id(stock.getId())
                         .name(stock.getName())
                         .price_per((int) newPrice)
