@@ -33,6 +33,12 @@ interface StockService {
     @GET("stocks")
     suspend fun getAllStocks(): List<StockDto>
 
+    //주식 상세 조회
+//    @GET("stocks/{stockId}")
+//    suspend fun getStock(
+//        @Path("stockId") stockId: Int
+//    ):  Response<>
+
     //주식장 열림(교사)
     @POST("stocks/manage")
     suspend fun setMarketStatus(

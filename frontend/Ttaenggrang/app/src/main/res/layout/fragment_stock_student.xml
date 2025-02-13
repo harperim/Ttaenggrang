@@ -175,6 +175,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/constraintStockGraphHead" />
 
+        <!--탭-->
         <TextView
             android:id="@+id/textTab3"
             android:layout_width="wrap_content"
@@ -187,6 +188,7 @@
             style="@style/caption"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/chartStock"
             app:layout_constraintTop_toBottomOf="@id/viewLine"
             app:layout_constraintEnd_toStartOf="@+id/textTab4"/>
         <TextView
@@ -203,6 +205,17 @@
             app:layout_constraintTop_toTopOf="@id/textTab3"
             app:layout_constraintBottom_toBottomOf="@id/textTab3"
             app:layout_constraintStart_toEndOf="@id/textTab3"/>
+        <!--그래프-->
+        <com.ladysparks.ttaenggrang.ui.component.LineChartComponent
+            android:id="@+id/chartStock"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textTab3"
+            />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -55,9 +55,6 @@ class StockViewModel : ViewModel() {
     private val _expectedPayment = MutableLiveData<Int>()
     val expectedPayment: LiveData<Int> get() = _expectedPayment
 
-    // 결제 후 내 자산 (임시 하드코딩된 자산 값 사용)
-//    private val _myAsset = MutableLiveData<Int>(100000) // ✅ 현재 내 자산 (하드코딩된 값)
-//    val myAsset: LiveData<Int> get() = _myAsset
 
     // 거래 후 내 보유 현금 계산
     private val _updatedBalance = MutableLiveData<Int>()

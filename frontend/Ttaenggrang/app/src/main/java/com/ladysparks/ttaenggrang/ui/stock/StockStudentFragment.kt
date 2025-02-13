@@ -2,6 +2,7 @@ package com.ladysparks.ttaenggrang.ui.stock
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,12 +12,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.github.mikephil.charting.charts.LineChart
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
+import com.ladysparks.ttaenggrang.data.dummy.StockDummyData
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionDto
 import com.ladysparks.ttaenggrang.data.model.dto.StudentStockDto
@@ -27,11 +31,14 @@ import com.ladysparks.ttaenggrang.databinding.DialogNewsDetailBinding
 import com.ladysparks.ttaenggrang.databinding.DialogStockConfirmBinding
 import com.ladysparks.ttaenggrang.databinding.DialogStockTradingBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStockStudentBinding
+import com.ladysparks.ttaenggrang.ui.component.LineChartComponent
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
     FragmentStockStudentBinding::bind,
@@ -42,9 +49,13 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
     private lateinit var stockAdapter: StockAdapter
     private var selectedStock: StockDto? = null // 선택한 주식 저장
     private var studentId: Int = -1
+    private lateinit var  lineChartComponent: LineChartComponent
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //차트 가져오기
+        setUpStockChart()
 
         //초기화
         initAdapter()
@@ -106,6 +117,54 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
             showNews()
         }
     }
+    // 주식 상세 그래프
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setUpStockChart() {
+        lineChartComponent = binding.chartStock
+
+        viewModel.selectedStock.observe(viewLifecycleOwner) { selectedStock ->
+            selectedStock?.let { stock ->
+                Log.d("StockChart", "선택된 주식: ${stock.name}, ID: ${stock.id}")
+                // stockId를 기반으로 더미 데이터 중 해당 주식 데이터 찾기
+                val dummyStockData = StockDummyData.generateStockSampleData(stock.name, stock.id)
+
+                //더미데이터 로그찍기
+                dummyStockData.forEach { data -> Log.d("TAG", "setUpStockChart: 더미!!!!{${data.date}, ${data.price}") }
+
+                // 최근 7일치 데이터만 가져오기
+                val last7DaysStockData = dummyStockData.takeLast(7)
+
+                // ✅ 최근 7일치 데이터 로그 출력
+                last7DaysStockData.forEach { data ->
+                    Log.d("StockChart", "최근 7일 데이터: ${data.date}, ${data.price}")
+                }
+
+                // ✅ 날짜 리스트 생성 (X축 레이블로 사용)
+                //val dateLabels = last7DaysStockData.map { it.date }
+
+                // ✅ 날짜 변환 (YYYY-MM-DD → MM-DD)
+                val dateFormatter = DateTimeFormatter.ofPattern("MM-dd")
+                val dateLabels = last7DaysStockData.map {
+                    LocalDate.parse(it.date).format(dateFormatter)
+                }
+
+                // x축을 0~6으로 변환하여 그래프에 적용
+                val stockHistory = last7DaysStockData.mapIndexed { index, data ->
+                    Pair(index.toFloat(), data.price)
+                }
+
+                // ✅ 차트에 적용될 데이터 확인
+                stockHistory.forEach { (x, y) ->
+                    Log.d("StockChart", "차트 데이터: X=$x, Y=$y")
+                }
+
+                // 그래프에 데이터 적용
+                lineChartComponent.setChartData(stockHistory, dateLabels, R.color.chartBlue)
+            }
+        }
+
+    }
+
 
     private fun showNews() {
         val dialogNewsDetailBinding = DialogNewsDetailBinding.inflate(layoutInflater)
@@ -126,7 +185,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
         dialog.show()
     }
 
-    //매도 매수 다이얼로그
+    //거래 다이얼로그
     @SuppressLint("SetTextI18n")
     private fun showDialog(stock: StockDto, ownedQty: Int) {
         val dialogBinding = DialogStockTradingBinding.inflate(layoutInflater)
@@ -157,7 +216,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-
+        // 매도 버튼 구현
         dialogBinding.btnSell.setOnClickListener {
             val inputText = dialogBinding.textDialogStockTrade.text.toString().trim()
             val sellCount = inputText.toIntOrNull() ?: 0
@@ -204,6 +263,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
         dialog.show()
     }
 
+    // 매도, 매수 거래 다이얼로그
     private fun showConfirmDialog(stock: StockDto, tradeAmount: Int, transactionType: TransType) {
         val confirmDialogBinding = DialogStockConfirmBinding.inflate(layoutInflater)
         val confirmDialog = Dialog(requireContext())
