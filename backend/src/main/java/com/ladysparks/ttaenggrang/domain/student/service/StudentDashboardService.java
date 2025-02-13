@@ -58,11 +58,11 @@ public class StudentDashboardService {
                 .studentId(studentId)
                 .accountBalance(bankAccountBalance)
                 .currentRank(currentRank)
-                .savingsAmount(savingsAmount)
-                .investmentAmount(investmentAmount)
-                .totalAssets(totalAssets)
-                .goalAmount(goalAmount)
-                .achievementRate(achievementRate)
+                .totalSavings(savingsAmount)
+                .totalInvestmentAmount(investmentAmount)
+                        .totalAsset(totalAssets)
+                        .goalAmount(goalAmount)
+                        .achievementRate(achievementRate)
                 .build();
     }
 

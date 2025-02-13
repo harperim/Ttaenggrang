@@ -1,9 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.bank.service;
 
-import com.ladysparks.ttaenggrang.domain.bank.dto.BankAccountDTO;
-import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
-import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsDepositDTO;
-import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
+import com.ladysparks.ttaenggrang.domain.bank.dto.*;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsDeposit;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsDeposit.SavingsDepositStatus;
@@ -107,4 +104,13 @@ public class SavingsDepositService {
                 )
                 .sum();
     }
+
+    public List<SavingsDepositHistoryDTO> getSavingsDepositHistory(Long savingsSubscriptionId) {
+        List<SavingsDeposit> deposits = savingsDepositRepository.findBySavingsSubscriptionId(savingsSubscriptionId);
+        return deposits.stream()
+                .filter(deposit -> deposit.getStatus() != SavingsDepositStatus.PENDING)
+                .map(savingsDepositMapper::toHistoryDto)
+                .collect(Collectors.toList());
+    }
+
 }
