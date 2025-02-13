@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 
 class StudentsViewModel : ViewModel(){
 
-    private val _studentList = MutableLiveData<List<StudentMultiCreateResponse<Teacher>>>() // LiveData를 활용
-    val studentList: LiveData<List<StudentMultiCreateResponse<Teacher>>> get() = _studentList
+    private val _studentList = MutableLiveData<List<StudentMultiCreateResponse>>() // LiveData를 활용
+    val studentList: LiveData<List<StudentMultiCreateResponse>> get() = _studentList
 
 
     // 버튼이 클릭될 때 마다, 학생정보, 재정상태 여부를 판단해서 데이터를 불러오다.

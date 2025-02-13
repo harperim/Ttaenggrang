@@ -19,17 +19,16 @@ public class Nation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String nationName;
 
     @Column(nullable = false)
-    private Integer population;
+    private int population;
 
     @Column(nullable = false)
     private String currency;
 
-    @Column(nullable = false)
-    private Integer savingsGoalAmount;
+    private int savingsGoalAmount;
 
     private int nationalTreasury;
 
@@ -42,5 +41,4 @@ public class Nation {
     @OneToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
-
 }

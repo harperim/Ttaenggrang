@@ -1,15 +1,15 @@
 package com.ladysparks.ttaenggrang.domain.vote.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -28,4 +28,9 @@ public class Vote {
 
     @Enumerated(EnumType.STRING)
     private VoteStatus status;  // 투표 상태 (ACTIVE / INACTIVE)
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    @JsonIgnore
+    private Teacher teacher;
 }

@@ -14,7 +14,7 @@ import java.util.List;
 public interface BankTransactionApiSpecification {
 
     @Operation(summary = "은행 계좌 거래 [등록]", description = """
-            💡 은행 계좌 거래를 합니다.
+            💡 은행 계좌 거래를 진행합니다.
 
             **[ 요청 필드 ]**
             - **type** : 거래 타입

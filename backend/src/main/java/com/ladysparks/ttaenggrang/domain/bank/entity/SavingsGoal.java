@@ -43,4 +43,9 @@ public class SavingsGoal {
         }
     }
 
+    public enum SavingsGoalStatus {
+        IN_PROGRESS,
+        COMPLETED
+    }
+
 }

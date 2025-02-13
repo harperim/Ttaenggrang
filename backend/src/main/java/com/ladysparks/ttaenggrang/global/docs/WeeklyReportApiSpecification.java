@@ -25,7 +25,7 @@ public interface WeeklyReportApiSpecification {
             - **taxAmount** : 세금 납부액
             - **fineAmount** : 벌금 납부액
             """)
-    ResponseEntity<ApiResponse<WeeklyFinancialSummaryDTO>> WeeklyReportDetails();
+    ResponseEntity<ApiResponse<WeeklyFinancialSummaryDTO>> weeklyReportDetails();
 
     @Operation(summary = "이번주 내 금융 성적표 [조회]", description = """
            💡 특정 학생의 **지난주, 이번주, 반 평균** 저축 증가율, 투자 수익율, 지출 증가율을 반환합니다.
@@ -35,6 +35,6 @@ public interface WeeklyReportApiSpecification {
            - **thisWeekSummary**: 해당 학생의 이번주 저축 증가율, 투자 수익율, 지출 증가율
            - **classAverageSummary**: 해당 학생이 속한 반의 평균 저축 증가율, 투자 수익율, 지출 증가율
            """)
-    ResponseEntity<ApiResponse<StudentFinancialSummaryDTO>> WeeklyReportGrowthList();
+    ResponseEntity<ApiResponse<StudentFinancialSummaryDTO>> weeklyReportGrowthList();
 
 }

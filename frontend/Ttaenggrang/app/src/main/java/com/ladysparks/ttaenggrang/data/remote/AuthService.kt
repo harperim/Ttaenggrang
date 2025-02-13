@@ -1,5 +1,7 @@
 package com.ladysparks.ttaenggrang.data.remote
 
+import com.google.android.gms.common.api.Api
+import com.ladysparks.ttaenggrang.data.model.dto.NationInfoDto
 import com.ladysparks.ttaenggrang.data.model.request.StudentSignInRequest
 import com.ladysparks.ttaenggrang.data.model.request.TeacherSignInRequest
 import com.ladysparks.ttaenggrang.data.model.request.TeacherSignUpRequest
@@ -25,6 +27,9 @@ interface AuthService {
 
     @POST("teachers/logout")
     suspend fun logoutTeacher(): Unit
+
+    @POST("teachers/nations")
+    suspend fun nationSetup(@Body nationInfo: NationInfoDto): ApiResponse<NationInfoDto>
 
     /*************** 학생 전용 Service ***************/
     @POST("students/login")

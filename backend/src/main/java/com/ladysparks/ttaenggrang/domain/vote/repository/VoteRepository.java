@@ -11,4 +11,7 @@ import java.util.Optional;
 public interface VoteRepository extends JpaRepository<Vote, Long> {
     // 진행 중인 투표가 있는지 확인하는 메서드 (IN_PROGRESS) 상태 조회
     Optional<Vote> findByStatus(VoteStatus status);
+
+    // 마지막 완료된 투표 조회 메서드
+    Optional<Vote> findTopByStatusOrderByEndDateDesc(VoteStatus status);
 }

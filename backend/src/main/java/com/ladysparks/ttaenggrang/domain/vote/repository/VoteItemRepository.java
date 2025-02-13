@@ -11,4 +11,6 @@ import java.util.List;
 public interface VoteItemRepository extends JpaRepository<VoteItem, Long> {
     // ✅ 투표 결과를 투표 수 기준 내림차순으로 가져오기
     List<VoteItem> findByVoteOrderByVoteCountDesc(Vote vote);
+
+    List<VoteItem> findByVoteId(Long voteId);
 }

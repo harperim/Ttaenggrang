@@ -1,18 +1,21 @@
 package com.ladysparks.ttaenggrang.data.model.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class StockTransactionDto(
-    val id: Long = 0L,
-    val shareCount: Int = 0,
-    val transDate: String,
-    val purchasePrc: Int = 0,
-    val totalAmt: Int = 0,
-    val returnAmt: Int = 0,
+    val id: Long,
+    @SerializedName("share_count") val shareCount: Int,
+    @SerializedName("trans_date") val transDate: String,
+    @SerializedName("purchase_prc") val purchasePrc: Int,
+    @SerializedName("total_amt") val totalAmt: Int,
+    @SerializedName("return_amt") val returnAmt: Int,
     val transType: TransType,
-    val ownedQty: Int = 0,
-    val studentId: Long = 0L,
-    val stockId: Long = 0L
+    @SerializedName("owned_qty") val ownedQty: Int,
+    val studentId: Long,
+    val stockId: Long
 )
 
 enum class TransType {
-    BUY, SELL
+    @SerializedName("BUY") BUY,
+    @SerializedName("SELL") SELL
 }

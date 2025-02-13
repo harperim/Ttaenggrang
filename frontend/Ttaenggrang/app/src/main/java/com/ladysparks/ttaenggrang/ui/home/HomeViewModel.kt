@@ -6,24 +6,39 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ladysparks.ttaenggrang.data.model.dto.AlarmDto
+import com.ladysparks.ttaenggrang.data.model.response.EconomySummaryResponse
+import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel(){
 
-    private val _alarmList = MutableLiveData<List<AlarmDto>>() // LiveData를 활용
-    val alarmList: LiveData<List<AlarmDto>> get() = _alarmList
+    private val _economySummary= MutableLiveData<EconomySummaryResponse>()
+    val economySummary: LiveData<EconomySummaryResponse> get() = _economySummary
+    fun fetchEconomySummary(){
+        viewModelScope.launch{
+            runCatching {
+                RetrofitUtil.teacherService.getEconomySummary()
+            }.onSuccess {
+                _economySummary.value = it.data!!
+            }.onFailure {
 
-    fun fetchAlarmList() {
-//        viewModelScope.launch {
-//            runCatching {
-//                // 서버로부터 알림 데이터 요청
-//                RetrofitUtil.alarmService.saveAlarm("김선생")
-//            }.onSuccess { data ->
-////                _alarmList.value = data  // LiveData 업데이트 (UI 자동 반영)
-//            }.onFailure { exception ->
-//                Log.e("AlarmViewModel", "Error fetching alarms", exception)
-//            }
-//        }
+            }
+        }
+    }
+
+    private val _studentList= MutableLiveData<List<StudentMultiCreateResponse>>()
+    val studentList: LiveData<List<StudentMultiCreateResponse>> get() = _studentList
+    fun fetchStudentList(){
+        viewModelScope.launch{
+            runCatching {
+                RetrofitUtil.teacherService.getStudentList()
+            }.onSuccess {
+                _studentList.value = it.data ?: emptyList()
+            }.onFailure {
+                Log.e("Error", "fetchStudentList: ${it.message}")
+                _studentList.value = emptyList()
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/bank-transactions")
 public class BankTransactionController implements BankTransactionApiSpecification {
 
     private final BankTransactionService bankTransactionService;
-
-    @Autowired
-    public BankTransactionController(BankTransactionService bankTransactionService) {
-        this.bankTransactionService = bankTransactionService;
-    }
 
     // 은행 계좌 [등록]
     @PostMapping

@@ -7,6 +7,7 @@ import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherDashboardDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +22,9 @@ public class TeacherDashboardService {
     public TeacherDashboardDTO getTeacherDashboardData() {
         Long teacherId = teacherService.getCurrentTeacherId();
 
-        NationDTO nationDTO = nationService.findNationByTeacherId(teacherId);
+        NationDTO nationDTO = nationService.findNationByTeacherId(teacherId)
+                .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
+
         int nationalTreasuryIncome = nationDTO.getNationalTreasury();
         int averageStudentBalance = (int) bankAccountService.getAverageBalanceByTeacherId(teacherId);
         int activeItemCount = itemService.findActiveItemListByTeacher().size();

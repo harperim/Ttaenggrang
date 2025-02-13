@@ -1,13 +1,12 @@
 package com.ladysparks.ttaenggrang.domain.bank.service;
 
-import com.ladysparks.ttaenggrang.domain.bank.dto.BankAccountDTO;
-import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
-import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsDepositDTO;
-import com.ladysparks.ttaenggrang.domain.bank.entity.*;
+import com.ladysparks.ttaenggrang.domain.bank.dto.*;
+import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
+import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsDeposit;
+import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsDeposit.SavingsDepositStatus;
+import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.SavingsDepositMapper;
 import com.ladysparks.ttaenggrang.domain.bank.repository.SavingsDepositRepository;
-import com.ladysparks.ttaenggrang.domain.bank.repository.SavingsSubscriptionRepository;
-import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +21,7 @@ import java.util.stream.Collectors;
 public class SavingsDepositService {
 
     private final SavingsDepositRepository savingsDepositRepository;
-    private final SavingsSubscriptionRepository savingsSubscriptionRepository;
     private final SavingsDepositMapper savingsDepositMapper;
-    private final StudentService studentService;
     private final BankAccountService bankAccountService;
     private final BankTransactionService bankTransactionService;
 
@@ -39,10 +36,6 @@ public class SavingsDepositService {
     // 적금 납입 내역 추가
     @Transactional
     public SavingsDepositDTO addSavingsDeposit(SavingsDepositDTO savingsDepositDTO) {
-        // 적금 가입 내역이 존재하는지 확인
-        SavingsSubscription savingsSubscription = savingsSubscriptionRepository.findById(savingsDepositDTO.getSavingsSubscriptionId())
-                .orElseThrow(() -> new IllegalArgumentException("적금 가입 정보를 찾을 수 없습니다."));
-
         // 적금 납입 내역 저장
         SavingsDeposit savingsDeposit = savingsDepositMapper.toEntity(savingsDepositDTO);
         SavingsDeposit savedDeposit = savingsDepositRepository.save(savingsDeposit);
@@ -52,11 +45,11 @@ public class SavingsDepositService {
 
     // 적금 납입 내역 추가 (수동 납입)
     @Transactional
-    public SavingsDepositDTO retrySavingsDeposit(Long savingsDepositId) {
+    public SavingsDepositDTO retrySavingsDeposit(Long savingsDepositId, Long studentId, Long bankAccountId) {
         SavingsDeposit savingsDeposit = savingsDepositRepository.findById(savingsDepositId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 적금 납입 정보를 찾을 수 없습니다."));
 
-        BankAccountDTO bankAccountDTO = bankAccountService.findBankAccount();
+        BankAccountDTO bankAccountDTO = bankAccountService.findBankAccount(bankAccountId);
 
         int amount = savingsDeposit.getSavingsSubscription().getSavingsProduct().getAmount();
 
@@ -97,10 +90,27 @@ public class SavingsDepositService {
         savingsDepositRepository.saveAll(depositList); // 한 번에 저장
     }
 
-    public List<SavingsDepositDTO> findFailedDeposits() {
-        Long studentId = studentService.getCurrentStudentId();
+    public List<SavingsDepositDTO> findFailedDeposits(Long studentId) {
         List<SavingsDeposit> failedDeposits = savingsDepositRepository.findFailedDepositsByStudent(studentId);
         return failedDeposits.stream().map(savingsDepositMapper::toDto).collect(Collectors.toList());
+    }
+
+    public int getTotalDepositAmount(List<SavingsSubscriptionDTO> savingsSubscriptionDTOList) {
+        return savingsSubscriptionDTOList.stream()
+                .flatMapToInt(savingsSubscriptionDTO ->
+                        savingsDepositRepository.findBySavingsSubscriptionId(savingsSubscriptionDTO.getId()).stream()
+                                .filter(savingsDeposit -> savingsDeposit.getStatus() == SavingsDepositStatus.COMPLETED)
+                                .mapToInt(SavingsDeposit::getAmount)
+                )
+                .sum();
+    }
+
+    public List<SavingsDepositHistoryDTO> getSavingsDepositHistory(Long savingsSubscriptionId) {
+        List<SavingsDeposit> deposits = savingsDepositRepository.findBySavingsSubscriptionId(savingsSubscriptionId);
+        return deposits.stream()
+                .filter(deposit -> deposit.getStatus() != SavingsDepositStatus.PENDING)
+                .map(savingsDepositMapper::toHistoryDto)
+                .collect(Collectors.toList());
     }
 
 }

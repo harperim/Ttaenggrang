@@ -23,7 +23,7 @@ public class Tax {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "teacher_id", nullable = false)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @Column(nullable = false, unique = true)

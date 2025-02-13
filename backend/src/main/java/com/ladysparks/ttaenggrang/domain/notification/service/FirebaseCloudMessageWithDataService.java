@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ladysparks.ttaenggrang.domain.notification.dto.BroadcastNotificationDTO;
 import com.ladysparks.ttaenggrang.domain.notification.dto.FcmMessageWithData;
 import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationDTO;
 import com.ladysparks.ttaenggrang.domain.notification.entity.NotificationType;
@@ -82,7 +83,6 @@ public class FirebaseCloudMessageWithDataService {
      * targetToken에 해당하는 device로 FCM 푸시 알림 전송
      * background 대응을 위해서 data로 전송한다.
      */
-    @Transactional
     public NotificationDTO sendDataMessageTo(NotificationDTO notificationDTO) throws IOException {
         // Notification 테이블에 저장 루 FCM 메시지를 전송
         NotificationDTO savedNotificationDTO = notificationService.saveNotification(notificationDTO);
@@ -112,8 +112,16 @@ public class FirebaseCloudMessageWithDataService {
     }
 
     // 등록된 모든 토큰을 이용해서 broadcasting
-    public int broadCastDataMessage(NotificationDTO notificationDTO) throws IOException {
+    public int broadCastDataMessage(BroadcastNotificationDTO broadcastNotificationDTO) throws IOException {
         for(String token: Constants.clientTokens) {
+            NotificationDTO notificationDTO = NotificationDTO.builder()
+                    .senderTeacherId(broadcastNotificationDTO.getTeacherId())
+                    .targetToken(token)
+                    .notificationType(broadcastNotificationDTO.getNotificationType())
+                    .title(broadcastNotificationDTO.getTitle())
+                    .message(broadcastNotificationDTO.getMessage())
+                    .status(broadcastNotificationDTO.getStatus())
+                    .build();
             String message = makeDataMessage(notificationDTO);
             logger.info("📨 FCM Message: {}", message);
 

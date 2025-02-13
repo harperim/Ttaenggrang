@@ -26,7 +26,6 @@ import com.ladysparks.ttaenggrang.data.model.response.StoreStudentPurchaseHistor
 import com.ladysparks.ttaenggrang.databinding.DialogItemMineBinding
 
 class StoreStudentFragment : BaseFragment<FragmentStoreStudentBinding>(
-
     FragmentStoreStudentBinding::bind,
     R.layout.fragment_store_student
 ) {

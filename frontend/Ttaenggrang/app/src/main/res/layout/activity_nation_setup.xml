@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintForm"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="165dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/constraintBanner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textSignup"
+            style="@style/heading1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="국가 정보 등록"
+            app:layout_constraintBottom_toTopOf="@+id/textInfo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing_40"
+            android:text="학급을 운영하기 위한 기본정보를 등록해주세요"
+            app:layout_constraintBottom_toTopOf="@+id/editNationName"
+            app:layout_constraintStart_toStartOf="@+id/textSignup"
+            app:layout_constraintTop_toBottomOf="@+id/textSignup" />
+
+        <EditText
+            android:id="@+id/editNationName"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:background="@drawable/input_id"
+            android:hint="국가 이름"
+            android:paddingStart="@dimen/spacing_20"
+            android:textColorHint="@color/mainOrange"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInfo"
+            app:layout_goneMarginTop="@dimen/spacing_40" />
+
+        <EditText
+            android:id="@+id/editNationPopulation"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_10"
+            android:background="@drawable/input_id"
+            android:hint="학급 인원 수 (숫자만 입력)"
+            android:inputType="number"
+            android:paddingStart="@dimen/spacing_20"
+            android:textColorHint="@color/mainOrange"
+            app:layout_constraintBottom_toTopOf="@+id/editCurrency"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editNationName" />
+
+        <EditText
+            android:id="@+id/editCurrency"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_10"
+            android:background="@drawable/input_id"
+            android:hint="화폐 단위"
+            android:paddingStart="@dimen/spacing_20"
+            android:textColorHint="@color/mainOrange"
+            app:layout_constraintBottom_toTopOf="@+id/editSavingGoal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editNationPopulation" />
+
+        <EditText
+            android:id="@+id/editSavingGoal"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_10"
+            android:background="@drawable/input_id"
+            android:hint="개인 목표 저축액 (숫자만 입력)"
+            android:inputType="number"
+            android:paddingStart="@dimen/spacing_20"
+            android:textColorHint="@color/mainOrange"
+            app:layout_constraintBottom_toTopOf="@+id/btnSignup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editCurrency" />
+
+
+        <ImageButton
+            android:id="@+id/btnNationSetup"
+            android:layout_width="329dp"
+            android:layout_height="53dp"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:src="@drawable/btn_login"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editSavingGoal" />
+
+        <TextView
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="등록"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/btnNationSetup"
+            app:layout_constraintEnd_toEndOf="@+id/btnNationSetup"
+            app:layout_constraintStart_toStartOf="@+id/btnNationSetup"
+            app:layout_constraintTop_toTopOf="@id/btnNationSetup" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintBanner"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="@color/mainOrange"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/constraintForm"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <!-- 큰 제목 텍스트 -->
+        <TextView
+            android:id="@+id/textSignupProductName"
+            style="@style/heading1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="땡그랑"
+            android:textColor="@color/white"
+            android:textSize="65sp"
+            app:layout_constraintBottom_toTopOf="@+id/imgLoginLogo11"
+            app:layout_constraintEnd_toEndOf="@+id/imgLoginLogo11"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 설명 텍스트 -->
+        <TextView
+            android:id="@+id/textNationSetupDescription"
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:text="쉽고 재밌는 경제 수업을 원한다면?"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="@+id/textSignupProductName"
+            app:layout_constraintTop_toBottomOf="@+id/textSignupProductName"
+            tools:layout_editor_absoluteY="425dp" />
+
+        <ImageView
+            android:id="@+id/imgLoginLogo11"
+            android:layout_width="287dp"
+            android:layout_height="287dp"
+            android:layout_marginBottom="100dp"
+            android:src="@drawable/logo_7"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="UnknownIdInLayout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

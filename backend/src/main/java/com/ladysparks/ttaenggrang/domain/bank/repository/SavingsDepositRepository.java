@@ -14,4 +14,6 @@ public interface SavingsDepositRepository extends JpaRepository<SavingsDeposit, 
     @Query("SELECT s FROM SavingsDeposit s WHERE s.savingsSubscription.student.id = :studentId AND s.status = 'FAILED'")
     List<SavingsDeposit> findFailedDepositsByStudent(@Param("studentId") Long studentId);
 
+    List<SavingsDeposit> findBySavingsSubscription_Student_Id(Long studentId);
+
 }

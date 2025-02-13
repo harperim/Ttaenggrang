@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.notification.controller;
 
+import com.ladysparks.ttaenggrang.domain.notification.dto.BroadcastNotificationDTO;
 import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationDTO;
 import com.ladysparks.ttaenggrang.domain.notification.service.FirebaseCloudMessageService;
 import com.ladysparks.ttaenggrang.domain.notification.service.FirebaseCloudMessageWithDataService;
@@ -60,18 +61,18 @@ public class NotificationController implements NotificationApiSpecification {
      * 📌 전체 사용자에게 메시지 Broadcast (기본 메시지)
      */
     @PostMapping("/broadcast")
-    public ResponseEntity<ApiResponse<String>> broadcast(@RequestBody @Valid NotificationDTO notificationDTO) throws IOException {
-        logger.info("📢 broadcast: title={}, body={}", notificationDTO.getTitle(), notificationDTO.getMessage());
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(getMessage(service.broadCastMessage(notificationDTO))));
+    public ResponseEntity<ApiResponse<String>> broadcast(@RequestBody @Valid BroadcastNotificationDTO broadcastNotificationDTO) throws IOException {
+        logger.info("📢 broadcast: title={}, body={}", broadcastNotificationDTO.getTitle(), broadcastNotificationDTO.getMessage());
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(getMessage(service.broadCastMessage(broadcastNotificationDTO))));
     }
 
     /**
      * 📌 전체 사용자에게 데이터 메시지 Broadcast (Background 지원)
      */
     @PostMapping("/broadcast-data")
-    public ResponseEntity<ApiResponse<String>> broadcastData(@RequestBody @Valid NotificationDTO notificationDTO) throws IOException {
-        logger.info("📢 broadcast-data: title={}, body={}", notificationDTO.getTitle(), notificationDTO.getMessage());
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(getMessage(serviceWithData.broadCastDataMessage(notificationDTO))));
+    public ResponseEntity<ApiResponse<String>> broadcastData(@RequestBody @Valid BroadcastNotificationDTO broadcastNotificationDTO) throws IOException {
+        logger.info("📢 broadcast-data: title={}, body={}", broadcastNotificationDTO.getTitle(), broadcastNotificationDTO.getMessage());
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(getMessage(serviceWithData.broadCastDataMessage(broadcastNotificationDTO))));
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.stock.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ladysparks.ttaenggrang.domain.news.entity.News;
 import com.ladysparks.ttaenggrang.domain.stock.category.Category;
 import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
@@ -94,6 +95,11 @@ public class Stock {
     @ManyToOne
     @JoinColumn(name = "category_id") // 외래 키 컬럼 설정
     private Category category; // 카테고리
+
+    //뉴스
+    @OneToMany(targetEntity = Stock.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "newa_id")
+    private List<News> news;
 
 
 

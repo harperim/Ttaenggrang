@@ -16,7 +16,7 @@
         android:layout_height="126dp"
         android:background="@drawable/img_banner"
         app:layout_constraintBottom_toTopOf="@+id/constraintStockGraphArea"
-        app:layout_constraintEnd_toStartOf="@id/constraintSettingArea"
+        app:layout_constraintEnd_toStartOf="@+id/constraintSettingArea"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -243,9 +243,9 @@
             android:clickable="true"
             android:focusable="false"
             android:text="시작시간"
-            app:layout_constraintBottom_toBottomOf="@id/btnStockOpen"
+            app:layout_constraintBottom_toBottomOf="@+id/btnStockOpen"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/btnStockOpen" />
+            app:layout_constraintTop_toTopOf="@+id/btnStockOpen" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/endTime"
@@ -255,9 +255,9 @@
             android:clickable="true"
             android:focusable="false"
             android:text="종료시간"
-            app:layout_constraintBottom_toBottomOf="@id/startTime"
-            app:layout_constraintStart_toEndOf="@id/startTime"
-            app:layout_constraintTop_toTopOf="@id/startTime" />
+            app:layout_constraintBottom_toBottomOf="@+id/startTime"
+            app:layout_constraintStart_toEndOf="@+id/startTime"
+            app:layout_constraintTop_toTopOf="@+id/startTime" />
 
 
         <TextView
@@ -267,9 +267,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_10"
             android:text="주식장 열기"
-            app:layout_constraintBottom_toBottomOf="@id/btnStockOpen"
-            app:layout_constraintEnd_toStartOf="@id/btnStockOpen"
-            app:layout_constraintTop_toTopOf="@id/btnStockOpen" />
+            app:layout_constraintBottom_toBottomOf="@+id/btnStockOpen"
+            app:layout_constraintEnd_toStartOf="@+id/btnStockOpen"
+            app:layout_constraintTop_toTopOf="@+id/btnStockOpen" />
 
         <!--주식장 오픈 토글-->
         <androidx.appcompat.widget.SwitchCompat
@@ -294,7 +294,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnStockOpen">
+            app:layout_constraintTop_toBottomOf="@+id/btnStockOpen">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnStockSetting"
@@ -304,7 +304,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/btn_rounded_border"
                 android:text="주식 종목 관리"
-                app:layout_constraintBottom_toTopOf="@id/btnNewsCreate"
+                app:layout_constraintBottom_toTopOf="@+id/btnNewsCreate"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -322,9 +322,9 @@
                 android:text="뉴스 생성하기"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btnNewsHistory"
+                app:layout_constraintEnd_toStartOf="@+id/btnNewsHistory"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnStockSetting"
+                app:layout_constraintTop_toBottomOf="@+id/btnStockSetting"
                 app:layout_constraintVertical_weight="1" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -340,8 +340,8 @@
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/btnNewsCreate"
-                app:layout_constraintTop_toBottomOf="@id/btnStockSetting"
+                app:layout_constraintStart_toEndOf="@+id/btnNewsCreate"
+                app:layout_constraintTop_toBottomOf="@+id/btnStockSetting"
                 app:layout_constraintVertical_weight="1" />
 
 
@@ -362,8 +362,8 @@
         android:paddingVertical="@dimen/spacing_15"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/constraintNewsArea"
-        app:layout_constraintTop_toBottomOf="@id/constraintSettingArea">
+        app:layout_constraintStart_toEndOf="@+id/constraintNewsArea"
+        app:layout_constraintTop_toBottomOf="@+id/constraintSettingArea">
 
         <!--주식리스트 제목-->
         <TextView
@@ -381,9 +381,9 @@
             android:backgroundTint="@color/transparent"
             android:padding="0dp"
             android:src="@drawable/ic_search"
-            app:layout_constraintBottom_toBottomOf="@id/textStockListHead"
+            app:layout_constraintBottom_toBottomOf="@+id/textStockListHead"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textStockListHead" />
+            app:layout_constraintTop_toTopOf="@+id/textStockListHead" />
 
         <!--탭 버튼-->
         <TextView
@@ -397,8 +397,8 @@
             android:paddingVertical="3dp"
             android:text="일반주식"
             android:textColor="@color/foundation_black_500"
-            app:layout_constraintStart_toStartOf="@id/textStockListHead"
-            app:layout_constraintTop_toBottomOf="@id/textStockListHead" />
+            app:layout_constraintStart_toStartOf="@+id/textStockListHead"
+            app:layout_constraintTop_toBottomOf="@+id/textStockListHead" />
 
         <TextView
             android:id="@+id/textTab2"
@@ -411,9 +411,9 @@
             android:paddingVertical="3dp"
             android:text="ETF"
             android:textColor="@color/foundation_black_500"
-            app:layout_constraintBottom_toBottomOf="@id/textTab1"
-            app:layout_constraintStart_toEndOf="@id/textTab1"
-            app:layout_constraintTop_toTopOf="@id/textTab1" />
+            app:layout_constraintBottom_toBottomOf="@+id/textTab1"
+            app:layout_constraintStart_toEndOf="@+id/textTab1"
+            app:layout_constraintTop_toTopOf="@+id/textTab1" />
 
         <!--주식리스트-->
         <androidx.recyclerview.widget.RecyclerView
@@ -425,7 +425,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textTab1"
+            app:layout_constraintTop_toBottomOf="@+id/textTab1"
 
             >
 

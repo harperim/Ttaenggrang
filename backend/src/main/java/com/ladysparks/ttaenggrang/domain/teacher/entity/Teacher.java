@@ -45,9 +45,8 @@ public class Teacher{
     @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
     private List<Etf> etfs; // 선생님이 관리하는 주식 목록
 
-    // 국가 (1:1 관계, Nation 엔티티에서 teacher_id를 관리)
-//    @JsonIgnore  // 순환 참조 방지
-    @OneToOne(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
     private Nation nation;
 
     public Teacher(Long id) {

@@ -1,6 +1,8 @@
 package com.ladysparks.ttaenggrang.ui.home
 
 import android.app.Dialog
+import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -19,12 +21,19 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.ladysparks.ttaenggrang.MainActivity
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
 import com.ladysparks.ttaenggrang.data.model.dto.AlarmDto
+import com.ladysparks.ttaenggrang.databinding.DialogBaseConfirmCancelBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.databinding.FragmentHomeTeacherBinding
+import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
+import com.ladysparks.ttaenggrang.util.NavigationManager
+import com.ladysparks.ttaenggrang.util.NavigationManager.FRAGMENT_STUDENT_MANAGEMENT
+import com.ladysparks.ttaenggrang.util.NumberUtil
+import com.ladysparks.ttaenggrang.util.showToast
 import java.util.Date
 
 
@@ -33,29 +42,71 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
 
     private lateinit var homeViewModel: HomeViewModel
 
-
+    // Adapter
+    // BaseTableRowModel 사용법1 :  index, clickEvent 없는 버전
+    private lateinit var studentAdapter: BaseTableAdapter
     private lateinit var alarmAdapter: AlarmAdapter
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
 
         // ViewModel
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
 
-        // 초기화 기타 기능 작성
-        // ViewModel
         initAdapter()
-        fetchAlarmList()
+        observeLiveData()
 
         // 샘플 데이터
         sampleDataAlarmList()
-        sampleDataDynamicTable()
         sampleBarChart()
+
         initEvent()
+
+        // 데이터 요청
+        homeViewModel.fetchEconomySummary()
+        homeViewModel.fetchStudentList()
+    }
+
+
+    private fun observeLiveData() {
+        // 1. 국가 관련 기본 필수 정보
+        homeViewModel.economySummary.observe(viewLifecycleOwner) { response ->
+            binding.textNationalRevenue.text = NumberUtil.formatWithComma(response.treasuryIncome.toString())
+            binding.textAvgBalance.text = NumberUtil.formatWithComma(response.averageStudentBalance.toString())
+            binding.textActiveProducts.text = response.activeItemCount.toString() + "개"
+            binding.textSavingGoal.text = NumberUtil.formatWithComma(response.classSavingsGoal.toString())
+        }
+
+        // 2. 학생정보 리스트
+        binding.recyclerStudent.visibility = View.VISIBLE
+        binding.textNullStudent.visibility = View.GONE
+        homeViewModel.studentList.observe(viewLifecycleOwner) { response ->
+            if(response.isNullOrEmpty()){
+                binding.recyclerStudent.visibility = View.GONE
+                binding.textNullStudent.visibility = View.VISIBLE
+                return@observe
+            }
+
+            response?.let {
+                val dataRows = it.map { student ->
+                    BaseTableRowModel(
+                        listOf(
+                            student.name?.toString() ?: "N/A",
+                            student.username ?: "N/A",
+                            student.job?.jobName ?: "N/A",
+                            student.job?.baseSalary.toString() ?: "0",
+                            student.bankAccount?.balance.toString() ?: "0"
+                        )
+                    )
+                }
+                studentAdapter.updateData(dataRows)
+            }
+        }
+
+        // 3. 알람 리스트 (우선 서버 기반 가져오기 or 내부 저장소)
+
+        // 4. 학생 평균 수입/지출 현황 그래프 데이터
     }
 
     private fun sampleBarChart() {
@@ -144,82 +195,29 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
         alarmAdapter.updateData(tempData)
     }
 
-    private fun sampleDataDynamicTable() {
-        // 컬럼 개수가 3개일 때 사용 방법
-//        val header1 = listOf("이름", "아이디", "직업")
-//        val data1 = listOf(
-//            TableRowDto(listOf("홍길동", "user01", "개발자")),
-//            TableRowDto(listOf("김철수", "user02", "디자이너")),
-//            TableRowDto(listOf("이영희", "user03", "기획자"))
-//        )
-//
-//        val adapter1 = TableAdapter(header1, data1)
-//        binding.recyclerStudent.layoutManager = LinearLayoutManager(requireContext())
-//        binding.recyclerStudent.adapter = adapter1
-
-        // 컬럼 개수가 5개 일 때 사용 방법
-        val header2 = listOf("이름", "아이디", "직업", "월급", "계좌 잔고")
-        val data2 = listOf(
-            BaseTableRowModel(listOf("박지성", "user04", "축구선수", "5000만원", "2억")),
-            BaseTableRowModel(listOf("손흥민", "user05", "축구선수", "7억원", "10억"))
-        )
-
-        // 컬럼 개수가 5개인 테이블
-        val adapter2 = BaseTableAdapter(header2, data2)
-        binding.recyclerStudent.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerStudent.adapter = adapter2
-    }
-
-
-
     private fun initAdapter() {
-//        alarmAdapter = AlarmAdapter()
         alarmAdapter = AlarmAdapter(arrayListOf())
-
         binding.recyclerAlarm.adapter = alarmAdapter
-//        binding.recyclerAlarm.apply {
-//            layoutManager = LinearLayoutManager(context) // 세로 리스트
-//            adapter = alarmAdapter
-//        }
+
+        // 학생 정보 리스트
+        val studentHeader = listOf("이름", "아이디", "직업", "월급", "계좌 잔고")
+        studentAdapter = BaseTableAdapter(studentHeader, emptyList())
+        binding.recyclerStudent.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerStudent.adapter = studentAdapter
     }
 
-    private fun fetchAlarmList() {
-        // ViewModel의 LiveData를 관찰하여 UI 업데이트
-        homeViewModel.alarmList.observe(viewLifecycleOwner) { alarmList ->
-            alarmAdapter.updateData(alarmList)
-            binding.recyclerAlarm.visibility = View.VISIBLE
-        }
-
-        // 데이터 불러오기
-        homeViewModel.fetchAlarmList()
-    }
 
     private fun initEvent() {
+        binding.btnSalary.setOnClickListener {
+
+        }
+
         binding.btnAlarmMore.setOnClickListener {
-            // 다이얼로그 생성
-            val dialog = Dialog(requireContext())
-            dialog.setContentView(R.layout.dialog_alert_board)
+            showToast("알람 내역 더보기")
+        }
 
-            // 다이얼로그 내부 UI 가져오기
-            val tableLayout = dialog.findViewById<TableLayout>(R.id.tableLayout)
-            val btnClose = dialog.findViewById<Button>(R.id.btn_close)
-
-            val tempData = listOf(
-                AlarmDto(1, "거래 발생", "누가 물건을 샀어요", "시스템", Date().time),
-                AlarmDto(2, "거래 발생1", "누가 물건을 샀어요2", "시스템2", Date().time),
-                AlarmDto(3, "거래 발생2", "누가 물건을 샀어요3", "시스템3", Date().time),
-
-            )
-
-            // 닫기 버튼 이벤트
-            btnClose.setOnClickListener {
-                dialog.dismiss()
-            }
-
-            // 다이얼로그 배경 투명 설정 및 크기 조절
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            dialog.show()
+        binding.btnStudentMore.setOnClickListener {
+            NavigationManager.moveFragment(FRAGMENT_STUDENT_MANAGEMENT)
         }
     }
 

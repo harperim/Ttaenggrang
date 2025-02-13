@@ -22,8 +22,8 @@ public interface TeacherDashboardApiSpecification {
             """)
     ResponseEntity<ApiResponse<List<StudentDailyAverageFinancialDTO>>> DailyAverageIncomeAndExpense();
 
-    @Operation(summary = "교사 메인 대시보드 [조회]", description = """
-            💡 교사 메인 대시보드 데이터 정보를 조회합니다.
+    @Operation(summary = "교사 메인 화면 대시보드 [조회]", description = """
+            💡 교사 메인 화면 대시보드를 구성하는 데이터 정보를 조회합니다.
 
             **[ 응답 필드 ]**
             - **treasuryIncome** : 국고 수입
