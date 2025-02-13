@@ -16,4 +16,5 @@ public interface JobRespository extends JpaRepository<Job, Long> {
     @Query("SELECT j.baseSalary FROM Job j WHERE j.id = :jobId")
     int findBaseSalaryById(Long jobId);
 
+    Optional<Job> findByJobNameAndTeacherId(String jobName, Long teacherId);
 }

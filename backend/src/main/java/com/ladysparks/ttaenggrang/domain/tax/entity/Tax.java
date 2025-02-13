@@ -26,7 +26,7 @@ public class Tax {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String taxName;
 
     @DecimalMin(value = "0.00", inclusive = false, message = "세율은 0보다 커야 합니다.")
