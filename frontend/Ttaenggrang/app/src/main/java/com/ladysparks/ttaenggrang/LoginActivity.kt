@@ -77,13 +77,6 @@ class LoginActivity : BaseActivity() {
                     // FCM TokenUpdate
                     updateFCMToken(token)
 
-
-                    // 국가 정보가 없는 경우, 국가 정보 등록 페이지로 먼저 이동해야 한다.
-//                    if(!it.data!!.tempTF){
-//                        startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java))
-//                        return@launch
-//                    }
-
                     // MainActivity 이동
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                 }.onFailure { error ->
@@ -172,14 +165,13 @@ class LoginActivity : BaseActivity() {
                     // FCM TokenUpdate
                     updateFCMToken(token)
 
-                    // 수정 필요 : 교사가 로그인한 경우, 국가 정보가 없다면? 먼저 등록하는 페이지로 이동해야한다.
+                    // 등록된 국가정보가 없을 경우, 다른 페이지로 이동
                     if(!hasNation){
                         startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java))
                         return@launch
+                    }else{
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     }
-
-                    // MainActivity 이동
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                 }.onFailure { error ->
                     Log.d("TAG", "initEvent: 로그인 패일")
                     showErrorDialog(error)
