@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class JwtTokenProvider {
 
     private final SecretKey secretKey;
-    private final long validityInMilliseconds = TimeUnit.HOURS.toMillis(1); // ✅ 1시간 유효기간
+    private final long validityInMilliseconds = TimeUnit.HOURS.toMillis(10); // ✅ 10시간 유효기간
 
     // ✅ SecretKey를 애플리케이션 시작 시 한 번만 생성
     public JwtTokenProvider() {
