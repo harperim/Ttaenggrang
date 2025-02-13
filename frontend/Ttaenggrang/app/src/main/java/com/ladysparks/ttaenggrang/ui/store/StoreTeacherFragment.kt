@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import android.app.Dialog
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladysparks.ttaenggrang.databinding.DialogItemTeacherRegisterBinding
 import com.ladysparks.ttaenggrang.util.showToast
 import com.ladysparks.ttaenggrang.data.model.request.StoreRegisterRequest
@@ -24,8 +25,7 @@ import com.ladysparks.ttaenggrang.data.model.request.StoreRegisterRequest
 class StoreTeacherFragment : BaseFragment<FragmentStoreTeacherBinding>(FragmentStoreTeacherBinding::bind, R.layout.fragment_store_teacher) {
 
     private lateinit var storeViewModel: StoreViewModel
-
-
+    private lateinit var storeTeacherRegisteredItemAdapter: StoreTeacherRegisteredItemAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,6 +39,10 @@ class StoreTeacherFragment : BaseFragment<FragmentStoreTeacherBinding>(FragmentS
         binding.btnRegisterItem.setOnClickListener {
             requestRegisterItem()
         }
+
+        storeTeacherRegisteredItemAdapter = StoreTeacherRegisteredItemAdapter(emptyList())
+        binding.recyclerRegistedItem.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerRegistedItem.adapter = storeTeacherRegisteredItemAdapter
     }
 
 
@@ -46,6 +50,9 @@ class StoreTeacherFragment : BaseFragment<FragmentStoreTeacherBinding>(FragmentS
 
         storeViewModel.itemList.observe(viewLifecycleOwner) { response ->
             val registeredItems = response?: emptyList()
+
+            storeTeacherRegisteredItemAdapter.updateData(registeredItems)
+
             // 등록된 아이템 수
             binding.textCountRegisteredItem.text = "${registeredItems.size}개"
             if (registeredItems.isNotEmpty()) {
@@ -93,34 +100,16 @@ class StoreTeacherFragment : BaseFragment<FragmentStoreTeacherBinding>(FragmentS
                 return@setOnClickListener
             }
 
-            val itemRegister = StoreRegisterRequest(
-                name = itemName,
-                description = itemDescription,
-                price = itemPrice,
-                quantity = itemCount
+            storeViewModel.registerItem(itemName, itemDescription, itemPrice, itemCount, {
+                dialog.dismiss()
+                showToast("등록에 성공하였습니다")
+                storeViewModel.fetchStoreItemList()
+                }, {
+                    dialog.dismiss()
+                    showToast("등록에 실패했습니다")
+                }
             )
-
-            registerThisItem(itemRegister)
-
-            dialog.dismiss()
         }
-
         dialog.show()
     }
-
-    private fun registerThisItem(itemRegister: StoreRegisterRequest) {
-        lifecycleScope.launch {
-            runCatching {
-//                Log.d("Registered Item", "${itemRegister}")
-                RetrofitUtil.storeService.registerItem(itemRegister)
-            }.onSuccess {
-                Log.d("Registered Item", "상품 등록 성공 ${it}")
-                showToast("상품이 성공적으로 등록되었습니다")
-                storeViewModel.fetchStoreItemList()
-            }.onFailure { throwable ->
-                Log.e("Registered Item", "item register failure", throwable)
-            }
-        }
-    }
-
 }

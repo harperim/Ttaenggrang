@@ -14,7 +14,7 @@
         <TextView
             android:id="@+id/textItemNumber"
             android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="1"
             style="@style/heading4"
@@ -23,7 +23,7 @@
         <TextView
             android:id="@+id/textItemName"
             android:layout_weight="2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="미지 교환권"
             style="@style/heading4"
@@ -32,7 +32,7 @@
         <TextView
             android:id="@+id/textItemDescription"
             android:layout_weight="5"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="미지 교환권입니다"
             style="@style/heading4"
@@ -41,7 +41,7 @@
         <TextView
             android:id="@+id/textItemPrice"
             android:layout_weight="2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="10,000"
             style="@style/heading4"
@@ -50,7 +50,7 @@
         <TextView
             android:id="@+id/textItemQuantity"
             android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="1"
             style="@style/heading4"

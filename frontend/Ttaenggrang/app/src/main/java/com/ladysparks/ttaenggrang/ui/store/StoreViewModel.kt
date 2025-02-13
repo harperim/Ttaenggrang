@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ladysparks.ttaenggrang.data.model.request.StoreBuyingRequest
+import com.ladysparks.ttaenggrang.data.model.request.StoreRegisterRequest
 import com.ladysparks.ttaenggrang.data.model.response.StoreStudenItemListResponse
 import com.ladysparks.ttaenggrang.data.model.response.StoreStudentPurchaseHistoryResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
@@ -76,6 +77,29 @@ class StoreViewModel: ViewModel() {
                 onFailure()
             }
         }
+    }
+
+    fun registerItem(name: String, description: String, price: Int, quantity: Int, onSuccess: () -> Unit, onFailure: () -> Unit) {
+
+        val itemRegister = StoreRegisterRequest (
+            name = name,
+            description = description,
+            price = price,
+            quantity = quantity
+        )
+
+        viewModelScope.launch {
+            runCatching {
+                RetrofitUtil.storeService.registerItem(itemRegister)
+            }.onSuccess {
+                Log.d("RegisterItem Success", "아이템 등록 성공: $it")
+                onSuccess()
+            }.onFailure { throwable ->
+                Log.e("RegisterItem Failure", "아이템 등록 실패", throwable)
+                onFailure()
+            }
+        }
+
     }
 
 }

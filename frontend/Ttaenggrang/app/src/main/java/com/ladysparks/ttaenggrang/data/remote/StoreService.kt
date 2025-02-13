@@ -17,7 +17,7 @@ interface StoreService {
     @GET("item-products")
     suspend fun getStudentItemList(): ApiResponse<List<StoreStudenItemListResponse>>
 
-    // 학생의 구매 아이템 내역을 전체 조회
+    // 학생의 구매 아이템 내역을 전체 조회 - 실행됨
     @GET("item-transactions/purchase")
     suspend fun getStudentPurchaseHistory(): ApiResponse<List<StoreStudentPurchaseHistoryResponse>>
 
@@ -33,6 +33,8 @@ interface StoreService {
     @POST("item-products/{itemId}")
     suspend fun getItemDetail(@Path("itemId")itemId: Int): ApiResponse<StoreRegisterResponse>
 
+
+    // 아이템 사용 - 실행됨
     @PUT("item-transactions/{itemTransactionId}/use")
     suspend fun useItem(@Path("itemTransactionId")itemTransactionId: Int): ApiResponse<Any>
 }
