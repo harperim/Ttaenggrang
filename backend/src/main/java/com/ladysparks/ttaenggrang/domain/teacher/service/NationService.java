@@ -52,10 +52,15 @@ public class NationService {
                 .nationalTreasury(0)
                 .teacher(teacher)
                 .build();
-        Nation savedNation = nationRepository.save(nation);
+        // 교사 엔티티에도 국가 설정 (양방향 관계 설정)
+        teacher.setNation(nation);
+
+        // 저장 (Nation 먼저 저장 후 Teacher 업데이트)
+        nationRepository.save(nation);
+        teacherRepository.save(teacher);
 
         // 4. 응답 데이터 생성
-        NationDTO responseDTO = nationMapper.toDto(savedNation);
+        NationDTO responseDTO = nationMapper.toDto(nation);
 
         return ApiResponse.created("국가 정보 등록이 완료되었습니다.", responseDTO);
     }
@@ -86,20 +91,18 @@ public class NationService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 교사를 찾을 수 없습닌다."));
 
         // 2. 교사가 이미 국가를 가지고 있는지 확인
-        Optional<NationDTO> nationDTO = findNationByTeacherId(teacherId);
+        Nation nation = nationRepository.findByTeacher_Id(teacherId)
+                .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
 
-        if (nationDTO.isPresent()) {
-            // 3. 국가 삭제
-            nationRepository.deleteById(nationDTO.get().getId());
+        // 3. Teacher에서 국가 연결 해제
+        teacher.setNation(null);
+        teacherRepository.save(teacher);
 
-            // 4. 강제 DB 반영
-            entityManager.flush();
+        // 4. 국가 삭제
+        nationRepository.delete(nation);
 
-            // 5. 성공 응답 반환
-            return ApiResponse.success("국가 정보가 삭제되었습니다.", null);
-        } else {
-            throw new NotFoundException("등록된 국가가 없습니다.");
-        }
+        // 5. 성공 응답 반환
+        return ApiResponse.success("국가 정보가 삭제되었습니다.", null);
     }
 
     @Transactional

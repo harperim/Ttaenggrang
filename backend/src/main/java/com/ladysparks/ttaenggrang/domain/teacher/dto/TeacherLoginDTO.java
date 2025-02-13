@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(value={"id", "name", "school", "token"}, allowGetters=true)
+@JsonIgnoreProperties(value={"id", "name", "school", "hasNation", "token"}, allowGetters=true)
 public class TeacherLoginDTO {
     private Long id;
 
@@ -23,6 +23,7 @@ public class TeacherLoginDTO {
 
     private String name;
     private String school;
+    private boolean hasNation;
     private String token;
 
     // ✅ 요청을 위한 생성자
@@ -32,10 +33,11 @@ public class TeacherLoginDTO {
     }
 
     // ✅ 응답을 위한 생성자
-    public TeacherLoginDTO(String email, String name, String school, String token) {
+    public TeacherLoginDTO(String email, String name, String school, boolean hasNation, String token) {
         this.email = email;
         this.name = name;
         this.school = school;
+        this.hasNation = hasNation;
         this.token = token;
     }
 }
