@@ -9,6 +9,7 @@ import com.ladysparks.ttaenggrang.data.model.response.StoreRegisterResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface StoreService {
@@ -31,4 +32,7 @@ interface StoreService {
     // 아이템 개별 조회
     @POST("item-products/{itemId}")
     suspend fun getItemDetail(@Path("itemId")itemId: Int): ApiResponse<StoreRegisterResponse>
+
+    @PUT("item-transactions/{itemTransactionId}/use")
+    suspend fun useItem(@Path("itemTransactionId")itemTransactionId: Int): ApiResponse<Any>
 }

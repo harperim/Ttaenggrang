@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladysparks.ttaenggrang.R
@@ -29,6 +30,8 @@ class StoreStudentFragment : BaseFragment<FragmentStoreStudentBinding>(
     FragmentStoreStudentBinding::bind,
     R.layout.fragment_store_student
 ) {
+    private lateinit var storeViewModel: StoreViewModel
+
     // 구매할 수 있는 아이템 리스트 어뎁터
     private lateinit var storeStudentAdapter: StoreStudentAdapter
     // 내가 보유한 아이템 리스트 어뎁터
@@ -37,13 +40,23 @@ class StoreStudentFragment : BaseFragment<FragmentStoreStudentBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getStudentItemList()
-        getStudentPurchaseHistory()
+        // 뷰모델 연결
+        storeViewModel = ViewModelProvider(this).get(StoreViewModel::class.java)
 
+        observeLiveData()
 
-       // 구매 가능한 아이템 리사이클러
+        // 리사이클러 세팅
+        setupRecyclerViews()
+
+        // 데이터 요청
+        storeViewModel.fetchStoreItemList()
+        storeViewModel.fetchMyItemList()
+
+    }
+
+    private fun setupRecyclerViews() {
+
         binding.recyclerItemList.layoutManager = GridLayoutManager(requireContext(), 3)
-
         // 구매 아이템 클릭 시 구매 다이얼로그
         storeStudentAdapter = StoreStudentAdapter(emptyList()) { selectedItem ->
             showBuyDialog(selectedItem)
@@ -60,52 +73,34 @@ class StoreStudentFragment : BaseFragment<FragmentStoreStudentBinding>(
         }
 
         binding.recyclerMyItem.adapter = storeStudentMyItemAdapter
-
     }
 
-//    구매할 수 있는 아이템 목록 불러오기
-    private fun getStudentItemList() {
-        lifecycleScope.launch {
-            runCatching {
-                RetrofitUtil.storeService.getStudentItemList()
-            }.onSuccess {
-                Log.d("BuyingList Sucess", "${it}")
-                val itemList = it.data ?: emptyList()
-                if (itemList.isNotEmpty()) {
-                    binding.textNullItemList.visibility = View.GONE
-                    binding.recyclerItemList.visibility = View.VISIBLE
-                    storeStudentAdapter.updateData(itemList)
-                } else {
-                    binding.textNullItemList.visibility = View.VISIBLE
-                    binding.recyclerItemList.visibility = View.GONE
-                }
-            }.onFailure { throwable ->
-                Log.e("BuyingList Failure", "Failed to fetch itemList", throwable)
 
+
+    private fun observeLiveData() {
+
+        storeViewModel.itemList.observe(viewLifecycleOwner) { response ->
+            val itemStoreList = response ?: emptyList()
+
+            if (itemStoreList.isNotEmpty()) {
+                binding.textNullItemList.visibility = View.GONE
+                binding.recyclerItemList.visibility = View.VISIBLE
+                storeStudentAdapter.updateData(itemStoreList)
+            } else {
+                binding.textNullItemList.visibility = View.VISIBLE
+                binding.recyclerItemList.visibility = View.GONE
             }
         }
-    }
 
-//    구매하고 사용하지 않은 내 보유 아이템 목록 불러오기
-    private fun getStudentPurchaseHistory() {
-        lifecycleScope.launch {
-            runCatching {
-                RetrofitUtil.storeService.getStudentPurchaseHistory()
-            }.onSuccess {
-                Log.d("PurchaseHistory Success", "${it}")
-                val myItemList = it.data ?: emptyList()
-
-                // 정확하게는 구매한 아이템 중에 구매 수량이 1 이상인 것이 있으면 아이템이 보이게 해야 한다
-                if (myItemList.isNotEmpty()) {
-                    binding.textNullMyItem.visibility = View.GONE
-                    binding.recyclerMyItem.visibility = View.VISIBLE
-                    storeStudentMyItemAdapter.updateData(myItemList)
-                } else {
-                    binding.textNullMyItem.visibility = View.VISIBLE
-                    binding.recyclerMyItem.visibility = View.GONE
-                }
-            }.onFailure { throwable ->
-                Log.e("PurchaseHistory Failure", "Failed to fetch myItem", throwable)
+        storeViewModel.myItemList.observe(viewLifecycleOwner) { response ->
+            val myItemList = response ?: emptyList()
+            if (myItemList.isNotEmpty()) {
+                binding.textNullMyItem.visibility = View.GONE
+                binding.recyclerMyItem.visibility = View.VISIBLE
+                storeStudentMyItemAdapter.updateData(myItemList)
+            } else {
+                binding.textNullMyItem.visibility = View.VISIBLE
+                binding.recyclerMyItem.visibility = View.GONE
             }
         }
     }
@@ -123,31 +118,21 @@ class StoreStudentFragment : BaseFragment<FragmentStoreStudentBinding>(
         dialogBinding.textItemDescription.text = item.description
         dialogBinding.textItemPrice.text = "${item.price}원"
 
-        val itemBuying = StoreBuyingRequest(
-            itemId = item.id,
-            quantity = 1
-        )
-
         dialogBinding.btnBuy.setOnClickListener {
-            lifecycleScope.launch {
-                runCatching {
-//                    Log.d("BuyingTest", "${itemBuying}")
-                    RetrofitUtil.storeService.buyItem(itemBuying)
-                }.onSuccess {
-                    Log.d("Buying Success", "${it}")
+            storeViewModel.buyItem(item.id, 1,
+                onSuccess = {
+                    dialog.dismiss()
                     createBuySuccessDialog().show()
-                    // 학생이 구매 후 구매할 수 있는 아이템 리사이클러와 내 보유 아이템 리사이클러를 새로고침
-                    getStudentPurchaseHistory()
-                    getStudentItemList()
-                }.onFailure { throwable ->
-                    Log.e("Buying Failure", "Item Buying Failure", throwable)
+                    storeViewModel.fetchStoreItemList()
+                    storeViewModel.fetchMyItemList()
+                },
+                onFailure = {
+                    dialog.dismiss()
                     createBuyFailDialog().show()
                 }
-            }
-            dialog.dismiss()
+            )
         }
         dialog.show()
-
     }
 
     // 구매 성공 다이얼로그 생성 함수
@@ -198,11 +183,12 @@ class StoreStudentFragment : BaseFragment<FragmentStoreStudentBinding>(
         }
 
         dialogBinding.btnUse.setOnClickListener{
-            // 사용하기 구현
-
-
+            storeViewModel.useItem(item.id) {
+                storeViewModel.fetchMyItemList()
+                dialog.dismiss()
+                showToast("상품이 사용되었습니다")
+            }
         }
         dialog.show()
     }
-
 }

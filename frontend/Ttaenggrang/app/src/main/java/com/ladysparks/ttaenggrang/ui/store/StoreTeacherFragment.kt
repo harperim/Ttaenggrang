@@ -15,6 +15,7 @@ import com.ladysparks.ttaenggrang.databinding.FragmentStudentsBinding
 import kotlinx.coroutines.launch
 import android.app.Dialog
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModelProvider
 import com.ladysparks.ttaenggrang.databinding.DialogItemTeacherRegisterBinding
 import com.ladysparks.ttaenggrang.util.showToast
 import com.ladysparks.ttaenggrang.data.model.request.StoreRegisterRequest
@@ -22,16 +23,43 @@ import com.ladysparks.ttaenggrang.data.model.request.StoreRegisterRequest
 
 class StoreTeacherFragment : BaseFragment<FragmentStoreTeacherBinding>(FragmentStoreTeacherBinding::bind, R.layout.fragment_store_teacher) {
 
+    private lateinit var storeViewModel: StoreViewModel
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getTeacherItemList()
-        binding.apply {
-            binding.btnRegisterItem.setOnClickListener{
-                requestRegisterItem()
-            }
+        storeViewModel = ViewModelProvider(this).get(StoreViewModel::class.java)
+
+        observeLiveData()
+
+        storeViewModel.fetchStoreItemList()
+
+        binding.btnRegisterItem.setOnClickListener {
+            requestRegisterItem()
         }
     }
+
+
+    private fun observeLiveData() {
+
+        storeViewModel.itemList.observe(viewLifecycleOwner) { response ->
+            val registeredItems = response?: emptyList()
+            // 등록된 아이템 수
+            binding.textCountRegisteredItem.text = "${registeredItems.size}개"
+            if (registeredItems.isNotEmpty()) {
+                binding.textNullRegisteredItem.visibility = View.GONE
+                binding.recyclerRegistedItem.visibility = View.VISIBLE
+            } else {
+                binding.textNullRegisteredItem.visibility = View.VISIBLE
+                binding.recyclerRegistedItem.visibility = View.GONE
+            }
+
+        }
+
+    }
+
 
     // 아이템 등록하기 다이얼로그
     private fun requestRegisterItem() {
@@ -80,30 +108,6 @@ class StoreTeacherFragment : BaseFragment<FragmentStoreTeacherBinding>(FragmentS
         dialog.show()
     }
 
-
-    private fun getTeacherItemList() {
-        lifecycleScope.launch {
-            runCatching {
-                RetrofitUtil.storeService.getStudentItemList()
-            }.onSuccess {
-                Log.d("test", "등록된 아이템 조회 성공${it}")
-                val registeredItems = it.data?: emptyList()
-                // 등록된 아이템 수
-                binding.textCountRegisteredItem.text = "${registeredItems.size}개"
-                if (registeredItems.isNotEmpty()) {
-                    binding.textNullRegisteredItem.visibility = View.GONE
-                    binding.recyclerRegistedItem.visibility = View.VISIBLE
-                } else {
-                    binding.textNullRegisteredItem.visibility = View.VISIBLE
-                    binding.recyclerRegistedItem.visibility = View.GONE
-                }
-            }.onFailure { throwable ->
-                Log.e("test", "Failed to fetch registeredItems", throwable)
-
-            }
-        }
-    }
-
     private fun registerThisItem(itemRegister: StoreRegisterRequest) {
         lifecycleScope.launch {
             runCatching {
@@ -112,7 +116,7 @@ class StoreTeacherFragment : BaseFragment<FragmentStoreTeacherBinding>(FragmentS
             }.onSuccess {
                 Log.d("Registered Item", "상품 등록 성공 ${it}")
                 showToast("상품이 성공적으로 등록되었습니다")
-                getTeacherItemList()
+                storeViewModel.fetchStoreItemList()
             }.onFailure { throwable ->
                 Log.e("Registered Item", "item register failure", throwable)
             }

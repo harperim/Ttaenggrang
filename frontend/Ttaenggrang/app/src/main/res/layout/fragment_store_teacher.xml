@@ -163,35 +163,40 @@
                 android:gravity="center_vertical">
 
                 <TextView
-                    android:layout_width="72dp"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No."
                     style="@style/heading4"
                     android:gravity="center"/>
 
                 <TextView
-                    android:layout_width="292dp"
+                    android:layout_weight="2"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="상품명"
                     style="@style/heading4"
                     android:gravity="center"/>
 
                 <TextView
-                    android:layout_width="208dp"
+                    android:layout_weight="5"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="상품금액"
+                    android:text="설명"
                     style="@style/heading4"
                     android:gravity="center"/>
 
                 <TextView
-                    android:layout_width="223dp"
+                    android:layout_weight="2"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="판매자"
+                    android:text="금액"
                     style="@style/heading4"
                     android:gravity="center"/>
 
                 <TextView
-                    android:layout_width="169dp"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="등록 갯수"
                     style="@style/heading4"
