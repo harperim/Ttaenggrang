@@ -6,6 +6,7 @@ import com.ladysparks.ttaenggrang.domain.item.dto.ItemTransactionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import com.ladysparks.ttaenggrang.domain.item.service.ItemTransactionService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/item-transactions")
 public class ItemTransactionController implements ItemTransactionApiSpecification {
 
     private final ItemTransactionService itemTransactionService;
     private final StudentService studentService;
-
-    @Autowired
-    public ItemTransactionController(ItemTransactionService itemTransactionService, StudentService studentService) {
-        this.itemTransactionService = itemTransactionService;
-        this.studentService = studentService;
-    }
 
     // 아이템 구매 [등록]
     @PostMapping
@@ -50,7 +46,7 @@ public class ItemTransactionController implements ItemTransactionApiSpecificatio
     /**
      * 아이템 사용 API (PATCH)
      */
-    @PatchMapping("/{itemTransactionId}/use")
+    @PutMapping("/{itemTransactionId}/use")
     public ResponseEntity<ApiResponse<ItemTransactionDTO>> useItem(@PathVariable Long itemTransactionId) {
         ItemTransactionDTO itemTransactionDTO = itemTransactionService.useItem(itemTransactionId);
         return ResponseEntity.ok(ApiResponse.success(itemTransactionDTO));
