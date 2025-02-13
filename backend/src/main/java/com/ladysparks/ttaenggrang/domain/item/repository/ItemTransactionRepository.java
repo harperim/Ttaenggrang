@@ -16,5 +16,7 @@ public interface ItemTransactionRepository extends JpaRepository<ItemTransaction
 
     Optional<ItemTransaction> findItemTransactionByItem_Id(Long itemId);
 
+    Optional<ItemTransaction> findByItemIdAndBuyerId(Long id, Long buyerId);
+
 }
 
