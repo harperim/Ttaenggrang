@@ -248,6 +248,11 @@ public class StockService {
         // 현재 보유량 = 총 매수량 - 총 매도량
         int owned_qty = totalBought - totalSold;
 
+        // 로그로 확인해보세요
+        System.out.println("Total Bought: " + totalBought);
+        System.out.println("Total Sold: " + totalSold);
+        System.out.println("Owned Qty (totalBought - totalSold): " + owned_qty);
+
         // 보유량보다 더 많이 매도하려는 경우 예외 발생
         if (owned_qty < shareCount) {
             throw new IllegalArgumentException("보유한 주식 수량이 부족합니다.");

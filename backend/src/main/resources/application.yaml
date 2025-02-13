@@ -62,6 +62,3 @@ server:
       charset: UTF-8
       enabled: true
       force: true
-news:
-  api-key: "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"
-
