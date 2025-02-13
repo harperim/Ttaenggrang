@@ -22,6 +22,8 @@ public class EtfDTO {
     private Timestamp created_at;
     private Timestamp updated_at;
     private Integer changeRate; //가격 변동률
+
+    private final String type = "ETF";
 //    private Boolean isMarketActive;  //주식장 활성화
 
     private List<Long> stock_id;  // 주식

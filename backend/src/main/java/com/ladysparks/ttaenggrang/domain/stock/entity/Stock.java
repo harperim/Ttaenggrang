@@ -49,13 +49,9 @@ public class Stock {
     @Column
     private String categoryName;  //카테고리 이름
 
-    @Column(nullable = false, columnDefinition = "TIME DEFAULT '10:00:00'")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    private LocalTime openTime = LocalTime.of(10, 00);  // 기본값: 10시  주식 오픈 시간
 
-    @Column(nullable = false, columnDefinition = "TIME DEFAULT '15:00:00'")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    private LocalTime closeTime = LocalTime.of(15, 00); // 기본값: 15시  주식 닫는 시간
+    @Column(nullable = false, updatable = false)  // updatable = false -> 수정 불가
+    private final String type = "일반 주식";
 
 
     @Column

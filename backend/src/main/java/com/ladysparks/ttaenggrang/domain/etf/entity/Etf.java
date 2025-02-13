@@ -55,6 +55,9 @@ public class Etf {
 //    @Column(nullable = false)
 //    private Boolean isMarketActive;  //주식장 활성화
 
+    @Column(nullable = false, updatable = false)
+    private final String type = "ETF";
+
 
     // 조인
 
