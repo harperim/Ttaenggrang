@@ -78,10 +78,10 @@ public class TeacherStudentController implements TeacherStudentApiSpecificaion {
         Long teacherId = getTeacherIdFromSecurityContext();
 
         // 2. 학생 계정 생성 서비스 호출
-        StudentResponseDTO createdStudent = studentService.createStudent(teacherId, studentCreateDTO);
+        ApiResponse<StudentResponseDTO> createdStudent = studentService.createStudent(teacherId, studentCreateDTO);
 
         // 3. 생성된 학생 정보 반환
-        return ResponseEntity.ok(ApiResponse.success(createdStudent));
+        return ResponseEntity.status(createdStudent.getStatusCode()).body(createdStudent);
     }
 
     // 우리반 학생 전체 조회
