@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-@Tag(name = "Teacher-Dashboard", description = "교사 대시보드 페이지 관련 API")
+@Tag(name = "Teacher-Dashboard", description = "교사 대시보드 관련 API")
 public interface TeacherDashboardApiSpecification {
 
     @Operation(summary = "학생들의 최근 7일 평균 수입 및 지출 [조회]", description = """
