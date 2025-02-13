@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface EtfRepository extends JpaRepository<Etf, Integer>{
+public interface EtfRepository extends JpaRepository<Etf, Long>{
     boolean existsByName(String name);
 
     // 이번주 ETF 평가액 조회

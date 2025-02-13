@@ -3,6 +3,7 @@ package com.ladysparks.ttaenggrang.global.docs;
 import com.ladysparks.ttaenggrang.domain.stock.dto.*;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -45,19 +46,19 @@ public interface StockApiSpecification {
     public ResponseEntity<List<StudentStockDTO>> getStudentStocks(@PathVariable Long studentId);
 
 
-//
+
     @Operation(summary = "주식시장 활성화 여부 조회", description = "💡 주식시장 활성화 여부 조회")
-    @GetMapping("/isMarketActive")
-    public boolean isMarketActive();
+    @GetMapping("/isManualOverride")
+    public ResponseEntity<Boolean> getMarketStatus();
 
     @Operation(summary = "주식시장 활성화/비활성화 설정", description = "💡 주식시장 활성화/비활성화 설정 (선생님만 가능)")
-    @PostMapping("/setMarketActive")
-    public void setMarketActive(@RequestParam boolean isActive);
+    @PostMapping("/status")
+    public ResponseEntity<String> setMarketStatus(@RequestParam @Parameter(description = "주식 시장 활성화 여부") boolean isActive);
 
 
     @Operation(summary = " 현재 주식 거래 가능 여부 조회", description = "💡  현재 주식 거래 가능 여부 조회 (시장 활성화 + 9~17시)")
     @GetMapping("/isTradingAllowed")
-    public boolean isTradingAllowed();
+    public ResponseEntity<Boolean> isTradingAllowed();
 
 
     // 주식 가격 및 변동률 조회

@@ -44,10 +44,10 @@ public class BankTransactionService {
                 : processSingleTransaction(bankTransactionDTO);
 
         // 목표 달성률 업데이트 & Redis 저장
-        SavingsAchievementDTO savingsAchievementDTO = studentService.calculateSavingsAchievementRate();
+//        SavingsAchievementDTO savingsAchievementDTO = studentService.calculateSavingsAchievementRate();
 
-        Long teacherId = studentService.findTeacherIdByStudentId(savingsAchievementDTO.getStudentId());
-        redisGoalService.saveOrUpdateGoalAchievement(teacherId, savingsAchievementDTO);
+//        Long teacherId = studentService.findTeacherIdByStudentId(savingsAchievementDTO.getStudentId());
+//        redisGoalService.saveOrUpdateGoalAchievement(teacherId, savingsAchievementDTO);
 
         return result;
     }

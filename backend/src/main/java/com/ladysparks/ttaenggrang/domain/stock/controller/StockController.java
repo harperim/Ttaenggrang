@@ -1,9 +1,11 @@
 package com.ladysparks.ttaenggrang.domain.stock.controller;
 
 import com.ladysparks.ttaenggrang.domain.stock.dto.*;
+import com.ladysparks.ttaenggrang.domain.stock.repository.MarketStatusRepository;
 import com.ladysparks.ttaenggrang.global.docs.StockApiSpecification;
 import com.ladysparks.ttaenggrang.domain.stock.service.StockService;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -88,22 +90,25 @@ public class StockController implements StockApiSpecification {
     }
 
 
+
     // 주식시장 활성화 여부 조회 (선생님이 설정한 값)
-    @GetMapping("/isMarketActive")
-    public boolean isMarketActive() {
-        return stockService.isMarketActive();
+    @GetMapping("/isManualOverride")
+    public ResponseEntity<Boolean> getMarketStatus() {
+        boolean isMarketActive = stockService.isMarketActive();
+        return ResponseEntity.ok(isMarketActive);
+    }
+    // 주식시장 활성화/비활성화 설정 (선생님이 버튼으로 설정)
+    @PostMapping("/status")
+    public ResponseEntity<String> setMarketStatus(@RequestParam @Parameter(description = "주식 시장 활성화 여부") boolean isActive) {
+        stockService.setMarketStatus(isActive);
+        return ResponseEntity.ok("주식 및 ETF 시장 상태가 변경되었습니다.");
     }
 
-    // 주식시장 활성화/비활성화 설정 (선생님이 버튼으로 변경 가능)
-    @PostMapping("/setMarketActive")
-    public void setMarketActive(@RequestParam boolean isActive) {
-        stockService.setMarketActive(isActive);
-    }
-
-    // 현재 주식 거래 가능 여부 조회 (시장 활성화 + 9~17시)
-    @GetMapping("/isTradingAllowed")
-    public boolean isTradingAllowed() {
-        return stockService.isTradingAllowed();
+    // 현재 주식 거래 가능 여부 조회 (시장 활성화 + 시간 체크)
+    @GetMapping("/trading-allowed")
+    public ResponseEntity<Boolean> isTradingAllowed() {
+        boolean isAllowed = stockService.isTradingAllowed();
+        return ResponseEntity.ok(isAllowed);
     }
 
     // 주식 가격 및 변동률 조회

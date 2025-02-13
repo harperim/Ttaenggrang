@@ -40,7 +40,7 @@ public class EtfController  {
 
     // 주식 상세 조회
     @GetMapping("/{etfId}")
-    public ResponseEntity<EtfDTO> getEtf(@PathVariable("etfId") int etfId) {
+    public ResponseEntity<EtfDTO> getEtf(@PathVariable("etfId") Long etfId) {
         Optional<EtfDTO> result = etfService.findEtf(etfId);
 
         // 값이 없으면 404 Not Found 반환
@@ -52,7 +52,7 @@ public class EtfController  {
     }
     //ETF 매수
     @PostMapping("/{etfId}/buy")
-    public ResponseEntity<ApiResponse<EtfTransactionDTO>> buyEtf(@PathVariable("etfId") int etfId,
+    public ResponseEntity<ApiResponse<EtfTransactionDTO>> buyEtf(@PathVariable("etfId") Long etfId,
                                                                      @RequestParam("share_count") int shareCount,
                                                                      @RequestParam("studentId") Long studentId) {
 
@@ -64,7 +64,7 @@ public class EtfController  {
 
     //ETF 매도
     @PostMapping("/{etfId}/sell")
-    public ResponseEntity<ApiResponse<EtfTransactionDTO>> sellEtf(@PathVariable("etfId") int etfId,
+    public ResponseEntity<ApiResponse<EtfTransactionDTO>> sellEtf(@PathVariable("etfId") Long etfId,
                                                                       @RequestParam("share_count") int shareCount,
                                                                       @RequestParam("studentId") Long studentId) {
 
