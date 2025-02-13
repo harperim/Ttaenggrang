@@ -94,9 +94,9 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
                         listOf(
                             student.name?.toString() ?: "N/A",
                             student.username ?: "N/A",
-                            student.job?.jobName ?: "N/A",
+                            student.job?.jobName ?: "시민",
                             student.job?.baseSalary.toString() ?: "0",
-                            student.bankAccount?.balance.toString() ?: "0"
+                            NumberUtil.formatWithComma(student.bankAccount?.balance.toString())
                         )
                     )
                 }

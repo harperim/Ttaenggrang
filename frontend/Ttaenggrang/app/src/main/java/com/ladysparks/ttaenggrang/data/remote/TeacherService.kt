@@ -34,11 +34,20 @@ interface TeacherService {
     /***
      * 직업 정보 관련
      */
+    // ----------- 직업 관련
     @GET("teachers/jobs/class")
     suspend fun getJobList(): ApiResponse<List<JobDto>>
 
     @POST("teachers/jobs/create")
     suspend fun registerJob(@Body jobs: JobDto): ApiResponse<JobDto>
+
+
+    // ----------- 주급, 인센티브
+    @POST("salaries/distribute-base")
+    suspend fun payStudentWeeklySalary(): ApiResponse<String>
+
+    @POST("salaries/incentives")
+    suspend fun payStudentBonus(@Body request: Map<String, Int>): ApiResponse<String>
 
 
 }

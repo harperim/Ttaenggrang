@@ -60,7 +60,8 @@ class LoginActivity : BaseActivity() {
         binding.tempBtnTeacher.setOnClickListener {
             lifecycleScope.launch {
                 runCatching {
-                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "cc@cc.com", password = "1234"))
+                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "hi1@naver.com", password = "ssafy123"))
+//                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "cc@cc.com", password = "1234"))
                 }.onSuccess {
                     showToast("교사 로그인 성공")
 

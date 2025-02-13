@@ -8,13 +8,21 @@ import androidx.lifecycle.viewModelScope
 import com.ladysparks.ttaenggrang.data.model.dto.JobDto
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
+import com.ladysparks.ttaenggrang.util.ApiErrorParser
 import kotlinx.coroutines.launch
 
 class JobViewModel : ViewModel() {
 
+    // 공통 : Error 처리
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> get() = _errorMessage
+    fun clearErrorMessage() {
+        _errorMessage.value = null
+    }
+
+    // 직업 리스트 조회
     private val _jobList = MutableLiveData<List<JobDto>>()
     val jobList: LiveData<List<JobDto>> get() = _jobList
-
     fun fetchJobList(){
         viewModelScope.launch {
             runCatching {
@@ -29,6 +37,7 @@ class JobViewModel : ViewModel() {
         }
     }
 
+    // 새 직업 등록 결과
     private val _registerJobResult = MutableLiveData<JobDto?>()
     val registerJobResult: LiveData<JobDto?> get() = _registerJobResult
     fun registerJob(jobData: JobDto){
@@ -39,7 +48,7 @@ class JobViewModel : ViewModel() {
                 _registerJobResult.value = it.data
                 fetchJobList()
             }.onFailure {
-                _registerJobResult.value = null
+                _errorMessage.value = ApiErrorParser.extractErrorMessage(it)
             }
         }
     }
