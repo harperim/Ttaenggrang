@@ -97,7 +97,7 @@ class SignupActivity : BaseActivity() {
                 // 서버로부터 알림 데이터 요청
                 RetrofitUtil.authService.signupTeacher(user)
             }.onSuccess { data ->
-                showToast("회원 가입 완료 ! ${data}")
+                showToast("회원 가입 완료 !")
                 startActivity(Intent(this@SignupActivity, LoginActivity::class.java))
             }.onFailure { exception ->
                 showErrorDialog(exception)

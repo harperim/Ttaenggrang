@@ -59,6 +59,12 @@ class JobFragment : BaseFragment<FragmentJobBinding>(FragmentJobBinding::bind, R
     }
 
     private fun initObserver() {
+        jobViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                showErrorDialog(Throwable(it))
+                jobViewModel.clearErrorMessage()
+            }
+        }
         // 1. observer :직업 정보 리스트
         jobViewModel.jobList.observe(viewLifecycleOwner) { jobList ->
 

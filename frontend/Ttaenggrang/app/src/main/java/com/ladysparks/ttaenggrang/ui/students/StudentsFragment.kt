@@ -249,7 +249,7 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
                 runCatching {
                     RetrofitUtil.teacherService.singleCreate(user)
                 }.onSuccess { data ->
-                    showToast("회원추가 완료 ! ${data}")
+                    showToast("회원추가 완료 !")
                     studentsViewModel.fetchStudentList()
                 }.onFailure { exception ->
                     showErrorDialog(exception)

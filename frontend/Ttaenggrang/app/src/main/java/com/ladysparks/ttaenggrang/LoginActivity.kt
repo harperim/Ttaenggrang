@@ -65,8 +65,6 @@ class LoginActivity : BaseActivity() {
                 }.onSuccess {
                     showToast("교사 로그인 성공")
 
-
-
                     // Token 저장
                     val token = when(val userData = it.data){
                         is TeacherSignInResponse -> userData.token
@@ -152,6 +150,7 @@ class LoginActivity : BaseActivity() {
 //                     Token 저장
                     var token: String = ""
                     var account: String = ""
+                    var hasNation: Boolean = false
 
                     when(val userData = it.data){
                         is StudentSignInResponse -> {
@@ -161,6 +160,7 @@ class LoginActivity : BaseActivity() {
                         is TeacherSignInResponse -> {
                             token = userData.token
                             account = userData.email
+                            hasNation = userData.hasNation
                         }
                         else -> ""
                     }
@@ -173,12 +173,10 @@ class LoginActivity : BaseActivity() {
                     updateFCMToken(token)
 
                     // 수정 필요 : 교사가 로그인한 경우, 국가 정보가 없다면? 먼저 등록하는 페이지로 이동해야한다.
-//                    if(binding.checkBoxAgree.isChecked && it.data is TeacherSignInResponse){
-//                        if(it.data.tempTF == false){
-//                            startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java))
-//                            return@launch
-//                        }
-//                    }
+                    if(!hasNation){
+                        startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java))
+                        return@launch
+                    }
 
                     // MainActivity 이동
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))

@@ -45,10 +45,9 @@ class NationSetupActivity : BaseActivity() {
                     RetrofitUtil.authService.nationSetup(data)
                 }.onSuccess {
 
-                    startActivity(Intent(this@NationSetupActivity, MainActivity::class.java))
-
+//                    startActivity(Intent(this@NationSetupActivity, MainActivity::class.java))
                     // 1. 더미데이터 추가 : 직업 데이터
-//                    setBaseJobData()
+                    setBaseJobData()
                 }.onFailure {
                     showErrorDialog(it)
                 }
