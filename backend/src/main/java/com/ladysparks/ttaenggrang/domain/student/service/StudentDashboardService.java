@@ -5,11 +5,13 @@ import com.ladysparks.ttaenggrang.domain.bank.service.BankAccountService;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
 import com.ladysparks.ttaenggrang.domain.bank.service.SavingsPayoutService;
 import com.ladysparks.ttaenggrang.domain.bank.service.SavingsSubscriptionService;
+import com.ladysparks.ttaenggrang.domain.student.dto.BankTransactionSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentAssetDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentDashboardDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.service.JobService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.NationService;
 import com.ladysparks.ttaenggrang.domain.weekly_report.service.InvestmentService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -100,6 +102,11 @@ public class StudentDashboardService {
                 .totalIncentive(incentive)
                 .totalExpense(totalExpenses)
                 .build();
+    }
+
+    @Transactional
+    public List<BankTransactionSummaryDTO> getStudentTransactionSummaryList(Long studentId) {
+        return bankTransactionService.getSummaryByBankAccountId(studentId);
     }
 
 }

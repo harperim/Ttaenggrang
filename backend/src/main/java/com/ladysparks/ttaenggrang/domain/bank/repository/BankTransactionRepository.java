@@ -50,5 +50,8 @@ public interface BankTransactionRepository extends JpaRepository<BankTransaction
     int getTotalAmountByType(@Param("studentId") Long studentId,
                              @Param("transactionTypes") List<BankTransactionType> transactionTypes);
 
+    @Query("SELECT t FROM BankTransaction t WHERE t.bankAccount.id = :bankAccountId ORDER BY t.createdAt DESC")
+    List<BankTransaction> getSummaryByBankAccountId(@Param("bankAccountId") Long bankAccountId);
+
 }
 

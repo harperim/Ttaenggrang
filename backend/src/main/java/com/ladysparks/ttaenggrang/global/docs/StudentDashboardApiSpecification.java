@@ -1,13 +1,17 @@
 package com.ladysparks.ttaenggrang.global.docs;
 
+import com.ladysparks.ttaenggrang.domain.student.dto.BankTransactionSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentAssetDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentDashboardDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 
-@Tag(name = "Student-Dashboard", description = "학생 대시보드 페이지 관련 API")
+import java.util.List;
+
+@Tag(name = "Student-Dashboard", description = "학생 대시보드 관련 API")
 public interface StudentDashboardApiSpecification {
 
     @Operation(summary = "학생 메인 화면 대시보드 [조회]", description = """
@@ -36,7 +40,6 @@ public interface StudentDashboardApiSpecification {
     ResponseEntity<ApiResponse<StudentDashboardDTO>> studentDashboardDetails();
 
     @Operation(summary = "학생 자산 정보 [조회]", description = """
-
             💡 학생 자산 정보를 조회하여 금융 상태를 한눈에 파악할 수 있습니다.
 
             ---
@@ -56,9 +59,41 @@ public interface StudentDashboardApiSpecification {
             - 현재 로그인한 학생의 금융 데이터를 조회합니다.
             - `적금 납입 중인 금액`, `만기/중도 인출 지급된 금액`을 합쳐 `총 저축`으로 계산합니다.
             - `매도 금액`과 `투자 평가액`을 합쳐 `총 투자 수익`으로 반환합니다.
-            
             """)
     ResponseEntity<ApiResponse<StudentAssetDTO>> studentDashboardAsset();
+
+    @Operation(summary = "학생의 거래 내역 [조회]", description = """
+        💡 현재 로그인한 학생의 거래 내역을 최신순으로 조회합니다.
+
+        ---
+        
+        **[ 응답 필드 ]**
+        - **transactionDate** : 거래 날짜
+        - **transactionType** : 거래 내역 (거래 타입)
+            - 입금 → **DEPOSIT**
+            - 출금 → **WITHDRAW**
+            - 송금 → **TRANSFER**
+            - 아이템 구매/판매 → **ITEM**
+            - 주식 매수 → **STOCK_BUY**
+            - 주식 매도 → **STOCK_SELL**
+            - ETF 매수 → **ETF_BUY**
+            - ETF 매도 → **ETF_SELL**
+            - 적금 납입 → **SAVINGS_DEPOSIT**
+            - 적금 이자 수령 → **SAVINGS_INTEREST**
+            - 은행 계좌 이자 수령 → **BANK_INTEREST**
+            - 급여 수령 → **SALARY**
+            - 인센티브 수령 → **INCENTIVE**
+            - 세금 납부 → **TAX**
+            - 벌금 납부 → **FINE**
+        - **amount** : 거래 금액
+        - **accountBalance** : 거래 후 계좌 잔고
+
+        ---
+         **[ 동작 방식 ]**
+        - 학생은 자신의 계좌 내역만 조회할 수 있습니다.
+        """)
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<BankTransactionSummaryDTO>>> getStudentTransactionSummaryList();
 
 //    @Operation(summary = "학생의 저축 목표 달성률 [조회]", description = """
 //            💡 특정 학생의 학급 내 저축 목표 달성률 및 목표 달성 순위를 조회합니다.
