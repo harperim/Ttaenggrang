@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.etf.entity;
 
+import com.ladysparks.ttaenggrang.domain.news.entity.News;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
 import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
@@ -64,7 +65,7 @@ public class Etf {
 
     //주식
     @OneToMany(targetEntity = Stock.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "stock_id")
+    @JoinColumn(name = "etf_id")
     private List<Stock> stocks;
 
     //ETF 거래 내역
@@ -72,11 +73,10 @@ public class Etf {
     @JoinColumn(name = "etfTransaction_id")
     private List<EtfTransaction> etfTransaction;
 
-
-
     //뉴스
-//    @ManyToMany(mappedBy = "etfs")
-//    private List<News> news;
+    @OneToMany(targetEntity = Stock.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "newa_id")
+    private List<News> news;
 
 
 }

@@ -2,6 +2,7 @@ package com.ladysparks.ttaenggrang.domain.bank.service;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription;
+import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription.SavingsSubscriptionStatus;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.SavingsSubscriptionMapper;
 import com.ladysparks.ttaenggrang.domain.bank.repository.SavingsSubscriptionRepository;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
@@ -26,6 +27,7 @@ public class SavingsSubscriptionService {
     private final StudentService studentService;
     private final SavingsProductService savingsProductService;
     private final SavingsDepositService savingsDepositService;
+    private final SavingsPayoutService savingsPayoutService;
 
     // 적금 가입 [등록]
     @Transactional
@@ -87,13 +89,8 @@ public class SavingsSubscriptionService {
     }
 
     // 적금 가입 내역 [전체 조회]
-    public List<SavingsSubscriptionDTO> findSavingsSubscriptions() {
-        Long studentId = studentService.getCurrentStudentId();
+    public List<SavingsSubscriptionDTO> findSavingsSubscriptionsByStudentId(Long studentId) {
         List<SavingsSubscription> savingsSubscriptions = savingsSubscriptionRepository.findByStudentId(studentId);
-
-        if (savingsSubscriptions.isEmpty()) {
-            throw new EntityNotFoundException("해당 학생의 적금 가입 내역이 존재하지 않습니다. ID: " + studentId);
-        }
 
         return savingsSubscriptions.stream()
                 .map(savingsSubscriptionMapper::toDto)
@@ -111,6 +108,31 @@ public class SavingsSubscriptionService {
         return savingsSubscriptions.stream()
                 .map(savingsSubscriptionMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public SavingsSubscription findSavingsSubscriptionById(Long savingsSubscriptionId) {
+        return savingsSubscriptionRepository.findById(savingsSubscriptionId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 적금 가입 내역이 존재하지 않습니다. ID: " + savingsSubscriptionId));
+    }
+
+    public int getTotalDepositAmount(Long studentId) {
+        // 1. 가입 중인 적금 상품
+        List<SavingsSubscriptionDTO> savingsSubscriptionDTOList = findSavingsSubscriptionsByStudentId(studentId).stream()
+                .filter(dto -> dto.getStatus() == SavingsSubscriptionStatus.ACTIVE) // 2. 상품의 가입 내역
+                .toList();
+
+        // 3. 납입 상태인 금액 합산
+        return savingsDepositService.getTotalDepositAmount(savingsSubscriptionDTOList);
+    }
+
+    public int getTotalPayoutAmount(Long studentId) {
+        // 1. 가입 중인 적금 상품
+        List<SavingsSubscriptionDTO> savingsSubscriptionDTOList = findSavingsSubscriptionsByStudentId(studentId).stream()
+                .filter(dto -> dto.getStatus() == SavingsSubscriptionStatus.MATURED || dto.getStatus() == SavingsSubscriptionStatus.WITHDRAWN) // 2. 상품의 가입 내역
+                .toList();
+
+        // 3. 납입 상태인 금액 합산
+        return savingsPayoutService.getTotalPayoutAmount(savingsSubscriptionDTOList);
     }
 
 }

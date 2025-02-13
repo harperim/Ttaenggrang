@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
-@JsonIgnoreProperties(value = {"id", "buyerId", "buyerName", "createdAt"}, allowGetters = true)
+@JsonIgnoreProperties(value = {"id", "buyerId", "itemName", "itemPrice", "itemDescription", "createdAt"}, allowGetters = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,12 +19,16 @@ public class ItemTransactionDTO {
 
     private Long id;
 
-    @NotNull(message = "아이템 ID(itemId)는 필수 항목입니다.")
+    @NotNull(message = "상품 ID(itemId)는 필수 항목입니다.")
     private Long itemId;
 
     private Long buyerId;
 
-    private String buyerName;
+    private String itemName;
+
+    private int itemPrice;
+
+    private String itemDescription;
 
     @NotNull(message = "구매 수량(quantity)은 필수 항목입니다.")
     @Min(value = 1, message = "구매 수량(quantity)은 1 이상이어야 합니다.")

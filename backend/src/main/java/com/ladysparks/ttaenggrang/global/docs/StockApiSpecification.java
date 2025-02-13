@@ -1,8 +1,6 @@
 package com.ladysparks.ttaenggrang.global.docs;
 
-import com.ladysparks.ttaenggrang.domain.stock.dto.OpenResponseDTO;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StockTransactionDTO;
+import com.ladysparks.ttaenggrang.domain.stock.dto.*;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,19 +40,30 @@ public interface StockApiSpecification {
                                                                      @RequestParam("share_count") int shareCount,
                                                                      @RequestParam("studentId") Long studentId);
 
+    @Operation(summary = "학생 보유 주식 조회", description = "학생 보유 주식 조회")
+    @GetMapping("/student/{studentId}")
+    public ResponseEntity<List<StudentStockDTO>> getStudentStocks(@PathVariable Long studentId);
 
 
-    @Operation(summary = "주식장 활성화/비활성화", description = "💡 주식장 활성화/비활성화")
-    @PostMapping("/manage")
-    public ResponseEntity<Map<String, Boolean>> manageStockMarket(@RequestParam boolean openMarket);
+//
+    @Operation(summary = "주식시장 활성화 여부 조회", description = "💡 주식시장 활성화 여부 조회")
+    @GetMapping("/isMarketActive")
+    public boolean isMarketActive();
 
-    @Operation(summary = "주식장 활성화/비활성화 조회", description = "💡 주식장 활성화/비활성화 조회")
-    @GetMapping("/status")
-    public ResponseEntity<ApiResponse<Boolean>> checkMarketStatus();
+    @Operation(summary = "주식시장 활성화/비활성화 설정", description = "💡 주식시장 활성화/비활성화 설정 (선생님만 가능)")
+    @PostMapping("/setMarketActive")
+    public void setMarketActive(@RequestParam boolean isActive);
 
-    @Operation(summary = "주식 개장시간, 폐장 시간 변경", description = "💡주식 개장시간, 폐장 시간 변경")
-    public ResponseEntity<ApiResponse<StockDTO>> updateMarketTimeForAllStocks(@RequestBody StockDTO stockDTO);
 
+    @Operation(summary = " 현재 주식 거래 가능 여부 조회", description = "💡  현재 주식 거래 가능 여부 조회 (시장 활성화 + 9~17시)")
+    @GetMapping("/isTradingAllowed")
+    public boolean isTradingAllowed();
+
+
+    // 주식 가격 및 변동률 조회
+    @Operation(summary = " 주식 가격 및 변동률 조회", description = "💡  주식 가격 및 변동률 조회 합니다.")
+    @GetMapping("/prices")
+    public ResponseEntity<List<ChangeResponseDTO>> getStockPrices();
 
 
 

@@ -3,7 +3,9 @@ package com.ladysparks.ttaenggrang.domain.teacher.service;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherLoginDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherResponseDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherSignupDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Nation;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
+import com.ladysparks.ttaenggrang.domain.teacher.repository.NationRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.global.config.JwtTokenProvider;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -27,6 +29,7 @@ public class TeacherService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;  // ✅ JWT 토큰 생성기
     private final SecurityUtil securityUtil;
+    private final NationRepository NationRepository;
 
     public Long getCurrentTeacherId() {
         String email = securityUtil.getCurrentUser();
@@ -83,8 +86,11 @@ public class TeacherService {
         // JMT 토큰 생성
         String token = jwtTokenProvider.createToken(teacher.getEmail());
 
+        // 교사가 국가 정보를 가지고 있는지 확인
+        boolean hasNation = teacher.getNation() != null;
+
         // 응답을 위한 DTO 생성 (요청용 DTO와 구별)
-        return new TeacherLoginDTO(teacher.getEmail(), teacher.getName(), teacher.getSchool(), token);
+        return new TeacherLoginDTO(teacher.getEmail(), teacher.getName(), teacher.getSchool(), hasNation, token);
     }
 
     // 교사 전체 목록 조회 (조회용)
@@ -126,6 +132,12 @@ public class TeacherService {
                 .collect(Collectors.toList());
 
         return responseDTOs;
+    }
+
+    public String findNameById(Long teacherId) {
+        return teacherRepository.findById(teacherId)
+                .map(Teacher::getName)
+                .orElseThrow(() -> new NotFoundException("등록된 교사가 없습니다."));
     }
 
 }

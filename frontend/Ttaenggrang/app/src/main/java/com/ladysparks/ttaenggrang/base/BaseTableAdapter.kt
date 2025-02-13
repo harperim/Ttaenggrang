@@ -89,6 +89,11 @@ class BaseTableAdapter(
         }
     }
 
+    fun updateData(newRows: List<BaseTableRowModel>) {
+        data = newRows
+        notifyDataSetChanged() // ✅ RecyclerView 새로고침
+    }
+
     // 데이터 업데이트용
     fun updateData(newHeaders: List<String>, newRows: List<BaseTableRowModel>) {
         header = newHeaders

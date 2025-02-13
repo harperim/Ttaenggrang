@@ -55,4 +55,8 @@ public class SavingsSubscription {
         }
     }
 
+    public enum SavingsSubscriptionStatus {
+        ACTIVE, WITHDRAWN, MATURED
+    }
+
 }

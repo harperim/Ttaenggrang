@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.global.response;
 
+import com.ladysparks.ttaenggrang.domain.news.dto.NewsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ public class ApiResponse<T> {
     private int statusCode;
     private String message;
     private T data;
+
 
     // ✅ 200 OK 응답 생성
     public static <T> ApiResponse<T> success(T data) {

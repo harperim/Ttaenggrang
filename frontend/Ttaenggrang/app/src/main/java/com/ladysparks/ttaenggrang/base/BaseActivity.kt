@@ -14,8 +14,8 @@ open class BaseActivity : AppCompatActivity() {
             newOverride.densityDpi = DisplayMetrics.DENSITY_DEVICE_STABLE
         }
 
-        if(newOverride.fontScale >= 1.1f)
-            newOverride.fontScale = 1.1f
+        if(newOverride.fontScale >= 1.0f)
+            newOverride.fontScale = 1.0f
 
         applyOverrideConfiguration(newOverride)
         super.attachBaseContext(newBase)

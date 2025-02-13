@@ -2,7 +2,7 @@ package com.ladysparks.ttaenggrang.domain.tax.service;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankAccountDTO;
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
-import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransactionType;
+import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankAccountService;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.NationDTO;
@@ -44,7 +44,9 @@ public class TaxPaymentService {
         Long nationId = studentService.getNationIdById(studentId);
 
         // 은행 계좌 거래
-        BankAccountDTO bankAccountDTO = bankAccountService.findBankAccount();
+        Long bankAccountId = studentService.findBankAccountIdById(studentId);
+        BankAccountDTO bankAccountDTO = bankAccountService.findBankAccount(bankAccountId);
+
         TaxDTO taxDTO = taxService.findTaxById(taxPaymentDTO.getTaxId());
 
         BankTransactionDTO bankTransactionDTO = BankTransactionDTO.builder()

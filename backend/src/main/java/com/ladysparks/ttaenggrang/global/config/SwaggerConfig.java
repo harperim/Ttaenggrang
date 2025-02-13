@@ -48,7 +48,7 @@ public class SwaggerConfig {
     public GroupedOpenApi teacherApi() {
         return GroupedOpenApi.builder()
                 .group("Teacher")
-                .pathsToMatch("/teachers/**")
+                .pathsToMatch("/teachers/**", "/salaries/**")
                 .build();
     }
 
@@ -72,7 +72,7 @@ public class SwaggerConfig {
     public GroupedOpenApi bankApi() {
         return GroupedOpenApi.builder()
                 .group("Bank")
-                .pathsToMatch("/bank-accounts/**", "/bank-transactions/**", "/savings-products/**", "/savings-subscriptions/**", "/savings-deposits/**")
+                .pathsToMatch("/bank-accounts/**", "/bank-transactions/**", "/savings-products/**", "/savings-subscriptions/**", "/savings-deposits/**", "/savings-payouts/**")
                 .build();
     }
 
@@ -128,7 +128,7 @@ public class SwaggerConfig {
     public GroupedOpenApi voteApi() {
         return GroupedOpenApi.builder()
                 .group("Vote")
-                .pathsToMatch("/votes/**", "/salaries/**")
+                .pathsToMatch("/votes/**")
                 .build();
     }
 
@@ -139,5 +139,4 @@ public class SwaggerConfig {
                 .pathsToMatch("/notifications/**")
                 .build();
     }
-
 }

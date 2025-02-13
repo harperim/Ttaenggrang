@@ -14,7 +14,9 @@ public interface ItemTransactionMapper {
 
     @Mapping(source = "item.id", target = "itemId")
     @Mapping(source = "buyer.id", target = "buyerId")
-    @Mapping(source = "buyer.name", target = "buyerName")
+    @Mapping(source = "item.name", target = "itemName")
+    @Mapping(source = "item.price", target = "itemPrice")
+    @Mapping(source = "item.description", target = "itemDescription")
     ItemTransactionDTO toDto(ItemTransaction itemTransaction);
 
     @Mapping(target = "id", ignore = true) // ID는 자동 생성되므로 무시
