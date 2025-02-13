@@ -200,7 +200,9 @@ public class StudentService {
                     .orElseGet(() -> {
                         Job newJob = Job.builder()
                                 .jobName("시민")
+                                .jobDescription("기본 직업입니다.")
                                 .baseSalary(1000)
+                                .maxPeople(10)
                                 .build();
                         return jobRespository.save(newJob);
                     });
