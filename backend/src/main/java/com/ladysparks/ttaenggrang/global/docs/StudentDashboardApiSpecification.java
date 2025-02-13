@@ -19,9 +19,9 @@ public interface StudentDashboardApiSpecification {
             - **studentId** : 학생 ID
             - **accountBalance** : 계좌 잔액
             - **currentRank** : 내 순위
-            - **savingsAmount** : 총 저축 (적금 납입액)
-            - **investmentAmount** : 투자 평가액
-            - **totalAssets** : 총 자산 (적금 납입액 + 계좌 잔액 + 투자 평가액)
+            - **totalSavings** : 총 저축 (적금 납입액)
+            - **totalInvestmentAmount** : 투자 평가액
+            - **totalAsset** : 총 자산 (적금 납입액 + 계좌 잔액 + 투자 평가액)
             - **goalAmount** : 목표액
             - **achievementRate** : 목표 달성률 (%) ( `(총 자산 / 목표액) * 100` )
             

@@ -10,7 +10,6 @@ import com.ladysparks.ttaenggrang.domain.item.entity.SellerType;
 import com.ladysparks.ttaenggrang.domain.item.mapper.ItemTransactionMapper;
 import com.ladysparks.ttaenggrang.domain.item.repository.ItemRepository;
 import com.ladysparks.ttaenggrang.domain.item.repository.ItemTransactionRepository;
-import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,7 +37,7 @@ public class ItemTransactionService {
     public ItemTransactionDTO addItemTransaction(ItemTransactionDTO itemTransactionDTO) {
         // 1. 구매할 아이템 조회
         Item item = itemRepository.findById(itemTransactionDTO.getItemId())
-                .orElseThrow(() -> new EntityNotFoundException("해당 아이템을 찾을 수 없습니다. ID: " + itemTransactionDTO.getItemId()));
+                .orElseThrow(() -> new EntityNotFoundException("해당 상품을 찾을 수 없습니다. ID: " + itemTransactionDTO.getItemId()));
 
         // 2. 판매자와 구매자 조회
         Long sellerId = item.getSellerType() == SellerType.STUDENT ? item.getSellerStudent().getId() : item.getSellerTeacher().getId();
@@ -53,24 +52,35 @@ public class ItemTransactionService {
         // 4. 남은 수량 계산 및 검증
         int remainingQuantity = item.getQuantity() - itemTransactionDTO.getQuantity();
         if (remainingQuantity < 0) {
-            throw new IllegalArgumentException("아이템 재고가 부족합니다. 재고: " + item.getQuantity());
+            throw new IllegalArgumentException("해당 상품의 재고가 부족합니다. 재고: " + item.getQuantity());
         }
 
         // 5. 재고 차감 후 업데이트
         item.updateQuantity(remainingQuantity);
         itemRepository.save(item);
 
-        // 6. 거래 엔티티 변환 및 저장
-        itemTransactionDTO.setBuyerId(buyerId);
-        ItemTransaction itemTransaction = itemTransactionMapper.toEntity(itemTransactionDTO);
-        ItemTransaction savedItemTransaction = itemTransactionRepository.save(itemTransaction);
+        // 6. 기존 거래 내역 확인
+        Optional<ItemTransaction> existingTransaction = itemTransactionRepository.findByItemIdAndBuyerId(item.getId(), buyerId);
+
+        ItemTransaction savedItemTransaction;
+        if (existingTransaction.isPresent()) {
+            // 기존 거래가 있으면 수량 업데이트
+            ItemTransaction itemTransaction = existingTransaction.get();
+            itemTransaction.updateQuantity(itemTransaction.getQuantity() + itemTransactionDTO.getQuantity());
+            savedItemTransaction = itemTransactionRepository.save(itemTransaction);
+        } else {
+            // 기존 거래가 없으면 새로운 거래 생성
+            itemTransactionDTO.setBuyerId(buyerId);
+            ItemTransaction itemTransaction = itemTransactionMapper.toEntity(itemTransactionDTO);
+            savedItemTransaction = itemTransactionRepository.save(itemTransaction);
+        }
 
         // 7. 은행 계좌 거래
         BankTransactionDTO bankTransactionDTO = BankTransactionDTO.builder()
                 .bankAccountId(buyerId)
                 .type(BankTransactionType.ITEM)
                 .amount(itemTransactionDTO.getQuantity() * item.getPrice())
-                .description("[아이템 거래] 상품명: " + item.getName())
+                .description("[상품 거래] 상품명: " + item.getName())
                 .receiverId(sellerId)
                 .build();
         bankTransactionService.addBankTransaction(bankTransactionDTO);
@@ -79,7 +89,7 @@ public class ItemTransactionService {
     }
 
     // 모든 판매 내역 조회
-    public List<ItemTransactionDTO> findItemTransactionsBySeller() {
+    public List<ItemTransactionDTO> findItemTransactionListBySeller() {
         Optional<Long> currentTeacherId = teacherService.getOptionalCurrentTeacherId();
         Optional<Long> currentStudentId = studentService.getOptionalCurrentStudentId();
 
@@ -114,7 +124,7 @@ public class ItemTransactionService {
     public ItemTransactionDTO useItem(Long itemTransactionId) {
         // 아이템 거래 내역 조회
         ItemTransaction itemTransaction = itemTransactionRepository.findById(itemTransactionId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 아이템이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품 거래 내역이 존재하지 않습니다."));
 
         // 수량 차감
         if (itemTransaction.getQuantity() - 1 < 0) {
