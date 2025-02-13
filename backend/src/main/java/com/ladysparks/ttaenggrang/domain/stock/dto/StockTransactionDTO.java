@@ -18,7 +18,7 @@ public class StockTransactionDTO {
     private Timestamp trans_date;  // 거래 날짜
     private int purchase_prc;   // 거래 당시 1주 가격
     private int total_amt;  // 총 거래 금액
-    private int return_amt;   // 현재 주가
+//    private int return_amt;   // 현재 주가
     @JsonIgnore  //  응답에서 숨김
     private BigDecimal returnRate;  // 손익/손실 금액
     private TransType transType; // 거래 유형
@@ -40,7 +40,7 @@ public class StockTransactionDTO {
                 .trans_date(stockTransaction.getTrans_date())
                 .purchase_prc(stockTransaction.getPurchase_prc())  // 거래 당시 1주 가격
                 .total_amt(stockTransaction.getTotal_amt())  // 총 거래 금액
-                .return_amt(stockTransaction.getReturn_amt())  // 현재 주가
+//                .return_amt(stockTransaction.getReturn_amt())  // 현재 주가
                 .returnRate(stockTransaction.getReturnRate())  // 손익/손실 금액
                 .transType(stockTransaction.getTransType())  // 거래 유형
                 .owned_qty(stockTransaction.getOwned_qty())   // 학생이 보유한 주식 수량

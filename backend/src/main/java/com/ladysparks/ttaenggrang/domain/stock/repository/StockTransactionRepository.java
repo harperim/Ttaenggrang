@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface StockTransactionRepository extends JpaRepository<StockTransaction, Integer> {
+public interface StockTransactionRepository extends JpaRepository<StockTransaction, Long> {
     // 특정 학생의 주식 거래 내역 조회
     List<StockTransaction> findByStudentId(int studentId);
     // 특정 주식과 학생, 매수 거래를 필터링하여 거래 건수를 반환하는 메서드

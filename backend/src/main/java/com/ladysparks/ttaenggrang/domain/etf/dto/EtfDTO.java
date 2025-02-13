@@ -22,8 +22,11 @@ public class EtfDTO {
     private Timestamp created_at;
     private Timestamp updated_at;
     private Integer changeRate; //가격 변동률
+//    private Boolean isMarketActive;  //주식장 활성화
 
     private List<Long> stock_id;  // 주식
+
+    private Long market_status_id;
 
 
 
@@ -39,6 +42,7 @@ public class EtfDTO {
                 .created_at(etfDto.getCreated_at())
                 .updated_at(etfDto.getUpdated_at())
                 .changeRate(etfDto.getChangeRate())
+//                .isMarketActive(etfDto.getIsMarketActive())
                 .build();
     }
 
@@ -53,6 +57,7 @@ public class EtfDTO {
                 .created_at(etf.getCreated_at())
                 .updated_at(etf.getUpdated_at())
                 .changeRate(etf.getChangeRate())
+//                .isMarketActive(etf.getIsMarketActive())
                 .build();
     }
 

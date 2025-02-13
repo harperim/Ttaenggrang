@@ -101,6 +101,10 @@ public class Stock {
     @JoinColumn(name = "newa_id")
     private List<News> news;
 
+    @ManyToOne
+    @JoinColumn(name = "market_status_id")
+    private MarketStatus marketStatus; // MarketStatus와 연결
+
 
 
 }

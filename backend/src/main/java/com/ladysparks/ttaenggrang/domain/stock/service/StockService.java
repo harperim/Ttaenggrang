@@ -1,5 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.stock.service;
 
+import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;
+import com.ladysparks.ttaenggrang.domain.etf.repository.EtfRepository;
 import com.ladysparks.ttaenggrang.domain.stock.category.Category;
 import com.ladysparks.ttaenggrang.domain.stock.category.CategoryRepository;
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
@@ -10,6 +12,7 @@ import com.ladysparks.ttaenggrang.domain.stock.dto.StockTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StudentStockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.entity.*;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
+import com.ladysparks.ttaenggrang.domain.stock.repository.MarketStatusRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockHistoryRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockTransactionRepository;
@@ -41,7 +44,8 @@ public class StockService {
     private final BankTransactionService bankTransactionService;
 
     private final CategoryRepository categoryRepository;
-    private final HolidayService holidayService;
+    private final EtfRepository etfRepository;
+    private final MarketStatusRepository marketStatusRepository;
 
 
     @Transactional
@@ -345,64 +349,6 @@ public class StockService {
         return studentStocks;
     }
 
-//
-//
-//
-//    // 주식 시장 관리 (개장 or 폐장) 및 가격 변동 처리
-//    public boolean manageMarket(boolean openMarket) {
-//        LocalDateTime today = LocalDateTime.now();
-//        LocalTime currentTime = today.toLocalTime();
-//
-//        // 주말 및 공휴일 확인
-//        if (today.getDayOfWeek().getValue() >= 6) { // 토요일 또는 일요일
-//            throw new IllegalArgumentException("주말에는 주식시장이 열리지 않습니다.");
-//        }
-//        if (holidayService.isHoliday(today.toLocalDate())) {
-//            throw new IllegalArgumentException("오늘은 공휴일 또는 예약된 휴장일입니다.");
-//        }
-//
-//        List<Stock> stocks = stockRepository.findAll();  // Stock 객체들을 DB에서 조회
-//        if (stocks.isEmpty()) {
-//            throw new IllegalArgumentException("주식 목록이 비어 있습니다.");
-//        }
-//
-//        // 주식 시장 열렸다고 출력
-//        if (openMarket) {
-//            System.out.println("주식 시장이 열렸습니다.");
-//            for (Stock stock : stocks) {
-//                stock.setIsMarketActive(true);  // 시장 개장
-//            }
-//        } else {
-//            // 주식 시장 비활성화 처리
-//            System.out.println("주식 시장이 비활성화되었습니다.");
-//            for (Stock stock : stocks) {
-//                stock.setIsMarketActive(false); // 시장 비활성화
-//            }
-//        }
-//
-//        // 거래량 계산 및 가격 변동 처리
-//        for (Stock stock : stocks) {
-//            if (stock.getIsMarketActive()) { // 시장이 활성화 상태일 때
-//                // 개장 시간과 폐장 시간 확인 후 거래량 계산
-//                if (currentTime.isAfter(stock.getOpenTime()) && currentTime.isBefore(stock.getCloseTime())) {
-//                    // 거래량 계산 (매수량 및 매도량)
-//                    int totalBuyVolumeInRange = stockHistoryRepository.getTotalBuyVolumeInRange(stock.getId(), stock.getOpenTime(), stock.getCloseTime());
-//                    int totalSellVolumeInRange = stockHistoryRepository.getTotalSellVolumeInRange(stock.getId(), stock.getOpenTime(), stock.getCloseTime());
-//
-//                    // 가격 변동 및 거래 기록 저장
-//                    Stock updatedStock = updateStockPrice(stock, totalBuyVolumeInRange, totalSellVolumeInRange);  // 가격 변동
-//                    saveStockHistory(stock, totalBuyVolumeInRange, totalSellVolumeInRange);  // 거래 기록 저장
-//
-//                    System.out.println(stock.getName() + " 주식 가격이 변동되었습니다.");
-//                    System.out.println("새 가격: " + updatedStock.getPrice_per() + "원");
-//                }
-//            }
-//        }
-//
-//        stockRepository.saveAll(stocks);  // DB에 업데이트된 주식 정보 저장
-//        return openMarket;
-//    }
-
 
     // 가격 변동 처리 (폐장 시 적용)
     @Transactional
@@ -413,7 +359,7 @@ public class StockService {
 
         for (Stock stock : stocks) {
             // 시장은 고정적으로 활성(true)로 설정 (개장 시간, 폐장 시간 변경 불가)
-            stock.setIsMarketActive(true);
+//            stock.setIsMarketActive(true);
             stockRepository.save(stock);
 
             double oldPrice = stock.getPrice_per();
@@ -429,7 +375,7 @@ public class StockService {
                         .name(stock.getName())
                         .price_per((int) newPrice)
                         .changeRate((int) changeRate)
-                        .isMarketActive(stock.getIsMarketActive())
+//                        .isMarketActive(stock.getIsMarketActive())
                         .total_qty(stock.getTotal_qty())
                         .remain_qty(stock.getRemain_qty())
                         .description(stock.getDescription())
@@ -513,29 +459,69 @@ public class StockService {
             throw new IllegalArgumentException("매수량과 매도량의 합이 0입니다. 가격 계산이 불가능합니다.");
         }
     }
-
-
-
     // 주식시장 활성화 여부 조회 (선생님이 설정한 값)
     public boolean isMarketActive() {
-        Stock stock = stockRepository.findById(1L).orElseThrow(() -> new RuntimeException("Stock not found"));
-        return stock.getIsMarketActive();  // 선생님이 설정한 값
+        // MarketStatus에서 수동 설정(true)된 첫 번째 값을 조회
+        MarketStatus marketStatus = marketStatusRepository.findFirstByIsManualOverrideTrue()
+                .orElseThrow(() -> new IllegalArgumentException("주식에 대한 시장 상태 정보를 찾을 수 없습니다."));
+
+        // 수동 설정이 있으면 해당 값 반환
+        if (marketStatus.isManualOverride()) {
+            return marketStatus.isMarketActive();
+        }
+
+        // 수동 설정이 없다면 자동으로 설정된 시장 활성화 상태 반환
+        return marketStatus.isMarketActive();
     }
 
-    //주식시장 활성화/비활성화 설정 (선생님이 버튼으로 설정)
+    // 주식시장 활성화/비활성화 설정 (선생님이 버튼으로 설정)
     @Transactional
-    public void setMarketActive(boolean isActive) {
-        Stock stock = stockRepository.findById(1L).orElseThrow(() -> new RuntimeException("Stock not found"));
-        stock.setIsMarketActive(isActive);
-        stockRepository.save(stock);
+    public void setMarketStatus(boolean isManualOverride) {
+        LocalTime currentTime = LocalTime.now();
+        boolean isMarketActive = isManualOverride && !(currentTime.isAfter(LocalTime.of(17, 0)));
+
+        List<Stock> stocks = stockRepository.findAll();
+        for (Stock stock : stocks) {
+            MarketStatus marketStatus = marketStatusRepository.findByStock(stock)
+                    .orElse(new MarketStatus());
+
+            marketStatus.setStock(stock);
+            marketStatus.setManualOverride(isManualOverride);
+            marketStatus.setMarketActive(isMarketActive);
+
+            marketStatusRepository.save(marketStatus);
+        }
+
+        List<Etf> etfs = etfRepository.findAll();
+        for (Etf etf : etfs) {
+            MarketStatus marketStatus = marketStatusRepository.findByEtf(etf)
+                    .orElse(new MarketStatus());
+
+            marketStatus.setEtf(etf);
+            marketStatus.setManualOverride(isManualOverride);
+            marketStatus.setMarketActive(isMarketActive);
+
+            marketStatusRepository.save(marketStatus);
+        }
+
+        System.out.println("시장 상태가 변경되었습니다. 현재 상태: " +
+                (isManualOverride ? "수동 설정 (활성화)" : "자동 설정 (비활성화)"));
     }
 
     // 현재 주식 거래 가능 여부 조회 (시장 활성화 + 시간 체크)
     public boolean isTradingAllowed() {
-        Stock stock = stockRepository.findById(1L).orElseThrow(() -> new RuntimeException("Stock not found"));
+        Stock stock = stockRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("주식 정보를 찾을 수 없습니다."));
+        MarketStatus marketStatus = marketStatusRepository.findByStock(stock)
+                .orElseThrow(() -> new RuntimeException("주식에 대한 시장 상태 정보를 찾을 수 없습니다."));
 
-        // 시장이 비활성화 상태면 시간과 상관없이 거래 불가
-        if (!stock.getIsMarketActive()) {
+        // 시장이 비활성화 상태면 거래 불가
+        if (!marketStatus.isMarketActive()) {
+            return false;
+        }
+
+        // 수동 설정이 아니면 거래 불가
+        if (!marketStatus.isManualOverride()) {
             return false;
         }
 
