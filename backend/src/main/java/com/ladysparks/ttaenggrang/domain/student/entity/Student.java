@@ -1,22 +1,24 @@
 package com.ladysparks.ttaenggrang.domain.student.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankAccount;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Nation;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
+import com.ladysparks.ttaenggrang.domain.vote.entity.VoteHistory;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @AllArgsConstructor //모든 필드를 매개변수로 받는 생성자를 자동으로 생성
 @NoArgsConstructor //기본 생성자(매개변수가 없는 생성자)를 자동으로 생성 , Entity 사용 하면 사용 해줘야함!
 @Entity  // DB 매핑
 @Builder  //Builder 패턴을 생성하여 객체를 생성
-@Data
+@Getter
+@Setter
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +46,7 @@ public class Student {
 
     // <조인>
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
 
@@ -58,6 +61,10 @@ public class Student {
     public Student(Long id) {
         this.id = id;
     }
+
+    @OneToMany(mappedBy = "student")
+    @JsonIgnore  // JSON 직렬화 시 voteHistories 필드 무시
+    private List<VoteHistory> voteHistories;
 
     //주식 거래내역
 //    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)

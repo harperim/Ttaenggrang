@@ -1,4 +1,4 @@
-package com.ladysparks.ttaenggrang.domain.vote.entity;
+package com.ladysparks.ttaenggrang.domain.vote.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

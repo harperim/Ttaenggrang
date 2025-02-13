@@ -67,7 +67,7 @@ public class InvestmentService {
     /**
      * 특정 학생의 현재 투자 평가액 조회 (현재 날짜 기준)
      */
-    public int getCurrentInvestmentValue(Long studentId) {
+    public int getCurrentInvestmentAmount(Long studentId) {
         LocalDateTime now = LocalDateTime.now();  // 현재 시간
 
         int stockValue = stockRepository.getStockEvaluationByDate(studentId, now, now).orElse(0);

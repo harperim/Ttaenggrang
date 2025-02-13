@@ -29,6 +29,8 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
 
     private lateinit var permissionChecker: PermissionUtil
 
+    private lateinit var nationViewModel: NationViewModel
+
     // 갤러리에서 이미지 선택 후 처리하는 launcher
 //    private lateinit var uploadButton: Button
 //    private var imageUri: Uri? = null

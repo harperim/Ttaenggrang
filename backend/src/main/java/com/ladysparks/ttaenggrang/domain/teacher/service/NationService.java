@@ -24,7 +24,6 @@ public class NationService {
 
     private final NationMapper nationMapper;
     private final NationRepository nationRepository;
-    private final TeacherService teacherService;
     private final TeacherRepository teacherRepository;
 
     public ApiResponse<NationDTO> createNation(Long teacherId, NationDTO nationDTO) {
@@ -34,7 +33,6 @@ public class NationService {
 
         // 2. 교사가 이미 국가를 가지고 있는지 확인
         boolean exist = nationRepository.existsByTeacherId(teacherId);
-
         if (exist) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "이미 국가가 등록되어 있습니다.", null);
         }
@@ -45,13 +43,14 @@ public class NationService {
                 .population(nationDTO.getPopulation())
                 .currency(nationDTO.getCurrency())
                 .savingsGoalAmount(
-                        nationDTO.getSavingsGoalAmount() != 0 ? nationDTO.getSavingsGoalAmount() : 100000)
+                        nationDTO.getSavingsGoalAmount() != null ? nationDTO.getSavingsGoalAmount() : 100000)
                 .establishedDate(
                         nationDTO.getEstablishedDate() != null
                                 ? nationDTO.getEstablishedDate()
                                 : new Timestamp(System.currentTimeMillis())  // 현재 시각으로 기본값 설정
                 )
                 .nationalTreasury(0)
+                .teacher(teacher)
                 .build();
         Nation savedNation = nationRepository.save(nation);
 
@@ -67,7 +66,8 @@ public class NationService {
 //        Long teacherId = teacherService.getCurrentTeacherId();
 
         // 2. 교사가 이미 국가를 가지고 있는지 확인
-        NationDTO nationDTO = findNationByTeacherId(teacherId);
+        NationDTO nationDTO = findNationByTeacherId(teacherId)
+                .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
 
         Nation nation = nationMapper.toEntity(nationDTO);
         NationDTO responseDTO = nationMapper.toDto(nation);
@@ -86,18 +86,20 @@ public class NationService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 교사를 찾을 수 없습닌다."));
 
         // 2. 교사가 이미 국가를 가지고 있는지 확인
-        NationDTO nationDTO = findNationByTeacherId(teacherId);
+        Optional<NationDTO> nationDTO = findNationByTeacherId(teacherId);
 
-        Nation nation = nationMapper.toEditedEntity(nationDTO);
+        if (nationDTO.isPresent()) {
+            // 3. 국가 삭제
+            nationRepository.deleteById(nationDTO.get().getId());
 
-        // 3. 국가 삭제
-        nationRepository.deleteById(nation.getId());
+            // 4. 강제 DB 반영
+            entityManager.flush();
 
-        // 4. 강제 DB 반영
-        entityManager.flush();
-
-        // 5. 성공 응답 반환
-        return ApiResponse.success("국가 정보가 삭제되었습니다.", null);
+            // 5. 성공 응답 반환
+            return ApiResponse.success("국가 정보가 삭제되었습니다.", null);
+        } else {
+            throw new NotFoundException("등록된 국가가 없습니다.");
+        }
     }
 
     @Transactional
@@ -115,10 +117,13 @@ public class NationService {
         return nationMapper.toDto(updatedNation);
     }
 
-    public NationDTO findNationByTeacherId(Long teacherId) {
-        Nation nation = nationRepository.findByTeacher_Id(teacherId)
-                .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
-        return nationMapper.toDto(nation);
+    public Optional<NationDTO> findNationByTeacherId(Long teacherId) {
+        return nationRepository.findByTeacher_Id(teacherId)
+                .map(nationMapper::toDto);
+    }
+
+    public int findSavingsGoalAmountByTeacherId(Long teacherId) {
+        return nationRepository.findSavingsGoalAmountByTeacher_Id(teacherId).orElse(0);
     }
 
 }

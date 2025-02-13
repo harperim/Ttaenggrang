@@ -7,19 +7,24 @@ import com.ladysparks.ttaenggrang.domain.teacher.dto.JobInfoDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.domain.vote.dto.RankInfoDTO;
 import com.ladysparks.ttaenggrang.domain.vote.dto.VoteCreateDTO;
+import com.ladysparks.ttaenggrang.domain.vote.dto.VoteItemResponseDTO;
 import com.ladysparks.ttaenggrang.domain.vote.entity.*;
+import com.ladysparks.ttaenggrang.domain.vote.repository.VoteHistoryRepository;
 import com.ladysparks.ttaenggrang.domain.vote.repository.VoteItemRepository;
 import com.ladysparks.ttaenggrang.domain.vote.repository.VoteRepository;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
+import com.ladysparks.ttaenggrang.global.utill.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +34,8 @@ public class VoteService {
     private final StudentRepository studentRepository;
     private final VoteItemRepository voteItemRepository;
     private final TeacherRepository teacherRepository;
+    private final VoteHistoryRepository voteHistoryRepository;
+
 
     // ✅ 이메일로 교사 ID 조회 메서드
     public Long getTeacherIdByEmail(String email) {
@@ -46,6 +53,11 @@ public class VoteService {
         if (inProgressVote.isPresent()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "진행 중인 투표가 있어 새 투표를 생성할 수 없습니다.", null);
         }
+
+        // 투표 종료 시간 확인 로그
+        System.out.println("투표 생성 시작 - 제목: " + voteCreateDTO.getTitle());
+        System.out.println("시작 시간: " + voteCreateDTO.getStartDate());
+        System.out.println("종료 시간: " + voteCreateDTO.getEndDate());
 
         // 2. 새 투표 생성
         Vote vote = Vote.builder()
@@ -235,21 +247,69 @@ public class VoteService {
     // 학생 투표 : 우리반 친구 선택해서 제출하면, 해당 학생의 투표 수 증가
     @Transactional
     public ApiResponse<String> castStudentVote(Long voteItemId) {
-        // 선택한 투표 항목 조회
-        VoteItem voteItem = voteItemRepository.findById(voteItemId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 투표 항목을 찾을 수 없습니다."));
+        try {
+//            System.out.println("투표 항목 ID: " + voteItemId);
 
-        // 투표 상태 확인 (진행 중인지)
-        if (voteItem.getVote().getStatus() != VoteStatus.IN_PROGRESS) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "투표가 종료되어 투표할 수 없습니다.", null);
+            VoteItem voteItem = voteItemRepository.findById(voteItemId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 투표 항목을 찾을 수 없습니다."));
+
+            System.out.println("투표 상태: " + voteItem.getVote().getStatus());
+            System.out.println("투표 종료 시간: " + voteItem.getVote().getEndDate());
+            System.out.println("현재 시간: " + new Timestamp(System.currentTimeMillis()));
+
+            System.out.println("투표 항목 ID: " + voteItem.getId());
+            System.out.println("연결된 투표 ID: " + voteItem.getVote().getId());
+
+
+            if (voteItem.getVote().getStatus() != VoteStatus.IN_PROGRESS) {
+                return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "투표가 종료되어 투표할 수 없습니다.", null);
+            }
+
+            Student student = getCurrentStudent();
+//            System.out.println("현재 로그인한 학생 ID: " + student.getId());
+
+            // **수정된 부분: 특정 투표(Vote)에 대한 중복 투표 여부 확인**
+            boolean hasVoted = voteHistoryRepository.existsByStudent_IdAndVoteItem_Vote_Id(student.getId(), voteItem.getVote().getId());
+            if (hasVoted) {
+                return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "이미 투표하셨습니다.", null);
+            }
+
+            voteItem.setVoteCount(voteItem.getVoteCount() + 1);
+            voteItemRepository.save(voteItem);
+
+            VoteHistory voteHistory = VoteHistory.builder()
+                    .student(student)
+                    .voteItem(voteItem)
+                    .build();
+            voteHistoryRepository.save(voteHistory);
+
+            return ApiResponse.success("투표가 성공적으로 완료되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외 로그 출력
+            return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버 오류가 발생했습니다.", null);
+        }
+    }
+
+
+    private Student getCurrentStudent() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("인증되지 않은 사용자입니다. 로그인 후 다시 시도하세요.");
         }
 
-        // 투표 수 증가
-        voteItem.setVoteCount(voteItem.getVoteCount() + 1);
-        voteItemRepository.save(voteItem);
+        Object principalObj = authentication.getPrincipal();
+        if (principalObj instanceof UserDetails) {
+            String username = ((UserDetails) principalObj).getUsername();
 
-        return ApiResponse.success("투표가 성공적으로 완료되었습니다.");
+            // 사용자 이름(이메일 또는 학번)을 기반으로 학생 정보 조회
+            return studentRepository.findByUsername(username)
+                    .orElseThrow(() -> new IllegalArgumentException("학생 정보를 찾을 수 없습니다."));
+        }
+
+        throw new IllegalArgumentException("현재 인증된 사용자를 찾을 수 없습니다.");
     }
+
 
 
 }

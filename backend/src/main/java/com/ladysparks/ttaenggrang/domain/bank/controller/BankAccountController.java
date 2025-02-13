@@ -1,24 +1,23 @@
 package com.ladysparks.ttaenggrang.domain.bank.controller;
 
+import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.global.docs.BankAccountApiSpecification;
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankAccountDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankAccountService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/bank-accounts")
 public class BankAccountController implements BankAccountApiSpecification {
 
     private final BankAccountService bankAccountService;
-
-    @Autowired
-    public BankAccountController(BankAccountService bankAccountService) {
-        this.bankAccountService = bankAccountService;
-    }
+    private final StudentService studentService;
 
     // 은행 계좌 [등록]
     /*
@@ -32,8 +31,10 @@ public class BankAccountController implements BankAccountApiSpecification {
     // 은행 계좌 [조회]
     @GetMapping
     public ResponseEntity<ApiResponse<BankAccountDTO>> BankAccountDetails() {
-        BankAccountDTO account = bankAccountService.findBankAccount();
-        return ResponseEntity.ok(ApiResponse.success(account));
+        Long studentId = studentService.getCurrentStudentId();
+        Long bankAccountId = studentService.findBankAccountIdById(studentId);
+        BankAccountDTO bankAccountDTO = bankAccountService.findBankAccount(bankAccountId);
+        return ResponseEntity.ok(ApiResponse.success(bankAccountDTO));
     }
 
 }

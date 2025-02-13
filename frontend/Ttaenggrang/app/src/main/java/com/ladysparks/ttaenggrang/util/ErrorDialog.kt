@@ -28,37 +28,3 @@ private fun showDialog(context: Context, error: Throwable) {
         .setPositiveButton("확인") { dialog, _ -> dialog.dismiss() }
         .show()
 }
-
-// JSON 오류 메시지 파서
-object ErrorDialog {
-    fun extractErrorMessage(error: Throwable): String {
-        return try {
-            val json = JSONObject(error.message ?: "{}") // JSON 파싱
-            val message = json.optString("message", "알 수 없는 오류가 발생했습니다.")
-
-            val errorsArray = json.optJSONArray("errors") // errors 배열 체크
-            val errorMessages = mutableListOf<String>()
-
-            errorsArray?.let {
-                for (i in 0 until it.length()) {
-                    val errorObj = it.getJSONObject(i)
-                    val field = errorObj.optString("field", "")
-                    val errorMessage = errorObj.optString("message", "")
-                    if (field.isNotEmpty()) {
-                        errorMessages.add("$field: $errorMessage")
-                    } else {
-                        errorMessages.add(errorMessage)
-                    }
-                }
-            }
-
-            if (errorMessages.isNotEmpty()) {
-                "$message\n\n" + errorMessages.joinToString("\n") // 줄바꿈 추가
-            } else {
-                message
-            }
-        } catch (e: Exception) {
-            "오류 메시지를 불러올 수 없습니다."
-        }
-    }
-}

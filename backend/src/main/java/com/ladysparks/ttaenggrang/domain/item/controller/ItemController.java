@@ -30,7 +30,7 @@ public class ItemController implements ItemApiSpecification {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(savedItem));
     }
 
-    // 판매 아이템 [조회]
+    // 판매 아이템 [전체 조회]
     @GetMapping
     public ResponseEntity<ApiResponse<List<ItemDTO>>> itemList() {
         List<ItemDTO> itemDtoList = itemService.findItemList();
@@ -45,18 +45,18 @@ public class ItemController implements ItemApiSpecification {
     }
 
     // 학생의 판매 아이템 [조회]
-    @GetMapping("/seller")
+    @GetMapping("/sale")
     public ResponseEntity<ApiResponse<List<ItemDTO>>> itemListBySeller() {
         List<ItemDTO> itemDtoList = itemService.findItemListBySeller();
         return ResponseEntity.ok(ApiResponse.success(itemDtoList));
     }
 
     // 교사가 담당하는 학급의 판매 아이템 내역 [전체 조회]
-    @GetMapping("/teacher")
-    public ResponseEntity<ApiResponse<List<ItemDTO>>> itemListByTeacher() {
-        List<ItemDTO> itemDTOList = itemService.findItemListByTeacher();
-        return ResponseEntity.ok(ApiResponse.success(itemDTOList));
-    }
+//    @GetMapping("/teacher")
+//    public ResponseEntity<ApiResponse<List<ItemDTO>>> itemListByTeacher() {
+//        List<ItemDTO> itemDTOList = itemService.findItemListByTeacher();
+//        return ResponseEntity.ok(ApiResponse.success(itemDTOList));
+//    }
 
 }
 

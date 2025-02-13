@@ -1,21 +1,25 @@
 package com.ladysparks.ttaenggrang.domain.item.service;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
-import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransactionType;
+import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
 import com.ladysparks.ttaenggrang.domain.item.entity.Item;
 import com.ladysparks.ttaenggrang.domain.item.entity.ItemTransaction;
 import com.ladysparks.ttaenggrang.domain.item.dto.ItemTransactionDTO;
+import com.ladysparks.ttaenggrang.domain.item.entity.SellerType;
 import com.ladysparks.ttaenggrang.domain.item.mapper.ItemTransactionMapper;
 import com.ladysparks.ttaenggrang.domain.item.repository.ItemRepository;
 import com.ladysparks.ttaenggrang.domain.item.repository.ItemTransactionRepository;
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
+import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +29,7 @@ public class ItemTransactionService {
     private final ItemRepository itemRepository;
     private final ItemTransactionRepository itemTransactionRepository;
     private final ItemTransactionMapper itemTransactionMapper;
+    private final TeacherService teacherService;
     private final StudentService studentService;
     private final BankTransactionService bankTransactionService;
 
@@ -36,7 +41,8 @@ public class ItemTransactionService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 아이템을 찾을 수 없습니다. ID: " + itemTransactionDTO.getItemId()));
 
         // 2. 판매자와 구매자 조회
-        Long sellerId = item.getSeller().getId();
+        Long sellerId = item.getSellerType() == SellerType.STUDENT ? item.getSellerStudent().getId() : item.getSellerTeacher().getId();
+
         Long buyerId = studentService.getCurrentStudentId();
 
         // 3. 판매자와 구매자가 동일한 경우 거래 불가
@@ -72,13 +78,24 @@ public class ItemTransactionService {
         return itemTransactionMapper.toDto(savedItemTransaction);
     }
 
-    // 학생의 모든 판매 내역 조회
+    // 모든 판매 내역 조회
     public List<ItemTransactionDTO> findItemTransactionsBySeller() {
-        Long sellerId = studentService.getCurrentStudentId();
-        return itemTransactionRepository.findByItemSellerId(sellerId)
-                .stream()
-                .map(itemTransactionMapper::toDto)
-                .collect(Collectors.toList());
+        Optional<Long> currentTeacherId = teacherService.getOptionalCurrentTeacherId();
+        Optional<Long> currentStudentId = studentService.getOptionalCurrentStudentId();
+
+        if (currentTeacherId.isPresent()) { // 교사 로그인
+            return itemTransactionRepository.findByItem_SellerTeacher_id(currentTeacherId.get())
+                    .stream()
+                    .map(itemTransactionMapper::toDto)
+                    .collect(Collectors.toList());
+        } else if (currentStudentId.isPresent()) { // 학생 로그인
+            return itemTransactionRepository.findByItem_SellerStudent_id(currentStudentId.get())
+                    .stream()
+                    .map(itemTransactionMapper::toDto)
+                    .collect(Collectors.toList());
+        } else {
+            throw new IllegalArgumentException("현재 인증된 사용자를 찾을 수 없습니다.");
+        }
     }
 
     // 학생의 모든 구매 내역 조회
@@ -86,8 +103,28 @@ public class ItemTransactionService {
         Long buyerId = studentService.getCurrentStudentId();
         return itemTransactionRepository.findByBuyerId(buyerId)
                 .stream()
+                .filter(transaction -> transaction.getQuantity() > 0) // quantity가 0인 경우 제외
                 .map(itemTransactionMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 아이템 사용 (수량 차감 및 트랜잭션 기록)
+     */
+    public ItemTransactionDTO useItem(Long itemTransactionId) {
+        // 아이템 거래 내역 조회
+        ItemTransaction itemTransaction = itemTransactionRepository.findById(itemTransactionId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 아이템이 존재하지 않습니다."));
+
+        // 수량 차감
+        if (itemTransaction.getQuantity() - 1 < 0) {
+            throw new IllegalArgumentException("남은 수량이 부족합니다.");
+        }
+
+        itemTransaction.updateQuantity(itemTransaction.getQuantity() - 1);
+        itemTransactionRepository.save(itemTransaction);
+
+        return itemTransactionMapper.toDto(itemTransaction);
     }
 
 }

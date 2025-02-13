@@ -98,43 +98,12 @@ class SignupActivity : BaseActivity() {
                 RetrofitUtil.authService.signupTeacher(user)
             }.onSuccess { data ->
                 showToast("회원 가입 완료 ! ${data}")
-                setBaseJobData()
+                startActivity(Intent(this@SignupActivity, LoginActivity::class.java))
             }.onFailure { exception ->
                 showErrorDialog(exception)
             }
         }
     }
 
-    /**
-     * 교사가 사용하기 위한 기본 데이터 추가 : 직업 + 세금
-     */
 
-    private fun setBaseJobData() {
-        lifecycleScope.launch {
-            runCatching {
-                jobList.forEach { job ->
-                    RetrofitUtil.teacherService.registerJob(job)
-                }
-            }.onSuccess {
-                setBaseTaxData()
-            }.onFailure {
-                showErrorDialog(it)
-            }
-        }
-    }
-
-    private fun setBaseTaxData(){
-        lifecycleScope.launch {
-            runCatching {
-                taxList.forEach { tax ->
-                    RetrofitUtil.taxService.registerTax(tax)
-                }
-            }.onSuccess {
-                showToast("모든 데이터 생성이 끝났습니다.")
-                startActivity(Intent(this@SignupActivity, LoginActivity::class.java))
-            }.onFailure {
-                showErrorDialog(it)
-            }
-        }
-    }
 }

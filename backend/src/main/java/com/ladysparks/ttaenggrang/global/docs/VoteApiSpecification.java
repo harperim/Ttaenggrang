@@ -1,17 +1,12 @@
 package com.ladysparks.ttaenggrang.global.docs;
 
 import com.ladysparks.ttaenggrang.domain.vote.dto.VoteCreateDTO;
-import com.ladysparks.ttaenggrang.domain.vote.entity.Vote;
-import com.ladysparks.ttaenggrang.domain.vote.entity.VoteItem;
-import com.ladysparks.ttaenggrang.domain.vote.entity.VoteItemResponseDTO;
-import com.ladysparks.ttaenggrang.domain.vote.service.VoteService;
+import com.ladysparks.ttaenggrang.domain.vote.dto.VoteItemResponseDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 

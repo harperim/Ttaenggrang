@@ -9,13 +9,13 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ladysparks.ttaenggrang.base.BaseActivity
+import com.ladysparks.ttaenggrang.data.model.dto.NationInfoDto
 import com.ladysparks.ttaenggrang.data.model.request.StudentSignInRequest
 import com.ladysparks.ttaenggrang.data.model.request.TeacherSignInRequest
 import com.ladysparks.ttaenggrang.data.model.response.StudentSignInResponse
 import com.ladysparks.ttaenggrang.data.model.response.TeacherSignInResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.databinding.ActivityLoginBinding
-import com.ladysparks.ttaenggrang.util.ErrorDialog
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
@@ -60,9 +60,11 @@ class LoginActivity : BaseActivity() {
         binding.tempBtnTeacher.setOnClickListener {
             lifecycleScope.launch {
                 runCatching {
-                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "aa@aa.com", password = "1234"))
+                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "cc@cc.com", password = "1234"))
                 }.onSuccess {
                     showToast("교사 로그인 성공")
+
+
 
                     // Token 저장
                     val token = when(val userData = it.data){
@@ -75,6 +77,13 @@ class LoginActivity : BaseActivity() {
 
                     // FCM TokenUpdate
                     updateFCMToken(token)
+
+
+                    // 국가 정보가 없는 경우, 국가 정보 등록 페이지로 먼저 이동해야 한다.
+//                    if(!it.data!!.tempTF){
+//                        startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java))
+//                        return@launch
+//                    }
 
                     // MainActivity 이동
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
@@ -132,21 +141,16 @@ class LoginActivity : BaseActivity() {
             lifecycleScope.launch {
                 runCatching {
                     if (binding.checkBoxAgree.isChecked) {
-                        showToast("교사 로그인 시도")
                         var user = TeacherSignInRequest(email = binding.editIdLogin.text.toString(), password = binding.editPasswordLogin.text.toString())
                         RetrofitUtil.authService.loginTeacher(user)
                     } else {
-                        showToast("학생 로그인 시도")
                         var user = StudentSignInRequest(username = binding.editIdLogin.text.toString(), password = binding.editPasswordLogin.text.toString())
                         RetrofitUtil.authService.loginStudent(user)
                     }
                 }.onSuccess {
-                    showToast("로그인 성공")
-
 //                     Token 저장
                     var token: String = ""
                     var account: String = ""
-
 
                     when(val userData = it.data){
                         is StudentSignInResponse -> {
@@ -160,7 +164,6 @@ class LoginActivity : BaseActivity() {
                         else -> ""
                     }
 
-
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.JWT_TOKEN_KEY, token)
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.IS_TEACHER, binding.checkBoxAgree.isChecked)
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.USER_ACCOUNT, account)
@@ -168,9 +171,18 @@ class LoginActivity : BaseActivity() {
                     // FCM TokenUpdate
                     updateFCMToken(token)
 
+                    // 수정 필요 : 교사가 로그인한 경우, 국가 정보가 없다면? 먼저 등록하는 페이지로 이동해야한다.
+//                    if(binding.checkBoxAgree.isChecked && it.data is TeacherSignInResponse){
+//                        if(it.data.tempTF == false){
+//                            startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java))
+//                            return@launch
+//                        }
+//                    }
+
                     // MainActivity 이동
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                 }.onFailure { error ->
+                    Log.d("TAG", "initEvent: 로그인 패일")
                     showErrorDialog(error)
                 }
             }

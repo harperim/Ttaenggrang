@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.bank.controller;
 
+import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.global.docs.SavingsSubscriptionApiSpecification;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -18,10 +19,12 @@ import java.util.Optional;
 public class SavingsSubscriptionController implements SavingsSubscriptionApiSpecification {
 
     private final SavingsSubscriptionService savingsSubscriptionService;
+    private final StudentService studentService;
 
     @Autowired
-    public SavingsSubscriptionController(SavingsSubscriptionService savingsSubscriptionService) {
+    public SavingsSubscriptionController(SavingsSubscriptionService savingsSubscriptionService, StudentService studentService) {
         this.savingsSubscriptionService = savingsSubscriptionService;
+        this.studentService = studentService;
     }
 
     // 적금 가입 [등록]
@@ -34,7 +37,8 @@ public class SavingsSubscriptionController implements SavingsSubscriptionApiSpec
     // 적금 가입 (학생) 내역 [전체 조회]
     @GetMapping
     public ResponseEntity<ApiResponse<List<SavingsSubscriptionDTO>>> savingsSubscriptionList() {
-        return ResponseEntity.ok(ApiResponse.success(savingsSubscriptionService.findSavingsSubscriptions()));
+        Long studentId = studentService.getCurrentStudentId();
+        return ResponseEntity.ok(ApiResponse.success(savingsSubscriptionService.findSavingsSubscriptionsByStudentId(studentId)));
     }
 
 }

@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(value={"id", "teacherId", "nationalTreasury", "establishedDate", "profileImageUrl", "teacher"}, allowGetters=true)
+@JsonIgnoreProperties(value={"id", "teacherId", "establishedDate", "profileImageUrl", "teacher"}, allowGetters=true)
 public class NationDTO {
 
     private Long id;
@@ -31,8 +31,6 @@ public class NationDTO {
     @NotBlank(message = "통화 단위는 필수 항목입니다.")
     private String currency;
 
-    @Min(value = 0, message = "목표 금액은 0 이상의 값이어야 합니다.")
-    @NotNull
     private Integer savingsGoalAmount;
 
     private Integer nationalTreasury;

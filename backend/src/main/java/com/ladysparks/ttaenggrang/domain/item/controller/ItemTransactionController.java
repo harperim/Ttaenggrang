@@ -1,5 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.item.controller;
 
+import com.ladysparks.ttaenggrang.domain.item.entity.ItemTransaction;
+import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.global.docs.ItemTransactionApiSpecification;
 import com.ladysparks.ttaenggrang.domain.item.dto.ItemTransactionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -17,10 +19,12 @@ import java.util.List;
 public class ItemTransactionController implements ItemTransactionApiSpecification {
 
     private final ItemTransactionService itemTransactionService;
+    private final StudentService studentService;
 
     @Autowired
-    public ItemTransactionController(ItemTransactionService itemTransactionService) {
+    public ItemTransactionController(ItemTransactionService itemTransactionService, StudentService studentService) {
         this.itemTransactionService = itemTransactionService;
+        this.studentService = studentService;
     }
 
     // 아이템 구매 [등록]
@@ -42,6 +46,15 @@ public class ItemTransactionController implements ItemTransactionApiSpecificatio
     public ResponseEntity<ApiResponse<List<ItemTransactionDTO>>> itemTransactionByBuyerList() {
         List<ItemTransactionDTO> itemTransactionDTOList = itemTransactionService.findItemTransactionsByBuyer();
         return ResponseEntity.ok(ApiResponse.success(itemTransactionDTOList));
+    }
+
+    /**
+     * 아이템 사용 API (PATCH)
+     */
+    @PatchMapping("/{itemTransactionId}/use")
+    public ResponseEntity<ApiResponse<ItemTransactionDTO>> useItem(@PathVariable Long itemTransactionId) {
+        ItemTransactionDTO itemTransactionDTO = itemTransactionService.useItem(itemTransactionId);
+        return ResponseEntity.ok(ApiResponse.success(itemTransactionDTO));
     }
 
 }

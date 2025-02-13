@@ -1,7 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.bank.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsGoalStatus;
+import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsGoal.SavingsGoalStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

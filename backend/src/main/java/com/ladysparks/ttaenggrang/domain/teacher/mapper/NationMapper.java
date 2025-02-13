@@ -20,6 +20,6 @@ public interface NationMapper {
     Nation toEntity(NationDTO nationDTO);
 
     @Mapping(source = "teacherId", target = "teacher.id")
-    Nation toEditedEntity(NationDTO nationDTO);
+    Nation toUpdatedEntity(NationDTO nationDTO);
 
 }

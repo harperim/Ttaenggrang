@@ -27,7 +27,7 @@
             android:title="주식"
             android:background="@drawable/nav_item_selector"/>
         <item
-            android:id="@+id/navShopStudent"
+            android:id="@+id/navStoreStudent"
             android:icon="@drawable/ic_store"
             android:title="상점"
             android:background="@drawable/nav_item_selector"/>

@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.teacher.service;
 
+import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.JobClassDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.JobCreateDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
@@ -25,6 +26,7 @@ public class JobService {
     private final JobRespository jobRespository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
+    private final StudentService studentService;
 
     public ApiResponse<JobCreateDTO> createJob(JobCreateDTO jobCreateDTO, Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId)
@@ -107,4 +109,8 @@ public class JobService {
         return ApiResponse.success("우리 반 직업 목록 조회 성공", jobClassDTOS);
     }
 
+    public int findBaseSalaryByStudentId(Long studentId) {
+        Long jobId = studentService.findJobIdByStudentId(studentId);
+        return jobRespository.findBaseSalaryById(jobId);
+    }
 }

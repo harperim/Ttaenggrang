@@ -1,24 +1,21 @@
 package com.ladysparks.ttaenggrang.domain.student.service;
 
-import com.google.common.collect.Table;
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankAccountDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankAccount;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.BankAccountMapper;
-import com.ladysparks.ttaenggrang.domain.bank.repository.BankAccountRepository;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.*;
-import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
-import com.ladysparks.ttaenggrang.domain.teacher.entity.Nation;
-import com.ladysparks.ttaenggrang.domain.student.dto.SavingsAchievementDTO;
-import com.ladysparks.ttaenggrang.domain.student.dto.StudentLoginRequestDTO;
-import com.ladysparks.ttaenggrang.domain.student.dto.StudentLoginResponseDTO;
-import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
+import com.ladysparks.ttaenggrang.domain.bank.service.BankAccountService;
+import com.ladysparks.ttaenggrang.domain.student.dto.*;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
-import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.JobInfoDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.MultipleStudentCreateDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.NationDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.SingleStudentCreateDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.JobRespository;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.service.NationService;
-import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.domain.weekly_report.service.InvestmentService;
 import com.ladysparks.ttaenggrang.global.config.JwtTokenProvider;
 import com.ladysparks.ttaenggrang.global.redis.RedisGoalService;
@@ -50,15 +47,15 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
-    private final TeacherService teacherService;
     private final NationService nationService;
     private final InvestmentService investmentService;
     private final RedisGoalService redisGoalService;
     private final PasswordEncoder passwordEncoder;
-    private final BankAccountRepository bankAccountRepository; // ✅ 추가
     private final JwtTokenProvider jwtTokenProvider;
     private final SecurityUtil securityUtil;
     private final JobRespository jobRespository;
+    private final BankAccountService bankAccountService;
+    private final BankAccountMapper bankAccountMapper;
 
     public Long getCurrentStudentId() {
         String username = securityUtil.getCurrentUser();
@@ -196,8 +193,7 @@ public class StudentService {
                     .build();
 
             // DTO를 Entity로 변환 후 **저장**
-            BankAccount bankAccount = BankAccountMapper.INSTANCE.toEntity(bankAccountDTO);
-            bankAccount = bankAccountRepository.save(bankAccount); // ✅ **DB에 먼저 저장**
+            BankAccount bankAccount = bankAccountMapper.toUpdatedEntity(bankAccountService.addBankAccount(bankAccountDTO)); // DB에 먼저 저장
 
             // 🔥 파일에서 이름이 있는 경우, 해당 이름 사용
             String studentName = (i <= namesFromFile.size()) ? namesFromFile.get(i - 1) : null;
@@ -269,8 +265,7 @@ public class StudentService {
                 .balance(0)
                 .build();
 
-        BankAccount bankAccount = BankAccountMapper.INSTANCE.toEntity(bankAccountDTO);
-        bankAccount = bankAccountRepository.save(bankAccount);
+        BankAccount bankAccount = bankAccountMapper.toUpdatedEntity(bankAccountService.addBankAccount(bankAccountDTO));
 
         // 4. 기본 직업 "시민"으로 설정
         Job defaultJob = jobRespository.findByJobName("시민")
@@ -485,7 +480,9 @@ public class StudentService {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID를 가진 학생이 존재하지 않습니다."));
 
-        return nationService.findNationByTeacherId(student.getTeacher().getId()).getId();
+        return nationService.findNationByTeacherId(student.getTeacher().getId())
+                .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."))
+                .getId();
     }
 
     public Long findBankAccountIdById(Long studentId) {
@@ -549,9 +546,8 @@ public class StudentService {
     /**
      * 특정 학생의 저축 목표 달성률을 조회
      */
-    public SavingsAchievementDTO getSavingsAchievementRate() {
+    public SavingsAchievementDTO getSavingsAchievementRateByStudentId(Long studentId) {
         // 학생 정보 조회
-        Long studentId = getCurrentStudentId();
         Long teacherId = findTeacherIdByStudentId(studentId);
 
         // Redis에서 목표 달성률 조회
@@ -574,7 +570,8 @@ public class StudentService {
 
         // 학생의 국가 정보 조회
         Long teacherId = findTeacherIdByStudentId(studentId);
-        NationDTO nationDTO = nationService.findNationByTeacherId(teacherId);
+        NationDTO nationDTO = nationService.findNationByTeacherId(teacherId)
+                .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
 
         SavingsAchievementDTO savingsAchievementDTO = SavingsAchievementDTO.builder()
                 .studentId(studentId)
@@ -585,7 +582,7 @@ public class StudentService {
 
         if (savingsGoalAmount != 0) {
             int bankBalance = student.getBankAccount().getBalance(); // 학생의 은행 잔고
-            int investmentValue = investmentService.getCurrentInvestmentValue(studentId); // 현재 투자 평가액
+            int investmentValue = investmentService.getCurrentInvestmentAmount(studentId); // 현재 투자 평가액
 
             // 내 총 자산 계산
             int totalAssets = bankBalance + investmentValue;
@@ -601,6 +598,21 @@ public class StudentService {
         savingsAchievementDTO.setRank(rank);
 
         return savingsAchievementDTO;
+    }
+
+    public String findNameById(Long teacherId) {
+        return studentRepository.findById(teacherId)
+                .map(Student::getName)
+                .orElseThrow(() -> new NotFoundException("등록된 학생이 없습니다."));
+    }
+
+    public Student findById(Long studentId) {
+        return studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 학생이 존재하지 않습니다."));
+    }
+
+    public Long findJobIdByStudentId(Long studentId) {
+        return studentRepository.findJobIdById(studentId);
     }
 
 }
