@@ -14,7 +14,7 @@ object ApiErrorParser {
                 buildErrorMessage(statusCode, message, errorDetails)
             }
             is IOException -> "네트워크 오류 발생: ${error.message}"
-            else -> "알 수 없는 오류: ${error.message}"
+            else -> "${error.message}"
         }
     }
 
