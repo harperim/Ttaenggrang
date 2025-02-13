@@ -25,6 +25,8 @@ public class StockDTO {
     private Timestamp created_at; // 생성일
     private Timestamp updated_at;  // 수정일
     private Integer changeRate;   // 주식 변동률
+    private final String type = "일반 주식";
+
 
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
@@ -39,6 +41,9 @@ public class StockDTO {
     private LocalDateTime priceChangeTime;  // 가격 변동 시간
 
     private BigDecimal weight;  // 주식 비중 (각 주식의 비중을 따로 저장)
+
+
+
 
     //조인
     private Long teacher_id;    // 교사 ID
@@ -62,8 +67,6 @@ public class StockDTO {
                 .created_at(stockDto.getCreated_at())
                 .updated_at(stockDto.getUpdated_at())
                 .changeRate(stockDto.getChangeRate())
-                .openTime(stockDto.getOpenTime())
-                .closeTime(stockDto.getCloseTime())
                 .isMarketActive(stockDto.getIsMarketActive())  // 주식장 활성화 여부
                 .priceChangeTime(stockDto.getPriceChangeTime())  // 가격 변동 시
                 .build();
@@ -81,8 +84,6 @@ public class StockDTO {
                 .created_at(stock.getCreated_at())
                 .updated_at(stock.getUpdated_at())
                 .changeRate(stock.getChangeRate())
-                .openTime(stock.getOpenTime())
-                .closeTime(stock.getCloseTime())
                 .isMarketActive(stock.getIsMarketActive())  // 주식장 활성화 여부
                 .priceChangeTime(stock.getPriceChangeTime());  // 가격 변동 시
 
