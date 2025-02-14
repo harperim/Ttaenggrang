@@ -212,9 +212,13 @@
                 style="@style/body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:scrollHorizontally="false"
+                android:inputType="number"
                 android:hint="거래할 주식 수를 작성하세요"
                 android:paddingStart="14dp"
-                android:textColor="@color/lightGray" />
+                android:textColor="@color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -229,7 +233,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textLayoutContent4"
-
             />
 
         <!--예상 결제 금액-->
@@ -239,7 +242,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="예상 결제 금액"
-            app:layout_constraintBottom_toTopOf="@id/textContentTitle2"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/viewLine" />
 
@@ -254,52 +257,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/textContentTitle1" />
 
-        <!--결제후 내 자산-->
-        <TextView
-            android:id="@+id/textContentTitle2"
-            style="@style/body1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_15"
-            android:text="결제 후 내 자산"
-            app:layout_constraintBottom_toTopOf="@id/textContentTitle3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textContentTitle1" />
-
-        <TextView
-            android:id="@+id/textContent2"
-            style="@style/body1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="내자산-예상 결제 금액"
-            android:textColor="@color/black200"
-            app:layout_constraintBottom_toBottomOf="@id/textContentTitle2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textContentTitle2" />
-
-        <!--거래 후 내 보유 주식-->
-        <TextView
-            android:id="@+id/textContentTitle3"
-            style="@style/body1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_15"
-            android:text="거래후 내 보유 주식"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textContentTitle2" />
-
-
-        <TextView
-            android:id="@+id/textContent3"
-            style="@style/body1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="내 보유 주식 + 거래할 주식 수"
-            android:textColor="@color/black200"
-            app:layout_constraintBottom_toBottomOf="@id/textContentTitle3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textContentTitle3" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

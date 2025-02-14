@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface StockTransactionRepository extends JpaRepository<StockTransaction, Long> {
     // 특정 학생의 주식 거래 내역 조회
-    List<StockTransaction> findByStudentId(int studentId);
+    List<StockTransaction> findByStudentId(Long studentId);
     // 특정 주식과 학생, 매수 거래를 필터링하여 거래 건수를 반환하는 메서드
 
 
@@ -26,16 +26,6 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
                                              @Param("transType") TransType transType);
 
 
-
-//    @Query("SELECT COALESCE(SUM(s.share_count), 0) FROM StockTransaction s " +
-//            "WHERE s.stock.id = :stockId " +
-//            "AND s.transType = :transType " +
-//            "AND s.trans_date BETWEEN :startDate AND :endDate")
-//    int getTotalSharesByType(@Param("stockId") int stockId,
-//                             @Param("transType") TransType transType,
-//                             @Param("startDate") Timestamp startDate,
-//                             @Param("endDate") Timestamp endDate);
-//
 
 
     // 특정 주식에 대한 매수량을 조회하는 쿼리

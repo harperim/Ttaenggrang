@@ -122,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_10"
                 android:gravity="center_vertical"
-                android:text="제이와이피 JYP"
+                android:text=""
                 app:layout_constraintBottom_toBottomOf="@id/imageHeadStock"
                 app:layout_constraintStart_toEndOf="@id/imageHeadStock"
                 app:layout_constraintTop_toTopOf="@id/imageHeadStock" />
@@ -132,7 +132,7 @@
                 style="@style/heading3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="100,000"
+                android:text=""
                 app:layout_constraintBottom_toTopOf="@id/textHeadStockChange"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/imageHeadStock" />
@@ -154,7 +154,7 @@
                 style="@style/heading4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+1.10%"
+                android:text=""
                 android:textColor="@color/foundation_green_600"
                 app:layout_constraintBottom_toBottomOf="@id/imageHeadStock"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -175,6 +175,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/constraintStockGraphHead" />
 
+        <!--탭-->
         <TextView
             android:id="@+id/textTab3"
             android:layout_width="wrap_content"
@@ -187,6 +188,7 @@
             style="@style/caption"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/chartStock"
             app:layout_constraintTop_toBottomOf="@id/viewLine"
             app:layout_constraintEnd_toStartOf="@+id/textTab4"/>
         <TextView
@@ -203,6 +205,17 @@
             app:layout_constraintTop_toTopOf="@id/textTab3"
             app:layout_constraintBottom_toBottomOf="@id/textTab3"
             app:layout_constraintStart_toEndOf="@id/textTab3"/>
+        <!--그래프-->
+        <com.ladysparks.ttaenggrang.ui.component.LineChartComponent
+            android:id="@+id/chartStock"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textTab3"
+            />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -237,6 +250,7 @@
             android:layout_height="wrap_content"
             android:text="“넥슨, 신규 게임 흥행 기대 속 실적 부담 지속”"
             style="@style/heading3"
+            android:layout_marginBottom="5dp"
             app:layout_constraintTop_toBottomOf="@id/textNewsDate"
             app:layout_constraintBottom_toTopOf="@id/textNewsContent"
             app:layout_constraintStart_toStartOf="@id/textNewsDate"/>
@@ -245,6 +259,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             style="@style/body1"
+
             android:text="넥슨이 최근  게임을 출시하며 기대를 모으고 있지만, 실적 성장 여부에 대한 투자자들의 신중한 판단이 필요한 시점입니다. 넥슨은 이번 분기에 신작 게임을 선보이며 글로벌 시장에서 좋은 반응을 얻고 있다고 밝혔습니다. 하지만 게임 개발비용 증가와 경쟁 심화로 인해 수익성이 개선될지는 아직 불확실한 상황입니다.
 한 금융 전문가는 ** 신작 게임이 성공하면 향후 넥슨의 매출 확대에 긍정적인   줄 수 있지만, 시장의 반응을 조금 더 지켜볼 필요가 있다**고 전했습니다.
         이에 따라 투자자들은 넥슨의 향후 업데이트 전략과 실적 발표를 확인한 후 신중한 투자를 고려할 필요가 있습니다."
@@ -252,7 +267,27 @@
             app:layout_constraintTop_toBottomOf="@id/textNewsTitle"
             app:layout_constraintStart_toStartOf="@+id/textNewsDate"
             app:layout_constraintEnd_toStartOf="@id/frameLayout1"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toTopOf="@id/btnDetail"
+            />
+
+        <TextView
+            android:id="@+id/btnDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_10"
+            android:background="@drawable/tab"
+            android:text="더보기"
+            android:paddingHorizontal="@dimen/spacing_10"
+            style="@style/caption"
+            android:clickable="true"
+            android:focusable="true"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textNewsContent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+
 
         <FrameLayout
             android:layout_marginStart="@dimen/spacing_20"
@@ -296,7 +331,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="주간보고서 확인"
+                android:text="지난 뉴스 보기"
                 android:textColor="@color/white" />
 
             <ImageView
@@ -368,7 +403,7 @@
                 style="@style/heading3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="100,000,000"
+                android:text=""
                 app:layout_constraintStart_toStartOf="@id/constraintTradeCash"
                 app:layout_constraintTop_toBottomOf="@id/textTradeHead1" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -471,9 +506,42 @@
             android:backgroundTint="@color/transparent"
             android:padding="0dp"
             android:src="@drawable/ic_search"
+            android:layout_marginStart="@dimen/spacing_10"
             app:layout_constraintBottom_toBottomOf="@id/textStockListHead"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textStockListHead"
             app:layout_constraintTop_toTopOf="@id/textStockListHead" />
+
+        <LinearLayout
+            android:id="@+id/btnStockListStudent"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:background="@drawable/btn_rounded_full"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/spacing_10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textStockListHead"
+            app:layout_constraintBottom_toBottomOf="@id/textStockListHead"
+            >
+
+            <TextView
+                style="@style/heading5"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내 보유 주식"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:layout_marginStart="5dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/ic_chevron_right" />
+
+
+        </LinearLayout>
 
         <!--탭 버튼-->
         <TextView

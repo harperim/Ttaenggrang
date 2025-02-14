@@ -17,11 +17,12 @@ public class StockTransactionDTO {
     private int share_count;  // 주식 거래 수량
     private Timestamp trans_date;  // 거래 날짜
     private int purchase_prc;   // 거래 당시 1주 가격
-    private int total_amt;  // 총 거래 금액
+    private Integer  total_amt;  // 총 거래 금액
 //    @JsonIgnore  //  응답에서 숨김
     private BigDecimal returnRate;  // 손익/손실 금액
     private TransType transType; // 거래 유형
     private int owned_qty;      // 학생이 보유한 주식 수량
+    private StockDTO stockDTO;
 
     //조인
 

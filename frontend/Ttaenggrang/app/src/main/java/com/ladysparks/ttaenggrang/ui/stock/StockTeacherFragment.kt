@@ -2,6 +2,7 @@ package com.ladysparks.ttaenggrang.ui.stock
 
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
@@ -19,6 +20,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
 
     private val viewModel: StockViewModel by viewModels()
     private lateinit var stockAdapter: StockAdapter
+    private var selectedStock: StockDto? = null // 선택한 주식 저장
 
 
     private var startTime: String = ""
@@ -46,8 +48,12 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
             showTimePickerDialog(isStartTime = false)
         }
 
-//        // 스위치 설정
-//        setupSwitchListener()
+        //주식장 오픈
+        binding.btnStockOpen.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.updateMarketStatus(isChecked) // 서버로 true/false 전송
+            Log.d("TAG", "onViewCreated: switch 클릭!!!!")
+        }
+
         initData()
     }
 
@@ -87,11 +93,21 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
     }
 
     private fun observeViewModel() {
+        // 어댑터 데이터 업데이트
         viewModel.stockList.observe(viewLifecycleOwner, Observer { stockList ->
             stockList?.takeIf { it.isNotEmpty() }?.let {
-                stockAdapter.updateData(it)  // 어댑터 데이터 업데이트
+                stockAdapter.updateData(it)
             }
         })
+
+        // ui업데이트
+        viewModel.selectedStock.observe(viewLifecycleOwner) { stock ->
+            stock?.let {
+                binding.textHeadStockName.text = it.name.substringBefore(" ")
+                binding.textHeadStockPrice.text = it.pricePer.toString()
+                binding.textHeadStockChange.text = "${it.changeRate}%"
+            }
+        }
     }
 
     // 아이템 클릭 이벤트 처리
@@ -102,20 +118,4 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         binding.textHeadStockChange.text = "${stock.changeRate}%"
     }
 
-
-
-
-//    private fun setupSwitchListener() {
-//        binding.btnStockOpen.setOnCheckedChangeListener { _, isChecked ->
-//            if (isChecked) {
-//                // 스위치가 ON일 때 track, thumb이 selector 파일의 ON 상태를 따라감
-//                binding.btnStockOpen.trackTintList = requireContext().getColorStateList(R.color.foundation_green_500)
-//                binding.btnStockOpen.thumbTintList = requireContext().getColorStateList(R.color.white)
-//            } else {
-//                // 스위치가 OFF일 때 track, thumb이 selector 파일의 OFF 상태를 따라감
-//                binding.btnStockOpen.trackTintList = requireContext().getColorStateList(R.color.backgroundGray)
-//                binding.btnStockOpen.thumbTintList = requireContext().getColorStateList(R.color.black200)
-//            }
-//        }
-//    }
 }
