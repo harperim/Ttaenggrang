@@ -9,34 +9,24 @@ import com.ladysparks.ttaenggrang.domain.etf.dto.EtfDTO;
 import com.ladysparks.ttaenggrang.domain.etf.entity.EtfTransaction;
 import com.ladysparks.ttaenggrang.domain.etf.repository.EtfRepository;
 import com.ladysparks.ttaenggrang.domain.etf.repository.EtfTransactionRepository;
-import com.ladysparks.ttaenggrang.domain.stock.dto.ChangeResponseDTO;
-import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
-import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
-import com.ladysparks.ttaenggrang.domain.stock.entity.StockTransaction;
-import com.ladysparks.ttaenggrang.domain.stock.entity.TransType;
+import com.ladysparks.ttaenggrang.domain.stock.entity.TransactionType;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockHistoryRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockTransactionRepository;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
-import jakarta.transaction.Transaction;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
-public class EtfService {//s
-    private final EtfRepository etfRepository; //의존성 주입
+public class EtfService {
+    private final EtfRepository etfRepository;
 
     private final EtfTransactionRepository etfTransactionRepository;
     //학생
@@ -197,7 +187,7 @@ public class EtfService {//s
 
 
         // 학생이 현재 보유한 해당 주식 수량 조회
-        Integer owned_qty = etfTransactionRepository.findTotalSharesByStudentAndEtf(studentId, etfId.intValue(), TransType.BUY);
+        Integer owned_qty = etfTransactionRepository.findTotalSharesByStudentAndEtf(studentId, etfId.intValue(), TransactionType.BUY);
         if (owned_qty == null) {
             owned_qty = 0; // 처음 구매라면 0으로 설정
         }
@@ -211,7 +201,7 @@ public class EtfService {//s
         transaction.setEtf(etf);
         transaction.setStudent(student);
         transaction.setShare_count(shareCount);
-        transaction.setTransType(TransType.BUY);
+        transaction.setTransactionType(TransactionType.BUY);
         transaction.setTrans_date(new Timestamp(System.currentTimeMillis()));  //날짜
         transaction.setOwned_qty(updatedOwnedQty); // 기존 보유량 + 새로 매수한 수량
         transaction.setTotal_amt(totalAmount);
@@ -243,8 +233,8 @@ public class EtfService {//s
         }
 
         // 학생의 총 매수량(BUY)과 총 매도량(SELL) 조회
-        Integer totalBought = etfTransactionRepository.findTotalSharesByStudentAndEtf(studentId, etfId.intValue(), TransType.BUY);
-        Integer totalSold = etfTransactionRepository.findTotalSharesByStudentAndEtf(studentId, etfId.intValue(), TransType.SELL);
+        Integer totalBought = etfTransactionRepository.findTotalSharesByStudentAndEtf(studentId, etfId.intValue(), TransactionType.BUY);
+        Integer totalSold = etfTransactionRepository.findTotalSharesByStudentAndEtf(studentId, etfId.intValue(), TransactionType.SELL);
 
         // NULL 방지 처리
         totalBought = (totalBought == null) ? 0 : totalBought;
@@ -299,7 +289,7 @@ public class EtfService {//s
         transaction.setEtf(etf);
         transaction.setStudent(student);
         transaction.setShare_count(shareCount);
-        transaction.setTransType(TransType.SELL); // 매도 타입
+        transaction.setTransactionType(TransactionType.SELL); // 매도 타입
         transaction.setTrans_date(new Timestamp(System.currentTimeMillis())); // 거래 날짜
         transaction.setOwned_qty(updatedOwnedQty); // 매도 후 남은 보유량 저장
         transaction.setTotal_amt(totalAmount);

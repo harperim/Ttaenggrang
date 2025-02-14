@@ -95,7 +95,7 @@ public class Stock {
 
     @ManyToOne
     @JoinColumn(name = "market_status_id")
-    private MarketStatus marketStatus; // MarketStatus와 연결
+    private StockMarketStatus stockMarketStatus; // MarketStatus와 연결
 
 
 

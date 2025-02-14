@@ -18,7 +18,7 @@ public class NewsController implements NewsApiSpecification {
     private final NewsService newsService;
 
     // 뉴스 [생성] Chatgpt 기반
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ApiResponse<NewsDTO>> createNews() {
         NewsDTO generatedNews = newsService.generateRandomNewsFromStocks();
         return ResponseEntity.ok(ApiResponse.success(generatedNews));

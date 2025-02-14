@@ -2,7 +2,7 @@ package com.ladysparks.ttaenggrang.domain.etf.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ladysparks.ttaenggrang.domain.etf.entity.EtfTransaction;
-import com.ladysparks.ttaenggrang.domain.stock.entity.TransType;
+import com.ladysparks.ttaenggrang.domain.stock.entity.TransactionType;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -21,7 +21,7 @@ public class EtfTransactionDTO {
     private int return_amt; // 현재 주가
     @JsonIgnore  //  응답에서 숨김
     private BigDecimal returnRate;  // 손익/손실 금액
-    private TransType transType; // 거래 유형
+    private TransactionType transactionType; // 거래 유형
     private int owned_qty;      // 학생이 보유한 주식 수량
 
     //조인
@@ -44,7 +44,7 @@ public class EtfTransactionDTO {
                 .total_amt(etfTransaction.getTotal_amt())  // 총 거래 금액
                 .return_amt(etfTransaction.getReturn_amt())  // 현재 주가
                 .returnRate(etfTransaction.getReturnRate())  // 손익/손실 금액
-                .transType(etfTransaction.getTransType())  // 거래 유형
+                .transactionType(etfTransaction.getTransactionType())  // 거래 유형
                 .owned_qty(etfTransaction.getOwned_qty())   // 학생이 보유한 주식 수량
                 .studentId(etfTransaction.getStudent() != null ? etfTransaction.getStudent().getId() : null)  // 조인된 Student 엔티티에서 ID 가져오기
 //                .bankAccountId(stockTransaction.getBankAccount() != null ? stockTransaction.getBankAccount().getId() : null)  // 조인된 BankAccount 엔티티에서 ID 가져오기

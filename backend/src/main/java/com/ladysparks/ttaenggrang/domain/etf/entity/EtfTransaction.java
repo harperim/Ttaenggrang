@@ -1,6 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.etf.entity;
 
-import com.ladysparks.ttaenggrang.domain.stock.entity.TransType;
+import com.ladysparks.ttaenggrang.domain.stock.entity.TransactionType;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,12 +16,10 @@ import java.sql.Timestamp;
 @Builder  //Builder 패턴을 생성하여 객체를 생성
 @Data
 @Table(name = "etf_transaction")
-
 public class EtfTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @Column
     private int share_count;  // ETF 거래 수량
@@ -47,20 +45,18 @@ public class EtfTransaction {
     // 거래 유형
     @Enumerated(EnumType.STRING)  // Enum 값을 문자열로 저장
     @Column(name = "trans_type")
-    private TransType transType;
+    private TransactionType transactionType;
 
-    //조인
+    // 조인
 
-    //ETF
+    // ETF
     @ManyToOne
     @JoinColumn(name = "etf_id")
     private Etf etf;
 
-    //학생
+    // 학생
     @ManyToOne(targetEntity = Student.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = true)  // 학생 정보가 없을 수도 있음을 나타냄
     private Student student;
-
-
 
 }
