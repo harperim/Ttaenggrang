@@ -5,9 +5,8 @@ import com.ladysparks.ttaenggrang.domain.teacher.dto.SingleStudentCreateDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
-import com.ladysparks.ttaenggrang.global.docs.TeacherStudentApiSpecificaion;
+import com.ladysparks.ttaenggrang.global.docs.teacher.TeacherStudentApiSpecificaion;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -84,7 +83,7 @@ public class TeacherStudentController implements TeacherStudentApiSpecificaion {
         return ResponseEntity.status(createdStudent.getStatusCode()).body(createdStudent);
     }
 
-    // 우리반 학생 전체 조회
+    // 우리 반 학생 전체 조회
     @GetMapping("/students")
     public ResponseEntity<ApiResponse<List<StudentResponseDTO>>> getMyClassStudents() {
         Long teacherId = getTeacherIdFromSecurityContext(); // 🔥 로그인한 교사의 ID 가져오기
@@ -92,7 +91,7 @@ public class TeacherStudentController implements TeacherStudentApiSpecificaion {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    // 우리반 특정 학생 상세 조회
+    // 우리 반 특정 학생 상세 조회
     @GetMapping("/students/{studentId}")
     public ResponseEntity<ApiResponse<StudentResponseDTO>> getStudentById(@PathVariable Long studentId) {
         Long teacherId = getTeacherIdFromSecurityContext(); // 🔥 로그인한 교사의 ID 가져오기

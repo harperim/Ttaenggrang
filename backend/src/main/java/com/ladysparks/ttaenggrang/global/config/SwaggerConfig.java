@@ -47,96 +47,75 @@ public class SwaggerConfig {
     @Bean
     public GroupedOpenApi teacherApi() {
         return GroupedOpenApi.builder()
-                .group("Teacher")
-                .pathsToMatch("/teachers/**", "/salaries/**")
+                .group("1. 교사")
+                .pathsToMatch("/teachers/**")
+                .pathsToExclude("/teachers/jobs/**", "/teachers/nations/**", "/**/dashboard/**")
                 .build();
     }
 
     @Bean
     public GroupedOpenApi studentApi() {
         return GroupedOpenApi.builder()
-                .group("Student")
+                .group("2. 학생")
                 .pathsToMatch("/students/**")
-                .build();
-    }
-
-//    @Bean
-//    public GroupedOpenApi savingsGoalApi() {
-//        return GroupedOpenApi.builder()
-//                .group("savings-goal")
-//                .pathsToMatch("/savings-goals/**")
-//                .build();
-//    }
-
-    @Bean
-    public GroupedOpenApi bankApi() {
-        return GroupedOpenApi.builder()
-                .group("Bank")
-                .pathsToMatch("/bank-accounts/**", "/bank-transactions/**", "/savings-products/**", "/savings-subscriptions/**", "/savings-deposits/**", "/savings-payouts/**")
+                .pathsToExclude("/**/dashboard/**")
                 .build();
     }
 
     @Bean
-    public GroupedOpenApi itemApi() {
+    public GroupedOpenApi homeApi() {
         return GroupedOpenApi.builder()
-                .group("Item")
-                .pathsToMatch("/item-products/**", "/item-transactions/**")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi stockApi() {
-        return GroupedOpenApi.builder()
-                .group("Stock")
-                .pathsToMatch("/stocks/**")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi etfApi() {
-        return GroupedOpenApi.builder()
-                .group("Etf")
-                .pathsToMatch("/etfs/**")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi newsApi() {
-        return GroupedOpenApi.builder()
-                .group("News")
-                .pathsToMatch("/news/**")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi weeklyReportApi() {
-        return GroupedOpenApi.builder()
-                .group("Weekly-report")
-                .pathsToMatch("/weekly-report/**")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi taxApi() {
-        return GroupedOpenApi.builder()
-                .group("Tax")
-                .pathsToMatch("/taxes/**", "/tax-payments/**")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi voteApi() {
-        return GroupedOpenApi.builder()
-                .group("Vote")
-                .pathsToMatch("/votes/**")
+                .group("3. 홈 화면")
+                .pathsToMatch("/**/dashboard/**", "/notifications/**")
                 .build();
     }
 
     @Bean
     public GroupedOpenApi fcmApi() {
         return GroupedOpenApi.builder()
-                .group("Notification")
-                .pathsToMatch("/notifications/**")
+                .group("4. 국가 관리")
+                .pathsToMatch("/teachers/jobs/**", "/teachers/nations/**", "/votes/**", "/salaries/**")
                 .build();
     }
+
+    @Bean
+    public GroupedOpenApi bankApi() {
+        return GroupedOpenApi.builder()
+                .group("5. 은행")
+                .pathsToMatch("/bank-accounts/**", "/bank-transactions/**", "/savings-products/**", "/savings-subscriptions/**", "/savings-deposits/**", "/savings-payouts/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi taxApi() {
+        return GroupedOpenApi.builder()
+                .group("6. 국세청")
+                .pathsToMatch("/taxes/**", "/tax-payments/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi stockApi() {
+        return GroupedOpenApi.builder()
+                .group("7. 주식")
+                .pathsToMatch("/stocks/**", "/etfs/**", "/news/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi itemApi() {
+        return GroupedOpenApi.builder()
+                .group("8. 상품")
+                .pathsToMatch("/item-products/**", "/item-transactions/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi weeklyReportApi() {
+        return GroupedOpenApi.builder()
+                .group("9. 주간 통계 보고서")
+                .pathsToMatch("/weekly-report/**")
+                .build();
+    }
+
 }

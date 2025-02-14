@@ -20,9 +20,9 @@ public class VoteCreateDTO {
     private VoteMode voteMode;  // 투표 모드 (학생 모드 / 선택 모드)
     private VoteStatus voteStatus;
 
-    private List<StudentResponseDTO> students;  // 우리반 학생 리스트 (voteMode)가 학생 모드인 경우
+    private List<StudentResponseDTO> students;  // 우리 반 학생 리스트 (voteMode)가 학생 모드인 경우
 
-    private int totalStudents;  // 우리반 전체 인원
+    private int totalStudents;  // 우리 반 전체 인원
     private int totalVotes;  // 투표 참여 인원
 
     private List<RankInfoDTO> topRanks = new ArrayList<>();  // 1, 2, 3등 정보

@@ -1,4 +1,4 @@
-package com.ladysparks.ttaenggrang.global.docs;
+package com.ladysparks.ttaenggrang.global.docs.item;
 
 import com.ladysparks.ttaenggrang.domain.item.dto.ItemDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@Tag(name = "Item-Product", description = "상품 관련 API")
+@Tag(name = "[교사/학생] 상품", description = "상품 관련 API")
 public interface ItemApiSpecification {
 
-    @Operation(summary = "학급 내 판매 상품 [등록]", description = """
-            💡 (학생/교사) 판매할 상품을 등록합니다.
+    @Operation(summary = "(교사/학생) 학급 내 판매 상품 [등록]", description = """
+            💡 판매할 상품을 등록합니다.
+            
+            ---
 
             **[ 요청 필드 ]**
             - **name** : 상품명
@@ -23,15 +25,17 @@ public interface ItemApiSpecification {
             - **price** : 상품 가격
             - **quantity** : 판매 수량
             
-            **[ 규칙 ]**
+            ---
+            
+            **[ 설명 ]**
             - 상품명, 상품 가격, 판매 수량은 필수 항목입니다.
             - 상품 이미지 URL은 AWS S3에 이미지를 업로드하고 생성된 URL입니다.
             - 로그인된 상품
             """)
     ResponseEntity<ApiResponse<ItemDTO>> itemAdd(@RequestBody ItemDTO itemDto);
 
-    @Operation(summary = "학급 내 판매 상품 [전체 조회]", description = """
-            💡 (학생/교사) 학급 내 전체 판매 상품을 조회합니다.
+    @Operation(summary = "(교사/학생) 학급 내 판매 상품 [전체 조회]", description = """
+            💡 학급 내 전체 판매 상품을 조회합니다.
             
             **[ 응답 필드 ]**
             - **id** : 상품 ID
@@ -51,7 +55,7 @@ public interface ItemApiSpecification {
             """)
     ResponseEntity<ApiResponse<List<ItemDTO>>> itemList();
 
-    @Operation(summary = "학급 내 판매 상품 [상세 조회]", description = """
+    @Operation(summary = "(교사/학생) 학급 내 판매 상품 [상세 조회]", description = """
             💡 판매 중인 상품을 조회합니다.
             
             **[ 응답 필드 ]**
@@ -67,11 +71,16 @@ public interface ItemApiSpecification {
             - **approved** : 교사 승인 여부
             - **createdAt** : 상품 생성일
             - **updatedAt** : 상품 수정일
+            
+            ---
+            
+            **[ 설명 ]**
+            - 판매 수량이 0개가 되면 목록에서 보여지지 않습니다.
             """)
     ResponseEntity<ApiResponse<ItemDTO>> itemDetails(@PathVariable("itemId") Long itemId);
 
-    @Operation(summary = "판매 상품 [전체 조회]", description = """
-            💡 (학생/교사) 본인이 판매 중인 전체 상품을 조회합니다.
+    @Operation(summary = "(교사/학생) 판매 상품 [전체 조회]", description = """
+            💡 본인이 판매 중인 전체 상품을 조회합니다.
             
             **[ 응답 필드 ]**
             - **id** : 상품 ID

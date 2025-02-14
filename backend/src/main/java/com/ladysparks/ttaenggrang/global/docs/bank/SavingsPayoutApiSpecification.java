@@ -1,4 +1,4 @@
-package com.ladysparks.ttaenggrang.global.docs;
+package com.ladysparks.ttaenggrang.global.docs.bank;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsPayoutDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -6,15 +6,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-
-@Tag(name = "Savings-Payout", description = "적금 지급 내역 관리 API")
+@Tag(name = "[학생] 적금 지급", description = "적금 지급 내역 관리 API")
 public interface SavingsPayoutApiSpecification {
 
-    @Operation(summary = "적금 지급 내역 [조회]", description = """
+    @Operation(summary = "(학생) 적금 지급 내역 [조회]", description = """
             💡 특정 적금 가입 정보에 대한 지급 내역을 조회합니다.
             
             ---
@@ -35,7 +32,7 @@ public interface SavingsPayoutApiSpecification {
             
             ---
             
-            **[ 동작 방식 ]**
+            **[ 설명 ]**
             - 지정된 `savingsSubscriptionId`에 대한 지급 내역을 조회합니다.
             - 지급 유형에는 `만기 지급(Maturity)`과 `중도 인출(Early Withdrawal)`이 포함됩니다.
             

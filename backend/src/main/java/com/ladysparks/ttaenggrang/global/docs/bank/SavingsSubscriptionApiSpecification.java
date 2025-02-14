@@ -1,4 +1,4 @@
-package com.ladysparks.ttaenggrang.global.docs;
+package com.ladysparks.ttaenggrang.global.docs.bank;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -6,16 +6,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Optional;
 
-@Tag(name = "Saving-Subscription", description = "적금 가입 내역 관련 API")
+@Tag(name = "[학생] 적금 가입", description = "적금 가입 내역 관련 API")
 public interface SavingsSubscriptionApiSpecification {
 
-    @Operation(summary = "적금 가입 [등록]", description = """
+    @Operation(summary = "(학생) 적금 가입 [등록]", description = """
             💡 학생이 적금 상품에 가입합니다.
+            
+            ---
             
             **[ 요청 필드 ]**
             - **savingsProductId** : 적금 상품 ID
@@ -28,13 +28,17 @@ public interface SavingsSubscriptionApiSpecification {
                 - **"SATURDAY"**
                 - **"SUNDAY"**
 
-            **[ 규칙 ]**
+            ---
+            
+            **[ 설명 ]**
             - 학생이 선택한 요일에 자동으로 적금을 납입합니다.
             """)
     ResponseEntity<ApiResponse<SavingsSubscriptionDTO>> savingsSubscriptionAdd(@RequestBody SavingsSubscriptionDTO savingsSubscriptionDTO);
 
-    @Operation(summary = "적금 가입 내역 [전체 조회]", description = """
+    @Operation(summary = "(학생) 적금 가입 내역 [전체 조회]", description = """
             💡 학생의 적금 가입 내역을 조회합니다.
+            
+            ---
             
             **[ 응답 필드 ]**
             - **id** : 적금 가입 ID

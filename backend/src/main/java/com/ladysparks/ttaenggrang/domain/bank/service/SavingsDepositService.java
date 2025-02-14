@@ -45,7 +45,7 @@ public class SavingsDepositService {
 
     // 적금 납입 내역 추가 (수동 납입)
     @Transactional
-    public SavingsDepositDTO retrySavingsDeposit(Long savingsDepositId, Long studentId, Long bankAccountId) {
+    public SavingsDepositDTO retrySavingsDeposit(Long savingsDepositId, Long bankAccountId) {
         SavingsDeposit savingsDeposit = savingsDepositRepository.findById(savingsDepositId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 적금 납입 정보를 찾을 수 없습니다."));
 
@@ -54,7 +54,7 @@ public class SavingsDepositService {
         int amount = savingsDeposit.getSavingsSubscription().getSavingsProduct().getAmount();
 
         if (bankAccountDTO.getBalance() < amount) {
-            throw new IllegalArgumentException("잔액이 부족합니다. 현재 잔액: " + bankAccountDTO.getBalance());
+            throw new IllegalArgumentException("현재 은행 계좌 잔액이 부족합니다. (현재 잔액: " + bankAccountDTO.getBalance() + ")");
         }
 
         // 미납된 적금 납입 처리

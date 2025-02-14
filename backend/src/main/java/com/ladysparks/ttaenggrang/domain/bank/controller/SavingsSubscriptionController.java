@@ -1,7 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.bank.controller;
 
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
-import com.ladysparks.ttaenggrang.global.docs.SavingsSubscriptionApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.bank.SavingsSubscriptionApiSpecification;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import com.ladysparks.ttaenggrang.domain.bank.service.SavingsSubscriptionService;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/savings-subscriptions")

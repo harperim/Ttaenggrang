@@ -1,6 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.bank.controller;
 
-import com.ladysparks.ttaenggrang.global.docs.SavingsProductApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.bank.SavingsProductApiSpecification;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsProductDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import com.ladysparks.ttaenggrang.domain.bank.service.SavingsProductService;

@@ -5,7 +5,7 @@ import com.ladysparks.ttaenggrang.domain.student.dto.StudentAssetDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentDashboardDTO;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentDashboardService;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
-import com.ladysparks.ttaenggrang.global.docs.StudentDashboardApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.home.StudentDashboardApiSpecification;
 import com.ladysparks.ttaenggrang.global.redis.RedisGoalService;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@ package com.ladysparks.ttaenggrang;
 
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankAccount;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction;
-import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransactionType;
+import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.repository.BankAccountRepository;
 import com.ladysparks.ttaenggrang.domain.bank.repository.BankTransactionRepository;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;

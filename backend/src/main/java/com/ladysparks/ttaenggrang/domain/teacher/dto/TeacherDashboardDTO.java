@@ -18,7 +18,7 @@ public class TeacherDashboardDTO {
     // 판매 중인 상품 개수
     private int activeItemCount;
 
-    // 우리반 목표 저축액
+    // 우리 반 목표 저축액
     private int classSavingsGoal;
 
 }

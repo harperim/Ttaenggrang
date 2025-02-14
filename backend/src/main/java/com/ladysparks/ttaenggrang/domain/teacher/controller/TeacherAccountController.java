@@ -4,7 +4,7 @@ import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherLoginDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherResponseDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.TeacherSignupDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
-import com.ladysparks.ttaenggrang.global.docs.TeacherAccountApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.teacher.TeacherAccountApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import com.ladysparks.ttaenggrang.global.utill.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;

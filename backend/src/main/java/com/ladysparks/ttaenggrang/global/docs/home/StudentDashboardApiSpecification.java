@@ -1,4 +1,4 @@
-package com.ladysparks.ttaenggrang.global.docs;
+package com.ladysparks.ttaenggrang.global.docs.home;
 
 import com.ladysparks.ttaenggrang.domain.student.dto.BankTransactionSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentAssetDTO;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@Tag(name = "Student-Dashboard", description = "학생 대시보드 관련 API")
+@Tag(name = "[학생] 홈 화면", description = "학생 대시보드 관련 API")
 public interface StudentDashboardApiSpecification {
 
     @Operation(summary = "학생 메인 화면 대시보드 [조회]", description = """
@@ -31,11 +31,10 @@ public interface StudentDashboardApiSpecification {
             
             ---
             
-            **[ 동작 방식 ]**
+            **[ 설명 ]**
             - 현재 로그인한 학생의 `studentId` 를 기반으로 정보를 조회합니다.
             - 학생의 **계좌 잔액, 현재 순위, 적금 납입액, 투자 평가액, 목표액** 등을 불러옵니다.
             - 목표 달성률은 `(총 자산 / 목표액) * 100` 으로 계산됩니다.
-            
             """)
     ResponseEntity<ApiResponse<StudentDashboardDTO>> studentDashboardDetails();
 
@@ -55,7 +54,7 @@ public interface StudentDashboardApiSpecification {
             
             ---
 
-            **[ 동작 방식 ]**
+            **[ 설명 ]**
             - 현재 로그인한 학생의 금융 데이터를 조회합니다.
             - `적금 납입 중인 금액`, `만기/중도 인출 지급된 금액`을 합쳐 `총 저축`으로 계산합니다.
             - `매도 금액`과 `투자 평가액`을 합쳐 `총 투자 수익`으로 반환합니다.
@@ -89,7 +88,8 @@ public interface StudentDashboardApiSpecification {
         - **accountBalance** : 거래 후 계좌 잔고
 
         ---
-         **[ 동작 방식 ]**
+        
+         **[ 설명 ]**
         - 학생은 자신의 계좌 내역만 조회할 수 있습니다.
         """)
     @GetMapping
@@ -103,7 +103,7 @@ public interface StudentDashboardApiSpecification {
 //            - **savingsAchievementRate** : 저축 목표 달성률 (단위: %)
 //            - **rank** : 학생의 목표 달성 순위 (1위부터 시작)
 //
-//            **[ 동작 방식 ]**
+//            **[ 설명 ]**
 //            - 먼저 Redis에서 목표 달성률을 조회합니다.
 //            - 만약 Redis에 값이 없으면 DB에서 계산 후 Redis에 저장합니다.
 //            """)

@@ -1,6 +1,6 @@
 package com.ladysparks.ttaenggrang;
 
-import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransactionType;
+import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.repository.BankTransactionRepository;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
 import org.junit.jupiter.api.BeforeEach;

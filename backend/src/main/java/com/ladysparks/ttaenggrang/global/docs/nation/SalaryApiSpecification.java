@@ -1,17 +1,16 @@
-package com.ladysparks.ttaenggrang.global.docs;
+package com.ladysparks.ttaenggrang.global.docs.nation;
 
 import com.ladysparks.ttaenggrang.domain.teacher.dto.IncentiveDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kotlin.OptionalExpectation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "Salary", description = "지급 관련 API")
+@Tag(name = "[교사] 주급", description = "주급 관련 API")
 public interface SalaryApiSpecification {
 
-    @Operation(summary = "학생 주급 지급", description = """
+    @Operation(summary = "(교사) 학생 주급 지급", description = """
             💡 교사가 '주급 지급' 버튼을 클릭하면, 각 학생의 직업에 따라 설정된 기본급(`baseSalary`)이 학생들의 계좌로 자동으로 지급됩니다.
             ### 기능 설명
             - **대상:** 교사의 반에 등록된 모든 학생
@@ -33,7 +32,7 @@ public interface SalaryApiSpecification {
             """)
     ResponseEntity<ApiResponse<String>> distributeBaseSalary();
 
-    @Operation(summary = "학생 인센티브 지급", description = """
+    @Operation(summary = "(교사) 학생 인센티브 지급", description = """
             💡 교사가 우리 반 학생들에게 인센티브를 지급하는 기능입니다.
             ### 기능 설명
             - 교사는 드롭다운 목록에서 학생을 선택하고, 인센티브 금액을 입력하여 지급할 수 있습니다.
@@ -60,4 +59,5 @@ public interface SalaryApiSpecification {
             - `200 OK` : "인센티브가 성공적으로 지급되었습니다."
             """)
     ResponseEntity<ApiResponse<String>> giveIncentive(@RequestBody IncentiveDTO incentiveDTO);
+
 }

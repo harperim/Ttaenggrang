@@ -4,7 +4,7 @@ import com.ladysparks.ttaenggrang.domain.notification.dto.BroadcastNotificationD
 import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationDTO;
 import com.ladysparks.ttaenggrang.domain.notification.service.FirebaseCloudMessageService;
 import com.ladysparks.ttaenggrang.domain.notification.service.FirebaseCloudMessageWithDataService;
-import com.ladysparks.ttaenggrang.global.docs.NotificationApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.home.NotificationApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
