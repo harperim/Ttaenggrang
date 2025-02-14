@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="504dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/spacing_20"
     android:background="@color/white">
 
     <ImageButton
@@ -52,15 +53,16 @@
                 android:text="  학생 이름 일괄 등록 (선택)" />
         </LinearLayout>
 
-        <!-- 예시 이미지 -->
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="133dp"
-            android:layout_marginVertical="@dimen/spacing_20"
-            android:src="@drawable/ic_launcher_background" />
+<!--        &lt;!&ndash; 예시 이미지 &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="133dp"-->
+<!--            android:layout_marginVertical="@dimen/spacing_20"-->
+<!--            android:src="@drawable/ic_launcher_background" />-->
 
 
         <TextView
+            android:layout_marginTop="20dp"
             style="@style/heading4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -92,12 +94,11 @@
         <!-- 파일 등록 from -->
         <com.google.android.material.button.MaterialButton
             android:layout_gravity="center"
-            android:id="@+id/btnSalary"
+            android:id="@+id/btnFileUpload"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_20"
-            android:layout_marginRight="@dimen/spacing_10"
             android:background="@drawable/btn_rounded_border"
             android:backgroundTint="@null"
             android:paddingHorizontal="@dimen/spacing_10"
@@ -135,6 +136,7 @@
             app:strokeWidth="0.75dp" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSaveData"
             style="@style/heading4"
             android:layout_width="228dp"
             android:layout_height="50dp"

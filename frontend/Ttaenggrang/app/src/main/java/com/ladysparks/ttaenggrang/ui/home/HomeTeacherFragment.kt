@@ -32,6 +32,7 @@ import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
 import com.ladysparks.ttaenggrang.databinding.DialogBaseConfirmCancelBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.databinding.FragmentHomeTeacherBinding
+import com.ladysparks.ttaenggrang.realm.NotificationRepository
 import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
 import com.ladysparks.ttaenggrang.ui.component.IncentiveDialogFragment
 import com.ladysparks.ttaenggrang.util.NavigationManager
@@ -185,18 +186,18 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
 
         // 데이터셋 생성 (수입 & 지출)
         val incomeSet = BarDataSet(incomeEntries, "수입").apply {
-            color = getColor(R.color.mainGreen)  // 초록색
+            color = getColor(R.color.chartGreen)  // 주황색
             setDrawValues(false)
         }
 
         val expenseSet = BarDataSet(expenseEntries, "지출").apply {
-            color = getColor(R.color.mainOrange)  // 주황색
+            color = getColor(R.color.chartOrange)  // 주황색
             setDrawValues(false)
         }
 
         // 색상
-        incomeSet.colors =  listOf(ContextCompat.getColor(requireContext(), R.color.mainGreen))
-        expenseSet.colors = listOf(ContextCompat.getColor(requireContext(), R.color.mainOrange))
+        incomeSet.colors =  listOf(ContextCompat.getColor(requireContext(), R.color.chartGreen))
+        expenseSet.colors = listOf(ContextCompat.getColor(requireContext(), R.color.chartOrange))
 
         // BarData 생성 (두 개의 데이터셋 포함)
         val barData = BarData(incomeSet, expenseSet)
@@ -264,19 +265,39 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
     }
 
     private fun sampleDataAlarmList() {
-        val tempData = listOf(
-            AlarmDto(1, "거래 발생", "누가 물건을 샀어요", "시스템", Date().time),
-            AlarmDto(2, "거래 발생1", "누가 물건을 샀어요2", "시스템2", Date().time),
-            AlarmDto(3, "거래 발생2", "누가 물건을 샀어요3", "시스템3", Date().time)
-        )
+//        val tempData = listOf(
+//            AlarmDto(1, "거래 발생", "누가 물건을 샀어요", "시스템", Date().time),
+//            AlarmDto(2, "거래 발생1", "누가 물건을 샀어요2", "시스템2", Date().time),
+//            AlarmDto(3, "거래 발생2", "누가 물건을 샀어요3", "시스템3", Date().time)
+//        )
+//
+//        // 어댑터 초기화 및 RecyclerView 설정
+//        alarmAdapter = AlarmAdapter(tempData)
+//        binding.recyclerAlarm.adapter = alarmAdapter
+//        binding.recyclerAlarm.layoutManager = LinearLayoutManager(requireContext())
+//
+//        // 어댑터 데이터 갱신
+//        alarmAdapter.updateData(tempData)
 
-        // 어댑터 초기화 및 RecyclerView 설정
-        alarmAdapter = AlarmAdapter(tempData)
-        binding.recyclerAlarm.adapter = alarmAdapter
-        binding.recyclerAlarm.layoutManager = LinearLayoutManager(requireContext())
+        // 🔹 Realm에서 저장된 알림 목록 가져오기
+        val alarmList = NotificationRepository.getAllNotifications()
+        if(alarmList.isNullOrEmpty()){
+            binding.recyclerAlarm.visibility = View.GONE
+            binding.textNullAlarm.visibility = View.VISIBLE
+        }else{
+            binding.recyclerAlarm.visibility = View.VISIBLE
+            binding.textNullAlarm.visibility = View.GONE
 
-        // 어댑터 데이터 갱신
-        alarmAdapter.updateData(tempData)
+            // 🔹 어댑터 초기화 및 RecyclerView 설정
+            alarmAdapter = AlarmAdapter(alarmList)
+            binding.recyclerAlarm.adapter = alarmAdapter
+            binding.recyclerAlarm.layoutManager = LinearLayoutManager(requireContext())
+
+            // 🔹 어댑터 데이터 갱신
+            alarmAdapter.updateData(alarmList)
+        }
+
+
     }
 
     private fun initAdapter() {
@@ -323,9 +344,9 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
             showToast("알람 내역 더보기")
         }
 
-        binding.btnStudentMore.setOnClickListener {
-            NavigationManager.moveFragment(FRAGMENT_STUDENT_MANAGEMENT)
-        }
+//        binding.btnStudentMore.setOnClickListener {
+//            NavigationManager.moveFragment(FRAGMENT_STUDENT_MANAGEMENT)
+//        }
     }
 
 

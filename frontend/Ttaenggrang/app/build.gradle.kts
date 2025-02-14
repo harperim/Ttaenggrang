@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.gms.google-services")
+    id("io.realm.kotlin")
 }
 
 val localProperties = Properties()
@@ -86,5 +87,11 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging-ktx")
     // 뷰모델
     implementation ("androidx.fragment:fragment-ktx:1.5.7")
+
+    // Realm Database
+    implementation("io.realm:realm-gradle-plugin:10.15.1")
+
+    // Realm (Kotlin SDK)
+    implementation("io.realm.kotlin:library-base:1.11.0")
 
 }

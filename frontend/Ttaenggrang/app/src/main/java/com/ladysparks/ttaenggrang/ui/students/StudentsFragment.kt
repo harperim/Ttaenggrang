@@ -90,7 +90,7 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
     }
 
     private fun fetchStudentList() {
-        val studentHeader = listOf("번호", "이름", "직업(월급)", "아이디", "비밀번호")
+        val studentHeader = listOf("번호", "이름", "직업 (월급)", "아이디", "비밀번호")
 
         // 행 클릭 이벤트 여부 설정 (필요하면 추가, 필요 없으면 null)
         val isRowClickable = true // 🔥 필요 없으면 false로 설정
@@ -100,7 +100,19 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
             // 클릭 이벤트를 사용하는 경우, 아래 {} 안에 작성 : Intent, Toast, ShowDialog 등....
             BaseTableAdapter(studentHeader, emptyList()) { rowIndex, rowData ->
                 Log.d("TAG", "Row 클릭됨: $rowIndex, 데이터: $rowData")
-                showToast("${rowIndex} : ${rowData[2]}")
+
+                // 🔹 다이얼로그에 전달할 데이터 설정
+                val bundle = Bundle().apply {
+                    putString("name", rowData[1])
+                    putString("job", rowData[2])
+                    putString("id", rowData[3])
+                    putString("password", rowData[4])
+                }
+
+                val dialog = StudentInfoDialogFragment().apply {
+                    arguments = bundle // ✅ 데이터 전달
+                }
+                dialog.show(parentFragmentManager, "StudentInfoDialog") // ✅ 프래그먼트에서 다이얼
             }
         } else {
             // 행 클릭 비활성화
@@ -120,11 +132,14 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
             }
 
             val studentList = studentList.mapIndexed { index, student ->
+                val jobName = student.job?.jobName ?: "시민"
+                val salary = student.job?.baseSalary ?: 0
+
                 BaseTableRowModel(
                     listOf(
                         (index + 1).toString(),  // 번호
                         student.name ?: "N/A",        // 이름 (원래는 student.name 이었겠지만 username 사용)
-                        student.job?.jobName ?: "시민",                      // 현재 직업 + 월급 정보 제공하지 않음
+                        "$jobName ($salary)",                      // 현재 직업 + 월급 정보 제공하지 않음
                         student.username,        // 아이디
                         student.teacher.password  // 비밀번호 대신 학교명 (데이터에 비밀번호 없음)
                     )
@@ -137,6 +152,18 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
 
         // ViewModel에서 데이터 가져오기
         studentsViewModel.fetchStudentList()
+    }
+
+    private fun showStudentInfoDialog(rowData: List<String>) {
+        val dialog = StudentInfoDialogFragment().apply {
+            arguments = Bundle().apply {
+                putString("name", rowData[1])
+                putString("job", rowData[2])
+                putString("id", rowData[3])
+                putString("password", rowData[4])
+            }
+        }
+        dialog.show(parentFragmentManager, "StudentInfoDialog") // ✅ 프래그먼트에서 다이얼로그 띄우기
     }
 
 
@@ -193,7 +220,10 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
                 statusImageResId = R.drawable.ic_vote,
                 showCloseButton = false,
                 onPositiveClick = {
-                    showToast("확인 버튼")
+                    // 🔹 1단계 다이얼로그 표시
+//                    val viewModel = ViewModelProvider(requireActivity())[StudentViewModel::class.java]
+                    val stepOneDialog = StudentStepOneDialogFragment(studentsViewModel)
+                    stepOneDialog.show(parentFragmentManager, "StepOneDialog")
                 },
                 onNegativeClick = {
                     showSingleStudentAddDialog()

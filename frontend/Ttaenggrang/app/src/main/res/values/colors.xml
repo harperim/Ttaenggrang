@@ -25,6 +25,8 @@
     <color name="chartPink">#F765A3</color>
     <color name="chartPurple">#A155B9</color>
     <color name="chartBlue">#7987FF</color>
+    <color name="chartGreen">#6FD195</color>
+    <color name="chartOrange">#FFAE4C</color>
 
     <!--Orange-->
     <color name="foundation_orange_50">#fff5eb</color>

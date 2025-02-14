@@ -353,20 +353,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_20"
-            android:text="학생 관리"
+            android:text="학생 목록"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/btnStudentMore"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginStart="@dimen/spacing_10"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_chevron_right"
-            app:layout_constraintBottom_toBottomOf="@+id/textStudentManage"
-            app:layout_constraintStart_toEndOf="@+id/textStudentManage"
-            app:layout_constraintTop_toTopOf="@+id/textStudentManage" />
+<!--        <ImageButton-->
+<!--            android:id="@+id/btnStudentMore"-->
+<!--            android:layout_width="15dp"-->
+<!--            android:layout_height="15dp"-->
+<!--            android:layout_marginStart="@dimen/spacing_10"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:src="@drawable/ic_chevron_right"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/textStudentManage"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/textStudentManage"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/textStudentManage" />-->
 
         <TextView
             android:visibility="visible"

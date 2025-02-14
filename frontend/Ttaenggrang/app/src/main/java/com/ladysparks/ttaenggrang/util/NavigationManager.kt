@@ -72,7 +72,10 @@ object NavigationManager {
                 FRAGMENT_STORE_STUDENT -> transaction.replace(R.id.fragment_container, StoreStudentFragment())
 
                 else -> return
+
             }
+
+
             transaction.commit()
         }
     }

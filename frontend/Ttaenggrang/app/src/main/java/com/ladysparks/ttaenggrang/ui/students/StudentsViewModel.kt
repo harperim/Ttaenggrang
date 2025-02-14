@@ -1,5 +1,7 @@
 package com.ladysparks.ttaenggrang.ui.students
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,6 +14,11 @@ import com.ladysparks.ttaenggrang.data.model.response.Teacher
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.util.ApiErrorParser
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class StudentsViewModel : ViewModel(){
 
@@ -24,9 +31,6 @@ class StudentsViewModel : ViewModel(){
 
     private val _studentList = MutableLiveData<List<StudentMultiCreateResponse>?>() // LiveData를 활용
     val studentList: LiveData<List<StudentMultiCreateResponse>?> get() = _studentList
-
-
-    // 버튼이 클릭될 때 마다, 학생정보, 재정상태 여부를 판단해서 데이터를 불러오다.
     fun fetchStudentList() {
         viewModelScope.launch {
             runCatching {
@@ -35,14 +39,88 @@ class StudentsViewModel : ViewModel(){
             }.onSuccess { response ->
                 _studentList.value = response.data
             }.onFailure { exception ->
-                _studentList.value = null
+                _errorMessage.value = ApiErrorParser.extractErrorMessage(exception)
                 Log.e("AlarmViewModel", "Error fetchStudentList ", exception)
             }
         }
     }
 
+
+
     // 재정 관리 탭
    // fun fetch
+
+
+
+    // 학생 등록(복수)
+    val studentCount = MutableLiveData<Int>()
+    val studentPrefix = MutableLiveData<String>()
+    val uploadedFile = MutableLiveData<Uri?>()
+    val uploadedFileName = MutableLiveData<String>() // 🔹 파일명을 저장할 LiveData
+    val uploadedFileRequestBody = MutableLiveData<RequestBody?>()  // 🔹 추가된 부분
+
+    // 서버 전송 함수
+    fun uploadFile(uri: Uri, context: Context) {
+        viewModelScope.launch {
+            runCatching {
+                val file = FileUtils.getFileFromUri(context, uri)
+                uploadedFile.value = uri  // 🔹 파일 URI 저장
+                uploadedFileName.value = file.name  // 🔹 파일명 저장
+                uploadedFileRequestBody.value = createBinaryRequestBody(context, uri)
+            }.onFailure {
+                _errorMessage.value = "파일 업로드 실패: ${it.message}"
+            }
+        }
+    }
+
+
+    fun sendStudentDataToServer(context: Context) {
+        val count = studentCount.value ?: 0
+        val prefix = studentPrefix.value.orEmpty()
+        val fileUri = uploadedFile.value
+
+        if (count == 0 || prefix.isEmpty() || fileUri == null) {
+            _errorMessage.value = "입력된 데이터가 부족합니다."
+            Log.e("TAG", "sendStudentDataToServer: 파일이 선택되지 않았습니다.")
+            return
+        }
+
+        viewModelScope.launch {
+            runCatching {
+//                val fileRequestBody = createBinaryRequestBody(context, fileUri)
+//                RetrofitUtil.teacherService.uploadStudentData(
+//                    baseId = prefix,
+//                    studentCount = count,
+//                    file = fileRequestBody // ✅ 수정된 부분
+//                )
+
+                val filePart = createMultipartFile(context, fileUri) // ✅ 수정된 부분
+                RetrofitUtil.teacherService.uploadStudentData(
+                    baseId = prefix,
+                    studentCount = count,
+                    file = filePart
+                )
+            }.onSuccess {
+                Log.d("StudentViewModel", "학생 정보 및 파일 전송 성공")
+            }.onFailure {
+                _errorMessage.value = "학생 정보 및 파일 전송 실패: ${it.message}"
+                Log.e("TAG", "sendStudentDataToServer: ${it.message}")
+            }
+        }
+    }
+
+    private fun createMultipartFile(context: Context, uri: Uri): MultipartBody.Part {
+        val file = FileUtils.getFileFromUri(context, uri)
+        val requestFile = file.asRequestBody("application/octet-stream".toMediaTypeOrNull()) // ✅ Content-Type 수정
+        return MultipartBody.Part.createFormData("file", file.name, requestFile)
+    }
+
+    private fun createBinaryRequestBody(context: Context, uri: Uri): RequestBody {
+        val inputStream = context.contentResolver.openInputStream(uri)
+            ?: throw IllegalArgumentException("파일을 읽을 수 없습니다.")
+        val byteArray = inputStream.readBytes()
+        return byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull())
+    }
 
 
     // 직업 리스트

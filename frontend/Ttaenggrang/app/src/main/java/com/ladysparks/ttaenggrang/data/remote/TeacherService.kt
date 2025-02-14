@@ -8,19 +8,31 @@ import com.ladysparks.ttaenggrang.data.model.dto.NationInfoDto
 import com.ladysparks.ttaenggrang.data.model.response.EconomySummaryResponse
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
 import com.ladysparks.ttaenggrang.data.model.response.WeekAvgSummaryResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface TeacherService {
 
-    // init
+    // 학생 단일 계정 등록
     @POST("teachers/single-create")
     suspend fun singleCreate(@Body singleStudent: StudentSingleCreateRequest): ApiResponse<Any>
 
+    // 학생 복수 계정 등록 //uploadStudentData
+    @Multipart
     @POST("teachers/quick-create")
-    suspend fun multiCreate(@Body multiStudent: StudentMultiCreateRequest): ApiResponse<Any>
+    suspend fun uploadStudentData(@Query("baseId") baseId: String, @Query("studentCount") studentCount: Int, @Part file: MultipartBody.Part): ApiResponse<List<StudentMultiCreateResponse>>
+
+
+//    @POST("teachers/quick-create")
+//    suspend fun multiCreate(@Body multiStudent: StudentMultiCreateRequest): ApiResponse<Any>
+
 
     @GET("teachers/students") // 반학생 전체 조회
     suspend fun getStudentList(): ApiResponse<List<StudentMultiCreateResponse>>

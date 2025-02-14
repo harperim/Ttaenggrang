@@ -16,6 +16,7 @@ import com.ladysparks.ttaenggrang.data.model.response.StudentSignInResponse
 import com.ladysparks.ttaenggrang.data.model.response.TeacherSignInResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.databinding.ActivityLoginBinding
+import com.ladysparks.ttaenggrang.util.PermissionChecker
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
@@ -26,9 +27,14 @@ class LoginActivity : BaseActivity() {
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     private var isPasswordVisible = false
 
+    private lateinit var permissionChecker: PermissionChecker
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        permissionChecker = PermissionChecker(this@LoginActivity, this)
+        permissionChecker.requestPermissionsAtStartup()
 
         tempEvent()
         initEvent()

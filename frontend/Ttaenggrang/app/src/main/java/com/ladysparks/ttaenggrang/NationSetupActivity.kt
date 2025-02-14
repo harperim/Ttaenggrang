@@ -47,6 +47,7 @@ class NationSetupActivity : BaseActivity() {
 
 //                    startActivity(Intent(this@NationSetupActivity, MainActivity::class.java))
                     // 1. 더미데이터 추가 : 직업 데이터
+                    showToast("기본 직업 정보를 등록중 입니다...")
                     setBaseJobData()
                 }.onFailure {
                     showErrorDialog(it)
@@ -70,6 +71,7 @@ class NationSetupActivity : BaseActivity() {
                 }
             }.onSuccess {
                 // 2. 더미데이터 추가 : 세금 데이터
+                showToast("기본 세금 정보를 등록중 입니다...")
                 setBaseTaxData()
             }.onFailure {
                 showErrorDialog(it)
