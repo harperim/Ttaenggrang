@@ -6,6 +6,7 @@ import com.ladysparks.ttaenggrang.domain.news.entity.NewsType;
 import com.ladysparks.ttaenggrang.domain.news.repository.NewsRepository;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.json.JSONArray;
@@ -26,12 +27,20 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class NewsService {
 
-    @Value("${api.openai_key}")
+    @Value("${OPENAI_API_KEY}")
     private String apiKey;
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
     private final NewsRepository newsRepository;
     private final StockRepository stockRepository;
+
+    @PostConstruct
+    public void logConfig() {
+        String maskedKey = (apiKey != null && apiKey.length() >= 5)
+                ? apiKey.substring(0, 5) + "*****"
+                : "Invalid Key";
+        System.out.println("debug: " + maskedKey);
+    }
 
     public NewsDTO generateRandomNewsFromStocks() {
         // 1. 모든 주식 엔터티에서 랜덤 선택

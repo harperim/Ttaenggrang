@@ -1,9 +1,6 @@
 spring:
   jackson:
     time-zone: Asia/Seoul
-  spring:
-    datasource:
-      url: jdbc:mysql://localhost:3306/your_database?serverTimezone=Asia/Seoul
   profiles:
     active: prod
   application:
@@ -62,4 +59,4 @@ server:
       force: true
 
 api:
-  openai_key: ${OPENAI_API_KEY:default-api-key}  # 환경변수 없으면 기본값 사용
+  openai_key: ${OPENAI_API_KEY}  # 환경변수 없으면 기본값 사용
