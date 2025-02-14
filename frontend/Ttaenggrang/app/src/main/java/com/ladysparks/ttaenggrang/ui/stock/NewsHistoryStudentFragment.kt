@@ -16,7 +16,7 @@ class NewsHistoryStudentFragment : BaseFragment<FragmentNewsHistoryStudentBindin
 
     private val viewModel: StockViewModel by viewModels()
     private lateinit var tableAdapter: BaseTableAdapter
-    private val columnWeights = listOf(0.5f, 2f, 1.5f, 1f, 0.8f)
+    private val columnWeights = listOf(0.5f, 1f, 2f, 0.8f, 0.8f)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

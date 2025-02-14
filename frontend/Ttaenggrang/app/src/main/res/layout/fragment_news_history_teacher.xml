@@ -1,14 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.stock.NewsHistoryTeacherFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/spacing_40"
+    android:background="@color/backgroundGray"
+    tools:context=".ui.stock.NewsHistoryStudentFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintNewsHistoryArea"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:paddingHorizontal="@dimen/spacing_20"
+        android:paddingVertical="@dimen/spacing_15"
+        android:background="@drawable/bg_rounded_15">
 
-</FrameLayout>
+        <!--지난 뉴스 목록-->
+        <TextView
+            android:id="@+id/textNewHistoryTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="지난 뉴스 목록"
+            style="@style/heading2"
+            android:layout_marginBottom="@dimen/spacing_20"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/recyclerNewsHistoryTable"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <!--뉴스생성 버튼-->
+        <LinearLayout
+            android:id="@+id/btnNewsCreate"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:background="@drawable/btn_rounded_full"
+            android:backgroundTint="@color/foundation_green_500"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/spacing_10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textNewHistoryTitle"
+            app:layout_constraintBottom_toBottomOf="@id/textNewHistoryTitle"
+            >
+
+            <TextView
+                style="@style/heading5"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="뉴스 생성하기"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:layout_marginStart="5dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="@color/white" />
+
+
+        </LinearLayout>
+
+
+        <!--지난 뉴스 테이블-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerNewsHistoryTable"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/textNewHistoryTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

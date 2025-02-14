@@ -1,3 +1,42 @@
 Base 패키지 설명
 
 - Activity, Fragment, Application 에서 공통적으로 필요한 기능을 제공하는 패키지
+
+- BaseTableAdapter 사용법
+
+    private lateinit var tableAdapter: BaseTableAdapter
+
+    ✅ 헤더 컬럼 개수와 동일하게 지정한다
+    ✅columnWeights 선언 안하면 자동을 1f 기본적용됨
+    private val columnWeights = listOf(0.5f, 2f, 1.5f, 1f, 0.8f)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //초기화
+        initAdapter()
+
+    }
+
+    private fun initAdapter() {
+        tableAdapter = BaseTableAdapter(
+            header = listOf(
+                "헤더 컬럼명 1",
+                "헤더 컬럼명 2",
+                "헤더 컬럼명 3"...
+            ),
+            data = emptyList(), ✅ 초기에는 빈 데이터
+            columnWeights = columnWeights, ✅ 가중치 적용
+            onRowClickListener = { rowIndex, rowData ->
+                Toast.makeText(
+                    requireContext(),
+                    "클릭한 행: ${rowData.joinToString ()}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
+        binding.리사이클러뷰이름.adapter = tableAdapter
+
+    }
+
+}

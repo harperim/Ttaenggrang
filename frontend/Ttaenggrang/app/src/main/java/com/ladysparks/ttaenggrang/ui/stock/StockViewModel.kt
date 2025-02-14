@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ladysparks.ttaenggrang.data.model.dto.NewsDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockStudentDto
@@ -14,6 +15,7 @@ import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil.Companion.bankService
 import com.ladysparks.ttaenggrang.data.remote.StockService
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
+import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 import kotlinx.coroutines.launch
 
 class StockViewModel : ViewModel() {
@@ -81,6 +83,9 @@ class StockViewModel : ViewModel() {
     val stockSummary: LiveData<Map<String, Any>> get() = _stockSummary
 
     // 이전 뉴스 기록 조회
+    // 뉴스 생성
+    private val _newsLiveData = MutableLiveData<NewsDto?>()
+    val newsLiveData: LiveData<NewsDto?> get() = _newsLiveData
 
 
     // 주식 데이터 조회
@@ -362,7 +367,8 @@ class StockViewModel : ViewModel() {
 
         // ✅ 총 수익 & 총 수익률 계산
         val totalProfit = totalValuation - totalInvestment
-        val totalReturnRate = if (totalInvestment > 0) (totalProfit.toFloat() / totalInvestment) * 100 else 0f
+        val totalReturnRate =
+            if (totalInvestment > 0) (totalProfit.toFloat() / totalInvestment) * 100 else 0f
 
         Log.d("StockSummary", "총 투자액: $totalInvestment")
         Log.d("StockSummary", "총 평가금액: $totalValuation")
@@ -379,6 +385,26 @@ class StockViewModel : ViewModel() {
             )
         )
         _stockTableData.postValue(newData)
+    }
+
+    // 뉴스 생성
+    fun createNews() {
+        viewModelScope.launch {
+            runCatching {
+                val token = SharedPreferencesUtil.getValue(SharedPreferencesUtil.JWT_TOKEN_KEY, "") // ✅ 토큰 가져오기
+                stockService.createNews("Bearer $token") // ✅ 바디 없이 POST 요청
+            }.onSuccess { response ->
+                if (response.statusCode == 0) {
+                    _newsLiveData.postValue(response.data)
+                    Log.d("NewsViewModel", "뉴스 생성 성공: ${response.data}")
+                } else {
+                    _errorMessage.postValue("뉴스 생성 실패: ${response.message}")
+                }
+            }.onFailure { e ->
+                _errorMessage.postValue("네트워크 오류 발생: ${e.message}")
+                Log.e("NewsViewModel", "네트워크 오류", e)
+            }
+        }
     }
 
 }

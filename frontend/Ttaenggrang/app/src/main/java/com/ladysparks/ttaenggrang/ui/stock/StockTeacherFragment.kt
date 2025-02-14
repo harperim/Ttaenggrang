@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.ladysparks.ttaenggrang.R
@@ -52,6 +53,14 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         binding.btnStockOpen.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateMarketStatus(isChecked) // 서버로 true/false 전송
             Log.d("TAG", "onViewCreated: switch 클릭!!!!")
+        }
+
+        // 지난 뉴스 보기
+        binding.btnNewsHistory.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, NewsHistoryTeacherFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         initData()
