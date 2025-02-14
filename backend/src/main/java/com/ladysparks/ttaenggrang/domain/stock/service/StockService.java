@@ -524,8 +524,15 @@ public class StockService {
     @Transactional
     public void setMarketStatus(boolean isManualOverride) {
         LocalTime currentTime = LocalTime.now();
-        boolean isMarketActive = isManualOverride && !(currentTime.isAfter(LocalTime.of(17, 0)));
+        boolean isMarketActive;
 
+        if (isManualOverride) {
+            isMarketActive = !(currentTime.isAfter(LocalTime.of(17, 0)) || currentTime.isBefore(LocalTime.of(9, 0)));
+        } else {
+            isMarketActive = false;
+        }
+
+        // 주식 상태 업데이트
         List<Stock> stocks = stockRepository.findAll();
         for (Stock stock : stocks) {
             MarketStatus marketStatus = marketStatusRepository.findByStock(stock)
@@ -538,6 +545,7 @@ public class StockService {
             marketStatusRepository.save(marketStatus);
         }
 
+        // ETF 상태 업데이트
         List<Etf> etfs = etfRepository.findAll();
         for (Etf etf : etfs) {
             MarketStatus marketStatus = marketStatusRepository.findByEtf(etf)
