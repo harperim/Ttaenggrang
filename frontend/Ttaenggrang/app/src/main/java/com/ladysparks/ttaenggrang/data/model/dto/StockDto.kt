@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 
 data class StockDto(
-    val id: Long,
+    val id: Int,
     val name: String,
     @SerializedName("price_per") val pricePer: Int,
     @SerializedName("total_qty") val totalQty: Int,
@@ -18,8 +18,8 @@ data class StockDto(
     @SerializedName("isMarketActive") val isMarketActive: Boolean,
     @SerializedName("priceChangeTime") val priceChangeTime: String,
     val weight: Double,
-    @SerializedName("teacher_id") val teacherId: Long,
-    val categoryId: Long,
+    @SerializedName("teacher_id") val teacherId: Int,
+    val categoryId: Int,
     val categoryName: String
 )
 
