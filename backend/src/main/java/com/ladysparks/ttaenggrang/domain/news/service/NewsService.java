@@ -27,7 +27,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class NewsService {
 
-    @Value("${OPENAI_API_KEY}")
+    @Value("${api.openai_key}")
     private String apiKey;
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
