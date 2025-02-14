@@ -19,7 +19,6 @@ public interface SavingsProductApiSpecification {
 
             **[ 요청 필드 ]**
             - **name** : 적금 상품명
-            - **interestRate** : 이자율
             - **earlyInterestRate** : 중도 해지시 적용되는 이자율
             - **durationWeeks** : 가입 기간 (주 단위)
             - **amount** : 매주 납입 금액
@@ -41,10 +40,12 @@ public interface SavingsProductApiSpecification {
 
             **[ 응답 필드 ]**
             - **name** : 적금 상품명
+            - **description** : 적금 설명
             - **interestRate** : 이자율
             - **earlyInterestRate** : 중도 해지시 적용되는 이자율
             - **durationWeeks** : 가입 기간 (주 단위)
             - **amount** : 매주 납입 금액
+            - **payoutAmount** : 만기 시 예상 지급액(복리 적용)
             - **saleStartDate** : 노출 시작일
             - **saleEndDate** : 노출 종료일
             - **subscriberCount** : 가입자 수

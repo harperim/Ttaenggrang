@@ -63,7 +63,7 @@ public interface SavingsSubscriptionApiSpecification {
                 - **"SUNDAY"**
             - **payoutAmount** : 예상 지급액
             - **createdAt** : 적금 가입일
-            - **depositSchedule** : 납입 일정 (단순 확인용)
+            
             """)
     ResponseEntity<ApiResponse<List<SavingsSubscriptionDTO>>> savingsSubscriptionList();
 

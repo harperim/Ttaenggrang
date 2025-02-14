@@ -70,7 +70,7 @@ public class SavingsSubscriptionService {
 
         // DTO 반환을 위해 Deposit 일정 추가
         SavingsSubscriptionDTO savedSavingsSubscriptionDTO = savingsSubscriptionMapper.toDto(savedSavingsSubscription);
-        savedSavingsSubscriptionDTO.setDepositSchedule(depositDates);
+//        savedSavingsSubscriptionDTO.setDepositSchedule(depositDates);
 
         // depositSchedule을 기반으로 SavingsDeposit 자동 생성
         savingsDepositService.addSavingsDeposits(savedSavingsSubscription, depositDates);

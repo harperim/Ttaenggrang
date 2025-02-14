@@ -47,6 +47,6 @@ public class SavingsSubscriptionDTO {
 
     private Timestamp createdAt;
 
-    private List<LocalDate> depositSchedule; // 자동 납입 일정
+//    private List<LocalDate> depositSchedule; // 자동 납입 일정
 
 }
