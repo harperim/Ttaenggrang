@@ -14,7 +14,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
-@JsonIgnoreProperties(value = {"id", "studentId", "durationWeeks", "interestRate", "amount", "startDate", "endDate", "payoutAmount", "status", "createdAt", "depositSchedule"}, allowGetters = true)
+@JsonIgnoreProperties(value = {"id", "studentId", "durationWeeks", "interestRate", "amount", "depositAmount", "startDate", "endDate", "payoutAmount", "status", "createdAt", "depositSchedule"}, allowGetters = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,6 +39,8 @@ public class SavingsSubscriptionDTO {
     private LocalDate endDate;
 
     private int payoutAmount;
+
+    private int depositAmount; // 현재까지 납입한 총 금액
 
     private SavingsSubscriptionStatus status;
 

@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "[학생] 적금 지급", description = "적금 지급 내역 관리 API")
+@Tag(name = "[학생] 적금 지급", description = "적금 만기/중도 해지 시 지급 내역 관리 API")
 public interface SavingsPayoutApiSpecification {
 
     @Operation(summary = "(학생) 적금 지급 내역 [조회]", description = """
@@ -35,7 +35,6 @@ public interface SavingsPayoutApiSpecification {
             **[ 설명 ]**
             - 지정된 `savingsSubscriptionId`에 대한 지급 내역을 조회합니다.
             - 지급 유형에는 `만기 지급(Maturity)`과 `중도 인출(Early Withdrawal)`이 포함됩니다.
-            
             """)
     ResponseEntity<ApiResponse<SavingsPayoutDTO>> savingsPayoutDetails(@Parameter(description = "조회할 적금 가입 ID", example = "1") @RequestParam Long savingsSubscriptionId);
 
