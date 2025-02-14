@@ -4,6 +4,7 @@ import com.ladysparks.ttaenggrang.data.model.request.StudentMultiCreateRequest
 import com.ladysparks.ttaenggrang.data.model.request.StudentSingleCreateRequest
 import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.dto.JobDto
+import com.ladysparks.ttaenggrang.data.model.dto.NationInfoDto
 import com.ladysparks.ttaenggrang.data.model.response.EconomySummaryResponse
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
 import com.ladysparks.ttaenggrang.data.model.response.WeekAvgSummaryResponse
@@ -31,13 +32,14 @@ interface TeacherService {
     @GET("teachers/{teacherId}/dashboard")
     suspend fun getEconomySummary(): ApiResponse<EconomySummaryResponse>
 
-    @GET("teachers/{teacherId}/dashboard/daily-average-income-expense")
+    @GET("teachers/{teacherId}/dashboard/daily-average")
     suspend fun getWeekAvgSummary(): ApiResponse<List<WeekAvgSummaryResponse>>
 
 
-    /***
-     * 직업 정보 관련
-     */
+    // 국가정보 조회
+    @GET("teachers/nations")
+    suspend fun getNationInfo(): ApiResponse<NationInfoDto>
+
     // ----------- 직업 관련
     @GET("teachers/jobs/class")
     suspend fun getJobList(): ApiResponse<List<JobDto>>
