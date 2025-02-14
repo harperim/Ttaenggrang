@@ -1,6 +1,5 @@
 package com.ladysparks.ttaenggrang.global.response;
 
-import com.ladysparks.ttaenggrang.domain.news.dto.NewsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

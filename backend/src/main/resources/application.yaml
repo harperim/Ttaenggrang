@@ -49,8 +49,6 @@ spring:
   data:
     redis:
       timeout: 6000
-  news:
-    api-key: "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"
 
 jwt:
   secret: "dF8hX29jVnMbQ3pA6xYzK8eU4pTfH2vN"  # ✅ 반드시 안전한 키로 설정
@@ -62,3 +60,6 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+
+api:
+  openai_key: ${OPENAI_API_KEY}
