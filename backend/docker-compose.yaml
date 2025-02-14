@@ -6,8 +6,6 @@ services: # 컨테이너
     environment:
       - MYSQL_DATABASE=ttgr
       - MYSQL_ROOT_PASSWORD=ssafy
-    env_file:
-      - .env
     ports:
       - "3306:3306"
     networks:
@@ -30,6 +28,8 @@ services: # 컨테이너
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/ttgr?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=ssafy
+    env_file:
+      - .env
     restart: always
     networks:
       - app-network
