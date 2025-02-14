@@ -395,13 +395,20 @@ public class StockService {
     }
 
 
-
-    // 개별 주식 가격 업데이트 (폐장 시 호출)
+    // 개별 주식 가격 업데이트 (9시 ~ 17시 거래량 기준으로 가격 변동 처리)
     private StockDTO updateStockPrice(Stock stock) {
-        // 폐장 시점(평일 15시 이후)에, 전날의 매수·매도량 조회
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        int dailyBuyVolume = stockTransactionRepository.getBuyVolumeForStockYesterday(stock.getId(), TransType.BUY, yesterday);
-        int dailySellVolume = stockTransactionRepository.getSellVolumeForStockYesterday(stock.getId(), TransType.SELL, yesterday);
+        // 오늘의 9시부터 17시까지의 거래량 조회
+        LocalTime currentTime = LocalTime.now();
+        if (currentTime.isBefore(LocalTime.of(9, 0)) || currentTime.isAfter(LocalTime.of(17, 0))) {
+            throw new IllegalArgumentException("거래 시간 외에는 가격을 업데이트할 수 없습니다.");
+        }
+
+// 9시 ~ 17시 사이의 매수량과 매도량 조회
+        LocalDateTime startTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 0));
+        LocalDateTime endTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 0));
+
+        int dailyBuyVolume = stockTransactionRepository.getBuyVolumeForStockInTimeRange(stock.getId(), TransType.BUY, startTime, endTime);
+        int dailySellVolume = stockTransactionRepository.getSellVolumeForStockInTimeRange(stock.getId(), TransType.SELL, startTime, endTime);
 
         // 이전 가격 저장
         double oldPrice = stock.getPrice_per();
@@ -413,6 +420,7 @@ public class StockService {
         } else {
             // 매수량, 매도량에 따른 새로운 가격 계산
             double newPrice = calculatePriceChangeBasedOnTransaction(dailyBuyVolume, dailySellVolume, stock.getPrice_per());
+
             // 가격 변동 적용
             stock.setPrice_per((int) Math.round(newPrice));
             stock.setPriceChangeTime(LocalDateTime.now());
@@ -429,7 +437,7 @@ public class StockService {
         history.setPrice(stock.getPrice_per());
         history.setBuyVolume(dailyBuyVolume);
         history.setSellVolume(dailySellVolume);
-        history.setDate(Timestamp.valueOf(LocalDateTime.now().minusDays(1)));
+        history.setDate(Timestamp.valueOf(LocalDateTime.now())); // 오늘의 날짜 및 시간 기록
         stockHistoryRepository.save(history);
 
         // 주식 정보 저장
@@ -516,7 +524,8 @@ public class StockService {
     // 현재 주식 거래 가능 여부 조회 (시장 활성화 + 시간 체크)
     public boolean isTradingAllowed() {
         Stock stock = stockRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("주식 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("주식 정보를 찾을 수 없습니다. id=1인 주식이 존재하지 않습니다."));
+
         MarketStatus marketStatus = marketStatusRepository.findByStock(stock)
                 .orElseThrow(() -> new RuntimeException("주식에 대한 시장 상태 정보를 찾을 수 없습니다."));
 
