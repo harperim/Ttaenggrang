@@ -57,8 +57,6 @@ public class Stock {
     @Column
     private Integer changeRate; //가격 변동률
 
-//    @Column(nullable = false)
-//    private Boolean isMarketActive;  //주식장 활성화
 
     @Column
     private LocalDateTime priceChangeTime;  // 가격 변동 시간

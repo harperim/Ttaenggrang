@@ -36,8 +36,6 @@ public class StockTransaction {
     @Column
     private int total_amt;  // 총 거래 금액
 
-//    @Column
-//    private int return_amt;   // 현재 주가
 
     @Column(precision = 5, scale = 2)  // DECIMAL(5, 2) 설정
     private BigDecimal returnRate;  // 손익/손실 금액
