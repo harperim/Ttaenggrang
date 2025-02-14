@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.stock.controller;
 
 import com.ladysparks.ttaenggrang.domain.stock.dto.*;
+import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
 import com.ladysparks.ttaenggrang.global.docs.stock.StockApiSpecification;
 import com.ladysparks.ttaenggrang.domain.stock.service.StockService;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -113,6 +114,20 @@ public class StockController implements StockApiSpecification {
         return ResponseEntity.ok(stockPrices);
     }
 
+
+    // 특정 주식의 가격 변동 이력 조회
+    @GetMapping("/history/{stockId}")
+    public ResponseEntity<List<StockHistoryDTO>> getStockHistory(@PathVariable Long stockId) {
+        List<StockHistoryDTO> historyList = stockService.getStockHistoryByStockId(stockId);
+        return ResponseEntity.ok(historyList);
+    }
+
+    // 모든 주식 가격 변동 이력 조회
+    @GetMapping("/all/history")
+    public ResponseEntity<List<StockHistoryDTO>> getAllStockHistory() {
+        List<StockHistoryDTO> historyList = stockService.getAllStockHistory();
+        return ResponseEntity.ok(historyList);
+    }
 
 }
 
