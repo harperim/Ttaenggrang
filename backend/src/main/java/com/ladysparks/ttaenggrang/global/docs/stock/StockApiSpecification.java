@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.global.docs.stock;
 
 import com.ladysparks.ttaenggrang.domain.stock.dto.*;
+import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,16 +45,16 @@ public interface StockApiSpecification {
 
 
 
-    @Operation(summary = "주식시장 활성화 여부 조회", description = "💡 주식시장 활성화 여부 조회")
+    @Operation(summary = "주식시장 버튼(True or False) 조회", description = "💡주식시장 버튼(True or False) 조회 합니다.")
     @GetMapping("/isManualOverride")
     public ResponseEntity<Boolean> getMarketStatus();
 
-    @Operation(summary = "주식시장 활성화/비활성화 설정", description = "💡 주식시장 활성화/비활성화 설정 (선생님만 가능)")
+    @Operation(summary = "주식시장 활성화/비활성화 설정(교사)", description = "💡 주식시장 활성화/비활성화 설정 (선생님만 가능)")
     @PostMapping("/status")
     public ResponseEntity<String> setMarketStatus(@RequestParam @Parameter(description = "주식 시장 활성화 여부") boolean isActive);
 
 
-    @Operation(summary = " 현재 주식 거래 가능 여부 조회", description = "💡  현재 주식 거래 가능 여부 조회 (시장 활성화 + 9~17시)")
+    @Operation(summary = " 현재 주식 거래 가능 여부 조회 (9시 ~17시)", description = "💡  현재 주식 거래 가능 여부 조회 (시장 활성화 + 9~17시)")
     @GetMapping("/isTradingAllowed")
     public ResponseEntity<Boolean> isTradingAllowed();
 
@@ -62,6 +63,16 @@ public interface StockApiSpecification {
     @Operation(summary = " 주식 가격 및 변동률 조회", description = "💡  주식 가격 및 변동률 조회 합니다.")
     @GetMapping("/prices")
     public ResponseEntity<List<ChangeResponseDTO>> getStockPrices();
+
+
+    @Operation(summary = "특정 History 조회", description = "💡  특정 주식의 가격 변동 이력 조회 합니다.")
+    @GetMapping("/history/{stockId}")
+    public ResponseEntity<List<StockHistoryDTO>> getStockHistory(@PathVariable Long stockId);
+
+
+    @Operation(summary = "모든 History 조회", description = "💡 모든 주식 가격 변동 이력 조회 합니다.")
+    @GetMapping("/all/history")
+    public ResponseEntity<List<StockHistoryDTO>> getAllStockHistory();
 
 
 

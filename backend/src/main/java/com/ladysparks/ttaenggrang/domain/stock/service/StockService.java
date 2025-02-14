@@ -7,11 +7,8 @@ import com.ladysparks.ttaenggrang.domain.stock.category.CategoryRepository;
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
-import com.ladysparks.ttaenggrang.domain.stock.dto.ChangeResponseDTO;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StockTransactionDTO;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StudentStockDTO;
+import com.ladysparks.ttaenggrang.domain.stock.dto.*;
 import com.ladysparks.ttaenggrang.domain.stock.entity.*;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.repository.MarketStatusRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockHistoryRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
@@ -548,5 +545,36 @@ public class StockService {
         // 거래 가능 시간: 9시 ~ 17시
         LocalTime currentTime = LocalTime.now();
         return !currentTime.isBefore(LocalTime.of(9, 0)) && !currentTime.isAfter(LocalTime.of(17, 0));
+    }
+
+
+    // 특정 주식의 가격 변동 이력 조회
+    public List<StockHistoryDTO> getStockHistoryByStockId(Long stockId) {
+        if (stockId == null || stockId <= 0) {
+            throw new IllegalArgumentException("잘못된 주식 ID입니다: " + stockId);
+        }
+
+        List<StockHistory> historyList = stockHistoryRepository.findByStockId(stockId);
+        if (historyList.isEmpty()) {
+            throw new IllegalArgumentException("해당 주식 ID에 대한 가격 변동 이력이 없습니다: " + stockId);
+        }
+
+        // StockHistory 엔티티를 StockHistoryDTO로 변환하여 반환
+        return historyList.stream()
+                .map(StockHistoryDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    // 모든 주식 가격 변동 이력 조회
+    public List<StockHistoryDTO> getAllStockHistory() {
+        List<StockHistory> historyList = stockHistoryRepository.findAll();
+        if (historyList.isEmpty()) {
+            throw new IllegalArgumentException("등록된 주식 가격 변동 이력이 없습니다.");
+        }
+
+        // StockHistory 엔티티를 StockHistoryDTO로 변환하여 반환
+        return historyList.stream()
+                .map(StockHistoryDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 }

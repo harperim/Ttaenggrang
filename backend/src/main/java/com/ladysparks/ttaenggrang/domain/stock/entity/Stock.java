@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.stock.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ladysparks.ttaenggrang.domain.news.entity.News;
 import com.ladysparks.ttaenggrang.domain.stock.category.Category;
 import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;
@@ -92,7 +93,7 @@ public class Stock {
 
     //뉴스
     @OneToMany(targetEntity = Stock.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "newa_id")
+    @JoinColumn(name = "news_id")
     private List<News> news;
 
     @ManyToOne
