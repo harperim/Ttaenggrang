@@ -43,6 +43,10 @@ public class StockDTO {
 
     private Long market_status_id;
 
+
+
+
+
     public static Stock toEntity(StockDTO stockDto) {
         return Stock.builder()
                 .id(stockDto.getId())

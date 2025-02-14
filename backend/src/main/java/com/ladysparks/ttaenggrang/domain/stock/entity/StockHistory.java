@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.stock.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;
 import com.ladysparks.ttaenggrang.domain.etf.entity.EtfTransaction;
 import jakarta.persistence.*;
@@ -38,7 +39,8 @@ public class StockHistory {
     //주식
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stock_id")
-    private Stock stock;  // 하나의 주식
+    private Stock stock;
+
 
     //ETF
     @ManyToOne(fetch = FetchType.LAZY)
