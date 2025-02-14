@@ -1,11 +1,12 @@
 package com.ladysparks.ttaenggrang.domain.bank.controller;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.DepositAndSavingsCountDTO;
+import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
+import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDetailDTO;
+import com.ladysparks.ttaenggrang.domain.bank.service.SavingsSubscriptionService;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.global.docs.bank.SavingsSubscriptionApiSpecification;
-import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
-import com.ladysparks.ttaenggrang.domain.bank.service.SavingsSubscriptionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,12 @@ public class SavingsSubscriptionController implements SavingsSubscriptionApiSpec
         Long studentId = studentService.getCurrentStudentId();
         DepositAndSavingsCountDTO savingsCountDTO = savingsSubscriptionService.getSavingsCountByStudentId(studentId);
         return ResponseEntity.ok(ApiResponse.success(savingsCountDTO));
+    }
+
+    @GetMapping("/{savingsSubscriptionId}")
+    public ResponseEntity<ApiResponse<SavingsSubscriptionDetailDTO>> savingsDepositHistoryList(@PathVariable Long savingsSubscriptionId) {
+        SavingsSubscriptionDetailDTO savingsSubscriptionDetailDTO = savingsSubscriptionService.findSavingsSubscriptionById(savingsSubscriptionId);
+        return ResponseEntity.ok(ApiResponse.success(savingsSubscriptionDetailDTO));
     }
 
 }

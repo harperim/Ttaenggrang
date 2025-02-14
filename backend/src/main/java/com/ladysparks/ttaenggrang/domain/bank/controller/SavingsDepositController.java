@@ -2,7 +2,11 @@ package com.ladysparks.ttaenggrang.domain.bank.controller;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsDepositDTO;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsDepositHistoryDTO;
+import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
+import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDetailDTO;
+import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription;
 import com.ladysparks.ttaenggrang.domain.bank.service.SavingsDepositService;
+import com.ladysparks.ttaenggrang.domain.bank.service.SavingsSubscriptionService;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.global.docs.bank.SavingsDepositApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -44,10 +48,5 @@ public class SavingsDepositController implements SavingsDepositApiSpecification 
 //        List<SavingsDepositDTO> failedDeposits = savingsDepositService.findFailedDeposits(studentId);
 //        return ResponseEntity.ok(ApiResponse.success(failedDeposits));
 //    }
-
-    @GetMapping("/history")
-    public ResponseEntity<ApiResponse<List<SavingsDepositHistoryDTO>>> savingsDepositHistoryList(@RequestParam Long savingsSubscriptionId) {
-        return ResponseEntity.ok(ApiResponse.success(savingsDepositService.getSavingsDepositHistory(savingsSubscriptionId)));
-    }
 
 }
