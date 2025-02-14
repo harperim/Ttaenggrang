@@ -30,7 +30,7 @@ public class Nation {
 
     private int savingsGoalAmount;
 
-    private int nationalTreasury;
+    private int nationalTreasury; //국고
 
     @Column(nullable = false)
     private Timestamp establishedDate;
