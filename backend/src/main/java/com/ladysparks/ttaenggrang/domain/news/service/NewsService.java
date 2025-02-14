@@ -26,7 +26,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class NewsService {
 
-//    @Value("${api.openai_key}")
+    @Value("${api.openai_key}")
     private String apiKey;
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
@@ -34,8 +34,6 @@ public class NewsService {
     private final StockRepository stockRepository;
 
     public NewsDTO generateRandomNewsFromStocks() {
-        apiKey = System.getenv("OPENAI_API_KEY");
-
         // 1. 모든 주식 엔터티에서 랜덤 선택
         List<Stock> stocks = stockRepository.findAll();
         if (stocks.isEmpty()) {
