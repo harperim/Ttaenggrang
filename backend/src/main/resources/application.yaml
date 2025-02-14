@@ -62,4 +62,4 @@ server:
       force: true
 
 api:
-  openai_key: ${OPENAI_API_KEY}
+  openai_key: ${OPENAI_API_KEY:default-api-key}  # 환경변수 없으면 기본값 사용
