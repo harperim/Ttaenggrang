@@ -308,9 +308,49 @@ public class StockService {
         return StockTransactionDTO.fromEntity(transaction, updatedOwnedQty);
     }
 
+
+    // 학생의 거래 내역 조회 (매수 + 매도)
+    public List<TransactionResponseDTO> getStudentTransactions(Long studentId) {
+        // 학생 ID를 기준으로 모든 거래 내역을 조회
+        List<StockTransaction> transactions = stockTransactionRepository.findByStudentId(studentId);
+
+        if (transactions.isEmpty()) {
+            // 거래 내역이 없으면 IllegalArgumentException 발생
+            throw new IllegalArgumentException("거래 내역을 찾을 수 없습니다. studentId: " + studentId);
+        }
+
+        return convertToTransactionDTO(transactions);  // DTO로 변환하여 반환
+    }
+
+    // StockTransaction을 TransactionDTO로 변환
+    private List<TransactionResponseDTO> convertToTransactionDTO(List<StockTransaction> transactions) {
+        List<TransactionResponseDTO> transactionDTOList = new ArrayList<>();
+        for (StockTransaction transaction : transactions) {
+            TransactionResponseDTO transactionDTO = new TransactionResponseDTO();
+
+            // 학생 ID와 관련된 정보 설정
+            transactionDTO.setStudentId(transaction.getStudent().getId());
+
+            // 주식 관련 정보 설정 (name과 type만 가져오기)
+            Stock stock = transaction.getStock();
+            transactionDTO.setStockId(stock.getId());
+            transactionDTO.setName(stock.getName());  // 주식명
+            transactionDTO.setType(stock.getType());  // 주식 타입
+
+            // 거래 정보 설정
+            transactionDTO.setTransType(transaction.getTransType());
+            transactionDTO.setShare_count(transaction.getShare_count());
+            transactionDTO.setPurchase_prc(transaction.getPurchase_prc());  // 1주 가격
+            transactionDTO.setTrans_date(transaction.getTrans_date()); // 거래 날짜
+
+            // DTO 리스트에 추가
+            transactionDTOList.add(transactionDTO);
+        }
+        return transactionDTOList;
+    }
     //학생이 보유 하고 있는 주식 조회
     public List<StudentStockDTO> getStudentStocks(Long studentId) {
-        List<StockTransaction> transactions = stockTransactionRepository.findByStudentId(Math.toIntExact(studentId));
+        List<StockTransaction> transactions = stockTransactionRepository.findByStudentId(studentId);
 
         Map<Stock, Integer> stockHoldings = new HashMap<>();
         Map<Stock, Integer> stockPurchasePrice = new HashMap<>();

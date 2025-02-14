@@ -34,7 +34,7 @@ public class StockTransaction {
     private int owned_qty;      // 학생이 보유한 주식 수량
 
     @Column
-    private int total_amt;  // 총 거래 금액
+    private Integer  total_amt;  // 총 거래 금액
 
 
     @Column(precision = 5, scale = 2)  // DECIMAL(5, 2) 설정
