@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.bank.service;
 
+import com.ladysparks.ttaenggrang.domain.bank.dto.DepositAndSavingsCountDTO;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsProductDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsProduct;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.SavingsProductMapper;
@@ -79,6 +80,33 @@ public class SavingsProductService {
     public Long findDurationWeeksById(Long savingsProductId) {
         return savingsProductRepository.findDurationWeeksById(savingsProductId)
                 .orElseThrow(() -> new IllegalIdentifierException("해당 적금 상품이 존재하지 않습니다. ID: " + savingsProductId));
+    }
+
+    /**
+     * 구독자 수 증가
+     */
+    public int addSubscriber(Long savingsProductId) {
+        return savingsProductRepository.incrementSubscriberCount(savingsProductId);
+    }
+
+    /**
+     * 구독자 수 감소
+     */
+    public int removeSubscriber(Long savingsProductId) {
+        return savingsProductRepository.decrementSubscriberCount(savingsProductId);
+    }
+
+    /**
+     * 💳 특정 교사가 등록한 예금 및 적금 상품 개수 조회
+     */
+    public DepositAndSavingsCountDTO getDepositAndSavingsCountsByTeacherId(Long teacherId) {
+        long depositCount = 0;
+        long savingsCount = savingsProductRepository.countSavingsProductsByTeacherId(teacherId);
+
+        return DepositAndSavingsCountDTO.builder()
+                .depositProductCount(depositCount)
+                .savingsProductCount(savingsCount)
+                .build();
     }
 
 }

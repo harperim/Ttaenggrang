@@ -67,6 +67,9 @@ public class SavingsSubscriptionService {
         // depositSchedule을 기반으로 SavingsDeposit 자동 생성
         savingsDepositService.addSavingsDeposits(savingsSubscription, depositDates);
 
+        // 적금 가입자 수 집계
+        savingsProductService.addSubscriber(savingsSubscriptionDTO.getSavingsProductId());
+
         // 결과 DTO 반환
         return savedSavingsSubscriptionDTO;
     }
