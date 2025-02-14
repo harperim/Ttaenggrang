@@ -1,13 +1,12 @@
 package com.ladysparks.ttaenggrang.domain.item.controller;
 
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
-import com.ladysparks.ttaenggrang.global.docs.ItemTransactionApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.item.ItemTransactionApiSpecification;
 import com.ladysparks.ttaenggrang.domain.item.dto.ItemTransactionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import com.ladysparks.ttaenggrang.domain.item.service.ItemTransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

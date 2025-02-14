@@ -4,7 +4,7 @@ import com.ladysparks.ttaenggrang.domain.student.dto.StudentLoginRequestDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentLoginResponseDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
-import com.ladysparks.ttaenggrang.global.docs.StudentAccountApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.student.StudentAccountApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import com.ladysparks.ttaenggrang.global.utill.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;

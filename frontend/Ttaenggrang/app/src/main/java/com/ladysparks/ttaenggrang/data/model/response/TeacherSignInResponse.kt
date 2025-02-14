@@ -8,5 +8,5 @@ data class TeacherSignInResponse(
     val name: String,
     val school: String,
     val token: String,
-    val tempTF: Boolean = true // ✅ 기본값 유지하도록 설정
+    val hasNation: Boolean = false
 )

@@ -5,9 +5,8 @@ import com.ladysparks.ttaenggrang.domain.teacher.dto.SingleStudentCreateDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
-import com.ladysparks.ttaenggrang.global.docs.TeacherStudentApiSpecificaion;
+import com.ladysparks.ttaenggrang.global.docs.teacher.TeacherStudentApiSpecificaion;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +32,7 @@ public class TeacherStudentController implements TeacherStudentApiSpecificaion {
     public ResponseEntity<ApiResponse<List<StudentResponseDTO>>> createStudents(
             @RequestParam("baseId") String baseId,
             @RequestParam("studentCount") int studentCount,
-            @RequestPart("file")MultipartFile file) {  // 🔥 파일과 함께 데이터를 받으려면 ModelAttribute 사용
+            @RequestPart(required = false) MultipartFile file) {  // 🔥 파일과 함께 데이터를 받으려면 ModelAttribute 사용
 
         // ✅ 현재 로그인한 교사의 ID 가져오기
         Long teacherId = getTeacherIdFromSecurityContext();
@@ -78,13 +77,13 @@ public class TeacherStudentController implements TeacherStudentApiSpecificaion {
         Long teacherId = getTeacherIdFromSecurityContext();
 
         // 2. 학생 계정 생성 서비스 호출
-        StudentResponseDTO createdStudent = studentService.createStudent(teacherId, studentCreateDTO);
+        ApiResponse<StudentResponseDTO> createdStudent = studentService.createStudent(teacherId, studentCreateDTO);
 
         // 3. 생성된 학생 정보 반환
-        return ResponseEntity.ok(ApiResponse.success(createdStudent));
+        return ResponseEntity.status(createdStudent.getStatusCode()).body(createdStudent);
     }
 
-    // 우리반 학생 전체 조회
+    // 우리 반 학생 전체 조회
     @GetMapping("/students")
     public ResponseEntity<ApiResponse<List<StudentResponseDTO>>> getMyClassStudents() {
         Long teacherId = getTeacherIdFromSecurityContext(); // 🔥 로그인한 교사의 ID 가져오기
@@ -92,7 +91,7 @@ public class TeacherStudentController implements TeacherStudentApiSpecificaion {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    // 우리반 특정 학생 상세 조회
+    // 우리 반 특정 학생 상세 조회
     @GetMapping("/students/{studentId}")
     public ResponseEntity<ApiResponse<StudentResponseDTO>> getStudentById(@PathVariable Long studentId) {
         Long teacherId = getTeacherIdFromSecurityContext(); // 🔥 로그인한 교사의 ID 가져오기

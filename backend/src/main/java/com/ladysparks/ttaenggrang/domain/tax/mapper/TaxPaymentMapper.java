@@ -14,7 +14,11 @@ public interface TaxPaymentMapper {
 
     @Mapping(source = "student.id", target = "studentId")
     @Mapping(source = "tax.id", target = "taxId")
-    TaxPaymentDTO toDto(TaxPayment taxPayment);
+    @Mapping(source = "tax.taxName", target = "taxName")
+    @Mapping(source = "tax.taxRate", target = "taxRate")
+    @Mapping(source = "tax.taxDescription", target = "taxDescription")
+    @Mapping(source = "overdue", target = "isOverdue")
+    TaxPaymentDTO toDto(TaxPayment entity);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "studentId", target = "student.id")

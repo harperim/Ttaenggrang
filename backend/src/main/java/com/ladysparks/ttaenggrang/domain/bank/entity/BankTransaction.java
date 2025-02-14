@@ -66,5 +66,4 @@ public class BankTransaction {
         FINE,
     }
 
-
 }

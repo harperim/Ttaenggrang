@@ -8,7 +8,7 @@ import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.service.JobService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.NationService;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
-import com.ladysparks.ttaenggrang.global.docs.TeacherFunctionApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.nation.TeacherFunctionApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +61,7 @@ public class TeacherFunctionController implements TeacherFunctionApiSpecificatio
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    // 직업 [해당 직업을 가진 우리반 학생 목록 조회]
+    // 직업 [해당 직업을 가진 우리 반 학생 목록 조회]
     @GetMapping("/jobs/{jobId}")
     public ResponseEntity<ApiResponse<List<StudentResponseDTO>>> getStudentsByJobIdAndTeacher(@PathVariable Long jobId) {
         long teacherId = getTeacherIdFromSecurityContext();

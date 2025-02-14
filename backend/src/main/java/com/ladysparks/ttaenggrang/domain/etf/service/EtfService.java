@@ -9,7 +9,9 @@ import com.ladysparks.ttaenggrang.domain.etf.dto.EtfDTO;
 import com.ladysparks.ttaenggrang.domain.etf.entity.EtfTransaction;
 import com.ladysparks.ttaenggrang.domain.etf.repository.EtfRepository;
 import com.ladysparks.ttaenggrang.domain.etf.repository.EtfTransactionRepository;
+import com.ladysparks.ttaenggrang.domain.stock.dto.ChangeResponseDTO;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
+import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
 import com.ladysparks.ttaenggrang.domain.stock.entity.StockTransaction;
 import com.ladysparks.ttaenggrang.domain.stock.entity.TransType;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockHistoryRepository;
@@ -25,7 +27,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -124,7 +128,7 @@ public class EtfService {//s
                 .collect(Collectors.toList()); // 변환된 DTO를 리스트로 반환
     }
 
-    public Optional<EtfDTO> findEtf(int etfId) {
+    public Optional<EtfDTO> findEtf(Long etfId) {
         // ID로 주식 조회 후, ETFDTO로 변환하여 반환
         return etfRepository.findById(etfId)
                 .map(EtfDTO::fromEntity); // 엔티티를 DTO로 변환
@@ -132,7 +136,7 @@ public class EtfService {//s
 
     // ETF 매수 로직
     @Transactional
-    public EtfTransactionDTO buyEtf(int etfId, int shareCount, Long studentId) {
+    public EtfTransactionDTO buyEtf(Long etfId, int shareCount, Long studentId) {
         // 주식 정보 가져오기
         Optional<Etf> etfOptional = etfRepository.findById(etfId);
         if (etfOptional.isEmpty()) {
@@ -193,7 +197,7 @@ public class EtfService {//s
 
 
         // 학생이 현재 보유한 해당 주식 수량 조회
-        Integer owned_qty = etfTransactionRepository.findTotalSharesByStudentAndEtf(studentId, etfId, TransType.BUY);
+        Integer owned_qty = etfTransactionRepository.findTotalSharesByStudentAndEtf(studentId, etfId.intValue(), TransType.BUY);
         if (owned_qty == null) {
             owned_qty = 0; // 처음 구매라면 0으로 설정
         }
@@ -224,7 +228,7 @@ public class EtfService {//s
 
     //ETF 매도
     @Transactional
-    public EtfTransactionDTO sellEtf(int etfId, int shareCount, Long studentId) {
+    public EtfTransactionDTO sellEtf(Long etfId, int shareCount, Long studentId) {
         // 주식 정보 가져오기
         Etf etf = etfRepository.findById(etfId)
                 .orElseThrow(() -> new IllegalArgumentException("주식이 존재하지 않습니다."));
@@ -238,9 +242,9 @@ public class EtfService {//s
             throw new IllegalArgumentException("0 이하 수량은 매도할 수 없습니다.");
         }
 
-        // 🟢 (수정) 학생의 총 매수량(BUY)과 총 매도량(SELL) 조회
-        Integer totalBought = etfTransactionRepository.findTotalSharesByStudentAndEtf(studentId, etfId, TransType.BUY);
-        Integer totalSold = etfTransactionRepository.findTotalSharesByStudentAndEtf(studentId, etfId, TransType.SELL);
+        // 학생의 총 매수량(BUY)과 총 매도량(SELL) 조회
+        Integer totalBought = etfTransactionRepository.findTotalSharesByStudentAndEtf(studentId, etfId.intValue(), TransType.BUY);
+        Integer totalSold = etfTransactionRepository.findTotalSharesByStudentAndEtf(studentId, etfId.intValue(), TransType.SELL);
 
         // NULL 방지 처리
         totalBought = (totalBought == null) ? 0 : totalBought;
@@ -308,140 +312,101 @@ public class EtfService {//s
         return EtfTransactionDTO.fromEntity(transaction, updatedOwnedQty);
     }
 
-//    //가격 변동
+    //가격 변동
 //    @Transactional
-//    public EtfDTO updateEtfPrice(int etfId) {
-//        Etf etf = etfRepository.findById(etfId)
-//                .orElseThrow(() -> new RuntimeException("주식이 존재하지 않습니다."));
+//    public List<ChangeResponseDTO> updateEtfPricesForMarketOpening() {
+//        List<Stock> stocks = stockRepository.findAll();
+//        List<ChangeResponseDTO> stockDTOList = new ArrayList<>();
 //
-//        // 주식장이 활성화된 경우에만 가격 변동이 가능
-////        if (!etf.isMarketActive()) {
-////            throw new RuntimeException("주식장이 활성화되지 않았습니다.");
-////        }
+//        for (Stock stock : stocks) {
+//            double oldPrice = stock.getPrice_per();
+//            try {
+//                // ETF 가격 변동 처리
+//                updateEtfPrice(etf); // ETF 가격 업데이트
 //
-//        // 전날 날짜 계산
+//                double newPrice = stock.getPrice_per(); // 업데이트된 가격
+//                double changeRate = calculateChangeRate(oldPrice, newPrice); // 변동률 계산
+//
+//                stockDTOList.add(ChangeResponseDTO.builder()
+//                        .id(stock.getId())
+//                        .name(stock.getName())
+//                        .price_per((int) newPrice)
+//                        .changeRate((int) changeRate)
+//                        .total_qty(stock.getTotal_qty())
+//                        .remain_qty(stock.getRemain_qty())
+//                        .description(stock.getDescription())
+//                        .build());
+//            } catch (Exception e) {
+//                System.err.println("ETF 가격 업데이트 중 오류 발생: " + e.getMessage());
+//                throw new IllegalArgumentException("ETF 가격 업데이트 중 오류 발생: " + e.getMessage(), e);
+//            }
+//        }
+//
+//        return stockDTOList;
+//    }
+//
+//    // ETF 가격 업데이트 로직
+//    private EtfDTO updateEtfPrice(Etf etf) {
 //        LocalDate yesterday = LocalDate.now().minusDays(1);
+//        int dailyBuyVolume = stockTransactionRepository.getBuyVolumeForStockYesterday(etf.getId(), TransType.BUY, yesterday);
+//        int dailySellVolume = stockTransactionRepository.getSellVolumeForStockYesterday(etf.getId(), TransType.SELL, yesterday);
 //
-//        // LocalDate를 Timestamp로 변환 (00:00:00로 설정)
-//        Timestamp startTimestamp = Timestamp.valueOf(yesterday.atStartOfDay());
-//        // LocalDate를 Timestamp로 변환 (23:59:59로 설정)
-//        Timestamp endTimestamp = Timestamp.valueOf(yesterday.atTime(23, 59, 59));
+//        double oldPrice = etf.getPrice_per();
 //
-//        // 전날 매수, 매도 수량 가져오기 (날짜 범위 추가)
-//        int totalBought = etfTransactionRepository.getTotalSharesByType(etfId, TransType.BUY, startTimestamp, endTimestamp);
-//        int totalSold = etfTransactionRepository.getTotalSharesByType(etfId, TransType.SELL, startTimestamp, endTimestamp);
+//        if (dailyBuyVolume == 0 && dailySellVolume == 0) {
+//            System.out.println("거래량 없음, 가격 유지: " + etf.getName());
+//            etf.setChangeRate(0);
+//        } else {
+//            // 매수량, 매도량에 따른 새로운 가격 계산 (ETF 비중 고려)
+//            double newPrice = calculateEtfPriceChange(etf, dailyBuyVolume, dailySellVolume);
+//            etf.setPrice_per((int) Math.round(newPrice));
+//            etf.setPriceChangeTime(LocalDateTime.now());
+//            System.out.println("ETF 가격 변동 적용: " + etf.getName());
 //
-//        // 매수, 매도 수량 평균 계산
-//        int totalTransactions = totalBought + totalSold;
-//        double calculatedChangeRate = 0.0;
-//
-//        if (totalTransactions > 0) {
-//            double buyRatio = (double) totalBought / totalTransactions;
-//            double sellRatio = (double) totalSold / totalTransactions;
-//            calculatedChangeRate = (buyRatio - sellRatio) * 0.05; // 최대 ±5% 변동
+//            // 변동률 계산 및 적용
+//            double changeRate = calculateChangeRate(oldPrice, newPrice);
+//            etf.setChangeRate((int) (Math.round(changeRate * 100) / 100.0));
 //        }
 //
-//        // 새로운 가격 계산
-//        int currentPrice = etf.getPrice_per();
-//        int newPrice = (int) (currentPrice * (1 + calculatedChangeRate));
-//
-//        // 최소 가격 제한
-//        if (newPrice < 1000) {
-//            newPrice = 1000;
-//        }
-//
-//        // 가격 업데이트
-//        etf.setPrice_per(newPrice);
-//        etf.setChangeRate((int) (calculatedChangeRate * 100));
-//        etfRepository.save(etf);
-//
-//        System.out.println(etf.getName() + "의 새 가격: " + newPrice);
-//
-//        // 변동된 가격을 stock_history 테이블에 기록
 //        StockHistory history = new StockHistory();
-//        history.setEtf(etf);
-//        history.setPrice(newPrice);
-//        history.setVolume(totalTransactions);
-//        history.setDate(Timestamp.valueOf(LocalDateTime.now()));
+//        history.setStock(stock);
+//        history.setPrice(stock.getPrice_per());
+//        history.setBuyVolume(dailyBuyVolume);
+//        history.setSellVolume(dailySellVolume);
+//        history.setDate(Timestamp.valueOf(LocalDateTime.now().minusDays(1)));
 //        stockHistoryRepository.save(history);
 //
-//        // DTO 변환 및 반환
+//        etfRepository.save(etf);
+//        System.out.println("ETF 가격 업데이트 완료: " + etf.getName());
+//
 //        return EtfDTO.fromEntity(etf);
+//    }
+//
+//
+//    // ETF 가격 변동 계산: 주식의 가격 변동과 ETF의 비중을 반영하여 새로운 ETF 가격 계산
+//    public double calculateEtfPriceChange(Stock stock, int dailyBuyVolume, int dailySellVolume) {
+//        double currentPrice = stock.getPrice_per();
+//        double weight = stock.getWeight().doubleValue();
+//
+//        if (dailyBuyVolume == 0 && dailySellVolume == 0) {
+//            return currentPrice; // 거래량이 없으면 가격 유지
+//        }
+//
+//        try {
+//            // 매수량, 매도량에 따른 가격 변동률 계산
+//            double changeRate = (double) (dailyBuyVolume - dailySellVolume) / (dailyBuyVolume + dailySellVolume);
+//            changeRate = Math.max(-0.10, Math.min(0.10, changeRate)); // ±10%로 제한
+//            double newPrice = currentPrice * (1 + changeRate);
+//
+//            // ETF의 주식 가격 변동을 반영하여 ETF 가격 계산
+//            double weightedPriceChange = newPrice * weight;
+//            return weightedPriceChange;
+//        } catch (ArithmeticException e) {
+//            throw new IllegalArgumentException("매수량과 매도량의 합이 0입니다. 가격 계산이 불가능합니다.");
+//        }
 //    }
 
-//    public EtfDTO createETF(EtfDTO etfDTO) {
-//        String name = etfDTO.getName();  // ETF 이름
-//        String description = etfDTO.getDescription();  // 설명
-//        List<Long> selectedStockIds = etfDTO.getStock_id();  // 선택된 주식 ID 리스트
-//        int total_qty = etfDTO.getTotal_qty();  // ETF 총 수량 (선생님이 정함)
-//
-//        // ETF 이름 중복 검사
-//        if (etfRepository.existsByName(name)) {
-//            throw new IllegalArgumentException("이미 존재하는 ETF 이름입니다: " + name);
-//        }
-//
-//        // 선택한 주식 개수 검증 (최소 3개 이상 선택해야 함)
-//        if (selectedStockIds == null || selectedStockIds.size() < 3) {
-//            throw new IllegalArgumentException("ETF는 최소 3개 이상의 주식을 선택해야 합니다.");
-//        }
-//
-//        // ETF 총 수량이 100 미만일 경우 예외 처리
-//        if (total_qty < 100) {
-//            throw new IllegalArgumentException("ETF 총 수량은 최소 100개 이상이어야 합니다.");
-//        }
-//
-//        // 선택된 주식 정보만 필터링
-//        List<StockDTO> availableStocks = stockService.getFilteredStocks(selectedStockIds);
-//
-//        // 주식 리스트가 비어있는 경우 예외 처리
-//        if (availableStocks.isEmpty()) {
-//            throw new IllegalArgumentException("선택된 주식이 없습니다.");
-//        }
-//
-//        // 주식들의 카테고리 추출 (모든 주식의 카테고리가 동일하다고 가정)
-//        String category = availableStocks.get(0).getCategory();  // 선택된 주식의 카테고리 정보
-//
-//        // 주식 개수에 맞게 비중 계산 (예: 4개의 주식이라면 각 주식 비중은 25%)
-//        BigDecimal stockCount = BigDecimal.valueOf(availableStocks.size());
-//        BigDecimal individualWeight = BigDecimal.valueOf(100).divide(stockCount, RoundingMode.HALF_UP); // 100% / 선택한 주식 개수
-//
-//        // 주식의 총 가격 계산
-//        BigDecimal totalPrice = BigDecimal.ZERO;
-//
-//        for (StockDTO stockDTO : availableStocks) {
-//            // 주식 가격과 비중 계산 (각 주식에 대해 동일한 비중을 적용)
-//            totalPrice = totalPrice.add(BigDecimal.valueOf(stockDTO.getPrice_per()));
-//        }
-//
-//        // ETF 한 주당 가격 계산
-//        BigDecimal price_per = totalPrice.divide(stockCount, RoundingMode.HALF_UP);
-//
-//        // 남은 수량 설정: 처음에는 총 수량과 동일
-//        int remain_qty = total_qty;
-//
-//        // ETF 객체 생성
-//        Etf etf = new Etf();
-//        etf.setName(name);
-//        etf.setDescription(description);
-//        etf.setPrice_per(price_per.intValue());  // 한 주당 가격
-//        etf.setTotal_qty(total_qty);  // 총 수량
-//        etf.setRemain_qty(remain_qty);  // 남은 수량
-//        etf.setCreated_at(new Timestamp(System.currentTimeMillis()));  // 생성일
-//        etf.setUpdated_at(new Timestamp(System.currentTimeMillis()));  // 수정일
-//        etf.setChangeRate(0);  // 변동률 (기본값 0, 실제 가격 변동에 따라 업데이트 필요)
-//
-//        // 주식에 대해 비중 설정 (각 주식은 동일 비중)
-//        for (StockDTO stockDTO : availableStocks) {
-//            BigDecimal stockWeight = individualWeight;  // 각 주식의 비중은 동일
-//            stockDTO.setWeight(stockWeight);  // 주식의 비중을 설정
-//        }
-//
-//        // ETF 저장
-//        etfRepository.save(etf);
-//
-//        // DTO로 변환하여 반환
-//        return EtfDTO.fromEntity(etf);
-//    }
+
 
 
 }

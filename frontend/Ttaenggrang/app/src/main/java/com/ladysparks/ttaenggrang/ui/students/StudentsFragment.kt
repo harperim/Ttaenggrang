@@ -21,13 +21,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
+import com.ladysparks.ttaenggrang.data.model.dto.JobDto
 import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
 import com.ladysparks.ttaenggrang.data.model.request.StudentSingleCreateRequest
+import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.databinding.DialogIncentiveBinding
+import com.ladysparks.ttaenggrang.databinding.DialogStudentRegistrationBinding
 import com.ladysparks.ttaenggrang.databinding.DialogVoteParticipationBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStudentsBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
+import com.ladysparks.ttaenggrang.ui.component.IncentiveDialogFragment
+import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
 import kotlinx.coroutines.launch
 
@@ -37,6 +42,10 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
 ) {
     private lateinit var studentsViewModel: StudentsViewModel
 
+    // 직업 리스트
+    private var jobListCache: List<JobDto> = emptyList()
+    private var studentListCache: List<StudentMultiCreateResponse> = emptyList()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -44,12 +53,40 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
         studentsViewModel = ViewModelProvider(this).get(StudentsViewModel::class.java)
 
         // LifeData
+        initObserver()
         fetchStudentList()
 
         initEvent()
-        initDat()
 
-        binding.recyclerStudents.visibility = View.VISIBLE
+        // Data 요청
+        studentsViewModel.fetchJobList()
+    }
+
+    private fun initObserver() {
+        // Error
+        studentsViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+            errorMessage?.let {
+                showErrorDialog(Throwable(it))
+                studentsViewModel.clearErrorMessage()
+            }
+        }
+
+        // Other Response
+        studentsViewModel.studentList.observe(viewLifecycleOwner) { studentList ->
+            studentListCache = studentList!!
+        }
+
+        studentsViewModel.jobList.observe(viewLifecycleOwner) { jobList ->
+            jobListCache = jobList // ✅ LiveData 변경 시 전역 변수 업데이트
+        }
+
+        studentsViewModel.weeklyPaymentStatus.observe(viewLifecycleOwner) { response ->
+            showToast("주급이 지급되었습니다")
+        }
+
+        studentsViewModel.bonusPaymentStatus.observe(viewLifecycleOwner) { response ->
+            showToast("인센티브가 지급되었습니다")
+        }
     }
 
     private fun fetchStudentList() {
@@ -73,14 +110,21 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
         binding.recyclerStudents.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerStudents.adapter = adapter
 
+        binding.recyclerStudents.visibility = View.VISIBLE
+        binding.textNullStudent.visibility = View.GONE
         studentsViewModel.studentList.observe(viewLifecycleOwner) { studentList ->
+            if(studentList.isNullOrEmpty()){
+                binding.recyclerStudents.visibility = View.GONE
+                binding.textNullStudent.visibility = View.VISIBLE
+                return@observe
+            }
 
             val studentList = studentList.mapIndexed { index, student ->
                 BaseTableRowModel(
                     listOf(
                         (index + 1).toString(),  // 번호
-                        student.username,        // 이름 (원래는 student.name 이었겠지만 username 사용)
-                        "(직업 월급정보 추가 필요)",                      // 현재 직업 + 월급 정보 제공하지 않음
+                        student.name ?: "N/A",        // 이름 (원래는 student.name 이었겠지만 username 사용)
+                        student.job?.jobName ?: "시민",                      // 현재 직업 + 월급 정보 제공하지 않음
                         student.username,        // 아이디
                         student.teacher.password  // 비밀번호 대신 학교명 (데이터에 비밀번호 없음)
                     )
@@ -89,9 +133,6 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
 
             // 데이터 변동 사항이 생길 경우 업데이트
             adapter.updateData(studentHeader, studentList)
-
-            // RecyclerView 표시
-            binding.recyclerStudents.visibility = View.VISIBLE
         }
 
         // ViewModel에서 데이터 가져오기
@@ -99,22 +140,20 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
     }
 
 
-    private fun initDat() {
-
-    }
-
     private fun initEvent() {
 
         // 학생 정보 탭
         binding.btnTabStudentInfo.setOnClickListener {
             selectTab(true)
             binding.recyclerStudents.visibility = View.VISIBLE
+            binding.textNullStudent.visibility = View.GONE
         }
 
         // 재정 상태 탭
         binding.btnTabFincialStatus.setOnClickListener {
             // if 조건 추가. 데이터가 없으면 recyclerview 가리고, 텍스트만 보이도록
-            binding.recyclerStudents.visibility = View.VISIBLE
+            binding.recyclerStudents.visibility = View.GONE
+            binding.textNullStudent.visibility = View.GONE
             selectTab(false)
             sampleDataFinance()
         }
@@ -130,7 +169,9 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
                 negativeButtonText = "취소",
                 onNegativeClick = { },
                 positiveButtonText = "지급",
-                onPositiveClick = { paySalary() }
+                onPositiveClick = {
+                    studentsViewModel.processStudentWeeklySalary()
+                }
             )
             dialog.show()
 
@@ -163,104 +204,62 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
             dialog.show()
         }
 
-
-
-
-
     }
 
     private fun showIncentiveDialog() {
-        val dialogBinding = DialogIncentiveBinding.inflate(layoutInflater)
+        val studentMap = studentListCache.associateBy({ it.name ?: "이름 없음" }, { it.id ?: -1 }) // 학생 데이터
+        val dialog = IncentiveDialogFragment.newInstance(studentMap)
+
+        dialog.setOnConfirmListener { studentId, price ->
+            studentsViewModel.processStudentBonus(studentId, price) // ✅ API 호출
+        }
+
+        dialog.show(parentFragmentManager, "IncentiveDialog")
+    }
+
+
+    private fun showSingleStudentAddDialog() {
+        val dialogBinding = DialogStudentRegistrationBinding.inflate(LayoutInflater.from(requireContext()))
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogBinding.root)
             .create()
 
-        // 임시 데이터
-        val studentList = arrayOf("학생 1", "학생 2", "학생 3", "학생 4", "학생 5","학생 1", "학생 2", "학생 3", "학생 4", "학생 5","학생 1", "학생 2", "학생 3", "학생 4", "학생 5","학생 1", "학생 2", "학생 3", "학생 4", "학생 5","학생 1", "학생 2", "학생 3", "학생 4", "학생 5")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, studentList)
-        dialogBinding.studentSpinner.adapter = adapter
-        dialogBinding.btDialogCancel.setOnClickListener {
-            dialog.dismiss() // 취소 버튼 클릭 시 다이얼로그 닫기
-        }
-        dialogBinding.btnDialogConfirm.setOnClickListener {
-            val selectedStudent = dialogBinding.studentSpinner.selectedItem.toString()
-            showToast("선택된 학생 번호 : ${selectedStudent}")
-
-            //선택된 학생에 대한 인센티브 지급 API요청
-            dialog.dismiss()
-        }
-
-        dialog.show() // 다이얼로그 띄우기
-    }
-
-    // API : 주급 지급
-    private fun paySalary() {
-        lifecycleScope.launch {
-            runCatching {
-                RetrofitUtil.salariesService
-            }.onSuccess {
-
-            }.onFailure {
-
-            }
-        }
-    }
-
-    private fun showSingleStudentAddDialog() {
-        // 수정 : 국가 설립일, 단위, 학급인원 추가 되어야 함
-        // 학급이원이 변경된 경우 수정 요청 api 날려야함. 후순위
-
-        val dialogView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.dialog_student_registration, null)
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .create()
-
-        val name = dialogView.findViewById<EditText>(R.id.editAddName)
-        val job = dialogView.findViewById<Spinner>(R.id.editJob)
-        val id = dialogView.findViewById<EditText>(R.id.editId)
-        val password = dialogView.findViewById<EditText>(R.id.editPassword)
-
         // job 설정
-        val studentList = arrayOf("학생 1", "학생 2", "학생 3", "학생 4", "학생 5")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, studentList)
-        job.adapter = adapter
+        val jobList = jobListCache.map { it.jobName }
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, jobList)
+        dialogBinding.editJob.adapter = adapter
 
-        val btnClose = dialogView.findViewById<ImageButton>(R.id.btnClose)
-        val btnConfirm = dialogView.findViewById<AppCompatButton>(R.id.btnStudentRegistration)
-
-        btnClose.setOnClickListener {
+        dialogBinding.btnClose.setOnClickListener {
             dialog.dismiss()
         }
 
-        btnConfirm.setOnClickListener {
-            // 이름, 직업, 아이디, 비번 모두 있으며
-            if (true) {
+        dialogBinding.btnStudentRegistration.setOnClickListener {
+            // 유효성 검사
+            val name = dialogBinding.editAddName.text
+            val id = dialogBinding.editId.text
+            val password = dialogBinding.editPassword.text
+            if(name.isNullOrEmpty() || id.isNullOrEmpty() || password.isNullOrEmpty()){
+                showToast("모든 항목을 빠짐없이 입력해주세요")
+                return@setOnClickListener
             }
 
             // 단순 데이터 추가
-            val user =
-                StudentSingleCreateRequest(username = "김쌉쌉2", password = "1234", profileImage = "")
+            val user = StudentSingleCreateRequest(username = id.toString(), name = name.toString(), password = password.toString(), profileImage = "")
             lifecycleScope.launch {
                 runCatching {
-                    // 서버로부터 알림 데이터 요청
                     RetrofitUtil.teacherService.singleCreate(user)
                 }.onSuccess { data ->
-                    showToast("회원추가 완료 ! ${data}")
+                    showToast("회원추가 완료 !")
+                    studentsViewModel.fetchStudentList()
                 }.onFailure { exception ->
-                    showToast("회원추가 실패 ! ${exception}")
-                    Log.e("AlarmViewModel", "Error fetching alarms ${exception}")
+                    showErrorDialog(exception)
                 }
             }
-
-
 
             dialog.dismiss()  // 다이얼로그 닫기
         }
 
         dialog.show()
-
-
     }
 
 

@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.bank.service;
 
+import com.ladysparks.ttaenggrang.domain.bank.dto.DepositAndSavingsCountDTO;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription.SavingsSubscriptionStatus;
@@ -32,26 +33,31 @@ public class SavingsSubscriptionService {
     // 적금 가입 [등록]
     @Transactional
     public SavingsSubscriptionDTO addSavingsSubscription(SavingsSubscriptionDTO savingsSubscriptionDTO) {
+
         Long studentId = studentService.getCurrentStudentId();
 
         // 적금 가입 중복 확인
         boolean exists = savingsSubscriptionRepository.existsByStudentIdAndSavingsProductId(
-                savingsSubscriptionDTO.getStudentId(), savingsSubscriptionDTO.getSavingsProductId());
+                studentId, savingsSubscriptionDTO.getSavingsProductId());
         if (exists) {
             throw new IllegalArgumentException("이미 해당 적금 상품에 가입한 학생입니다.");
         }
 
-        Long durationWeeks = savingsProductService.findDurationWeeksById(savingsSubscriptionDTO.getSavingsProductId());
+        // 가입할 적금 상품의 기간(주 단위) 조회
+        Long durationWeeks = savingsProductService.findDurationWeeksById(
+                savingsSubscriptionDTO.getSavingsProductId());
 
         // startDate 자동 계산 (오늘 이후 가장 가까운 `depositDayOfWeek`)
         LocalDate today = LocalDate.now();
-        LocalDate startLocalDate = today.with(TemporalAdjusters.next(savingsSubscriptionDTO.getDepositDayOfWeek()));
+        LocalDate startLocalDate = today.with(TemporalAdjusters.next(
+                savingsSubscriptionDTO.getDepositDayOfWeek()));
 
         // endDate 자동 계산 (startDate + durationWeeks 주 후)
         LocalDate endLocalDate = startLocalDate.plusWeeks(durationWeeks);
 
-        // 납입 일정 생성
-        List<LocalDate> depositDates = calculateDepositDates(startLocalDate, endLocalDate, savingsSubscriptionDTO.getDepositDayOfWeek());
+        // 납입 일정 생성 (매주 지정 요일)
+        List<LocalDate> depositDates = calculateDepositDates(
+                startLocalDate, endLocalDate, savingsSubscriptionDTO.getDepositDayOfWeek());
 
         // DTO에 반영
         savingsSubscriptionDTO.setStudentId(studentId);
@@ -61,11 +67,16 @@ public class SavingsSubscriptionService {
         // Entity 변환 및 저장
         SavingsSubscription savingsSubscription = savingsSubscriptionMapper.toEntity(savingsSubscriptionDTO);
         SavingsSubscription savedSavingsSubscription = savingsSubscriptionRepository.save(savingsSubscription);
+
+        // DTO 반환을 위해 Deposit 일정 추가
         SavingsSubscriptionDTO savedSavingsSubscriptionDTO = savingsSubscriptionMapper.toDto(savedSavingsSubscription);
-        savedSavingsSubscriptionDTO.setDepositSchedule(depositDates); // 납입 일정 추가
+//        savedSavingsSubscriptionDTO.setDepositSchedule(depositDates);
 
         // depositSchedule을 기반으로 SavingsDeposit 자동 생성
-        savingsDepositService.addSavingsDeposits(savingsSubscription, depositDates);
+        savingsDepositService.addSavingsDeposits(savedSavingsSubscription, depositDates);
+
+        // 적금 상품 가입자 수 +1 증가
+        savingsProductService.addSubscriber(savingsSubscriptionDTO.getSavingsProductId());
 
         // 결과 DTO 반환
         return savedSavingsSubscriptionDTO;
@@ -133,6 +144,15 @@ public class SavingsSubscriptionService {
 
         // 3. 납입 상태인 금액 합산
         return savingsPayoutService.getTotalPayoutAmount(savingsSubscriptionDTOList);
+    }
+
+    public DepositAndSavingsCountDTO getSavingsCountByStudentId(Long studentId) {
+        long depositCount = 0;
+        long savingsCount = savingsSubscriptionRepository.countByStudentId(studentId);
+        return DepositAndSavingsCountDTO.builder()
+                .depositProductCount(depositCount)
+                .savingsProductCount(savingsCount)
+                .build();
     }
 
 }

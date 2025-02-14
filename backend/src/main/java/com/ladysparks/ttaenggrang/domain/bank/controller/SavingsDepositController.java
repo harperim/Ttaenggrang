@@ -4,7 +4,7 @@ import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsDepositDTO;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsDepositHistoryDTO;
 import com.ladysparks.ttaenggrang.domain.bank.service.SavingsDepositService;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
-import com.ladysparks.ttaenggrang.global.docs.SavingsDepositApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.bank.SavingsDepositApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ public class SavingsDepositController implements SavingsDepositApiSpecification 
     public ResponseEntity<ApiResponse<SavingsDepositDTO>> savingsDepositRetry(@PathVariable Long savingsDepositId) {
         Long studentId = studentService.getCurrentStudentId();
         Long bankAccountId = studentService.findBankAccountIdById(studentId);
-        SavingsDepositDTO savedDeposit = savingsDepositService.retrySavingsDeposit(savingsDepositId, studentId, bankAccountId);
+        SavingsDepositDTO savedDeposit = savingsDepositService.retrySavingsDeposit(savingsDepositId, bankAccountId);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(savedDeposit));
     }
 

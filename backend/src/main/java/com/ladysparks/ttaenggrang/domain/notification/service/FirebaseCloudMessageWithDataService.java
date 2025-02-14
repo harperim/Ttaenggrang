@@ -1,35 +1,26 @@
 package com.ladysparks.ttaenggrang.domain.notification.service;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.ladysparks.ttaenggrang.domain.notification.dto.BroadcastNotificationDTO;
 import com.ladysparks.ttaenggrang.domain.notification.dto.FcmMessageWithData;
 import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationDTO;
-import com.ladysparks.ttaenggrang.domain.notification.entity.NotificationType;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.global.utill.Constants;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import okhttp3.*;
 import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.auth.oauth2.GoogleCredentials;
-
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * FCM 알림 메시지 생성

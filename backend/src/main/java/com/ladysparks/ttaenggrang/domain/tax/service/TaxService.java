@@ -29,8 +29,8 @@ public class TaxService {
     }
 
     // 특정 교사의 세금 목록 조회
-    public List<TaxDTO> findTaxesByTeacher(Optional<Long> teacherId) {
-        return taxRepository.findByTeacherId(teacherId.orElseGet(teacherService::getCurrentTeacherId)).stream()
+    public List<TaxDTO> findTaxesByTeacher(Long teacherId) {
+        return taxRepository.findByTeacherId(teacherId).stream()
                 .map(taxMapper::toDto)
                 .collect(Collectors.toList());
     }

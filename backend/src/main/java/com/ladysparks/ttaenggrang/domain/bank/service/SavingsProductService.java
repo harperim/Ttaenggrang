@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.bank.service;
 
+import com.ladysparks.ttaenggrang.domain.bank.dto.DepositAndSavingsCountDTO;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsProductDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsProduct;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.SavingsProductMapper;
@@ -10,6 +11,7 @@ import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.stereotype.Service;
@@ -44,11 +46,44 @@ public class SavingsProductService {
             throw new IllegalArgumentException("해당 적금 상품이 이미 존재합니다. (교사 ID: " + teacherId + ", 상품명: " + savingsProductDTO.getName() + ")");
         }
 
+        // 예상 지급액 계산 (복리 방식)
+        int depositAmount = savingsProductDTO.getAmount();
+        float interestRate = savingsProductDTO.getInterestRate();
+        int durationWeeks = savingsProductDTO.getDurationWeeks();
+        int payoutAmount = calculateWeeklyCompoundInterest(depositAmount, interestRate, durationWeeks);
+
         savingsProductDTO.setTeacherId(teacherId);
+        savingsProductDTO.setPayoutAmount(payoutAmount);
         SavingsProduct savingsProduct = savingsProductMapper.toEntity(savingsProductDTO);
         SavingsProduct savedSavingsProduct = savingsProductRepository.save(savingsProduct);
 
         return savingsProductMapper.toDto(savedSavingsProduct);
+    }
+
+    /**
+     * 복리 방식으로 예상 지급액 계산 (주간 이자율 적용)
+     * @param depositAmount 매주 납입 금액
+     * @param weeklyInterestRate 주간 이자율 (예: 0.001 → 0.1%)
+     * @param durationWeeks 기간 (주)
+     * @return 예상 지급액 (원 단위, 반올림)
+     */
+    /**
+     * 주간 복리 방식으로 만기 예상 지급액 계산
+     *
+     * @param depositAmount   매주 납입 금액
+     * @param weeklyInterestRate 주간 이자율 (%)
+     * @param durationWeeks   가입 기간 (주)
+     * @return 예상 지급액 (복리 적용)
+     */
+    public int calculateWeeklyCompoundInterest(int depositAmount, float weeklyInterestRate, int durationWeeks) {
+        double rate = weeklyInterestRate / 100.0; // 주간 이자율 (소수점)
+        double totalAmount = 0.0;
+
+        for (int week = 1; week <= durationWeeks; week++) {
+            totalAmount += depositAmount * Math.pow(1 + rate, durationWeeks - week);
+        }
+
+        return (int) Math.round(totalAmount);
     }
 
     // 적금 상품 [조회]
@@ -79,6 +114,33 @@ public class SavingsProductService {
     public Long findDurationWeeksById(Long savingsProductId) {
         return savingsProductRepository.findDurationWeeksById(savingsProductId)
                 .orElseThrow(() -> new IllegalIdentifierException("해당 적금 상품이 존재하지 않습니다. ID: " + savingsProductId));
+    }
+
+    /**
+     * 구독자 수 증가
+     */
+    public int addSubscriber(Long savingsProductId) {
+        return savingsProductRepository.incrementSubscriberCount(savingsProductId);
+    }
+
+    /**
+     * 구독자 수 감소
+     */
+    public int removeSubscriber(Long savingsProductId) {
+        return savingsProductRepository.decrementSubscriberCount(savingsProductId);
+    }
+
+    /**
+     * 💳 특정 교사가 등록한 예금 및 적금 상품 개수 조회
+     */
+    public DepositAndSavingsCountDTO getDepositAndSavingsCountsByTeacherId(Long teacherId) {
+        long depositCount = 0;
+        long savingsCount = savingsProductRepository.countSavingsProductsByTeacherId(teacherId);
+
+        return DepositAndSavingsCountDTO.builder()
+                .depositProductCount(depositCount)
+                .savingsProductCount(savingsCount)
+                .build();
     }
 
 }

@@ -19,6 +19,6 @@ public class MultipleStudentCreateDTO {
     @Min(value = 1, message = "학생 수는 최소 1명 이상이어야 합니다.")
     private int studentCount;  // 생성할 학생 계정 수
 
-    @Schema(type = "string", format = "binary", description = "학생 이름이 포함된 파일 업로드 (CSV 또는 XLSX 형식)")
+    @Schema(type = "string", format = "binary", description = "학생 이름이 포함된 파일 업로드 (CSV 또는 XLSX 형식)", required = false)
     private MultipartFile file;
 }

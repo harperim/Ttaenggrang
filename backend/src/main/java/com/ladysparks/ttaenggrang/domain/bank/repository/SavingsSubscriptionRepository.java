@@ -13,4 +13,6 @@ public interface SavingsSubscriptionRepository extends JpaRepository<SavingsSubs
 
     boolean existsByStudentIdAndSavingsProductId(Long studentId, Long savingsProductId);
 
+    long countByStudentId(Long studentId);
+
 }

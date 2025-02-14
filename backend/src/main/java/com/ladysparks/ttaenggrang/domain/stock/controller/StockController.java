@@ -1,19 +1,17 @@
 package com.ladysparks.ttaenggrang.domain.stock.controller;
 
 import com.ladysparks.ttaenggrang.domain.stock.dto.*;
-import com.ladysparks.ttaenggrang.global.docs.StockApiSpecification;
+import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
+import com.ladysparks.ttaenggrang.global.docs.stock.StockApiSpecification;
 import com.ladysparks.ttaenggrang.domain.stock.service.StockService;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -79,6 +77,16 @@ public class StockController implements StockApiSpecification {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(dto));
     }
 
+    // 학생 거래 내역
+    @GetMapping("/students/{studentId}/transactions")
+    public ResponseEntity<List<TransactionResponseDTO>> getStudentTransactions(@PathVariable Long studentId) {
+        // 학생 ID에 대한 거래 내역을 조회하고 DTO로 변환하여 반환
+        List<TransactionResponseDTO> transactions = stockService.getStudentTransactions(studentId);
+
+        // 거래 내역이 없을 경우 빈 리스트를 반환하면서 200 OK 응답
+        return ResponseEntity.ok(transactions); // 200 OK
+    }
+
 
     //학생 보유 주식 조회
     @GetMapping("/student/{studentId}")
@@ -88,23 +96,30 @@ public class StockController implements StockApiSpecification {
     }
 
 
+
     // 주식시장 활성화 여부 조회 (선생님이 설정한 값)
-    @GetMapping("/isMarketActive")
-    public boolean isMarketActive() {
-        return stockService.isMarketActive();
+    @GetMapping("/isManualOverride")
+    public ResponseEntity<Boolean> getMarketStatus() {
+        boolean isMarketActive = stockService.isMarketActive();
+        return ResponseEntity.ok(isMarketActive);
     }
 
-    // 주식시장 활성화/비활성화 설정 (선생님이 버튼으로 변경 가능)
-    @PostMapping("/setMarketActive")
-    public void setMarketActive(@RequestParam boolean isActive) {
-        stockService.setMarketActive(isActive);
+
+    // 주식시장 활성화/비활성화 설정 (선생님이 버튼으로 설정)
+    @PostMapping("/status")
+    public ResponseEntity<String> setMarketStatus(@RequestParam @Parameter(description = "주식 시장 활성화 여부") boolean isActive) {
+        stockService.setMarketStatus(isActive);
+        return ResponseEntity.ok("주식 및 ETF 시장 상태가 변경되었습니다.");
     }
 
-    // 현재 주식 거래 가능 여부 조회 (시장 활성화 + 9~17시)
-    @GetMapping("/isTradingAllowed")
-    public boolean isTradingAllowed() {
-        return stockService.isTradingAllowed();
+
+    // 현재 주식 거래 가능 여부 조회 (시장 활성화 + 시간 체크)
+    @GetMapping("/trading-allowed")
+    public ResponseEntity<Boolean> isTradingAllowed() {
+        boolean isAllowed = stockService.isTradingAllowed();
+        return ResponseEntity.ok(isAllowed);
     }
+
 
     // 주식 가격 및 변동률 조회
     @GetMapping("/prices")
@@ -113,6 +128,21 @@ public class StockController implements StockApiSpecification {
         return ResponseEntity.ok(stockPrices);
     }
 
+
+    // 특정 주식의 가격 변동 이력 조회
+    @GetMapping("/history/{stockId}")
+    public ResponseEntity<List<StockHistoryDTO>> getStockHistory(@PathVariable Long stockId) {
+        List<StockHistoryDTO> historyList = stockService.getStockHistoryByStockId(stockId);
+        return ResponseEntity.ok(historyList);
+    }
+
+
+    // 모든 주식 가격 변동 이력 조회
+    @GetMapping("/all/history")
+    public ResponseEntity<List<StockHistoryDTO>> getAllStockHistory() {
+        List<StockHistoryDTO> historyList = stockService.getAllStockHistory();
+        return ResponseEntity.ok(historyList);
+    }
 
 }
 

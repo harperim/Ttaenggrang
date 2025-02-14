@@ -2,6 +2,7 @@ package com.ladysparks.ttaenggrang.domain.bank.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription.SavingsSubscriptionStatus;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
-@JsonIgnoreProperties(value = {"id", "studentId", "startDate", "endDate", "status", "createdAt", "depositSchedule"}, allowGetters = true)
+@JsonIgnoreProperties(value = {"id", "studentId", "durationWeeks", "interestRate", "amount", "startDate", "endDate", "payoutAmount", "status", "createdAt", "depositSchedule"}, allowGetters = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,9 +28,17 @@ public class SavingsSubscriptionDTO {
 
     private Long studentId;
 
+    private int durationWeeks;
+
+    private float interestRate;
+
+    private int amount;
+
     private LocalDate startDate;
 
     private LocalDate endDate;
+
+    private int payoutAmount;
 
     private SavingsSubscriptionStatus status;
 
@@ -38,6 +47,6 @@ public class SavingsSubscriptionDTO {
 
     private Timestamp createdAt;
 
-    private List<LocalDate> depositSchedule; // 자동 납입 일정
+//    private List<LocalDate> depositSchedule; // 자동 납입 일정
 
 }

@@ -21,10 +21,10 @@ public interface StockHistoryRepository extends JpaRepository<StockHistory, Long
     int getTotalSellVolumeInRange(@Param("stockId") Long stockId, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime);
 
 
-    // 주식 ID로 StockHistory 리스트 찾기
-//    List<StockHistory> findByStockId(Long id);
+    //StockHistory 조회
+    List<StockHistory> findByStockId(Long stockId);
 
-    // 주식 ID로 모든 거래량 초기화
+
 
 }
 

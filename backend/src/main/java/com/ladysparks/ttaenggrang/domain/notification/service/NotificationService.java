@@ -2,8 +2,8 @@ package com.ladysparks.ttaenggrang.domain.notification.service;
 
 import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationDTO;
 import com.ladysparks.ttaenggrang.domain.notification.entity.Notification;
-import com.ladysparks.ttaenggrang.domain.notification.entity.NotificationStatus;
-import com.ladysparks.ttaenggrang.domain.notification.entity.NotificationType;
+import com.ladysparks.ttaenggrang.domain.notification.entity.Notification.NotificationStatus;
+import com.ladysparks.ttaenggrang.domain.notification.entity.Notification.NotificationType;
 import com.ladysparks.ttaenggrang.domain.notification.mapper.NotificationMapper;
 import com.ladysparks.ttaenggrang.domain.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;

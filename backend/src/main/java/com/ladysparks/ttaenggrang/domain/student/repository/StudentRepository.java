@@ -1,7 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.student.repository;
 
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
-import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentManagementDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,10 +22,10 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 //    // 특정 직업을 가진 학생 목록 조회
 //    List<Student> findByJobId(Long jobId);
 
-    // 교사의 ID를 기준으로 학생 목록 조회 (우리반 학생 전체 조회)
+    // 교사의 ID를 기준으로 학생 목록 조회 (우리 반 학생 전체 조회)
     List<Student> findAllByTeacherId(Long teacherId);
 
-    // 교사의 ID와 학생 ID를 기준으로 특정 학생 조회 (우리반 특정 학생 조회)
+    // 교사의 ID와 학생 ID를 기준으로 특정 학생 조회 (우리 반 특정 학생 조회)
     Optional<Student> findByIdAndTeacherId(Long studentId, Long teacherId);
 
     // 교사ID 와 직업ID로 학생 목록 조회 (특정 직업을 가진 학생 목록 조회)
@@ -37,5 +37,14 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("SELECT s.job.id FROM Student s WHERE s.id = :studentId")
     Long findJobIdById(Long studentId);
+
+    @Query("SELECT new com.ladysparks.ttaenggrang.domain.teacher.dto.StudentManagementDTO( " +
+            "s.id, s.name, s.username, " +
+            "COALESCE(j.jobName, ''), COALESCE(j.baseSalary, 0), COALESCE(b.balance, 0)) " +
+            "FROM Student s " +
+            "LEFT JOIN s.job j " +
+            "LEFT JOIN s.bankAccount b " +
+            "WHERE s.teacher.id = :teacherId")
+    List<StudentManagementDTO> getStudentManagementListByTeacherId(@Param("teacherId") Long teacherId);
 
 }

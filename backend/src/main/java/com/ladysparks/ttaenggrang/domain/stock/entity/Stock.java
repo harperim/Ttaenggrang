@@ -1,6 +1,5 @@
 package com.ladysparks.ttaenggrang.domain.stock.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ladysparks.ttaenggrang.domain.news.entity.News;
 import com.ladysparks.ttaenggrang.domain.stock.category.Category;
 import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;
@@ -12,7 +11,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 @AllArgsConstructor //모든 필드를 매개변수로 받는 생성자를 자동으로 생성
 @NoArgsConstructor //기본 생성자(매개변수가 없는 생성자)를 자동으로 생성 , Entity 사용 하면 사용 해줘야함!
@@ -49,20 +47,14 @@ public class Stock {
     @Column
     private String categoryName;  //카테고리 이름
 
-    @Column(nullable = false, columnDefinition = "TIME DEFAULT '10:00:00'")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    private LocalTime openTime = LocalTime.of(10, 00);  // 기본값: 10시  주식 오픈 시간
 
-    @Column(nullable = false, columnDefinition = "TIME DEFAULT '15:00:00'")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    private LocalTime closeTime = LocalTime.of(15, 00); // 기본값: 15시  주식 닫는 시간
+    @Column(nullable = false, updatable = false)  // updatable = false -> 수정 불가
+    private final String type = "일반 주식";
 
 
     @Column
     private Integer changeRate; //가격 변동률
 
-    @Column(nullable = false)
-    private Boolean isMarketActive;  //주식장 활성화
 
     @Column
     private LocalDateTime priceChangeTime;  // 가격 변동 시간
@@ -98,8 +90,12 @@ public class Stock {
 
     //뉴스
     @OneToMany(targetEntity = Stock.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "newa_id")
+    @JoinColumn(name = "news_id")
     private List<News> news;
+
+    @ManyToOne
+    @JoinColumn(name = "market_status_id")
+    private MarketStatus marketStatus; // MarketStatus와 연결
 
 
 

@@ -9,6 +9,7 @@ import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransac
 import com.ladysparks.ttaenggrang.domain.bank.mapper.BankAccountMapper;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.BankTransactionMapper;
 import com.ladysparks.ttaenggrang.domain.bank.repository.BankTransactionRepository;
+import com.ladysparks.ttaenggrang.domain.student.dto.BankTransactionSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.SavingsAchievementDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
@@ -44,10 +45,10 @@ public class BankTransactionService {
                 : processSingleTransaction(bankTransactionDTO);
 
         // 목표 달성률 업데이트 & Redis 저장
-        SavingsAchievementDTO savingsAchievementDTO = studentService.calculateSavingsAchievementRate();
+//        SavingsAchievementDTO savingsAchievementDTO = studentService.calculateSavingsAchievementRate();
 
-        Long teacherId = studentService.findTeacherIdByStudentId(savingsAchievementDTO.getStudentId());
-        redisGoalService.saveOrUpdateGoalAchievement(teacherId, savingsAchievementDTO);
+//        Long teacherId = studentService.findTeacherIdByStudentId(savingsAchievementDTO.getStudentId());
+//        redisGoalService.saveOrUpdateGoalAchievement(teacherId, savingsAchievementDTO);
 
         return result;
     }
@@ -397,6 +398,20 @@ public class BankTransactionService {
 
     public int getBankTransactionsByType(Long studentId, List<BankTransactionType> typeList) {
         return bankTransactionRepository.getTotalAmountByType(studentId, typeList);
+    }
+
+    /**
+    학생의 요약 거래 내역 조회
+     */
+    @Transactional(readOnly = true)
+    public List<BankTransactionSummaryDTO> getSummaryByBankAccountId(Long studentId) {
+        Long bankAccountId = bankAccountService.findBankAccountById(studentId).getId();
+
+        // 거래 내역 조회
+        List<BankTransaction> transactions = bankTransactionRepository.getSummaryByBankAccountId(bankAccountId);
+
+        // DTO 변환
+        return transactions.stream().map(bankTransactionMapper::toSummaryDto).collect(Collectors.toList());
     }
 
 }
