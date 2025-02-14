@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -358,29 +359,27 @@ public class StockService {
     // 가격 변동 처리 (폐장 시 적용)
     @Transactional
     public List<ChangeResponseDTO> updateStockPricesForMarketOpening() {
-        // 모든 주식 정보를 불러오고, 시장 활성 상태를 고정 (9시~17시에는 true)
         List<Stock> stocks = stockRepository.findAll();
         List<ChangeResponseDTO> stockDTOList = new ArrayList<>();
 
         for (Stock stock : stocks) {
-            // 시장은 고정적으로 활성(true)로 설정 (개장 시간, 폐장 시간 변경 불가)
-//            stock.setIsMarketActive(true);
             stockRepository.save(stock);
 
             double oldPrice = stock.getPrice_per();
             try {
-                updateStockPrice(stock); // 개별 주식 가격 업데이트
+                // 17시에 가격 변동 계산
+                if (isMarketClosing()) {
+                    updateStockPriceForNextDay(stock); // 9시에 적용될 가격 계산
+                }
 
-                double newPrice = stock.getPrice_per(); // 업데이트된 가격
+                double newPrice = stock.getPrice_per(); // 9시에 적용된 가격
                 double changeRate = calculateChangeRate(oldPrice, newPrice); // 변동률 계산
 
-                // ETF 또는 일반 주식 정보에 필요한 필드들을 DTO로 설정
                 stockDTOList.add(ChangeResponseDTO.builder()
                         .id(stock.getId())
                         .name(stock.getName())
                         .price_per((int) newPrice)
                         .changeRate((int) changeRate)
-//                        .isMarketActive(stock.getIsMarketActive())
                         .total_qty(stock.getTotal_qty())
                         .remain_qty(stock.getRemain_qty())
                         .description(stock.getDescription())
@@ -394,41 +393,26 @@ public class StockService {
         return stockDTOList;
     }
 
-
-    // 개별 주식 가격 업데이트 (9시 ~ 17시 거래량 기준으로 가격 변동 처리)
-    private StockDTO updateStockPrice(Stock stock) {
-        // 오늘의 9시부터 17시까지의 거래량 조회
-        LocalTime currentTime = LocalTime.now();
-        if (currentTime.isBefore(LocalTime.of(9, 0)) || currentTime.isAfter(LocalTime.of(17, 0))) {
-            throw new IllegalArgumentException("거래 시간 외에는 가격을 업데이트할 수 없습니다.");
-        }
-
-// 9시 ~ 17시 사이의 매수량과 매도량 조회
-        LocalDateTime startTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 0));
+    // 17시 이후에 내일 9시에 적용될 변동된 가격 계산
+    private void updateStockPriceForNextDay(Stock stock) {
         LocalDateTime endTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 0));
+        LocalDateTime nextMorning = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(9, 0));
 
-        int dailyBuyVolume = stockTransactionRepository.getBuyVolumeForStockInTimeRange(stock.getId(), TransType.BUY, startTime, endTime);
-        int dailySellVolume = stockTransactionRepository.getSellVolumeForStockInTimeRange(stock.getId(), TransType.SELL, startTime, endTime);
+        // 9시부터 17시까지의 거래량 조회
+        int dailyBuyVolume = stockTransactionRepository.getBuyVolumeForStockInTimeRange(stock.getId(), TransType.BUY, endTime, nextMorning);
+        int dailySellVolume = stockTransactionRepository.getSellVolumeForStockInTimeRange(stock.getId(), TransType.SELL, endTime, nextMorning);
 
-        // 이전 가격 저장
-        double oldPrice = stock.getPrice_per();
-
-        // 거래량이 없는 경우 변동 없음
         if (dailyBuyVolume == 0 && dailySellVolume == 0) {
-            System.out.println("거래량 없음, 가격 유지: " + stock.getName());
-            stock.setChangeRate(0);
+            stock.setChangeRate(0);  // 변동률 0%
         } else {
-            // 매수량, 매도량에 따른 새로운 가격 계산
-            double newPrice = calculatePriceChangeBasedOnTransaction(dailyBuyVolume, dailySellVolume, stock.getPrice_per());
+            double[] priceAndChangeRate = calculatePriceChangeBasedOnTransaction(dailyBuyVolume, dailySellVolume, stock.getPrice_per());
+            double newPrice = priceAndChangeRate[0];
+            double changeRate = priceAndChangeRate[1];
 
-            // 가격 변동 적용
+            // 변동된 가격과 변동률을 저장
             stock.setPrice_per((int) Math.round(newPrice));
-            stock.setPriceChangeTime(LocalDateTime.now());
-            System.out.println("가격 변동 적용: " + stock.getName());
-
-            // 변동률 계산 및 적용
-            double changeRate = calculateChangeRate(oldPrice, newPrice);
-            stock.setChangeRate((int) (Math.round(changeRate * 100) / 100.0));
+            stock.setChangeRate((int) Math.round(changeRate));
+            stock.setPriceChangeTime(nextMorning); // 9시에 적용될 시간
         }
 
         // 가격 변동 이력 저장
@@ -437,46 +421,57 @@ public class StockService {
         history.setPrice(stock.getPrice_per());
         history.setBuyVolume(dailyBuyVolume);
         history.setSellVolume(dailySellVolume);
-        history.setDate(Timestamp.valueOf(LocalDateTime.now())); // 오늘의 날짜 및 시간 기록
+        history.setDate(Timestamp.valueOf(LocalDateTime.now()));
         stockHistoryRepository.save(history);
 
         // 주식 정보 저장
         stockRepository.save(stock);
-        System.out.println("주식 가격 업데이트 완료: " + stock.getName());
-
-        // 업데이트된 Stock 정보를 DTO로 변환하여 반환
-        return StockDTO.fromEntity(stock);
     }
 
 
-
-    // 변동률 계산 로직: (신가격 - 이전가격) / 이전가격 * 100
-    public double calculateChangeRate(double oldPrice, double newPrice) {
-        if (oldPrice == 0) return 0;
-        return (newPrice - oldPrice) / oldPrice * 100;
-    }
-
-    // 매수량, 매도량에 따른 가격 변동 계산 (초등학생용 간단 계산)
-    // (매수량 - 매도량) / (매수량 + 매도량) 결과를 -10% ~ +10%로 제한하여 적용
-    public double calculatePriceChangeBasedOnTransaction(int buyVolume, int sellVolume, double currentPrice) {
+    // 매수량, 매도량에 따른 가격 변동 계산
+    public double[] calculatePriceChangeBasedOnTransaction(int buyVolume, int sellVolume, double currentPrice) {
         if (buyVolume == 0 && sellVolume == 0) {
-            return currentPrice;
+            return new double[]{currentPrice, 0}; // 가격 유지, 변동률 0%
         }
 
-        try {
-            double changeRate = (double) (buyVolume - sellVolume) / (buyVolume + sellVolume);
-            // 변동률을 ±10%로 제한
-            changeRate = Math.max(-0.10, Math.min(0.10, changeRate));
-            return currentPrice * (1 + changeRate);
-        } catch (ArithmeticException e) {
-            throw new IllegalArgumentException("매수량과 매도량의 합이 0입니다. 가격 계산이 불가능합니다.");
-        }
+        double changeRate = (double) (buyVolume - sellVolume) / (buyVolume + sellVolume);
+        double newPrice = currentPrice * (1 + changeRate);
+
+        return new double[]{newPrice, changeRate * 100}; // 변동률을 100배 해서 퍼센트로 반환
     }
+
+    // 가격 변동률 계산
+    private double calculateChangeRate(double oldPrice, double newPrice) {
+        if (oldPrice == 0) {
+            return 0; // 기존 가격이 0이면 변동률을 계산할 수 없음
+        }
+        return ((newPrice - oldPrice) / oldPrice) * 100;
+    }
+
+    // 시장 종료 시점 확인 (17시 이후)
+    private boolean isMarketClosing() {
+        LocalTime currentTime = LocalTime.now();
+        return currentTime.isAfter(LocalTime.of(17, 0)); // 17시 이후
+    }
+
+
     // 주식시장 활성화 여부 조회 (선생님이 설정한 값)
     public boolean isMarketActive() {
+
+        LocalDate today = LocalDate.now();
+        DayOfWeek dayOfWeek = today.getDayOfWeek();
+
+
+        // 주말(토, 일)에는 시장 비활성화
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            return false;
+        }
+
         // MarketStatus에서 수동 설정(true)된 첫 번째 값을 조회
         MarketStatus marketStatus = marketStatusRepository.findFirstByIsManualOverrideTrue()
                 .orElseThrow(() -> new IllegalArgumentException("주식에 대한 시장 상태 정보를 찾을 수 없습니다."));
+
 
         // 수동 설정이 있으면 해당 값 반환
         if (marketStatus.isManualOverride()) {
@@ -486,6 +481,7 @@ public class StockService {
         // 수동 설정이 없다면 자동으로 설정된 시장 활성화 상태 반환
         return marketStatus.isMarketActive();
     }
+
 
     // 주식시장 활성화/비활성화 설정 (선생님이 버튼으로 설정)
     @Transactional
@@ -521,8 +517,18 @@ public class StockService {
                 (isManualOverride ? "수동 설정 (활성화)" : "자동 설정 (비활성화)"));
     }
 
+
     // 현재 주식 거래 가능 여부 조회 (시장 활성화 + 시간 체크)
     public boolean isTradingAllowed() {
+
+        LocalDate today = LocalDate.now();
+        DayOfWeek dayOfWeek = today.getDayOfWeek();
+
+        // 주말(토, 일)에는 거래 불가
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            return false;
+        }
+
         Stock stock = stockRepository.findById(1L)
                 .orElseThrow(() -> new RuntimeException("주식 정보를 찾을 수 없습니다. id=1인 주식이 존재하지 않습니다."));
 
