@@ -26,20 +26,7 @@ public class StockDTO {
     private Timestamp updated_at;  // 수정일
     private Integer changeRate;   // 주식 변동률
     private final String type = "일반 주식";
-
-
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    private LocalTime openTime;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    private LocalTime closeTime;
-
-//    private Boolean isMarketActive;  // 시장 활성화 여부
-
-
     private LocalDateTime priceChangeTime;  // 가격 변동 시간
-
     private BigDecimal weight;  // 주식 비중 (각 주식의 비중을 따로 저장)
 
 

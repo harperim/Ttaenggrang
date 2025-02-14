@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface StockTransactionRepository extends JpaRepository<StockTransaction, Long> {
@@ -36,21 +38,27 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
 //
 
 
-    // 특정 주식의 어제 매수량 조회
+    // 특정 주식에 대한 매수량을 조회하는 쿼리
     @Query("SELECT COALESCE(SUM(s.share_count), 0) FROM StockTransaction s " +
             "WHERE s.stock.id = :stockId " +
             "AND s.transType = :transType " +
-            "AND DATE(s.trans_date) = :yesterday")
-    int getBuyVolumeForStockYesterday(@Param("stockId") Long stockId,
-                                      @Param("transType") TransType transType,
-                                      @Param("yesterday") LocalDate yesterday);
+            "AND s.trans_date BETWEEN :startTime AND :endTime")
+    int getBuyVolumeForStockInTimeRange(
+            @Param("stockId") Long stockId,
+            @Param("transType") TransType transType,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime);
 
-    // 특정 주식의 어제 매도량 조회
+    // 특정 주식에 대한 매도량을 조회하는 쿼리
     @Query("SELECT COALESCE(SUM(s.share_count), 0) FROM StockTransaction s " +
             "WHERE s.stock.id = :stockId " +
             "AND s.transType = :transType " +
-            "AND DATE(s.trans_date) = :yesterday")
-    int getSellVolumeForStockYesterday(@Param("stockId") Long stockId,
-                                       @Param("transType") TransType transType,
-                                       @Param("yesterday") LocalDate yesterday);
+            "AND s.trans_date BETWEEN :startTime AND :endTime")
+    int getSellVolumeForStockInTimeRange(
+            @Param("stockId") Long stockId,
+            @Param("transType") TransType transType,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime);
+
+
 }
