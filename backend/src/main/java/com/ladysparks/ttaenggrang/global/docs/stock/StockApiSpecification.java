@@ -39,6 +39,13 @@ public interface StockApiSpecification {
                                                                      @RequestParam("share_count") int shareCount,
                                                                      @RequestParam("studentId") Long studentId);
 
+
+
+    @Operation(summary = "학생 거래내역 조회", description = "학생 거래내역 조회 합니다")
+    @GetMapping("/students/{studentId}/transactions")
+    public ResponseEntity<List<TransactionResponseDTO>> getStudentTransactions(@PathVariable Long studentId);
+
+
     @Operation(summary = "학생 보유 주식 조회", description = "학생 보유 주식 조회")
     @GetMapping("/student/{studentId}")
     public ResponseEntity<List<StudentStockDTO>> getStudentStocks(@PathVariable Long studentId);
