@@ -1,6 +1,6 @@
 package com.ladysparks.ttaenggrang.data.model.dto
 
-data class StudentStockDto(
+data class StockStudentDto(
     val stockId: Int,          // 보유 주식 ID
     val stockName: String,     // 주식 이름
     val ownedQty: Int,         // 보유 수량

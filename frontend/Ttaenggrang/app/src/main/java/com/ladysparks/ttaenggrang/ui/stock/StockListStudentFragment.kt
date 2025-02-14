@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.ui.stock
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
@@ -37,12 +38,12 @@ class StockListStudentFragment : BaseFragment<FragmentStockListStudentBinding>(
         // 서버에서 거래 가능 현금 가져오기
         viewModel.fetchBalance()
 
-        // studentId 가져오기 (예: SharedPreferences에서 가져오기)
+        // studentId 가져오기
         studentId = SharedPreferencesUtil.getUserId()
 
         // 서버에서 학생 주식 보유 내역 가져오기
         viewModel.fetchOwnedStocks(studentId)
-
+        viewModel.fetchStudentStockTransactions(studentId)
 
     }
 
@@ -76,32 +77,34 @@ class StockListStudentFragment : BaseFragment<FragmentStockListStudentBinding>(
     }
 
     private fun observeViewModel() {
-        // ✅ ViewModel에서 주식 데이터 가져와서 RecyclerView 업데이트
         viewModel.ownedStocks.observe(viewLifecycleOwner) { ownedStocks ->
-            val newData = ownedStocks.map { stock ->
-                val ValuationAmount = stock.ownedQty * stock.currentPrice //평가금액
-                //val totalProfit = marketValue - stock.
-                BaseTableRowModel(
-                    listOf(
-                        stock.purchaseDate,
-                        stock.stockName,
-                        "유형",
-                        stock.ownedQty.toString(), //보유 주식 수
-                        "평균매입단가",
-                        stock.currentPrice.toString(), //현재주가
-                        ValuationAmount.toString(), //평가금액
-                        "수익률",
-                        "손익금액"
-                    )
-                )
+            Log.d("StockFragment", "📌 ownedStocks 업데이트됨: $ownedStocks")
+            if (ownedStocks.isNotEmpty() && viewModel.stockTransaction.value != null) {
+                viewModel.updateStockTableData(studentId)
             }
-            tableAdapter.updateData(newData) // ✅ 데이터 업데이트
-            val totalValuationAmount = ownedStocks.sumOf { it.ownedQty * it.currentPrice }
-            binding.textContent2.text = "${totalValuationAmount}"
         }
 
-        viewModel.balance.observe(viewLifecycleOwner){ balance ->
+        viewModel.stockTransaction.observe(viewLifecycleOwner) { transactions ->
+            Log.d("StockFragment", "📌 stockTransaction 업데이트됨: $transactions")
+            if (transactions.isNotEmpty() && viewModel.ownedStocks.value != null) {
+                viewModel.updateStockTableData(studentId)
+            }
+        }
+
+        viewModel.stockTableData.observe(viewLifecycleOwner) { newData ->
+            Log.d("StockFragment", "📌 stockTableData 업데이트됨: $newData")
+            tableAdapter.updateData(newData)
+        }
+
+        viewModel.balance.observe(viewLifecycleOwner) { balance ->
             binding.textContent5.text = "$balance"
+        }
+
+        viewModel.stockSummary.observe(viewLifecycleOwner) { summary ->
+            binding.textContent1.text = "${summary["totalInvestment"]} 원"
+            binding.textContent2.text = "${summary["totalValuation"]} 원"
+            binding.textContent3.text = "${summary["totalProfit"]} 원"
+            binding.textContent4.text = "%.2f%%".format(summary["totalReturnRate"])
         }
 
     }

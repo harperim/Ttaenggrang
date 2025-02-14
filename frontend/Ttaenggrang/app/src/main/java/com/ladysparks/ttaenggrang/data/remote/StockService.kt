@@ -1,8 +1,8 @@
 package com.ladysparks.ttaenggrang.data.remote
 
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
-import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionDto
-import com.ladysparks.ttaenggrang.data.model.dto.StudentStockDto
+import com.ladysparks.ttaenggrang.data.model.dto.StockStudentDto
+import com.ladysparks.ttaenggrang.data.model.dto.StockStudentTransactionDto
 import com.ladysparks.ttaenggrang.data.model.response.OpenMarketResponse
 import com.ladysparks.ttaenggrang.data.model.response.StockTransactionResponse
 import retrofit2.Response
@@ -51,9 +51,15 @@ interface StockService {
 
     // 학생 보유 주식 조회
     @GET("stocks/student/{studentId}")
-    suspend fun getStudentStocks(
+    suspend fun getStocksStudent(
         @Path("studentId") studentId: Int
-    ): List<StudentStockDto>
+    ): List<StockStudentDto>
+
+    // 학생 주식 거래 조회
+    @GET("stocks/students/{studentId}/transactions")
+    suspend fun getStockStudentTransaction(
+        @Path("studentId") studentId: Int
+    ): List<StockStudentTransactionDto>
 
 
 }
