@@ -34,6 +34,8 @@ public class NewsService {
     private final StockRepository stockRepository;
 
     public NewsDTO generateRandomNewsFromStocks() {
+        apiKey = System.getenv("OPENAI_API_KEY");
+
         // 1. 모든 주식 엔터티에서 랜덤 선택
         List<Stock> stocks = stockRepository.findAll();
         if (stocks.isEmpty()) {

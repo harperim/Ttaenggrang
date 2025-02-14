@@ -6,6 +6,8 @@ services: # 컨테이너
     environment:
       - MYSQL_DATABASE=ttgr
       - MYSQL_ROOT_PASSWORD=ssafy
+    env_file:
+      - .env
     ports:
       - "3306:3306"
     networks:
