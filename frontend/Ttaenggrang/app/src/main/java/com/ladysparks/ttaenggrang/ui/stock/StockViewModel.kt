@@ -80,6 +80,9 @@ class StockViewModel : ViewModel() {
     private val _stockSummary = MutableLiveData<Map<String, Any>>()
     val stockSummary: LiveData<Map<String, Any>> get() = _stockSummary
 
+    // 이전 뉴스 기록 조회
+
+
     // 주식 데이터 조회
     fun fetchAllStocks() = viewModelScope.launch {
         runCatching {

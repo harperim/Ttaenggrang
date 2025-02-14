@@ -52,7 +52,7 @@ class JobFragment : BaseFragment<FragmentJobBinding>(FragmentJobBinding::bind, R
                 showToast("${rowIndex} Click Event !")
             }
         } else{
-            BaseTableAdapter(jobTableHeader, emptyList(), null)
+            BaseTableAdapter(jobTableHeader, emptyList())
         }
         binding.recyclerJob.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerJob.adapter = jobAdapter
