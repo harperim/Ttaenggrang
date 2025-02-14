@@ -7,17 +7,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-@Tag(name = "[교사] 뉴스", description = "NEWS API")
+@Tag(name = "[교사] 뉴스 생성", description = "뉴스 생성 관련 API")
 public interface NewsApiSpecification {
 
-
-//    public ResponseEntity<ApiResponse<NewsDTO>> createNews();
-    @Operation(summary = "(교사) 뉴스 생성", description = "💡 뉴스를 생성 합니다")
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse<NewsDTO>> generateNews();
-
-//    @Operation(summary = "뉴스 생성 조회", description = "💡 뉴스 생성 조회")
-//    @GetMapping("/generate-news")
-//    public ResponseEntity<ApiResponse<NewsDTO>> generateNews();
+    @Operation(summary = "뉴스 생성", description = "💡 버튼 클릭 시 ChatGPT API를 통해 랜덤 뉴스 생성")
+    @PostMapping("/news/create")
+    ResponseEntity<ApiResponse<NewsDTO>> createNews();
 }
