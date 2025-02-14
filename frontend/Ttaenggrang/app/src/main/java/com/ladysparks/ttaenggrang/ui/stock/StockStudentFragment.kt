@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.fragment.app.replace
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -115,6 +116,14 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
         binding.btnDetail.setOnClickListener {
             Toast.makeText(requireContext(),"눌림",Toast.LENGTH_SHORT).show()
             showNews()
+        }
+
+        binding.btnStockListStudent.setOnClickListener{
+
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, StockListStudentFragment())
+                .addToBackStack(null)
+                .commit()
         }
     }
     // 주식 상세 그래프

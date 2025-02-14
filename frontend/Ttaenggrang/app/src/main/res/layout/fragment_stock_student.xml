@@ -506,9 +506,42 @@
             android:backgroundTint="@color/transparent"
             android:padding="0dp"
             android:src="@drawable/ic_search"
+            android:layout_marginStart="@dimen/spacing_10"
             app:layout_constraintBottom_toBottomOf="@id/textStockListHead"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textStockListHead"
             app:layout_constraintTop_toTopOf="@id/textStockListHead" />
+
+        <LinearLayout
+            android:id="@+id/btnStockListStudent"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:background="@drawable/btn_rounded_full"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/spacing_10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textStockListHead"
+            app:layout_constraintBottom_toBottomOf="@id/textStockListHead"
+            >
+
+            <TextView
+                style="@style/heading5"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내 보유 주식"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:layout_marginStart="5dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/ic_chevron_right" />
+
+
+        </LinearLayout>
 
         <!--탭 버튼-->
         <TextView

@@ -87,6 +87,7 @@ class StockViewModel : ViewModel() {
             stockService.getStudentStocks(studentId)
         }.onSuccess { stocks ->
             _ownedStocks.postValue(stocks)
+            Log.d("TAG", "fetchOwnedStocks: 학생 주식 목록 조회성공!!!${stocks}")
         }.onFailure { e ->
             Log.e("StockViewModel", "보유 주식 조회 실패", e)
             _ownedStocks.postValue(emptyList())

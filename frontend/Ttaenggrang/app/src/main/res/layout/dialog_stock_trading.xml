@@ -212,6 +212,10 @@
                 style="@style/body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:scrollHorizontally="false"
+                android:inputType="number"
                 android:hint="거래할 주식 수를 작성하세요"
                 android:paddingStart="14dp"
                 android:textColor="@color/black" />
