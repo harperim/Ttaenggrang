@@ -42,6 +42,9 @@ public class SavingsProduct {
     @Column(nullable = false)
     private int amount;
 
+    @Column
+    private int payoutAmount;
+
     @Column(nullable = false)
     private LocalDate saleStartDate;
 

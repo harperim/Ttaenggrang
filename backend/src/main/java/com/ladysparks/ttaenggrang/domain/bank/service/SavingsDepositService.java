@@ -82,7 +82,7 @@ public class SavingsDepositService {
                     .savingsSubscription(savingsSubscription)
                     .amount(0)
                     .scheduledDate(scheduledDate)
-                    .status(SavingsDepositStatus.PENDING) // 처음에는 납입되지 않은 상태
+                    .status(SavingsDepositStatus.PENDING)  // 최초는 대기 상태(납입되지 않은 상태)
                     .build();
             depositList.add(savingsDeposit);
         }
