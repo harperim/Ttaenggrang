@@ -38,7 +38,7 @@ public interface StockApiSpecification {
             - 전체 주식 상품을 목록 형태로 조회합니다.
             - 가격 변동률은 (오늘 가격 - 어제 가격) / 어제 가격 * 100 으로 계산됩니다.
             - 거래 활성도는 최근 7일간 거래량을 기반으로 계산됩니다.
-        """)
+            """)
     ResponseEntity<ApiResponse<List<StockSummaryDTO>>> getStockSummaryList();
 
     @Operation(summary = "(교사/학생) 주식 상품 [상세 조회]", description = """
