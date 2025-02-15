@@ -43,7 +43,6 @@ public class StockMarketController implements StockMarketApiSpecification {
     @GetMapping("/status")
     public ResponseEntity<ApiResponse<Map<String, Boolean>>> isTransactionAvailable() {
         Optional<Long> studentId = studentService.getOptionalCurrentStudentId();
-
         Long teacherId = studentId.isPresent() ? studentService.findTeacherIdByStudentId(studentId.get()) : teacherService.getCurrentTeacherId();
 
         Map<String, Boolean> response = new HashMap<>();

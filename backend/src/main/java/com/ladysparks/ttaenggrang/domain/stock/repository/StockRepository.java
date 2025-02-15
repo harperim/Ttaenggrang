@@ -42,4 +42,6 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     // 주식 이름(name)으로 주식 조회
     Optional<Stock> findByName(String name);
 
+    List<Stock> findAllByTeacher_Id(Long teacherId);
+
 }

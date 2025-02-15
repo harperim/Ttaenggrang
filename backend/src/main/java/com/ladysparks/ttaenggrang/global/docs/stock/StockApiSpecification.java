@@ -15,7 +15,7 @@ import java.util.List;
 @Tag(name = "[교사/학생] 주식 상품", description = "주식 상품 관련 API")
 public interface StockApiSpecification {
 
-    @Operation(summary = "(교사/학생) 주식 상품 [전체 조회]", description = """
+    @Operation(summary = "(교사/학생) 주식 상품 요약 [전체 조회]", description = """
             💡 전체 주식 상품 목록을 조회합니다.
 
             ---
@@ -42,6 +42,11 @@ public interface StockApiSpecification {
             """)
     ResponseEntity<ApiResponse<List<StockSummaryDTO>>> getStockSummaryList();
 
+    @Operation(summary = "(교사/학생) 주식 상품 [전체 조회]", description = """
+            💡 전체 주식 상품 목록을 조회합니다.
+            """)
+    ResponseEntity<ApiResponse<List<StockDTO>>> getStockList();
+
     @Operation(summary = "(교사/학생) 주식 상품 [상세 조회]", description = """
             💡 특정 주식 상품을 상세 조회합니다.
             """)
@@ -53,7 +58,7 @@ public interface StockApiSpecification {
     ResponseEntity<ApiResponse<StockDTO>> addStock(@RequestBody StockDTO stockDto);
 
     @Operation(summary = "(학생) 보유 주식 [전체 조회]", description = """
-            💡 학생이 보유한 주식 내역을 조회합니다.
+            💡 학생이 보유한 주식 목록을 조회합니다.
             """)
     ResponseEntity<ApiResponse<List<StudentStockDTO>>> getStudentStocks();
 

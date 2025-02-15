@@ -68,18 +68,18 @@ public class StockService {
         return StockDTO.fromEntity(savedStock);
     }
 
-    public List<StockDTO> findStocks() {
+    public List<StockDTO> findStocks(Long teacherId) {
         // 모든 주식 데이터 조회
-        List<Stock> stocks = stockRepository.findAll();
+        List<Stock> stocks = stockRepository.findAllByTeacher_Id(teacherId);
         // 조회된 Stock 엔티티 리스트를 StockDTO 리스트로 변환
         return stocks.stream()
                 .map(StockDTO::fromEntity) // 엔티티를 DTO로 변환
                 .collect(Collectors.toList()); // 변환된 DTO를 리스트로 반환
     }
 
-    public List<StockSummaryDTO> getStockSummaryList() {
+    public List<StockSummaryDTO> getStockSummaryList(Long teacherId) {
         // 모든 주식 데이터 조회
-        List<Stock> stocks = stockRepository.findAll();
+        List<Stock> stocks = stockRepository.findAllByTeacher_Id(teacherId);
 
         // 조회된 Stock 엔티티 리스트를 StockSummaryDTO 리스트로 변환
         return stocks.stream()
