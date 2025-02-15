@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.ui.stock
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.os.Build
@@ -77,6 +78,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
     }
 
     // 뉴스 생성 다이얼로그
+    @SuppressLint("SetTextI18n")
     private fun createNews() {
         val dialogNewsCreateBinding = DialogNewsCreateBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext())
@@ -87,12 +89,6 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
             (resources.displayMetrics.widthPixels * 0.4).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-
-        // ✅ 다이얼로그가 띄워졌을 때 UI를 초기화 (이전 데이터 제거)
-        dialogNewsCreateBinding.textDialogNewsCreateDate.setText("")
-        dialogNewsCreateBinding.textDialogStockName.setText("")
-        dialogNewsCreateBinding.textDialogNewsTitle.setText("")
-        dialogNewsCreateBinding.textDialogNewsContent.setText("")
 
         // ✅ create 버튼을 눌렀을 때만 서버 요청 후 UI 업데이트
         dialogNewsCreateBinding.btnCreate.setOnClickListener {
@@ -119,6 +115,11 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                 dialogNewsCreateBinding.shimmerLayout.visibility = View.GONE
                 dialogNewsCreateBinding.constraintDialogBody.visibility = View.VISIBLE
             }
+        }
+
+        // ✅ 다이얼로그 닫힐 때 LiveData 초기화
+        dialog.setOnDismissListener {
+            viewModel.clearNewsData()
         }
 
         // 버튼구현
