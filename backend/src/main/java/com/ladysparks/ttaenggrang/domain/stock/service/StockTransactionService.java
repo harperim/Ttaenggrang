@@ -3,6 +3,7 @@ package com.ladysparks.ttaenggrang.domain.stock.service;
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
+import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockTransactionResponseDTO;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
@@ -13,6 +14,7 @@ import com.ladysparks.ttaenggrang.domain.stock.repository.StockTransactionReposi
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentStockTransactionDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class StockTransactionService {
     private final BankTransactionService bankTransactionService;
     private final StockMarketStatusService stockMarketStatusService;
     private final StudentService studentService;
+    private final StockService stockService;
 
     // 주식 매수 로직
     @Transactional
@@ -245,6 +248,36 @@ public class StockTransactionService {
         }
 
         return transactionDTOList;
+    }
+
+    public List<StudentStockTransactionDTO> findStudentStockTransactionsByStudentId(Long studentId) {
+        List<StockTransactionResponseDTO> stockTransactionResponseDTOList = getStudentTransactions(studentId);
+        List<StudentStockTransactionDTO> studentStockTransactionDTOList = new ArrayList<>();
+
+        for (StockTransactionResponseDTO stockTransactionResponseDTO : stockTransactionResponseDTOList) {
+            StockDTO stockDTO= stockService.findStock(stockTransactionResponseDTO.getStockId())
+                    .orElseGet(StockDTO::new);
+
+            int quantity = stockTransactionResponseDTO.getShareCount();
+            int purchasePrice = stockTransactionResponseDTO.getPurchasePricePerShare();
+            int currentPrice = stockDTO.getPricePerShare();
+
+            // 주가 변동률 계산
+            int priceChangeRate = 0;
+            if (purchasePrice > 0) {
+                priceChangeRate = (currentPrice - purchasePrice) * 100 / purchasePrice;
+            }
+
+            studentStockTransactionDTOList.add(StudentStockTransactionDTO.builder()
+                    .stockName(stockDTO.getName())
+                    .quantity(quantity)
+                    .currentTotalPrice(currentPrice * quantity)
+                    .purchasePrice(purchasePrice)
+                    .priceChangeRate(priceChangeRate)
+                    .build());
+        }
+
+        return studentStockTransactionDTOList;
     }
 
 }
