@@ -64,6 +64,7 @@ public interface SavingsSubscriptionApiSpecification {
                 - **"SATURDAY"**
                 - **"SUNDAY"**
             - **payoutAmount** : 예상 지급액
+            - **depositAmount** : 현재까지 납입한 총 금액
             - **createdAt** : 적금 가입일
             
             """)

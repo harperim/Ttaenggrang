@@ -1,8 +1,10 @@
 package com.ladysparks.ttaenggrang.domain.bank.service;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.DepositAndSavingsCountDTO;
+import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsProductDTO;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDetailDTO;
+import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsProduct;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription.SavingsSubscriptionStatus;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.SavingsSubscriptionMapper;
@@ -162,13 +164,13 @@ public class SavingsSubscriptionService {
     public List<StudentSavingsSubscriptionDTO> findStudentSavingsSubscriptionsByStudentId(Long studentId) {
         return savingsSubscriptionRepository.findByStudentId(studentId).stream()
                 .map(subscription -> {
-                    int totalAmount = savingsSubscriptionRepository.findTotalDepositedAmount(subscription.getId());
+                    SavingsProduct savingsProduct = subscription.getSavingsProduct();
                     return new StudentSavingsSubscriptionDTO(
                             subscription.getStartDate(),
-                            subscription.getSavingsProduct().getName(),
-                            String.valueOf(subscription.getDepositAmount()),
-                            subscription.getSavingsProduct().getInterestRate(),
-                            totalAmount
+                            savingsProduct.getName(),
+                            savingsProduct.getAmount(),
+                            savingsProduct.getInterestRate(),
+                            subscription.getDepositAmount()
                     );
                 })
                 .collect(Collectors.toList());
