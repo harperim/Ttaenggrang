@@ -110,7 +110,6 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
         }
 
         binding.btnStockListStudent.setOnClickListener{
-
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, StockListStudentFragment())
                 .addToBackStack(null)
@@ -172,7 +171,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
 
     }
 
-
+    // 뉴스 상세
     private fun showNews() {
         val dialogNewsDetailBinding = DialogNewsDetailBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext())

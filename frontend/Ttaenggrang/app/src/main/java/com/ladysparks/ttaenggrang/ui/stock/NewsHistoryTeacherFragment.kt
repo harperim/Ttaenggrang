@@ -48,7 +48,7 @@ class NewsHistoryTeacherFragment : BaseFragment<FragmentNewsHistoryTeacherBindin
 
         // 다이얼로그 ui잘리는 현상.
         dialog.window?.setLayout(
-            (resources.displayMetrics.widthPixels * 0.6).toInt(),
+            (resources.displayMetrics.widthPixels * 0.4).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
@@ -56,7 +56,7 @@ class NewsHistoryTeacherFragment : BaseFragment<FragmentNewsHistoryTeacherBindin
         dialogNewsCreateBinding.btnCancel.setOnClickListener { // 닫기
             dialog.dismiss()
         }
-        dialogNewsCreateBinding.btnReCreate.setOnClickListener {// 뉴스생성
+        dialogNewsCreateBinding.btnCreate.setOnClickListener {// 뉴스생성
             viewModel.createNews()
             viewModel.newsLiveData.observe(viewLifecycleOwner) { news ->
                 news?.let {
