@@ -1,5 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.teacher.service;
 
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
+import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.NationDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Nation;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
@@ -11,6 +13,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
@@ -25,6 +30,8 @@ public class NationService {
     private final NationMapper nationMapper;
     private final NationRepository nationRepository;
     private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
+
 
     public ApiResponse<NationDTO> createNation(Long teacherId, NationDTO nationDTO) {
         // 1. 교사 엔티티 조회
@@ -67,8 +74,6 @@ public class NationService {
 
     // 국가 [조회]
     public ApiResponse<NationDTO> getNationByTeacherId(Long teacherId) {
-        // 1. 교사 엔티티 조회
-//        Long teacherId = teacherService.getCurrentTeacherId();
 
         // 2. 교사가 이미 국가를 가지고 있는지 확인
         NationDTO nationDTO = findNationByTeacherId(teacherId)
