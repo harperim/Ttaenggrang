@@ -31,7 +31,7 @@ public class Stock {
     private String name;        // 주식 이름
 
     @Column
-    private int price_per;      // 한 주당 가격(기본 가격)
+    private int price_per;      // 한 주당 가격 (기본 가격)
 
     @Column
     private int total_qty;      // 회사가 보유 한 주식 총 수량

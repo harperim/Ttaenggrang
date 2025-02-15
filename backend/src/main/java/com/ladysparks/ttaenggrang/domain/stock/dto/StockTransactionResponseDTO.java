@@ -20,6 +20,7 @@ public class StockTransactionResponseDTO {
     private String type;                     // 주식 타입
     private TransactionType transactionType; // 거래 타입(BUY/SELL)
     private int shareCount;                  // 주식 거래 수량
+    private int currentPrice;                // 현재 주식 가격
     private Timestamp transactionDate;       // 거래 날짜
     private int purchasePricePerShare;       // 거래 당시 1주 가격
     

@@ -99,6 +99,7 @@ public interface StockTransactionApiSpecification {
             - 매수 → **BUY**
             - 매도 → **SELL**
         - **shareCount** : 주식 거래 수량
+        - **currentPrice** : 현재 주식 가격
         - **transactionDate** : 거래 날짜
         - **purchasePricePerShare** : 거래 당시 1주 가격
         

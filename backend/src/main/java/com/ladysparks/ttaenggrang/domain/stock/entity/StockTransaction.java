@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -25,7 +26,7 @@ public class StockTransaction {
     @Column
     private int share_count;  // 주식 거래 수량
 
-    @Column
+    @CreationTimestamp
     private Timestamp transactionDate;  // 거래 날짜
 
     @Column

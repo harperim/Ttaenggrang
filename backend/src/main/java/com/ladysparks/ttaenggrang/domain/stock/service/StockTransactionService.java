@@ -232,6 +232,7 @@ public class StockTransactionService {
             transactionDTO.setStockId(stock.getId());
             transactionDTO.setName(stock.getName());  // 주식명
             transactionDTO.setType(stock.getType());  // 주식 타입
+            transactionDTO.setCurrentPrice(stock.getPrice_per()); // 현재 가격
 
             // 거래 정보 설정
             transactionDTO.setTransactionType(transaction.getTransactionType());

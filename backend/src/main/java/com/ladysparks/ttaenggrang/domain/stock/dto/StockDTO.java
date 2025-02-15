@@ -17,15 +17,15 @@ import java.time.LocalDateTime;
 @Builder
 public class StockDTO {
 
-    private Long id;                // 주식 ID
-    private String name;            // 주식 이름
-    private int pricePerShare;      // 한 주당 가격
-    private int totalQuantity;      // 총 수량
-    private int remainQuantity;     // 주식 재고 수량
-    private String description;     // 설명
-    private Timestamp createdAt;    // 생성일
-    private Timestamp updatedAt;    // 수정일
-    private Integer changeRate;     // 주식 변동률
+    private Long id;                        // 주식 ID
+    private String name;                    // 주식 이름
+    private int pricePerShare;              // 한 주당 가격
+    private int totalQuantity;              // 총 수량
+    private int remainQuantity;             // 주식 재고 수량
+    private String description;             // 설명
+    private Timestamp createdAt;            // 생성일
+    private Timestamp updatedAt;            // 수정일
+    private Integer changeRate;             // 주식 변동률
     private final String type = "일반 주식";
     private LocalDateTime priceChangeTime;  // 가격 변동 시간
     private BigDecimal weight;              // 주식 비중 (각 주식의 비중을 따로 저장)
