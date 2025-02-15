@@ -403,25 +403,7 @@ class StockViewModel : ViewModel() {
                 )
             )
         }
-
-//        // 🔹 거래 기록이 없는 보유 주식 추가
-//        val ownedOnlyStocks = ownedStocks.filter { it.stockId !in groupedTransactions.keys }.map { stock ->
-//            BaseTableRowModel(
-//                listOf(
-//                    stock.purchaseDate,      // 매수일
-//                    stock.stockName,         // 주식명
-//                    "알 수 없음",            // 주식 유형 (거래 기록이 없으므로 알 수 없음)
-//                    stock.quantity.toString(),  // 보유 주식 수
-//                    stock.purchasePrice.toString(), // 평균 매입 단가
-//                    stock.currentPrice.toString(), // 현재 주가
-//                    (stock.quantity * stock.currentPrice).toString(), // 평가금액
-//                    "0%", // 수익률 (거래 기록이 없으므로 0%)
-//                    "0"  // 손익금액 (거래 기록이 없으므로 0)
-//                )
-//            )
-//        }
-//
-//        // 🔥 두 개의 데이터를 합쳐서 최종 테이블 구성
+       // 🔥 두 개의 데이터를 합쳐서 최종 테이블 구성
         val newData = transactionBasedStocks
 
         // ✅ 총 수익 & 총 수익률 계산
