@@ -1,8 +1,16 @@
 spring:
+  profiles:
+    active: prod
   data:
     redis:
       host: redis # Docker Compose의 서비스명
       port: 6379
       password: "ssafy"
+  jackson:
+    time-zone: Asia/Seoul
+logging:
+  level:
+    org.springframework.scheduling: INFO
+    com.ttgr.stock.scheduler: INFO
 api:
   openai_key: ${OPENAI_API_KEY}  # 환경변수 없으면 기본값 사용

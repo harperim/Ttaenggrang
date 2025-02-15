@@ -140,4 +140,8 @@ public class TeacherService {
                 .orElseThrow(() -> new NotFoundException("등록된 교사가 없습니다."));
     }
 
+    public Optional<Teacher> findById(Long teacherId) {
+        return teacherRepository.findById(teacherId);
+    }
+
 }

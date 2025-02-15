@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-@Tag(name = "[교사/학생] Etf", description = "ETF API")
+@Tag(name = "[교사/학생] ETF", description = "ETF API")
 public interface EtfApiSpecification {
+
     @Operation(summary = "(교사/학생) ETF 전체 조회", description = "💡 전체 ETF을 조회합니다.")
     @GetMapping
     public ResponseEntity<List<EtfDTO>> getEtfs();
