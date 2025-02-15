@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: prod
   data:
     redis:
       host: redis # Docker Compose의 서비스명
