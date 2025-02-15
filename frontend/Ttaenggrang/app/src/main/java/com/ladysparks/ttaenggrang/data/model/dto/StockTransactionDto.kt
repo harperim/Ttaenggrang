@@ -1,5 +1,5 @@
 package com.ladysparks.ttaenggrang.data.model.dto
-
+// name이 읎넹...
 data class StockTransactionDto(
     val id: Int,
     val purchasePricePerShare: Int,

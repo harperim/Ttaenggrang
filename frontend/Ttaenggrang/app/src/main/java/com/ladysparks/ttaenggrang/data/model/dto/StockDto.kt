@@ -1,5 +1,5 @@
 package com.ladysparks.ttaenggrang.data.model.dto
-
+// 전체 주식 데이터
 data class StockDto(
     val categoryId: Int,
     val categoryName: String,

@@ -15,7 +15,7 @@ import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBinding>(
     FragmentStockManageStudentBinding::bind,
     R.layout.fragment_stock_manage_student
-), OnStockClickListener {
+){
 
     private val viewModel: StockViewModel by viewModels()
     private var studentId: Int = -1
@@ -42,15 +42,12 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
 
         // 서버에서 학생 주식 보유 내역 가져오기
         viewModel.fetchOwnedStocks()
-        //viewModel.fetchStudentStockTransactions(studentId)
-
-    }
-
-    override fun onStockClick(stock: StockDto) {
+        viewModel.fetchStudentStockTransactions()
 
     }
 
     private fun initAdapter() {
+        // 학생 보유 주식 목록 테이블 생성
         tableAdapter = BaseTableAdapter(
             header = listOf(
                 "매수일",
@@ -78,17 +75,19 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
     private fun observeViewModel() {
 //        viewModel.ownedStocks.observe(viewLifecycleOwner) { ownedStocks ->
 //            Log.d("StockFragment", "ownedStocks 업데이트됨: $ownedStocks")
-//            if (ownedStocks.isNotEmpty() && viewModel.stockTransaction.value != null) {
-//                viewModel.updateStockTableData(studentId)
+//            if (ownedStocks != null) {
+//                if (ownedStocks.isNotEmpty() && viewModel.stockTransactionHistory.value != null) {
+//                    viewModel.updateStockTableData(studentId)
+//                }
 //            }
 //        }
-//
-//        viewModel.stockTransaction.observe(viewLifecycleOwner) { transactions ->
-//            Log.d("StockFragment", "stockTransaction 업데이트됨: $transactions")
-//            if (transactions.isNotEmpty() && viewModel.ownedStocks.value != null) {
-//                viewModel.updateStockTableData(studentId)
-//            }
-//        }
+
+        viewModel.stockTransactionHistory.observe(viewLifecycleOwner) { transactions ->
+            Log.d("StockFragment", "stockTransaction 업데이트됨: $transactions")
+            if (transactions != null && transactions.isNotEmpty()) {
+                viewModel.updateStockTableData(studentId) // ✅ 거래 내역이 있으면 업데이트
+            }
+        }
 
         viewModel.stockTableData.observe(viewLifecycleOwner) { newData ->
             Log.d("StockFragment", "stockTableData 업데이트됨: $newData")

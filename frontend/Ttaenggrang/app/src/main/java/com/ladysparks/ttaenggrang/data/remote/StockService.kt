@@ -3,9 +3,9 @@ package com.ladysparks.ttaenggrang.data.remote
 import com.ladysparks.ttaenggrang.data.model.dto.NewsDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockStudentDto
-import com.ladysparks.ttaenggrang.data.model.dto.StockStudentTransactionDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockSummaryDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionDto
+import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionHistoryDto
 import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.response.OpenMarketResponse
 import retrofit2.Response
@@ -60,8 +60,8 @@ interface StockService {
 
     // 학생 주식 거래 조회
     @GET("stock-transactions")
-    suspend fun getStockStudentTransaction(
-    ): ApiResponse<List<StockStudentTransactionDto>>
+    suspend fun getStockTransactionHistory(
+    ): ApiResponse<List<StockTransactionHistoryDto>>
 
     // 뉴스 생성
     @POST("news/create")
