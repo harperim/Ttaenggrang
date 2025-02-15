@@ -8,6 +8,7 @@ import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription.Savings
 import com.ladysparks.ttaenggrang.domain.bank.mapper.SavingsSubscriptionMapper;
 import com.ladysparks.ttaenggrang.domain.bank.repository.SavingsSubscriptionRepository;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentSavingsSubscriptionDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -156,6 +157,21 @@ public class SavingsSubscriptionService {
                 .depositProductCount(depositCount)
                 .savingsProductCount(savingsCount)
                 .build();
+    }
+
+    public List<StudentSavingsSubscriptionDTO> findStudentSavingsSubscriptionsByStudentId(Long studentId) {
+        return savingsSubscriptionRepository.findByStudentId(studentId).stream()
+                .map(subscription -> {
+                    int totalAmount = savingsSubscriptionRepository.findTotalDepositedAmount(subscription.getId());
+                    return new StudentSavingsSubscriptionDTO(
+                            subscription.getStartDate(),
+                            subscription.getSavingsProduct().getName(),
+                            String.valueOf(subscription.getDepositAmount()),
+                            subscription.getSavingsProduct().getInterestRate(),
+                            totalAmount
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
 }

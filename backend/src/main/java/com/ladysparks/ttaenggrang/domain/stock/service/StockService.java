@@ -95,6 +95,7 @@ public class StockService {
 
                     return StockSummaryDTO.builder()
                             .id(stock.getId())
+                            .createdDate(stock.getCreated_at().toLocalDateTime().toLocalDate())
                             .name(stock.getName())
                             .type(stock.getType())
                             .category(stock.getCategory() != null ? stock.getCategory().getName() : "N/A") // null 체크 추가

@@ -1,8 +1,10 @@
 package com.ladysparks.ttaenggrang.domain.teacher.controller;
 
+import com.ladysparks.ttaenggrang.domain.bank.service.SavingsSubscriptionService;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.MultipleStudentCreateDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.SingleStudentCreateDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentSavingsSubscriptionDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.global.docs.teacher.TeacherStudentApiSpecificaion;
@@ -26,6 +28,7 @@ public class TeacherStudentController implements TeacherStudentApiSpecificaion {
 
     private final TeacherRepository teacherRepository;
     private final StudentService studentService;
+    private final SavingsSubscriptionService savingsSubscriptionService;
 
     // 학생 계정 빠른 생성 (교사만 가능)  (토큰 문제 해결 후 다시 사용하기)
     @PostMapping(value = "/quick-create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -98,4 +101,12 @@ public class TeacherStudentController implements TeacherStudentApiSpecificaion {
         ApiResponse<StudentResponseDTO> response = studentService.getStudentById(teacherId, studentId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+
+    // 교사가 학생의 은행 가입 상품 내역 조회
+    @GetMapping("/students/{studentId}/savings-subscriptions")
+    public ResponseEntity<ApiResponse<List<StudentSavingsSubscriptionDTO>>> studentSavingsSubscriptionListByStudentId(@PathVariable Long studentId) {
+        List<StudentSavingsSubscriptionDTO> savingsSubscriptionDTOList = savingsSubscriptionService.findStudentSavingsSubscriptionsByStudentId(studentId);
+        return ResponseEntity.ok(ApiResponse.success(savingsSubscriptionDTOList));
+    }
+
 }

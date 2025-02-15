@@ -2,6 +2,7 @@ package com.ladysparks.ttaenggrang.global.docs.teacher;
 
 import com.ladysparks.ttaenggrang.domain.teacher.dto.SingleStudentCreateDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentSavingsSubscriptionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -66,5 +67,28 @@ public interface TeacherStudentApiSpecificaion {
             - **bankAccount** : 학생의 계좌 정보
             """)
     ResponseEntity<ApiResponse<StudentResponseDTO>> getStudentById(@PathVariable Long studentId);
+
+    @Operation(summary = "(교사) 적금 가입 내역 조회", description = """
+            💡 특정 학생의 적금 가입 내역을 조회합니다.
+
+            ---
+
+            **[ 요청 값 ]**
+            - **studentId** : 조회할 학생 ID
+
+            **[ 응답 필드 ]**
+            - **subscriptionDate** : 적금 가입 날짜
+            - **savingsName** : 적금 상품명
+            - **amount** : 월 납입 금액
+            - **interest** : 이자율
+            - **totalAmount** : 현재 총 납입 금액
+
+            ---
+
+            **[ 설명 ]**
+            - 특정 학생(`studentId`)의 적금 가입 내역을 조회합니다.
+            - 적금 가입 후 현재까지의 납입 총액이 포함됩니다.
+            """)
+    ResponseEntity<ApiResponse<List<StudentSavingsSubscriptionDTO>>> studentSavingsSubscriptionListByStudentId(@PathVariable Long studentId);
 
 }

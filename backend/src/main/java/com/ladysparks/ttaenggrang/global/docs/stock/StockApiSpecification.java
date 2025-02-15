@@ -25,6 +25,7 @@ public interface StockApiSpecification {
 
             **[ 응답 필드 ]**
             - **id** : 주식 ID
+            - **createdDate**: 등록일
             - **name** : 종목명
             - **type** : 주식 종류 (일반 주식/ETF)
             - **category** : 카테고리

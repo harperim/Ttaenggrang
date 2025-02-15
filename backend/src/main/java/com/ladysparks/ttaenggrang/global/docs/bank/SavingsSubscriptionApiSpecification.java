@@ -50,7 +50,7 @@ public interface SavingsSubscriptionApiSpecification {
             - **savingsProductId** : 적금 상품 ID
             - **studentId** : 학생 ID
             - **durationWeeks** : 가입 기간
-            - **interestRate* : 이자율
+            - **interestRate** : 이자율
             - **amount** : 매주 납입 금액
             - **startDate** : 납입 시작일
             - **endDate** : 납입 종료일
