@@ -27,22 +27,30 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class NewsService {
 
-    @Value("${api.openai_key}")
-    private String apiKey;
+//    @Value("${api.openai_key}")
+//    private String apiKey;
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
     private final NewsRepository newsRepository;
     private final StockRepository stockRepository;
 
-    @PostConstruct
-    public void logConfig() {
+//    @PostConstruct
+//    public void logConfig() {
+//        String maskedKey = (apiKey != null && apiKey.length() >= 5)
+//                ? apiKey.substring(0, 5) + "*****"
+//                : "Invalid Key";
+//        System.out.println("debug: " + maskedKey);
+//    }
+
+    public NewsDTO generateRandomNewsFromStocks() {
+        String apiKey = System.getenv("OPENAI_API_KEY");
+
         String maskedKey = (apiKey != null && apiKey.length() >= 5)
                 ? apiKey.substring(0, 5) + "*****"
                 : "Invalid Key";
-        System.out.println("debug: " + maskedKey);
-    }
 
-    public NewsDTO generateRandomNewsFromStocks() {
+        System.out.println("debug: " + maskedKey);
+
         // 1. 모든 주식 엔터티에서 랜덤 선택
         List<Stock> stocks = stockRepository.findAll();
         if (stocks.isEmpty()) {
