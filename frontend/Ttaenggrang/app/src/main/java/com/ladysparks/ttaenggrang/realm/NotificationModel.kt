@@ -12,4 +12,5 @@ class NotificationModel : RealmObject {
     var content: String = ""
     var time: Long = 0 // ✅ 수신 시간
     var sender: String = "System" // ✅ 발신자 정보
+    var receiver: String = "" //메시지를 받을 대상(선생, 학생계정 id로 구분)
 }

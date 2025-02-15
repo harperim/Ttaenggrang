@@ -26,6 +26,7 @@ class FirebaseService : FirebaseMessagingService(){ //  : FirebaseMessagingServi
         var messageContent = ""
         var category = ""
         var sender = ""
+        var receiver = ""
         var time = System.currentTimeMillis()
 
         // 메시지 수신 (foreground 처리)
@@ -41,14 +42,15 @@ class FirebaseService : FirebaseMessagingService(){ //  : FirebaseMessagingServi
             messageContent = data["message"] ?: messageContent
             category = data["notificationType"] ?: "일반"
             sender = data["sender"] ?: "System"
+            receiver = data["receiver"] ?: ""
             time = data["time"]?.toLongOrNull() ?: System.currentTimeMillis()
         }
 
-        saveMessageToRealm(messageTitle, messageContent, category, sender, time)
+        saveMessageToRealm(messageTitle, messageContent, category, sender, receiver, time)
         showNotification(messageTitle, messageContent)
     }
 
-    private fun saveMessageToRealm(title: String, content: String, category: String, sender: String, time: Long) {
+    private fun saveMessageToRealm(title: String, content: String, category: String, sender: String, receiver: String, time: Long) {
         val realm = ApplicationClass.realm
         realm.writeBlocking {
             copyToRealm(NotificationModel().apply {
@@ -56,6 +58,7 @@ class FirebaseService : FirebaseMessagingService(){ //  : FirebaseMessagingServi
                 this.content = content
                 this.category = category
                 this.sender = sender
+                this.receiver = receiver
                 this.time = time
             })
         }
