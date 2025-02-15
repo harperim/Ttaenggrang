@@ -9,13 +9,12 @@ import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
-import com.ladysparks.ttaenggrang.databinding.FragmentStockListStudentBinding
-import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
+import com.ladysparks.ttaenggrang.databinding.FragmentStockManageStudentBinding
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 
-class StockListStudentFragment : BaseFragment<FragmentStockListStudentBinding>(
-    FragmentStockListStudentBinding::bind,
-    R.layout.fragment_stock_list_student
+class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBinding>(
+    FragmentStockManageStudentBinding::bind,
+    R.layout.fragment_stock_manage_student
 ), OnStockClickListener {
 
     private val viewModel: StockViewModel by viewModels()

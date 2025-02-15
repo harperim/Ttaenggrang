@@ -19,6 +19,7 @@ import com.ladysparks.ttaenggrang.data.dummy.StockDummyData
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.databinding.DialogNewsCreateBinding
 import com.ladysparks.ttaenggrang.databinding.DialogNewsDetailBinding
+import com.ladysparks.ttaenggrang.databinding.FragmentStockManageTeacherBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStockTeacherBinding
 import com.ladysparks.ttaenggrang.ui.component.LineChartComponent
 import java.time.LocalDate
@@ -74,6 +75,13 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
             createNews()
         }
 
+        binding.btnStockManage.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, StockManageTeacherFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         initData()
     }
 
@@ -117,7 +125,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
             }
         }
 
-        // ✅ 다이얼로그 닫힐 때 LiveData 초기화
+        // 다이얼로그 닫힐 때 LiveData 초기화
         dialog.setOnDismissListener {
             viewModel.clearNewsData()
         }
@@ -188,7 +196,6 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                 lineChartComponent.setChartData(stockHistory, dateLabels, R.color.chartBlue)
             }
         }
-
     }
 
     //뉴스 상세
@@ -207,7 +214,6 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         dialogNewsDetailBinding.btnClose.setOnClickListener {
             dialog.dismiss()
         }
-
         dialog.show()
     }
 
@@ -227,12 +233,6 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                 binding.textHeadStockChange.text = "${it.changeRate}%"
             }
         }
-
-
-
-
-
-
     }
 
     // 아이템 클릭 이벤트 처리

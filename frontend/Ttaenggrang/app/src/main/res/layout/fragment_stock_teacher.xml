@@ -364,7 +364,7 @@
             app:layout_constraintTop_toBottomOf="@+id/btnStockOpen">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnStockSetting"
+                android:id="@+id/btnStockManage"
                 style="@style/heading4"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -391,7 +391,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btnNewsHistory"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnStockSetting"
+                app:layout_constraintTop_toBottomOf="@+id/btnStockManage"
                 app:layout_constraintVertical_weight="1" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -408,7 +408,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btnNewsCreate"
-                app:layout_constraintTop_toBottomOf="@+id/btnStockSetting"
+                app:layout_constraintTop_toBottomOf="@+id/btnStockManage"
                 app:layout_constraintVertical_weight="1" />
 
 

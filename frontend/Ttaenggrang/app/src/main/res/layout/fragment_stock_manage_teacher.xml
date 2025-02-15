@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundGray"
+    android:orientation="horizontal"
+    android:padding="40dp"
+    >
+
+    <!-- 배너 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintBannerArea"
+        android:layout_width="696dp"
+        android:layout_height="126dp"
+        android:background="@drawable/img_banner"
+        app:layout_constraintBottom_toTopOf="@+id/constraintStockManageArea"
+        app:layout_constraintEnd_toStartOf="@id/constraintTradeArea"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- 텍스트 추가 -->
+        <TextView
+            android:id="@+id/textBannerHead"
+            style="@style/heading2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_20"
+            android:layout_marginTop="@dimen/spacing_15"
+            android:text="주식 관리 목록"
+            android:textColor="@android:color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textInfo"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_20"
+            android:text="주식 종목을 관리할 수 있습니다. 원하는 종목을 추가하세요."
+            android:textColor="@color/foundation_black_50"
+            app:layout_constraintBottom_toTopOf="@id/textInfo2"
+            app:layout_constraintStart_toStartOf="@+id/constraintBannerArea"
+            app:layout_constraintTop_toBottomOf="@+id/textBannerHead" />
+
+        <TextView
+            android:id="@+id/textInfo2"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_20"
+            android:layout_marginBottom="@dimen/spacing_20"
+            android:text="일반주식과 ETF로 투자를 교육하세요! "
+            android:textColor="@color/foundation_black_50"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintBannerArea"
+            app:layout_constraintStart_toStartOf="@+id/constraintBannerArea"
+            app:layout_constraintTop_toBottomOf="@+id/textInfo" />
+
+
+        <!-- ImageView를 감쌀 FrameLayout 추가 -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_20"
+            android:clipChildren="true"
+            android:clipToPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- 이미지 추가 (크게 설정해서 배너 바깥으로 넘기기) -->
+            <ImageView
+                android:id="@+id/bannerImage"
+                android:layout_width="126dp"
+                android:layout_height="126dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/fox_coins"
+                android:translationX="20dp"
+                android:translationY="20dp" />
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+   <!--주식 목록-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintStockManageArea"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/constraintBannerArea"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingVertical="@dimen/spacing_15"
+        android:paddingHorizontal="@dimen/spacing_20"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:background="@drawable/bg_rounded_15"
+        >
+
+        <TextView
+            android:id="@+id/textStockManageTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="주식목록"
+            style="@style/heading2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <!--탭-->
+        <TextView
+            android:id="@+id/textTab1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_10"
+            android:background="@drawable/tab"
+            android:text="전체"
+            android:paddingHorizontal="@dimen/spacing_10"
+            android:paddingVertical="3dp"
+            style="@style/caption"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textStockManageTitle"
+            app:layout_constraintEnd_toStartOf="@+id/textTab2"
+            />
+
+        <TextView
+            android:id="@+id/textTab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="일반 주식"
+            style="@style/caption"
+            android:paddingHorizontal="@dimen/spacing_10"
+            android:paddingVertical="3dp"
+            android:textColor="@color/black"
+            android:background="@drawable/tab"
+            android:layout_marginStart="@dimen/spacing_10"
+            app:layout_constraintTop_toTopOf="@id/textTab1"
+            app:layout_constraintBottom_toBottomOf="@id/textTab1"
+            app:layout_constraintStart_toEndOf="@id/textTab1"
+            />
+
+        <TextView
+            android:id="@+id/textTab3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ETF"
+            style="@style/caption"
+            android:paddingHorizontal="@dimen/spacing_10"
+            android:paddingVertical="3dp"
+            android:textColor="@color/black"
+            android:background="@drawable/tab"
+            android:layout_marginStart="@dimen/spacing_10"
+            app:layout_constraintTop_toTopOf="@id/textTab2"
+            app:layout_constraintBottom_toBottomOf="@id/textTab2"
+            app:layout_constraintStart_toEndOf="@id/textTab2"
+            />
+
+        <!--주식 관리 목록 리스트-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerStockManageList"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/spacing_20"
+            app:layout_constraintTop_toBottomOf="@id/textTab1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            >
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <!--거래 뷰-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintTradeArea"
+        android:layout_width="0dp"
+        android:layout_height="126dp"
+        android:layout_marginStart="@dimen/spacing_20"
+        android:background="@drawable/bg_rounded_15"
+        android:paddingHorizontal="@dimen/spacing_20"
+        android:paddingVertical="@dimen/spacing_15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/constraintBannerArea"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--거래가능 현금 뷰-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintTradeCash"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/constraintProfit"
+            app:layout_constraintEnd_toStartOf="@id/constraintProfit"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="@id/constraintTradeArea"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!--거래가능현금-->
+            <TextView
+                android:id="@+id/textTradeHead1"
+                style="@style/heading5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="거래 가능 현금"
+                android:textColor="@color/black200"
+                app:layout_constraintStart_toStartOf="@id/constraintTradeCash"
+                app:layout_constraintTop_toTopOf="@id/constraintTradeCash" />
+
+            <ImageButton
+                android:id="@+id/btnArrowRight"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:backgroundTint="@color/transparent"
+                android:padding="0dp"
+                android:src="@drawable/ic_chevron_right"
+                app:layout_constraintBottom_toBottomOf="@id/textTradeHead1"
+                app:layout_constraintStart_toEndOf="@id/textTradeHead1"
+                app:layout_constraintTop_toTopOf="@id/textTradeHead1"
+                app:tint="@color/black200" />
+
+            <!--거래 가능 현금 금액-->
+            <TextView
+                android:id="@+id/textTradeInfo1"
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                app:layout_constraintStart_toStartOf="@id/constraintTradeCash"
+                app:layout_constraintTop_toBottomOf="@id/textTradeHead1" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--수익률 뷰-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintProfit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/constraintTradeCash"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/constraintTradeCash"
+            app:layout_constraintTop_toTopOf="@id/constraintTradeCash">
+
+            <!--수익률-->
+            <TextView
+                android:id="@+id/textProfitHead"
+                style="@style/heading5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="수익률"
+                android:textColor="@color/black200"
+                app:layout_constraintStart_toStartOf="@id/constraintProfit"
+                app:layout_constraintTop_toTopOf="@id/constraintProfit" />
+
+
+            <!--수익률 금액-->
+            <TextView
+                android:id="@+id/textProfitinfo"
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_10"
+                android:text="100,0000000"
+                app:layout_constraintBottom_toBottomOf="@id/constraintProfit"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textProfitHead" />
+
+            <!--수익률 증감-->
+            <TextView
+                android:id="@+id/textProfitinfo2"
+                style="@style/heading4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_10"
+                android:text="+0.01%"
+                android:textColor="@color/foundation_green_600"
+                app:layout_constraintBottom_toBottomOf="@id/textProfitHead"
+                app:layout_constraintStart_toEndOf="@+id/textProfitHead"
+                app:layout_constraintTop_toTopOf="@id/textProfitHead" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!--거래 버튼-->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnTrade"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/spacing_10"
+            android:background="@drawable/btn_rounded_full"
+            android:text="거래"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/constraintTradeArea"
+            app:layout_constraintEnd_toEndOf="@id/constraintProfit"
+            app:layout_constraintStart_toStartOf="@id/constraintTradeCash"
+            app:layout_constraintTop_toBottomOf="@+id/constraintTradeCash" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

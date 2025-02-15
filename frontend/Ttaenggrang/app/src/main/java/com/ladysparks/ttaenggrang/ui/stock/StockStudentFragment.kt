@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.replace
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -111,7 +110,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
 
         binding.btnStockListStudent.setOnClickListener{
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, StockListStudentFragment())
+                .replace(R.id.fragment_container, StockManageStudentFragment())
                 .addToBackStack(null)
                 .commit()
         }

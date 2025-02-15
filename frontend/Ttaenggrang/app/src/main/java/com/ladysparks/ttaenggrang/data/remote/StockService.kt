@@ -4,6 +4,7 @@ import com.ladysparks.ttaenggrang.data.model.dto.NewsDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockStudentDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockStudentTransactionDto
+import com.ladysparks.ttaenggrang.data.model.dto.StockSummaryDto
 import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.response.OpenMarketResponse
 import com.ladysparks.ttaenggrang.data.model.response.StockTransactionResponse
@@ -68,4 +69,11 @@ interface StockService {
     @POST("news/create")
     suspend fun createNews(
     ): ApiResponse<NewsDto>
+
+    // 교사 주식 목록 조회
+    @GET("stocks")
+    suspend fun getStockList(
+    ): ApiResponse<List<StockSummaryDto>>
+
+
 }

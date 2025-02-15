@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundGray"
     android:padding="@dimen/spacing_40"
-    tools:context=".ui.stock.StockListStudentFragment">
+    tools:context=".ui.stock.StockManageStudentFragment">
 
     <!-- 배너 -->
     <androidx.constraintlayout.widget.ConstraintLayout
