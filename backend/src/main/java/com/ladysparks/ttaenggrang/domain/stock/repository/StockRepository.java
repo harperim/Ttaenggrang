@@ -38,4 +38,7 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     // 모든 StockDTO 리스트를 가져오는 메소드 (DTO 변환)
 //    List<StockDTO> findAllDTO();
+
+    // 주식 이름(name)으로 주식 조회
+    Optional<Stock> findByName(String name);
 }
