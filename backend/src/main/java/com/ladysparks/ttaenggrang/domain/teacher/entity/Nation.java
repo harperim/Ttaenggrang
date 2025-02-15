@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.teacher.entity;
 
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,4 +42,8 @@ public class Nation {
     @OneToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @OneToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
 }

@@ -22,9 +22,9 @@
             style="@style/heading3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="주식 거래하기"
-            app:layout_constraintEnd_toStartOf="@id/btnCancel"
+            android:text="뉴스 생성하기"
             app:layout_constraintBottom_toTopOf="@id/textDialogContent"
+            app:layout_constraintEnd_toStartOf="@id/btnCancel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,7 +33,7 @@
             style="@style/body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="주식 매도와 매수를 통해 자산을 운용하세요."
+            android:text="Ai를 이용해 랜덤으로 뉴스를 생성하세요"
             android:textColor="@color/black200"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textDialogTitle"
@@ -46,8 +46,8 @@
             android:layout_height="24dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_close"
-            app:layout_constraintStart_toEndOf="@id/textDialogTitle"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textDialogTitle"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -68,7 +68,7 @@
             style="@style/heading4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="주식명"
+            android:text="뉴스 생성일"
             app:layout_constraintBottom_toTopOf="@id/textLayoutContent1"
             app:layout_constraintStart_toStartOf="@id/textLayoutContent1"
             app:layout_constraintTop_toTopOf="parent" />
@@ -88,26 +88,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textTitle1">
 
-
-
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/textDialogStockTitle"
+                android:id="@+id/textDialogNewsCreateDate"
                 style="@style/body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="false"
                 android:focusable="false"
-                android:text="아이스크림주"
                 android:paddingStart="14dp"
                 android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--현재주가-->
+        <!--관련 주식-->
         <TextView
             android:id="@+id/textTitle2"
             style="@style/heading4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="현재주가"
+            android:text="관련 주식"
             app:layout_constraintBottom_toTopOf="@id/textLayoutContent2"
             app:layout_constraintStart_toStartOf="@id/textLayoutContent2"
             app:layout_constraintTop_toTopOf="@id/textTitle1" />
@@ -130,25 +128,24 @@
             app:layout_constraintTop_toBottomOf="@id/textTitle2">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/textDialogStockPrice"
+                android:id="@+id/textDialogStockName"
                 style="@style/body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="14dp"
-                android:text="10,000"
                 android:focusable="false"
+                android:paddingStart="14dp"
                 android:textColor="@color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--내 보유 주식-->
+        <!--뉴스 제목-->
         <TextView
             android:id="@+id/textTitle3"
             style="@style/heading4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_15"
-            android:text="내 보유 주식"
+            android:text="뉴스 제목"
             app:layout_constraintStart_toStartOf="@id/textLayoutContent3"
             app:layout_constraintTop_toBottomOf="@id/textLayoutContent1"
 
@@ -169,29 +166,26 @@
             app:layout_constraintTop_toBottomOf="@id/textTitle3">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/textDialogMyStock"
+                android:id="@+id/textDialogNewsTitle"
                 style="@style/body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="10주"
                 android:focusable="false"
                 android:paddingStart="14dp"
                 android:textColor="@color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--거래할 주식 수-->
+        <!--뉴스 내용-->
         <TextView
             android:id="@+id/textTitle4"
             style="@style/heading4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_15"
-            android:text="거래할 주식 수"
+            android:text="뉴스 내용"
             app:layout_constraintStart_toStartOf="@id/textLayoutContent4"
-            app:layout_constraintTop_toBottomOf="@id/textLayoutContent3"
-
-            />
+            app:layout_constraintTop_toBottomOf="@id/textLayoutContent3" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textLayoutContent4"
@@ -208,57 +202,17 @@
             app:layout_constraintTop_toBottomOf="@id/textTitle4">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/textDialogStockTrade"
+                android:id="@+id/textDialogNewsContent"
                 style="@style/body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:scrollHorizontally="false"
-                android:inputType="number"
-                android:hint="거래할 주식 수를 작성하세요"
+                android:gravity="top"
+                android:hint="ai가 뉴스 내용을 생성합니다"
+                android:minHeight="200dp"
                 android:paddingStart="14dp"
                 android:textColor="@color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!--구분선-->
-        <View
-            android:id="@+id/viewLine"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginVertical="@dimen/spacing_30"
-            android:background="@color/foundation_black_50"
-            app:layout_constraintBottom_toTopOf="@id/textContentTitle1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textLayoutContent4"
-            />
-
-        <!--예상 결제 금액-->
-        <TextView
-            android:id="@+id/textContentTitle1"
-            style="@style/body1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="예상 결제 금액"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/viewLine" />
-
-        <TextView
-            android:id="@+id/textContent1"
-            style="@style/body1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="현재주가*거래주수"
-            android:textColor="@color/black200"
-            app:layout_constraintBottom_toBottomOf="@id/textContentTitle1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textContentTitle1" />
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--다이얼로그 풋-->
@@ -266,44 +220,42 @@
         android:id="@+id/constraintDialogFoot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintDialogBody">
 
-        <!--매도-->
+        <!--재생성하기-->
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSell"
+            android:id="@+id/btnCreate"
             style="@style/heading4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_30"
-            android:background="@drawable/btn_rounded_full"
-            android:backgroundTint="#e53935"
-            android:text="매도"
-            android:textColor="@color/white"
             android:layout_marginEnd="@dimen/spacing_10"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@color/black200"
+            android:text="생성하기"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btnBuy"
+            app:layout_constraintEnd_toStartOf="@id/btnAdd"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!--매수-->
+        <!--등록하기-->
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnBuy"
+            android:id="@+id/btnAdd"
             style="@style/heading4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_30"
             android:background="@drawable/btn_rounded_full"
-            android:backgroundTint="@color/foundation_green_500"
-            android:text="매수"
+            android:text="등록하기"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/btnSell"
+            app:layout_constraintStart_toEndOf="@id/btnCreate"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
