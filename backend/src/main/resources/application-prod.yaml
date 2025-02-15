@@ -4,3 +4,5 @@ spring:
       host: redis # Docker Compose의 서비스명
       port: 6379
       password: "ssafy"
+api:
+  openai_key: ${OPENAI_API_KEY}  # 환경변수 없으면 기본값 사용

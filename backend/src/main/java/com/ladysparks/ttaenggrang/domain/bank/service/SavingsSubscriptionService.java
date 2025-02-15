@@ -2,6 +2,7 @@ package com.ladysparks.ttaenggrang.domain.bank.service;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.DepositAndSavingsCountDTO;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
+import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDetailDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription.SavingsSubscriptionStatus;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.SavingsSubscriptionMapper;
@@ -121,9 +122,11 @@ public class SavingsSubscriptionService {
                 .collect(Collectors.toList());
     }
 
-    public SavingsSubscription findSavingsSubscriptionById(Long savingsSubscriptionId) {
-        return savingsSubscriptionRepository.findById(savingsSubscriptionId)
+    public SavingsSubscriptionDetailDTO findSavingsSubscriptionById(Long savingsSubscriptionId) {
+        SavingsSubscription savingsSubscription = savingsSubscriptionRepository.findById(savingsSubscriptionId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 적금 가입 내역이 존재하지 않습니다. ID: " + savingsSubscriptionId));
+
+        return savingsDepositService.getSavingsDepositHistory(savingsSubscription);
     }
 
     public int getTotalDepositAmount(Long studentId) {

@@ -2,11 +2,13 @@ package com.ladysparks.ttaenggrang.global.docs.bank;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.DepositAndSavingsCountDTO;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
+import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDetailDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -82,5 +84,35 @@ public interface SavingsSubscriptionApiSpecification {
             """)
     @GetMapping("/savings-count")
     ResponseEntity<ApiResponse<DepositAndSavingsCountDTO>> getStudentSavingsCount();
+
+    @Operation(summary = "(학생) 가입한 적금에 대한 납입 내역 [조회]", description = """
+            💡 학생의 적금 가입 내역을 상세 조회하여 납입 내역을 확인합니다.
+        
+            ---
+        
+            **[ 요청 값 ]**
+            - **savingsSubscriptionId** : 조회할 적금 가입 ID
+        
+            **[ 응답 필드 ]**
+            - **name** : 적금 상품명
+            - **startDate** : 가입일
+            - **endDate** : 만기일
+            - **payoutAmount** : 예상 만기 지급액
+            - **depositHistory** (납입 내역):
+                - **date** : 납입일
+                - **status** : 납입 상태 (COMPLETED, FAILED)
+                - **amount** : 납입 금액
+                - **interestRate** : 적용 이자율
+                - **balance** : 잔액
+        
+            ---
+        
+            **[ 설명 ]**
+            - 지정된 `subscriptionId`에 대한 적금 가입 상세 내역을 반환합니다.
+            - 납입 내역에는 각 회차별 납입 정보와 잔액을 포함합니다.
+                - 적금 납입 상태(`COMPLETED`, `FAILED`)을 모두 반환합니다.
+                - `balance` 는 현재 총 납입 금액 + 이자로 계산됩니다.
+            """)
+    ResponseEntity<ApiResponse<SavingsSubscriptionDetailDTO>> savingsDepositHistoryList(@PathVariable Long savingsSubscriptionId);
 
 }

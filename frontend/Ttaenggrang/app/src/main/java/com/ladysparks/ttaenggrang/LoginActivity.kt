@@ -97,9 +97,15 @@ class LoginActivity : BaseActivity() {
                         is StudentSignInResponse -> userData.token
                         else -> ""
                     }
+                    val userId = when (val userData = it.data) {
+                        is StudentSignInResponse -> userData.id
+                        else -> -1
+                    }
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.JWT_TOKEN_KEY, token)
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.IS_TEACHER, false)
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.USER_ACCOUNT, it.data!!.username)
+                    SharedPreferencesUtil.putValue(SharedPreferencesUtil.USER_ID, userId)
+
 
                     // FCM TokenUpdate
                     updateFCMToken(token)

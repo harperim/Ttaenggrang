@@ -9,6 +9,7 @@ import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.json.JSONArray;
@@ -36,8 +37,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NewsService {
 
-    @Value("${api.openai_key}")
-    private String apiKey;
+//    @Value("${api.openai_key}")
+//    private String apiKey;
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
     private final NewsRepository newsRepository;
@@ -64,7 +65,23 @@ public class NewsService {
     }
 
     // 뉴스 기사 [생성] (확인 버튼을 누를 때까지 DB에 저장되지 않음)
+//    @PostConstruct
+//    public void logConfig() {
+//        String maskedKey = (apiKey != null && apiKey.length() >= 5)
+//                ? apiKey.substring(0, 5) + "*****"
+//                : "Invalid Key";
+//        System.out.println("debug: " + maskedKey);
+//    }
+
     public NewsDTO generateRandomNewsFromStocks() {
+        String apiKey = System.getenv("OPENAI_API_KEY");
+
+        String maskedKey = (apiKey != null && apiKey.length() >= 5)
+                ? apiKey.substring(0, 5) + "*****"
+                : "Invalid Key";
+
+        System.out.println("debug: " + maskedKey);
+
         // 1. 모든 주식 엔터티에서 랜덤 선택
         List<Stock> stocks = stockRepository.findAll();
         if (stocks.isEmpty()) {

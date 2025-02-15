@@ -7,10 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionDto
-import com.ladysparks.ttaenggrang.data.model.request.StudentSignInRequest
+import com.ladysparks.ttaenggrang.data.model.dto.StockStudentDto
+import com.ladysparks.ttaenggrang.data.model.dto.StockStudentTransactionDto
+import com.ladysparks.ttaenggrang.data.model.dto.TransType
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
-import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil.Companion.authService
+import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil.Companion.bankService
 import com.ladysparks.ttaenggrang.data.remote.StockService
+import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import kotlinx.coroutines.launch
 
 class StockViewModel : ViewModel() {
@@ -33,142 +36,104 @@ class StockViewModel : ViewModel() {
     val errorMessage: LiveData<String?> get() = _errorMessage
 
     //  내 보유 주식 수 LiveData
-    private val _ownedStockQty = MutableLiveData<Int>()
-    val ownedStockQty: LiveData<Int> get() = _ownedStockQty
+    private val _ownedStocks = MutableLiveData<List<StockStudentDto>>()
+    val ownedStocks: LiveData<List<StockStudentDto>> = _ownedStocks
 
     // 첫번째 아이템 불러오기
     private val _selectedStock = MutableLiveData<StockDto?>()
     val selectedStock: LiveData<StockDto?> get() = _selectedStock
 
+    // 주식 열림 확인
+    private val _isMarketActive = MutableLiveData<Boolean>()
+    val isMarketActive: LiveData<Boolean> get() = _isMarketActive
+
+    // 사용자가 입력한 거래 주식 수
+    private val _tradeAmount = MutableLiveData<Int>()
+    val tradeAmount: LiveData<Int> get() = _tradeAmount
+
+    // 예상 결제 금액
+    private val _expectedPayment = MutableLiveData<Int>()
+    val expectedPayment: LiveData<Int> get() = _expectedPayment
+
+
+    // 거래 후 내 보유 현금 계산
+    private val _updatedBalance = MutableLiveData<Int>()
+    val updatedBalance: LiveData<Int> get() = _updatedBalance
+
+    // 거래 후 내 보유 주식 수
+    private val _updatedOwnedStock = MutableLiveData<Int>()
+    val updatedOwnedStock: LiveData<Int> get() = _updatedOwnedStock
+
+    // 거래 가능 현금
+    private val _balance = MutableLiveData<Int>()
+    val balance: LiveData<Int> get() = _balance
+
+    // 학생 주식 거래 기록
+    private val _stockTransaction = MutableLiveData<List<StockStudentTransactionDto>>()
+    val stockTransaction: LiveData<List<StockStudentTransactionDto>> get() = _stockTransaction
+
+    // 학생 주식 목록 테이블
+    private val _stockTableData = MutableLiveData<List<BaseTableRowModel>>()
+    val stockTableData: LiveData<List<BaseTableRowModel>> get() = _stockTableData
+
+    // 총 투자액, 평가금액, 수익률 등의 요약 정보 LiveData 추가
+    private val _stockSummary = MutableLiveData<Map<String, Any>>()
+    val stockSummary: LiveData<Map<String, Any>> get() = _stockSummary
 
     // 주식 데이터 조회
-    fun fetchAllStocks() {
-        viewModelScope.launch {
-            try {
-                val stocks = stockService.getAllStocks()
-                _stockList.postValue(stocks)
-
-                //  주식 목록을 불러온 후 첫 번째 주식을 선택
-                if (stocks.isNotEmpty()) {
-                    _selectedStock.postValue(stocks[0])
-                }
-
-            } catch (e: Exception) {
-                Log.e("StockViewModel", "주식 목록 불러오기 실패", e)
-            }
+    fun fetchAllStocks() = viewModelScope.launch {
+        runCatching {
+            stockService.getAllStocks()
+        }.onSuccess { stocks ->
+            _stockList.postValue(stocks)
+            if (stocks.isNotEmpty()) _selectedStock.postValue(stocks[0]) // 주식화면 로딩되면 바로 0번째 아이템을 노출
+        }.onFailure { e ->
+            Log.e("StockViewModel", "주식 목록 불러오기 실패", e)
         }
     }
 
-    // 학생 ID 조회 후 보유 주식 수 가져오기
-    fun fetchOwnedStockQty(stockId: Long) {
-
-        viewModelScope.launch {
-            try {
-                // ✅ 서버에서 로그인된 학생 ID 가져오기
-                val loginResponse = authService.loginStudent(
-                    StudentSignInRequest(username = "hello1", password = "ssafy123") // 🔴 실제 로그인 정보로 변경 필요
-                )
-
-                if (loginResponse.statusCode == 200) {
-                    val studentId = loginResponse.data?.id?.toLong()
-                        ?: throw IllegalStateException("학생 ID 없음")
-
-                    Log.d("StockViewModel", "서버에서 가져온 studentId: $studentId")
-
-                    // ✅ 주식 매도 API를 통해 내 보유 주식 조회 (매도하지 않고 조회만 진행)
-                    val sellResponse = stockService.sellStock(stockId, 0, studentId) // ✅ 0주 매도로 정보만 가져옴
-
-                    if (sellResponse.isSuccessful) {
-                        val transactionData = sellResponse.body()?.data
-                        _ownedStockQty.postValue(transactionData?.ownedQty ?: 0) // ✅ 보유 주식 업데이트
-                    } else {
-                        _errorMessage.postValue("보유 주식 조회 실패 (HTTP ${sellResponse.code()})"
-
-                        )
-                    }
-                } else {
-                    _errorMessage.postValue("학생 정보 조회 실패")
-                }
-            } catch (e: Exception) {
-                _errorMessage.postValue("네트워크 오류 발생: ${e.message}")
-                Log.e("StockViewModel", "네트워크 오류", e)
-            }
+    // 학생이 보유한 주식 목록 조회
+    fun fetchOwnedStocks(studentId: Int) = viewModelScope.launch {
+        runCatching {
+            stockService.getStocksStudent(studentId)
+        }.onSuccess { stocks ->
+            _ownedStocks.postValue(stocks)
+            Log.d("TAG", "fetchOwnedStocks: 학생 주식 목록 조회성공!!!${stocks}")
+        }.onFailure { e ->
+            Log.e("StockViewModel", "보유 주식 조회 실패", e)
+            _ownedStocks.postValue(emptyList())
         }
     }
 
-    // 학생 ID 조회 후 주식 매도 요청
-    fun sellStock(stockId: Long, shareCount: Int) {
-        viewModelScope.launch {
-            try {
-                // ✅ 서버에서 로그인된 학생 ID 가져오기
-                val loginResponse = authService.loginStudent(
-                    StudentSignInRequest(username = "hello1", password = "ssafy123") // 🔴 실제 로그인 정보로 변경 필요
-                )
-
-                if (loginResponse.statusCode == 200) {
-                    val studentId = loginResponse.data?.id?.toLong()
-                        ?: throw IllegalStateException("학생 ID 없음")
-
-                    Log.d("StockViewModel", "서버에서 가져온 studentId: $studentId")
-
-                    // ✅ `sellStock()` 요청 실행
-                    val sellResponse = stockService.sellStock(stockId, shareCount, studentId)
-
-                    if (sellResponse.isSuccessful) {
-                        val transactionData = sellResponse.body()?.data
-
-                        // ✅ 매도 성공 후 보유 주식 수 업데이트
-                        _sellTransaction.postValue(transactionData)
-                        _ownedStockQty.postValue(transactionData?.ownedQty ?: 0)
-
-                    } else {
-                        _errorMessage.postValue("매도 요청 실패 (HTTP ${sellResponse.code()})")
-                    }
-                } else {
-                    _errorMessage.postValue("학생 정보 조회 실패")
-                }
-            } catch (e: Exception) {
-                _errorMessage.postValue("네트워크 오류 발생: ${e.message}")
-                Log.e("StockViewModel", "네트워크 오류", e)
-            }
+    // 주식 매도
+    fun sellStock(stockId: Int, shareCount: Int, studentId: Int) = viewModelScope.launch {
+        runCatching {
+            stockService.sellStock(stockId, shareCount, studentId)
+        }.onSuccess { response ->
+            // 사용자가 입력한 값을 totalAmt에 넣음
+            val transactionData = response.body()?.data
+            // 데이터 동기화
+            _sellTransaction.postValue(transactionData)
+            fetchBalance()
+        }.onFailure { e ->
+            Log.e("StockViewModel", "매도 요청 실패", e)
+            _errorMessage.postValue("매도 요청 실패: ${e.message}")
         }
     }
 
     // 매수 기능
-    fun buyStock(stockId: Long, shareCount: Int) {
-        viewModelScope.launch {
-            try {
-                // ✅ 서버에서 로그인된 학생 ID 가져오기
-                val loginResponse = authService.loginStudent(
-                    StudentSignInRequest(username = "hello1", password = "ssafy123") // 🔴 실제 로그인 정보로 변경 필요
-                )
-
-                if (loginResponse.statusCode == 200) {
-                    val studentId = loginResponse.data?.id?.toLong()
-                        ?: throw IllegalStateException("학생 ID 없음")
-
-                    Log.d("StockViewModel", "서버에서 가져온 studentId: $studentId")
-
-                    // ✅ `buyStock()` 요청 실행
-                    val buyResponse = stockService.sellStock(stockId, shareCount, studentId)
-
-                    if (buyResponse.isSuccessful) {
-                        val transactionData = buyResponse.body()?.data
-
-                        // ✅ 매수 성공 후 보유 주식 수 업데이트
-                        _buyTransaction.postValue(transactionData)
-                        _ownedStockQty.postValue(transactionData?.ownedQty ?: 0)
-
-                    } else {
-                        _errorMessage.postValue("매수 요청 실패 (HTTP ${buyResponse.code()})")
-                    }
-                } else {
-                    _errorMessage.postValue("학생 정보 조회 실패")
-                }
-            } catch (e: Exception) {
-                _errorMessage.postValue("네트워크 오류 발생: ${e.message}")
-                Log.e("StockViewModel", "네트워크 오류", e)
-            }
+    fun buyStock(stockId: Int, shareCount: Int, studentId: Int) = viewModelScope.launch {
+        runCatching {
+            stockService.buyStock(stockId, shareCount, studentId)
+        }.onSuccess { response ->
+            val transactionData = response.body()?.data
+            //데이터 동기화
+            _buyTransaction.postValue(transactionData)
+            Log.d("StockViewModel", "매수 성공: ${response.body()?.data?.shareCount}주")
+            fetchBalance()
+        }.onFailure { e ->
+            Log.e("StockViewModel", "매수 요청 실패", e)
+            _errorMessage.postValue("매수 요청 실패: ${e.message}")
         }
     }
 
@@ -177,93 +142,243 @@ class StockViewModel : ViewModel() {
         _selectedStock.value = stock
     }
 
+    //주식장 열기(교사)
+    fun updateMarketStatus(openMarket: Boolean) = viewModelScope.launch {
+        runCatching {
+            stockService.setMarketStatus(openMarket)
+        }.onSuccess { response ->
+            _isMarketActive.postValue(response.body()?.data ?: false)
+        }.onFailure {
+            _isMarketActive.postValue(false)
+        }
+    }
+
+    // 주식장 열림 확인(학생). 변경사항이 있을때만 ui 업데이트
+    fun fetchMarketStatus() = viewModelScope.launch {
+        runCatching {
+            stockService.getMarketStatus()
+        }.onSuccess { response ->
+            val newStatus = response.body()?.data ?: false
+            if (_isMarketActive.value != newStatus) {
+                _isMarketActive.postValue(newStatus)
+            }
+        }.onFailure {
+            _isMarketActive.postValue(false)
+        }
+    }
+
+    // confirmDialog 에서 계산을 위한 뷰모델
+    fun updateTradeAmount(
+        amount: Int,
+        stockPrice: Int,
+        ownedStock: Int,
+        transactionType: TransType
+    ) {
+        _tradeAmount.postValue(amount)
+
+        val calculatedPayment = stockPrice * amount
+        _expectedPayment.postValue(calculatedPayment)
+
+        _updatedBalance.postValue(
+            if (transactionType == TransType.SELL) (_balance.value ?: 0) + calculatedPayment
+            else (_balance.value ?: 0) - calculatedPayment
+        )
+
+        _updatedOwnedStock.postValue(
+            if (transactionType == TransType.SELL) ownedStock - amount
+            else ownedStock + amount
+        )
+    }
+
+    // 주식 화면에 거래가능 현금 표시
+    fun fetchBalance() = viewModelScope.launch {
+        runCatching {
+            bankService.getBankAccount()
+        }.onSuccess { response ->
+            Log.d("StockViewModel", "fetchBalance: ${response.body()?.data?.balance}")
+            _balance.postValue(response.body()?.data?.balance ?: 0)
+        }.onFailure { e ->
+            Log.e("StockViewModel", "거래 가능 현금 조회 실패", e)
+            _balance.postValue(0)
+        }
+    }
+
+    // 학생 주식 거래 기록 조회
+    fun fetchStudentStockTransactions(studentId: Int) = viewModelScope.launch {
+        runCatching {
+            stockService.getStockStudentTransaction(studentId)
+        }.onSuccess { transactions ->
+            Log.d("TAG", "fetchStudentStockTransactions: ${transactions}}")
+            // ✅ 개별 거래 로그 출력
+            transactions.forEach { transaction ->
+                Log.d(
+                    "TAG", "거래 기록 - 학생ID: ${transaction.studentId}, " +
+                            "주식ID: ${transaction.stockId}, " +
+                            "거래유형: ${transaction.transType}, " +
+                            "거래수량: ${transaction.shareCount}, " +
+                            "거래날짜: ${transaction.transDate}, " +
+                            "매입가격: ${transaction.purchasePrice}, " +
+                            "주식명: ${transaction.stockName}, " +
+                            "주식유형: ${transaction.stockType}"
+                )
+            }
+            _stockTransaction.postValue(transactions)
+        }.onFailure { e ->
+            Log.e("TAG", "fetchStudentStockTransactions 실패: ${e.message}", e)
+            // ✅ 실패 시 빈 리스트 반환하여 UI에서 처리 가능하도록 함
+            _stockTransaction.postValue(emptyList())
+
+        }
+    }
+
+//    // 학생 주식 목록 테이블 계산
+//    fun updateStockTableData(studentId: Int) {
+//        val ownedStocks = ownedStocks.value ?: emptyList()
+//        val transactions = stockTransaction.value ?: emptyList()
+//
+//        val newData = ownedStocks.map { stock ->
+//            val matchingTransaction = transactions.find { it.stockId == stock.stockId }
+//            val stockType = matchingTransaction?.stockType ?: "알 수 없음" // ✅ 주식 유형 가져오기
+//
+//            // 평균 매입 단가 계산
+//            // 매수한 주식 수 합산 ( 보유 주식)
+//            val totalShares = transactions
+//                .filter { it.stockId == stock.stockId && it.transType == TransType.BUY } // 🔥 매수 거래만 필터링
+//                .sumOf { it.shareCount }
+//            Log.d("TAG", "updateStockTableData: 내가 구매한 주식 수 $totalShares")
+//
+//            // 2️매수한 주식들의 총 매입 금액
+//            val totalCost = transactions
+//                .filter { it.stockId == stock.stockId && it.transType == TransType.BUY } // 🔥 매수 거래만 필터링
+//                .sumOf { it.shareCount * it.purchasePrice }
+//            val filteredTransactions = transactions.filter {
+//                it.stockId == stock.stockId && it.transType == TransType.BUY
+//            }
+//
+////            // 개별 거래 로그 출력 (매수 거래만 필터링)
+////            filteredTransactions.forEach { transaction ->
+////                Log.d("StockViewModel", "매수 거래 - 주식ID: ${transaction.stockId}, 거래 수량: ${transaction.shareCount}, 매입가: ${transaction.purchasePrice}, 계산 값: ${transaction.shareCount * transaction.purchasePrice}")
+////            }
+////            // 로그로 최종 총 매입 금액 확인
+////            Log.d("StockViewModel", "총 매입 금액: $totalCost")
+//
+//            // 평균 매입 단가 계산 (총 매입 금액 / 총 매입 주식 수)
+//            val avgPurchasePrice = if (totalShares > 0) totalCost / totalShares else 0
+//
+//            // 평가금액 계산
+//            val valuationAmount = stock.ownedQty * stock.currentPrice
+//
+//            // 손익금액 계산
+//            val profitLoss = valuationAmount - (avgPurchasePrice * stock.ownedQty)
+//
+//            // 수익률 계산
+//            val yield = if (avgPurchasePrice > 0) {
+//                (profitLoss.toFloat() / (avgPurchasePrice * stock.ownedQty)) * 100
+//            } else 0f
+//
+//
+//            BaseTableRowModel(
+//                listOf(
+//                    stock.purchaseDate,      // 매수일
+//                    stock.stockName,         // 주식명
+//                    stockType,               // stockStudentTransaction에서 가져온 주식 유형
+//                    stock.ownedQty.toString(),  // 보유 주식 수
+//                    avgPurchasePrice.toString(), // 평균 매입 단가
+//                    stock.currentPrice.toString(), // 현재 주가
+//                    valuationAmount.toString(), // 평가금액
+//                    "%.2f%%".format(yield), // 수익률
+//                    profitLoss.toString() // 손익금액
+//                )
+//            )
+//        }
+//
+//        _stockTableData.postValue(newData)
+//    }
+
+    // 학생 주식 목록 테이블 계산
+    fun updateStockTableData(studentId: Int) {
+        val ownedStocks = ownedStocks.value ?: emptyList()
+        val transactions = stockTransaction.value ?: emptyList()
+
+        var totalInvestment = 0 // ✅ 총 투자액
+        var totalValuation = 0 // ✅ 총 평가금액
+
+        val newData = ownedStocks.map { stock ->
+            val matchingTransaction = transactions.find { it.stockId == stock.stockId }
+            val stockType = matchingTransaction?.stockType ?: "알 수 없음" // ✅ 주식 유형 가져오기
+
+            // ✅ 매수한 주식 수 합산 (보유 주식)
+            val totalShares = transactions
+                .filter { it.stockId == stock.stockId && it.transType == TransType.BUY } // 🔥 매수 거래만 필터링
+                .sumOf { it.shareCount }
+            Log.d("StockDebug", "주식 ${stock.stockName} - 매수한 주식 총 개수: $totalShares")
+
+            // ✅ 매수한 주식들의 총 매입 금액
+            val totalCost = transactions
+                .filter { it.stockId == stock.stockId && it.transType == TransType.BUY } // 🔥 매수 거래만 필터링
+                .sumOf { it.shareCount * it.purchasePrice }
+            Log.d("StockDebug", "주식 ${stock.stockName} - 총 매입 금액: $totalCost")
+
+            // ✅ 평균 매입 단가 계산 (총 매입 금액 / 총 매입 주식 수)
+            val avgPurchasePrice = if (totalShares > 0) totalCost / totalShares else 0
+            Log.d("StockDebug", "주식 ${stock.stockName} - 평균 매입 단가: $avgPurchasePrice")
+
+            // ✅ 평가금액 계산 (보유 주식 수 * 현재 주가)
+            val valuationAmount = stock.ownedQty * stock.currentPrice
+            Log.d("StockDebug", "주식 ${stock.stockName} - 평가금액: $valuationAmount")
+
+            // ✅ 손익금액 계산 (평가금액 - 투자금액)
+            val investmentAmount = stock.ownedQty * avgPurchasePrice
+            val profitLoss = valuationAmount - investmentAmount
+            Log.d("StockDebug", "주식 ${stock.stockName} - 손익금액: $profitLoss")
+
+            // ✅ 수익률 계산
+            val yield = if (investmentAmount > 0) {
+                (profitLoss.toFloat() / investmentAmount) * 100
+            } else 0f
+            Log.d("StockDebug", "주식 ${stock.stockName} - 수익률: %.2f%%".format(yield))
+
+            // ✅ 총 투자액과 총 평가금액 업데이트
+            totalInvestment += investmentAmount
+            totalValuation += valuationAmount
+
+            BaseTableRowModel(
+                listOf(
+                    stock.purchaseDate,      // 매수일
+                    stock.stockName,         // 주식명
+                    stockType,               // ✅ 주식 유형
+                    stock.ownedQty.toString(),  // 보유 주식 수
+                    avgPurchasePrice.toString(), // ✅ 평균 매입 단가
+                    stock.currentPrice.toString(), // 현재 주가
+                    valuationAmount.toString(), // ✅ 평가금액
+                    "%.2f%%".format(yield), // 수익률
+                    profitLoss.toString() // 손익금액
+                )
+            )
+        }
+
+        // ✅ 총 수익 & 총 수익률 계산
+        val totalProfit = totalValuation - totalInvestment
+        val totalReturnRate = if (totalInvestment > 0) (totalProfit.toFloat() / totalInvestment) * 100 else 0f
+
+        Log.d("StockSummary", "총 투자액: $totalInvestment")
+        Log.d("StockSummary", "총 평가금액: $totalValuation")
+        Log.d("StockSummary", "총 수익: $totalProfit")
+        Log.d("StockSummary", "총 수익률: %.2f%%".format(totalReturnRate))
+
+        // ✅ 총 투자액, 평가금액, 수익률 LiveData 업데이트
+        _stockSummary.postValue(
+            mapOf(
+                "totalInvestment" to totalInvestment,
+                "totalValuation" to totalValuation,
+                "totalProfit" to totalProfit,
+                "totalReturnRate" to totalReturnRate
+            )
+        )
+        _stockTableData.postValue(newData)
+    }
 
 }
 
 
-//class StockViewModel(private val apiService: ApiService) : ViewModel() {
-//
-//    private val _stockList = MutableLiveData<List<StockDto>>()
-//    val stockList: LiveData<List<StockDto>> get() = _stockList
-//
-//    private val _selectedStock = MutableLiveData<StockDto?>()
-//    val selectedStock: LiveData<StockDto?> get() = _selectedStock
-//
-//    private val _ownedStockQty = MutableLiveData<Int>()
-//    val ownedStockQty: LiveData<Int> get() = _ownedStockQty
-//
-//    // 주식 목록 가져오기
-//    fun fetchStockList() {
-//        viewModelScope.launch {
-//            try {
-//                val response = apiService.getStockList()
-//                _stockList.postValue(response)
-//            } catch (e: Exception) {
-//                Log.e("StockViewModel", "주식 목록 불러오기 실패", e)
-//            }
-//        }
-//    }
-//
-//    // 특정 주식 선택
-//    fun selectStock(stock: StockDto) {
-//        _selectedStock.value = stock
-//        fetchOwnedStockQty(stock.id)
-//    }
-//
-//    // 사용자가 보유한 주식 개수 가져오기
-//    private fun fetchOwnedStockQty(stockId: Int) {
-//        viewModelScope.launch {
-//            try {
-//                val response = apiService.getOwnedStockQty(stockId)
-//                _ownedStockQty.postValue(response)
-//            } catch (e: Exception) {
-//                Log.e("StockViewModel", "보유 주식 개수 불러오기 실패", e)
-//                _ownedStockQty.postValue(0) // 실패 시 0으로 설정
-//            }
-//        }
-//    }
-//
-//    // 주식 매수
-//    fun buyStock(stockId: Int, qty: Int) {
-//        viewModelScope.launch {
-//            try {
-//                val response = apiService.buyStock(
-//                    StockTransactionDto(
-//                        stockId = stockId,
-//                        shareCount = qty,
-//                        transType = TransType.BUY
-//                    )
-//                )
-//                if (response) {
-//                    fetchStockList()
-//                    fetchOwnedStockQty(stockId)
-//                }
-//            } catch (e: Exception) {
-//                Log.e("StockViewModel", "매수 실패", e)
-//            }
-//        }
-//    }
-//
-//    // 주식 매도
-//    fun sellStock(stockId: Int, qty: Int) {
-//        viewModelScope.launch {
-//            try {
-//                val response = apiService.sellStock(
-//                    StockTransactionDto(
-//                        stockId = stockId,
-//                        shareCount = qty,
-//                        transType = TransType.SELL
-//                    )
-//                )
-//                if (response) {
-//                    fetchStockList()
-//                    fetchOwnedStockQty(stockId)
-//                }
-//            } catch (e: Exception) {
-//                Log.e("StockViewModel", "매도 실패", e)
-//            }
-//        }
-//    }
-//}
-//
-//
+

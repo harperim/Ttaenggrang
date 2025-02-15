@@ -38,7 +38,7 @@ public class NationDTO {
 
     private Integer savingsGoalAmount;
 
-    private Integer nationalTreasury;
+    private Integer nationalTreasury;  //국고
 
     private Timestamp establishedDate;
 

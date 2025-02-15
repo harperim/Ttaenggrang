@@ -31,6 +31,9 @@ public class SavingsSubscription {
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
+    @Column
+    private int depositAmount;
+
     @Column(nullable = false)
     private LocalDate startDate;
 
