@@ -215,9 +215,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textTab3"
             />
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--주식 뉴스-->
@@ -322,7 +319,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/textNewsDate"
             app:layout_constraintBottom_toBottomOf="@id/textNewsDate"
-
             >
 
             <TextView
@@ -339,8 +335,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
-                android:backgroundTint="@color/white"
-                android:src="@drawable/ic_chevron_right" />
+                android:src="@drawable/ic_chevron_right"
+                app:tint="@color/white" />
 
 
         </LinearLayout>

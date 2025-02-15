@@ -104,7 +104,7 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
             }
         } else {
             // 행 클릭 비활성화
-            BaseTableAdapter(studentHeader, emptyList(), null)
+            BaseTableAdapter(studentHeader, emptyList())
         }
 
         binding.recyclerStudents.layoutManager = LinearLayoutManager(requireContext())

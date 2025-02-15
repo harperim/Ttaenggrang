@@ -1,12 +1,15 @@
 package com.ladysparks.ttaenggrang.data.remote
 
+import com.ladysparks.ttaenggrang.data.model.dto.NewsDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockStudentDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockStudentTransactionDto
+import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.response.OpenMarketResponse
 import com.ladysparks.ttaenggrang.data.model.response.StockTransactionResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -60,6 +63,12 @@ interface StockService {
     suspend fun getStockStudentTransaction(
         @Path("studentId") studentId: Int
     ): List<StockStudentTransactionDto>
+
+    // 뉴스 생성
+    @POST("news/create")
+    suspend fun createNews(
+        @Header("Authorization") token: String // ✅ 토큰만 포함, @Body 없음
+    ): ApiResponse<NewsDto>
 
 
 }

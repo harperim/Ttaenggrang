@@ -72,5 +72,11 @@
         <item name="android:fontFamily">@font/pretendard_bold_family</item>
     </style>
 
+    <!--스위치 스타일-->
+    <style name="SwitchStyle">
+        <item name="android:thumb">@drawable/switch_thumb_custom</item>
+        <item name="android:track">@drawable/switch_custom</item>
+
+</style>
 
 </resources>

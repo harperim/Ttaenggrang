@@ -205,6 +205,16 @@
             app:layout_constraintStart_toEndOf="@id/textTab3"
             app:layout_constraintTop_toTopOf="@id/textTab3" />
 
+        <!--그래프-->
+        <com.ladysparks.ttaenggrang.ui.component.LineChartComponent
+            android:id="@+id/chartStock"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textTab3" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -220,6 +230,85 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/constraintStockGraphArea">
 
+        <!--뉴스 내용-->
+        <TextView
+            android:id="@+id/textNewsDate"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2025.01.31"
+            android:textColor="@color/black200"
+            app:layout_constraintBottom_toTopOf="@id/textNewsTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textNewsTitle"
+            style="@style/heading3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="“넥슨, 신규 게임 흥행 기대 속 실적 부담 지속”"
+            app:layout_constraintBottom_toTopOf="@id/textNewsContent"
+            app:layout_constraintStart_toStartOf="@id/textNewsDate"
+            app:layout_constraintTop_toBottomOf="@id/textNewsDate" />
+
+        <TextView
+            android:id="@+id/textNewsContent"
+            style="@style/body1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            android:text="넥슨이 최근  게임을 출시하며 기대를 모으고 있지만, 실적 성장 여부에 대한 투자자들의 신중한 판단이 필요한 시점입니다. 넥슨은 이번 분기에 신작 게임을 선보이며 글로벌 시장에서 좋은 반응을 얻고 있다고 밝혔습니다. 하지만 게임 개발비용 증가와 경쟁 심화로 인해 수익성이 개선될지는 아직 불확실한 상황입니다.
+한 금융 전문가는 ** 신작 게임이 성공하면 향후 넥슨의 매출 확대에 긍정적인   줄 수 있지만, 시장의 반응을 조금 더 지켜볼 필요가 있다**고 전했습니다.
+        이에 따라 투자자들은 넥슨의 향후 업데이트 전략과 실적 발표를 확인한 후 신중한 투자를 고려할 필요가 있습니다."
+            android:textColor="@color/black200"
+            app:layout_constraintBottom_toTopOf="@id/btnDetail"
+            app:layout_constraintEnd_toStartOf="@id/frameLayout1"
+            app:layout_constraintStart_toStartOf="@+id/textNewsDate"
+            app:layout_constraintTop_toBottomOf="@id/textNewsTitle" />
+
+        <TextView
+            android:id="@+id/btnDetail"
+            style="@style/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_10"
+            android:background="@drawable/tab"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="@dimen/spacing_10"
+            android:text="더보기"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textNewsContent" />
+
+
+        <FrameLayout
+            android:id="@+id/frameLayout1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_20"
+            android:layout_marginEnd="@dimen/spacing_20"
+            android:clipChildren="true"
+            android:clipToPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textNewsContent">
+
+            <!-- 이미지 추가 (크게 설정해서 배너 바깥으로 넘기기) -->
+            <ImageView
+                android:id="@+id/newsImage"
+                android:layout_width="126dp"
+                android:layout_height="126dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/fox_coins"
+                android:translationX="20dp"
+                android:translationY="20dp" />
+        </FrameLayout>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -233,31 +322,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/constraintBannerArea"
         app:layout_constraintTop_toTopOf="parent">
-
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/startTime"
-            style="@style/caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="false"
-            android:text="시작시간"
-            app:layout_constraintBottom_toBottomOf="@+id/btnStockOpen"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnStockOpen" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/endTime"
-            style="@style/caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="false"
-            android:text="종료시간"
-            app:layout_constraintBottom_toBottomOf="@+id/startTime"
-            app:layout_constraintStart_toEndOf="@+id/startTime"
-            app:layout_constraintTop_toTopOf="@+id/startTime" />
 
 
         <TextView
@@ -277,14 +341,17 @@
             android:layout_width="wrap_content"
             android:layout_height="10dp"
             android:textOff=""
+            app:useMaterialThemeColors="false"
             android:textOn=""
+            app:track="@drawable/switch_custom"
+            app:trackTint="@null"
+            app:thumbTint="@null"
             android:thumb="@drawable/switch_thumb_custom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:switchMinWidth="0dp"
             app:thumbTextPadding="24dp"
-            app:track="@drawable/switch_custom"
-            />
+             />
 
         <!--버튼뷰-->
         <androidx.constraintlayout.widget.ConstraintLayout
