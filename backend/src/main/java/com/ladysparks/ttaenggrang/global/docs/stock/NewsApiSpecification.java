@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.json.JSONPropertyIgnore;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -27,4 +28,8 @@ public interface NewsApiSpecification {
     @Operation(summary = "(교사/학생) 뉴스 전체 목록 조회", description = "💡 현재 로그인한 교사가 만든 뉴스 목록을 가져와 교사/학생이 전체 목록을 조회합니다.")
     @GetMapping("/news/list")
     ResponseEntity<ApiResponse<List<NewsSummaryDTO>>> getNewslist();
+
+    @Operation(summary = "(교사/학생) 뉴스 상세 목록 조회", description = "💡 현재 로그인한 교사가 만든 뉴스 목록을 가져와 교사/학생이 상세 목록을 조회합니다.")
+    @GetMapping("/news/{newsId}")
+    ResponseEntity<ApiResponse<NewsSummaryDTO>> getNewsDetail(@PathVariable Long newsId);
 }

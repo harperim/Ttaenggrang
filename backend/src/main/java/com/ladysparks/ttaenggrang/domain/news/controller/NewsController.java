@@ -40,4 +40,11 @@ public class NewsController implements NewsApiSpecification {
         return ResponseEntity.ok(ApiResponse.success(newsList));
     }
 
+    // 뉴스 목록 [상세 조회]
+    @GetMapping("/{newsId}")
+    public ResponseEntity<ApiResponse<NewsSummaryDTO>> getNewsDetail(@PathVariable Long newsId) {
+        NewsSummaryDTO newsDetail = newsService.getNewsDetail(newsId);
+        return ResponseEntity.ok(ApiResponse.success(newsDetail));
+    }
+
 }
