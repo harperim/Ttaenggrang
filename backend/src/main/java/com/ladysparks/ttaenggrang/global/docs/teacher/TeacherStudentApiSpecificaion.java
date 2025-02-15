@@ -69,8 +69,8 @@ public interface TeacherStudentApiSpecificaion {
             """)
     ResponseEntity<ApiResponse<StudentResponseDTO>> getStudentById(@PathVariable Long studentId);
 
-    @Operation(summary = "(교사) 학생 적금 가입 내역 [조회]", description = """
-            💡 교사가 특정 학생의 적금 가입 내역을 조회합니다.
+    @Operation(summary = "(교사) 학생 은행 가입 상품 내역 [조회]", description = """
+            💡 교사가 특정 학생의 은행 가입 상품 내역을 조회합니다.
 
             ---
 
