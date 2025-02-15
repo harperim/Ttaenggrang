@@ -26,24 +26,16 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class EtfService {
+
     private final EtfRepository etfRepository;
-
     private final EtfTransactionRepository etfTransactionRepository;
-    //학생
     private final StudentRepository studentRepository;
-
     private final StockHistoryRepository stockHistoryRepository;
-
     private final BankTransactionService bankTransactionService;
-
     private final StockRepository stockRepository;
-
     private final StockTransactionRepository stockTransactionRepository;
 
-
-
-
-//    //ETF 생성
+//    // ETF 생성
 //// 사용자 보유 주식 수량 계산
 //    public EtfDTO createETF(EtfDTO etfDTO) {
 //        List<Stock> selectedStocks = stockRepository.findAllById(etfDTO.getStockIds());

@@ -98,7 +98,7 @@ public class SwaggerConfig {
     public GroupedOpenApi stockApi() {
         return GroupedOpenApi.builder()
                 .group("7. 주식")
-                .pathsToMatch("/stocks/**", "/etfs/**", "/news/**", "/stock-market/**", "/stock-history/**")
+                .pathsToMatch("/stocks/**", "/etfs/**", "/news/**", "/stock-market/**", "/stock-history/**", "/stock-transactions/**")
                 .build();
     }
 

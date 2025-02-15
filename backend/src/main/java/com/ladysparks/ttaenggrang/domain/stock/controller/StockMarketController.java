@@ -1,7 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.stock.controller;
 
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockMarketStatusDTO;
-import com.ladysparks.ttaenggrang.domain.stock.service.StockMarketService;
+import com.ladysparks.ttaenggrang.domain.stock.service.StockMarketStatusService;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.global.docs.stock.StockMarketApiSpecification;
@@ -21,7 +21,7 @@ import java.util.Optional;
 @RequestMapping("/stock-market")
 public class StockMarketController implements StockMarketApiSpecification {
 
-    private final StockMarketService stockMarketService;
+    private final StockMarketStatusService stockMarketService;
     private final TeacherService teacherService;
     private final StudentService studentService;
 

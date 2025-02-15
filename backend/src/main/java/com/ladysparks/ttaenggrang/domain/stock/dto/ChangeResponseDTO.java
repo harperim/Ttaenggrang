@@ -15,9 +15,9 @@ public class ChangeResponseDTO {
     private String name;                // 주식 이름
     private int pricePerShare;          // 한 주당 가격
     private int totalQuantity;          // 총 수량
-    private String description;         // 설명
+    private String description;         // 주식 상세 설명
     private Integer changeRate;         // 주식 변동률
     private int remainQuantity;         // 주식 재고 수량
-    private Boolean isMarketOpen;       //시장 활성화 여부
+//    private Boolean isMarketOpen;       // 시장 활성화 여부
 
 }

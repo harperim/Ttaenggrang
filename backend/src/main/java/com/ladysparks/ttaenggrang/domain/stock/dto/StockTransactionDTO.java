@@ -17,28 +17,23 @@ import java.sql.Timestamp;
 public class StockTransactionDTO {
 
     private Long id;
+    private Long studentId;                     // student_id 외래 키
+    private Long stockId;                       // stock_id 외래 키
     private int shareQuantity;                  // 주식 거래 수량
-    private Timestamp transactionDate;          // 거래 날짜
-    private int purchasePerShare;               // 거래 당시 1주 가격
+    private int purchasePricePerShare;          // 거래 당시 1주 가격
     private Integer totalPrice;                 // 총 거래 금액
     private BigDecimal returnRate;              // 손익/손실 금액(매도일 때만)
     private TransactionType transactionType;    // 거래 유형
-    private int totalQuantity;                  // 학생이 보유한 주식 수량
-    private StockDTO stockDTO;
-
-    // 조인
-    // 학생 관련
-    private Long studentId;  // student_id 외래 키
-
-    // 주식 관련
-    private Long stockId;     // stock_id 외래 키
+    private int totalQuantity;                  // 학생이 보유한 주식 총 수량
+    private Timestamp transactionDate;          // 거래 날짜
+//    private StockDTO stockDTO;
 
     public static StockTransactionDTO fromEntity(StockTransaction stockTransaction, int updatedOwnedQty) {
         return StockTransactionDTO.builder()
                 .id(stockTransaction.getId())
                 .shareQuantity(stockTransaction.getShare_count())
-                .transactionDate(stockTransaction.getTrans_date())
-                .purchasePerShare(stockTransaction.getPurchase_prc())  // 거래 당시 1주 가격
+                .transactionDate(stockTransaction.getTransactionDate())
+                .purchasePricePerShare(stockTransaction.getPurchase_prc())  // 거래 당시 1주 가격
                 .totalPrice(stockTransaction.getTotal_amt())  // 총 거래 금액
                 .returnRate(stockTransaction.getReturnRate())  // 손익/손실 금액
                 .transactionType(stockTransaction.getTransactionType())  // 거래 유형

@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.stock.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ public class StockMarketStatus {
     private Long teacherId;  // 외래키 + 기본키
 
     @OneToOne
+    @JsonIgnore
     @MapsId  // teacherId를 외래키이자 기본키로 사용
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;

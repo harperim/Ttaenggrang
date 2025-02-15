@@ -1,11 +1,12 @@
 package com.ladysparks.ttaenggrang.domain.stock.controller;
 
-import com.ladysparks.ttaenggrang.domain.stock.dto.*;
-import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
-import com.ladysparks.ttaenggrang.global.docs.stock.StockApiSpecification;
+import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
+import com.ladysparks.ttaenggrang.domain.stock.dto.StockSummaryDTO;
+import com.ladysparks.ttaenggrang.domain.stock.dto.StudentStockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.service.StockService;
+import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
+import com.ladysparks.ttaenggrang.global.docs.stock.StockApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,10 @@ import java.util.Optional;
 @RequestMapping("/stocks")
 public class StockController implements StockApiSpecification {
 
-    private final StockService stockService; // StockService 주입
+    private final StockService stockService;
+    private final StudentService studentService;
 
-    //주식 등록
+    // 주식 등록
     @PostMapping
     public ResponseEntity<ApiResponse<StockDTO>> addStock(@RequestBody StockDTO stockDTO) {
         // 주식 등록 서비스 호출
@@ -33,9 +35,9 @@ public class StockController implements StockApiSpecification {
 
     // 주식 목록 전체 조회
     @GetMapping
-    public ResponseEntity<List<StockDTO>> getStocks() {
-        List<StockDTO> result = stockService.findStocks(); // 모든 주식 정보를 반환
-        return ResponseEntity.ok(result); // HTTP 200 OK와 함께 결과 반환
+    public ResponseEntity<ApiResponse<List<StockSummaryDTO>>> getStockSummaryList() {
+        List<StockSummaryDTO> result = stockService.getStockSummaryList(); // 모든 주식 정보를 반환
+        return ResponseEntity.ok(ApiResponse.success(result)); // HTTP 200 OK와 함께 결과 반환
     }
 
     // 주식 상세 조회
@@ -52,10 +54,11 @@ public class StockController implements StockApiSpecification {
     }
 
     // 학생 보유 주식 조회
-    @GetMapping("/students/{studentId}")
-    public ResponseEntity<List<StudentStockDTO>> getStudentStocks(@PathVariable Long studentId) {
+    @GetMapping("/buy")
+    public ResponseEntity<ApiResponse<List<StudentStockDTO>>> getStudentStocks() {
+        Long studentId = studentService.getCurrentStudentId();
         List<StudentStockDTO> stockList = stockService.getStudentStocks(studentId);
-        return ResponseEntity.ok(stockList);
+        return ResponseEntity.ok(ApiResponse.success(stockList));
     }
 
 }

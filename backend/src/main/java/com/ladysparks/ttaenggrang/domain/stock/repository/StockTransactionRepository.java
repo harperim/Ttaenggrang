@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StockTransactionRepository extends JpaRepository<StockTransaction, Long> {
+
     // 특정 학생의 주식 거래 내역 조회
     List<StockTransaction> findByStudentId(Long studentId);
     // 특정 주식과 학생, 매수 거래를 필터링하여 거래 건수를 반환하는 메서드
@@ -26,7 +28,7 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
     @Query("SELECT COALESCE(SUM(s.share_count), 0) FROM StockTransaction s " +
             "WHERE s.stock.id = :stockId " +
             "AND s.transactionType = :transType " +
-            "AND s.trans_date BETWEEN :startTime AND :endTime")
+            "AND s.transactionDate BETWEEN :startTime AND :endTime")
     int getBuyVolumeForStockInTimeRange(
             @Param("stockId") Long stockId,
             @Param("transType") TransactionType transactionType,
@@ -37,11 +39,16 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
     @Query("SELECT COALESCE(SUM(s.share_count), 0) FROM StockTransaction s " +
             "WHERE s.stock.id = :stockId " +
             "AND s.transactionType = :transType " +
-            "AND s.trans_date BETWEEN :startTime AND :endTime")
+            "AND s.transactionDate BETWEEN :startTime AND :endTime")
     int getSellVolumeForStockInTimeRange(
             @Param("stockId") Long stockId,
             @Param("transType") TransactionType transactionType,
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime);
+
+    @Query("SELECT COUNT(s) FROM StockTransaction s GROUP BY s.stock.id")
+    List<Integer> findAllTransactionVolumes();
+
+    int countByStockIdAndTransactionDateAfter(Long stock_id, Timestamp transactionDate);
 
 }

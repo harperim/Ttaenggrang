@@ -1,10 +1,9 @@
 package com.ladysparks.ttaenggrang.domain.stock.scheduler;
 
-import com.ladysparks.ttaenggrang.domain.stock.service.StockMarketService;
+import com.ladysparks.ttaenggrang.domain.stock.service.StockMarketStatusService;
 import com.ladysparks.ttaenggrang.global.redis.RedisLockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Component;
 // @Profile("prod")  // 운영 환경에서만 스케줄러 실행
 public class StockMarketScheduler {
 
-    private final StockMarketService stockMarketService;
+    private final StockMarketStatusService stockMarketService;
     private final RedisLockService redisLockService;
 
     private static final String MARKET_OPEN_LOCK = "stockMarket:open";

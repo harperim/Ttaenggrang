@@ -20,7 +20,7 @@ public interface StockMarketApiSpecification {
 //    @Operation(summary = "(교사/학생) 주식 시장 버튼(True or False) 조회", description = "💡주식시장 버튼(True or False) 조회 합니다.")
 //    ResponseEntity<Boolean> getMarketStatus();
 
-    @Operation(summary = "(교사) 주식 시장 개장/폐장 제어", description = """
+    @Operation(summary = "(교사) 주식 시장 개장/폐장 제어 [수정]", description = """
             💡 교사가 수동으로 주식 시장을 개장 및 폐장합니다.
             
             ---
@@ -41,7 +41,7 @@ public interface StockMarketApiSpecification {
             """)
     ResponseEntity<ApiResponse<StockMarketStatusDTO>> setTeacherOnOff(@RequestParam @Parameter(description = "주식 시장 개장") boolean open) throws BadRequestException;
 
-    @Operation(summary = "(교사/학생) 현재 주식 거래 가능 여부 조회", description = """
+    @Operation(summary = "(교사/학생) 현재 주식 거래 가능 여부 [조회]", description = """
             💡 현재 주식 거래 가능 여부를 조회합니다. (주식 시장 개장 여부 + 교사 설정)
             
             ---
@@ -52,7 +52,7 @@ public interface StockMarketApiSpecification {
             ---
             
             **[ 설명 ]**
-            - 주식 시장 개장 여부와 교사 설정에 따른 주식 거래 가능 여부를 반환합니다.
+            - **주식 시장 개장 여부와 교사 설정**에 따른 주식 거래 가능 여부를 반환합니다.
             """)
     ResponseEntity<ApiResponse<Map<String, Boolean>>> isTransactionAvailable();
 

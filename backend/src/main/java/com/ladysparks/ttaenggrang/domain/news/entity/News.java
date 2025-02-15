@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.news.entity;
 
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,4 +33,8 @@ public class News {
     @Enumerated(EnumType.STRING)
     @Column(name = "news_type", length = 50)
     private NewsType newsType;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 }

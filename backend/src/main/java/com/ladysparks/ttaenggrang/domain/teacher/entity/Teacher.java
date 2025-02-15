@@ -19,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "teacher")
 public class Teacher {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;            // 선생님 ID
