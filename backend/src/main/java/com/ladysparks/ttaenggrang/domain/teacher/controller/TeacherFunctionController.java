@@ -1,9 +1,12 @@
 package com.ladysparks.ttaenggrang.domain.teacher.controller;
 
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
+import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.JobClassDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.JobCreateDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.NationDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.service.JobService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.NationService;
@@ -19,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/teachers")
@@ -29,6 +33,7 @@ public class TeacherFunctionController implements TeacherFunctionApiSpecificatio
     private final NationService nationService;
     private final StudentService studentService;
     private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
 
     // (+) 현재 로그인한 교사의 ID 가져오는 메서드
     private long getTeacherIdFromSecurityContext() {
@@ -51,6 +56,42 @@ public class TeacherFunctionController implements TeacherFunctionApiSpecificatio
         }
         throw new IllegalArgumentException("현재 인증된 사용자를 찾을 수 없습니다.");
     }
+
+    // 현재 로그인한 사용자가 교사인지 학생인지 구분하여 teacherId 가져오기
+    private Long getClassTeacherIdFromSecurityContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("인증되지 않은 사용자입니다. 로그인 후 다시 시도하세요.");
+        }
+
+        Object principalObj = authentication.getPrincipal();
+        if (principalObj instanceof UserDetails) {
+            String username = ((UserDetails) principalObj).getUsername();
+
+            // ✅ 먼저 교사인지 확인
+            Optional<Teacher> teacher = teacherRepository.findByEmail(username);
+            if (teacher.isPresent()) {
+                Long teacherId = teacher.get().getId();
+                System.out.println("✅ 로그인한 사용자가 교사입니다. teacherId: " + teacherId);
+                return teacherId;
+            }
+
+            // ✅ 교사가 아니라면 학생인지 확인
+            Optional<Student> student = studentRepository.findByUsername(username);
+            if (student.isPresent()) {
+                Long classTeacherId = student.get().getTeacher().getId();  // 🔥 학생이 속한 교사의 ID 가져오기
+                System.out.println("✅ 로그인한 사용자가 학생입니다. 해당 반의 teacherId: " + classTeacherId);
+                return classTeacherId;
+            }
+
+            // ✅ 학생도 교사도 아닐 경우 예외 발생
+            throw new IllegalArgumentException("해당 username을 가진 교사 또는 학생을 찾을 수 없습니다.");
+        }
+
+        throw new IllegalArgumentException("현재 인증된 사용자를 찾을 수 없습니다.");
+    }
+
 
     // 직업 [등록]
     @PostMapping("/jobs/create")
@@ -94,7 +135,7 @@ public class TeacherFunctionController implements TeacherFunctionApiSpecificatio
     @GetMapping("/nations")
     public ResponseEntity<ApiResponse<NationDTO>> getNationByTeacher() {
         // 현재 로그인한 교사 ID 가져오기
-        long teacherId = getTeacherIdFromSecurityContext();
+        long teacherId = getClassTeacherIdFromSecurityContext();
 
         ApiResponse<NationDTO> response = nationService.getNationByTeacherId(teacherId);
         return ResponseEntity.status(response.getStatusCode()).body(response);

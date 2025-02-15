@@ -7,6 +7,8 @@ import com.ladysparks.ttaenggrang.domain.news.entity.NewsType;
 import com.ladysparks.ttaenggrang.domain.news.repository.NewsRepository;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
+import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import jakarta.annotation.PostConstruct;
@@ -28,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -44,6 +47,7 @@ public class NewsService {
     private final NewsRepository newsRepository;
     private final StockRepository stockRepository;
     private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
 
     // 현재 로그인한 교사의 ID 가져오기
     private Long getTeacherIdFromSecurityContext() {
@@ -55,10 +59,26 @@ public class NewsService {
 
         Object principalObj = authentication.getPrincipal();
         if (principalObj instanceof UserDetails) {
-            String email = ((UserDetails) principalObj).getUsername();  // 이메일 가져오기
-            return teacherRepository.findByEmail(email)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 이메일을 가진 교사를 찾을 수 없습니다."))
-                    .getId();
+            String username = ((UserDetails) principalObj).getUsername();
+
+            // ✅ 먼저 교사인지 확인
+            Optional<Teacher> teacher = teacherRepository.findByEmail(username);
+            if (teacher.isPresent()) {
+                Long teacherId = teacher.get().getId();
+//                System.out.println("✅ 로그인한 사용자가 교사입니다. teacherId: " + teacherId);
+                return teacherId;
+            }
+
+            // ✅ 교사가 아니라면 학생인지 확인
+            Optional<Student> student = studentRepository.findByUsername(username);
+            if (student.isPresent()) {
+                Long classTeacherId = student.get().getTeacher().getId();  // 🔥 학생이 속한 교사의 ID 가져오기
+//                System.out.println("✅ 로그인한 사용자가 학생입니다. 해당 반의 teacherId: " + classTeacherId);
+                return classTeacherId;
+            }
+
+            // ✅ 학생도 교사도 아닐 경우 예외 발생
+            throw new IllegalArgumentException("해당 username을 가진 교사 또는 학생을 찾을 수 없습니다.");
         }
 
         throw new IllegalArgumentException("현재 인증된 사용자를 찾을 수 없습니다.");
@@ -199,5 +219,22 @@ public class NewsService {
                         .newsType(news.getNewsType().name())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    // 뉴스 기사 [상세 조회]
+    public NewsSummaryDTO getNewsDetail(Long newsId) {
+        Long teacherId = getTeacherIdFromSecurityContext();  // 교사 또는 학생의 교사 ID 가져오기
+
+        News news = newsRepository.findByIdAndTeacherId(newsId, teacherId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 뉴스는 조회할 수 없습니다."));
+
+        return NewsSummaryDTO.builder()
+                .id(news.getId())
+                .title(news.getTitle())
+                .content(news.getContent())
+                .stockName(news.getStock().getName())
+                .createdAt(news.getCreatedAt())
+                .newsType(news.getNewsType().name())
+                .build();
     }
 }

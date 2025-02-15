@@ -53,7 +53,7 @@ public interface TeacherFunctionApiSpecification {
             """)
     ResponseEntity<ApiResponse<NationDTO>> createNation(@RequestBody @Valid NationDTO nationDTO);
 
-    @Operation(summary = "(교사) 국가 [조회]", description = """
+    @Operation(summary = "(교사/학생) 국가 [조회]", description = """
             💡 교사가 국가 정보를 조회합니다.
             
             ---

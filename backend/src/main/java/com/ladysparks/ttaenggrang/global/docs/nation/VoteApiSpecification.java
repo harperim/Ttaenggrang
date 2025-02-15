@@ -25,7 +25,7 @@ public interface VoteApiSpecification {
             """)
     ResponseEntity<ApiResponse<VoteCreateDTO>> createVote(@Valid @RequestBody VoteCreateDTO voteCreateDTO);
 
-    @Operation(summary = "(교사) 현재 진행 중인 투표 [조회]", description = """
+    @Operation(summary = "(교사/학생) 현재 진행 중인 투표 [조회]", description = """
             💡 교사가 진행 중인 투표를 조회합니다.
             현재 진행 중인 투표가 있는지 확인하고, 진행 중인 투표가 있을 경우 해당 정보를 반환합니다.
             
