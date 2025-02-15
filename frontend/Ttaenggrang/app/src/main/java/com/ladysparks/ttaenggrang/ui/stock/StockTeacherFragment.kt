@@ -229,7 +229,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         viewModel.selectedStock.observe(viewLifecycleOwner) { stock ->
             stock?.let {
                 binding.textHeadStockName.text = it.name.substringBefore(" ")
-                binding.textHeadStockPrice.text = it.pricePer.toString()
+                binding.textHeadStockPrice.text = it.pricePerShare.toString()
                 binding.textHeadStockChange.text = "${it.changeRate}%"
             }
         }
@@ -239,7 +239,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
     override fun onStockClick(stock: StockDto) {
         Toast.makeText(requireContext(), "선택한 주식: ${stock.name}", Toast.LENGTH_SHORT).show()
         binding.textHeadStockName.text = stock.name.substringBefore(" ")
-        binding.textHeadStockPrice.text = stock.pricePer.toString()
+        binding.textHeadStockPrice.text = stock.pricePerShare.toString()
         binding.textHeadStockChange.text = "${stock.changeRate}%"
     }
 

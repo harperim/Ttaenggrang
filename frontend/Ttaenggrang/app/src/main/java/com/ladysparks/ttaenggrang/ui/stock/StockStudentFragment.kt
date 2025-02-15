@@ -19,7 +19,7 @@ import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.data.dummy.StockDummyData
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
-import com.ladysparks.ttaenggrang.data.model.dto.TransType
+
 import com.ladysparks.ttaenggrang.databinding.DialogNewsDetailBinding
 import com.ladysparks.ttaenggrang.databinding.DialogStockConfirmBinding
 import com.ladysparks.ttaenggrang.databinding.DialogStockTradingBinding
@@ -79,13 +79,13 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
 
                         // studentId가 유효한지 확인
                         if (studentId != -1) {
-                            viewModel.fetchOwnedStocks(studentId) // studentId 전달
+                            viewModel.fetchOwnedStocks() // studentId 전달
                             delay(500) // 데이터 로딩 대기
 
                             // 학생 보유 주식 목록에서 선택한 주식 찾기
                             val ownedStock =
                                 viewModel.ownedStocks.value?.find { it.stockId == stockId }
-                            val ownedQty = ownedStock?.ownedQty ?: 0 // 보유량 가져오기
+                            val ownedQty = ownedStock?.quantity ?: 0 // 보유량 가져오기
 
                             showDialog(stock, ownedQty) // 다이얼로그 실행
                         } else {
@@ -205,7 +205,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
 
         // ✅ 주식명 & 현재 주가 설정
         dialogBinding.textDialogStockTitle.setText(stock.name.substringBefore(" "))
-        dialogBinding.textDialogStockPrice.setText("${stock.pricePer}")
+        dialogBinding.textDialogStockPrice.setText("${stock.pricePerShare}")
         dialogBinding.textDialogMyStock.setText("$ownedQty 주")
 
 
@@ -213,7 +213,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
         dialogBinding.textDialogStockTrade.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val inputAmount = s.toString().toIntOrNull() ?: 0
-                val expectedPayment = stock.pricePer * inputAmount // ✅ 현재 주가 * 입력한 주식 수
+                val expectedPayment = stock.pricePerShare * inputAmount // ✅ 현재 주가 * 입력한 주식 수
                 dialogBinding.textContent1.text = "$expectedPayment" //
             }
 
@@ -235,9 +235,9 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
                 }
                 else -> {
                     // ✅ 정상적인 경우 LiveData 업데이트 후 다이얼로그 실행
-                    viewModel.updateTradeAmount(sellCount, stock.pricePer, ownedQty, TransType.SELL)
+                    viewModel.updateTradeAmount(sellCount, stock.pricePerShare, ownedQty, "SELL")
                     dialog.dismiss()
-                    showConfirmDialog(stock, sellCount, TransType.SELL)
+                    showConfirmDialog(stock, sellCount, "SELL")
                 }
             }
         }
@@ -246,7 +246,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
         dialogBinding.btnBuy.setOnClickListener {
             val inputText = dialogBinding.textDialogStockTrade.text.toString().trim()
             val buyCount = inputText.toIntOrNull() ?: 0
-            val totalCost = stock.pricePer * buyCount // ✅ 총 매수 예상 비용
+            val totalCost = stock.pricePerShare * buyCount // ✅ 총 매수 예상 비용
             val balance = viewModel.balance.value ?: 0 // ✅ 현재 보유 현금
 
             // 예외처리
@@ -259,9 +259,9 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
                 }
                 else -> {
                     // ✅ 정상적인 경우 LiveData 업데이트 후 다이얼로그 실행
-                    viewModel.updateTradeAmount(buyCount, stock.pricePer, ownedQty, TransType.BUY)
+                    viewModel.updateTradeAmount(buyCount, stock.pricePerShare, ownedQty, "BUY")
                     dialog.dismiss()
-                    showConfirmDialog(stock, buyCount, TransType.BUY)
+                    showConfirmDialog(stock, buyCount, "BUY")
                 }
             }
         }
@@ -269,7 +269,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
     }
 
     // 매도, 매수 거래 다이얼로그
-    private fun showConfirmDialog(stock: StockDto, tradeAmount: Int, transactionType: TransType) {
+    private fun showConfirmDialog(stock: StockDto, tradeAmount: Int, transactionType: String) {
         val confirmDialogBinding = DialogStockConfirmBinding.inflate(layoutInflater)
         val confirmDialog = Dialog(requireContext())
         confirmDialog.setContentView(confirmDialogBinding.root)
@@ -281,7 +281,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
         )
 
         // 다이얼로그 타이틀 설정 (매도 or 매수)
-        confirmDialogBinding.textDialogTitle.text = if (transactionType == TransType.SELL) "매도 하시겠습니까?" else "매수 하시겠습니까?"
+        confirmDialogBinding.textDialogTitle.text = if (transactionType == "SELL") "매도 하시겠습니까?" else "매수 하시겠습니까?"
 
         // 예상 결제 금액
         viewModel.expectedPayment.observe(confirmDialogBinding.root.context as LifecycleOwner) { amount ->
@@ -295,7 +295,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
 
         // ✅ 거래 후 보유 주식 업데이트
         viewModel.updatedOwnedStock.observe(confirmDialogBinding.root.context as LifecycleOwner) { newStock ->
-            if (transactionType == TransType.SELL) {
+            if (transactionType == "SELL") {
                 confirmDialogBinding.textContent3.text = "${newStock} 주"
 
             } else {
@@ -305,7 +305,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
 
         // ✅ "거래하기" 버튼 클릭 시, 매도 또는 매수 실행
         confirmDialogBinding.btnYes.setOnClickListener {
-            if (transactionType == TransType.SELL) {
+            if (transactionType == "SELL") {
                 viewModel.sellStock(stock.id, tradeAmount, studentId)
             } else {
                 viewModel.buyStock(stock.id, tradeAmount, studentId)
@@ -341,7 +341,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
         //매수 응답
         viewModel.buyTransaction.observe(viewLifecycleOwner) { transaction ->
             transaction?.let {
-                Toast.makeText(requireContext(), "매수 완료: ${it.shareCount}주", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), "매수 완료: ${it.shareQuantity}주", Toast.LENGTH_SHORT)
                     .show()
             }
         }
@@ -350,7 +350,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
         viewModel.selectedStock.observe(viewLifecycleOwner) { stock ->
             stock?.let {
                 binding.textHeadStockName.text = it.name.substringBefore(" ")
-                binding.textHeadStockPrice.text = it.pricePer.toString()
+                binding.textHeadStockPrice.text = it.pricePerShare.toString()
                 binding.textHeadStockChange.text = "${it.changeRate}%"
             }
         }
@@ -358,7 +358,7 @@ class StockStudentFragment : BaseFragment<FragmentStockStudentBinding>(
         // 매도 응답 처리
         viewModel.sellTransaction.observe(viewLifecycleOwner) { transaction ->
             transaction?.let {
-                Toast.makeText(requireContext(), "매도 완료: ${it.shareCount}주", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), "매도 완료: ${it.shareQuantity}주", Toast.LENGTH_SHORT)
                     .show()
             }
         }

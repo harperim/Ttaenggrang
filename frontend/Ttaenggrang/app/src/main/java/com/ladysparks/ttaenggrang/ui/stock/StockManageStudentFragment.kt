@@ -41,8 +41,8 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
         studentId = SharedPreferencesUtil.getUserId()
 
         // 서버에서 학생 주식 보유 내역 가져오기
-        viewModel.fetchOwnedStocks(studentId)
-        viewModel.fetchStudentStockTransactions(studentId)
+        viewModel.fetchOwnedStocks()
+        //viewModel.fetchStudentStockTransactions(studentId)
 
     }
 
@@ -76,19 +76,19 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
     }
 
     private fun observeViewModel() {
-        viewModel.ownedStocks.observe(viewLifecycleOwner) { ownedStocks ->
-            Log.d("StockFragment", "ownedStocks 업데이트됨: $ownedStocks")
-            if (ownedStocks.isNotEmpty() && viewModel.stockTransaction.value != null) {
-                viewModel.updateStockTableData(studentId)
-            }
-        }
-
-        viewModel.stockTransaction.observe(viewLifecycleOwner) { transactions ->
-            Log.d("StockFragment", "stockTransaction 업데이트됨: $transactions")
-            if (transactions.isNotEmpty() && viewModel.ownedStocks.value != null) {
-                viewModel.updateStockTableData(studentId)
-            }
-        }
+//        viewModel.ownedStocks.observe(viewLifecycleOwner) { ownedStocks ->
+//            Log.d("StockFragment", "ownedStocks 업데이트됨: $ownedStocks")
+//            if (ownedStocks.isNotEmpty() && viewModel.stockTransaction.value != null) {
+//                viewModel.updateStockTableData(studentId)
+//            }
+//        }
+//
+//        viewModel.stockTransaction.observe(viewLifecycleOwner) { transactions ->
+//            Log.d("StockFragment", "stockTransaction 업데이트됨: $transactions")
+//            if (transactions.isNotEmpty() && viewModel.ownedStocks.value != null) {
+//                viewModel.updateStockTableData(studentId)
+//            }
+//        }
 
         viewModel.stockTableData.observe(viewLifecycleOwner) { newData ->
             Log.d("StockFragment", "stockTableData 업데이트됨: $newData")

@@ -5,9 +5,9 @@ import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockStudentDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockStudentTransactionDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockSummaryDto
+import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionDto
 import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.response.OpenMarketResponse
-import com.ladysparks.ttaenggrang.data.model.response.StockTransactionResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -18,24 +18,24 @@ import retrofit2.http.Query
 interface StockService {
 
     // 주식 매도
-    @POST("stocks/{stockId}/sell")  // ✅ 경로 확인
+    @POST("stock-transactions/sell/{stockId}")
     suspend fun sellStock(
         @Path("stockId") stockId: Int,
         @Query("share_count") shareCount: Int,
         @Query("studentId") studentId: Int
-    ): Response<StockTransactionResponse>
+    ): ApiResponse<StockTransactionDto>
 
     // 주식 매수
-    @POST("stocks/{stockId}/buy")  // ✅ 경로 확인
+    @POST("stock-transactions/buy/{stockId}")  // ✅ 경로 확인
     suspend fun buyStock(
         @Path("stockId") stockId: Int,
         @Query("share_count") shareCount: Int,
         @Query("studentId") studentId: Int
-    ): Response<StockTransactionResponse>
+    ): ApiResponse<StockTransactionDto>
 
     // 주식 전체 조회
     @GET("stocks")
-    suspend fun getAllStocks(): List<StockDto>
+    suspend fun getAllStocks(): ApiResponse<List<StockDto>>
 
     //주식 상세 조회
 //    @GET("stocks/{stockId}")
@@ -54,16 +54,14 @@ interface StockService {
     suspend fun getMarketStatus(): Response<OpenMarketResponse>
 
     // 학생 보유 주식 조회
-    @GET("stocks/student/{studentId}")
+    @GET("stocks/buy")
     suspend fun getStocksStudent(
-        @Path("studentId") studentId: Int
-    ): List<StockStudentDto>
+    ): ApiResponse<List<StockStudentDto>>
 
     // 학생 주식 거래 조회
-    @GET("stocks/students/{studentId}/transactions")
+    @GET("stock-transactions")
     suspend fun getStockStudentTransaction(
-        @Path("studentId") studentId: Int
-    ): List<StockStudentTransactionDto>
+    ): ApiResponse<List<StockStudentTransactionDto>>
 
     // 뉴스 생성
     @POST("news/create")
@@ -71,7 +69,7 @@ interface StockService {
     ): ApiResponse<NewsDto>
 
     // 교사 주식 목록 조회
-    @GET("stocks")
+    @GET("stocks/summary")
     suspend fun getStockList(
     ): ApiResponse<List<StockSummaryDto>>
 
