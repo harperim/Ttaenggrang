@@ -67,8 +67,5 @@ interface StockService {
     // 뉴스 생성
     @POST("news/create")
     suspend fun createNews(
-        @Header("Authorization") token: String // ✅ 토큰만 포함, @Body 없음
     ): ApiResponse<NewsDto>
-
-
 }

@@ -88,21 +88,44 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
+        // ✅ 다이얼로그가 띄워졌을 때 UI를 초기화 (이전 데이터 제거)
+        dialogNewsCreateBinding.textDialogNewsCreateDate.setText("")
+        dialogNewsCreateBinding.textDialogStockName.setText("")
+        dialogNewsCreateBinding.textDialogNewsTitle.setText("")
+        dialogNewsCreateBinding.textDialogNewsContent.setText("")
+
+        // ✅ create 버튼을 눌렀을 때만 서버 요청 후 UI 업데이트
+        dialogNewsCreateBinding.btnCreate.setOnClickListener {
+            viewModel.createNews() // 서버에 요청 보내기
+        }
+
+        // ✅ 서버 응답을 받은 후 다이얼로그 UI를 업데이트
+        viewModel.newsLiveData.observe(viewLifecycleOwner) { news ->
+            news?.let {
+                dialogNewsCreateBinding.textDialogNewsCreateDate.setText(it.createdAt)
+                dialogNewsCreateBinding.textDialogStockName.setText(it.stockName)
+                dialogNewsCreateBinding.textDialogNewsTitle.setText(it.title)
+                dialogNewsCreateBinding.textDialogNewsContent.setText(it.content)
+            }
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                dialogNewsCreateBinding.shimmerLayout.startShimmer()
+                dialogNewsCreateBinding.shimmerLayout.visibility = View.VISIBLE
+                dialogNewsCreateBinding.constraintDialogBody.visibility = View.GONE
+            } else {
+                dialogNewsCreateBinding.shimmerLayout.stopShimmer()
+                dialogNewsCreateBinding.shimmerLayout.visibility = View.GONE
+                dialogNewsCreateBinding.constraintDialogBody.visibility = View.VISIBLE
+            }
+        }
+
         // 버튼구현
         dialogNewsCreateBinding.btnCancel.setOnClickListener { // 닫기
             dialog.dismiss()
         }
-        dialogNewsCreateBinding.btnCreate.setOnClickListener {// 뉴스생성
-            viewModel.createNews()
-            viewModel.newsLiveData.observe(viewLifecycleOwner) { news ->
-                news?.let {
-                    dialogNewsCreateBinding.textDialogNewsCreateDate.setText(it.createdAt)
-                    dialogNewsCreateBinding.textDialogStockName.setText(it.stockName)
-                    dialogNewsCreateBinding.textDialogNewsTitle.setText(it.title)
-                    dialogNewsCreateBinding.textDialogNewsContent.setText(it.content)
-                }
-            }
-        }
+
         dialogNewsCreateBinding.btnAdd.setOnClickListener { // fcm 알림+등록
 
         }
@@ -203,6 +226,12 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                 binding.textHeadStockChange.text = "${it.changeRate}%"
             }
         }
+
+
+
+
+
+
     }
 
     // 아이템 클릭 이벤트 처리
