@@ -7,10 +7,10 @@ import java.util.UUID
 class NotificationModel : RealmObject {
     @PrimaryKey
     var id: String = UUID.randomUUID().toString() // ✅ 고유한 ID
-    var category: String = "" // ✅ 알림 분류 (예: "공지", "이벤트", "업데이트")
+    var category: String = "" // Report, OTHER....
     var title: String = ""
     var content: String = ""
     var time: Long = 0 // ✅ 수신 시간
     var sender: String = "System" // ✅ 발신자 정보
-    var receiver: String = "" //메시지를 받을 대상(선생, 학생계정 id로 구분)
+    var receiver: String = "" // TEACHER, STUDENT
 }

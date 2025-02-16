@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ladysparks.ttaenggrang.R
-import com.ladysparks.ttaenggrang.data.model.dto.AlarmDto
 import com.ladysparks.ttaenggrang.realm.NotificationModel
 import com.ladysparks.ttaenggrang.util.DataUtil
 

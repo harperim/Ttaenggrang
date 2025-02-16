@@ -67,7 +67,7 @@ class LoginActivity : BaseActivity() {
             lifecycleScope.launch {
                 runCatching {
                     RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "hi1@naver.com", password = "ssafy123"))
-//                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "cc@cc.com", password = "1234"))
+//                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "aa@aa.com", password = "1234"))
                 }.onSuccess {
                     showToast("교사 로그인 성공")
 
@@ -94,6 +94,7 @@ class LoginActivity : BaseActivity() {
         binding.tempBtnStudent.setOnClickListener {
             lifecycleScope.launch {
                 runCatching {
+//                    RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "aa002", password = "1234"))
                     RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "hello1", password = "ssafy123"))
                 }.onSuccess {
                     showToast("학생 로그인 성공")

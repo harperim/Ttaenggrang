@@ -7,11 +7,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ladysparks.ttaenggrang.data.model.dto.AlarmDto
 import com.ladysparks.ttaenggrang.data.model.dto.JobDto
+import com.ladysparks.ttaenggrang.data.model.request.JobRequest
+import com.ladysparks.ttaenggrang.data.model.response.StockResponse
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
+import com.ladysparks.ttaenggrang.data.model.response.StudentSavingResponse
 import com.ladysparks.ttaenggrang.data.model.response.Teacher
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
+import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.util.ApiErrorParser
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -44,13 +47,6 @@ class StudentsViewModel : ViewModel(){
             }
         }
     }
-
-
-
-    // 재정 관리 탭
-   // fun fetch
-
-
 
     // 학생 등록(복수)
     val studentCount = MutableLiveData<Int>()
@@ -122,6 +118,23 @@ class StudentsViewModel : ViewModel(){
         return byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull())
     }
 
+    // 학생 직업 수정
+    private val _editStudentJob = MutableLiveData<Any>()
+    val editStudentJob: LiveData<Any> get() = _editStudentJob
+    fun editStudentJob(studentId: Int, jobId: Int) {
+        viewModelScope.launch {
+            runCatching {
+                val request = JobRequest(jobId)
+                RetrofitUtil.teacherService.editStudentJob(studentId, request) // ✅ API 호출
+            }.onSuccess {
+                _editStudentJob.value = it.data ?: ""
+                Log.d("TAG", "editStudentJob: 수저 ok")
+            }.onFailure {
+                _errorMessage.value = ApiErrorParser.extractErrorMessage(it)
+                Log.d("TAG", "editStudentJob: 수저 fa")
+            }
+        }
+    }
 
     // 직업 리스트
     private val _jobList = MutableLiveData<List<JobDto>>()
@@ -136,7 +149,7 @@ class StudentsViewModel : ViewModel(){
             }.onFailure {
 //                _jobList.value = emptyList()
                 _errorMessage.value = ApiErrorParser.extractErrorMessage(it)
-                Log.e("JobViewModel", "fetchJobList 33: Error FeatchJobList ${it.message}" )
+                Log.e("JobViewModel", "fetchJobList 33: Error FeatchJobList ${ApiErrorParser.extractErrorMessage(it)}" )
             }
         }
     }
@@ -172,4 +185,41 @@ class StudentsViewModel : ViewModel(){
             }
         }
     }
+
+    // 은행 가입 상품 조회
+    private val _savingList = MutableLiveData<List<StudentSavingResponse>>()
+    val savingList: LiveData<List<StudentSavingResponse>> get() = _savingList
+    fun userSavingSubscriptions(studentId: Int){
+        viewModelScope.launch {
+            runCatching {
+               // RetrofitUtil.teacherService.payStudentBonus(mapOf("studentId" to studentId, "incentive" to incentive))
+                RetrofitUtil.teacherService.userSavingSubscription(studentId)
+            }.onSuccess {
+                _savingList.value = it.data ?: emptyList()
+
+            }.onFailure {
+                Log.e("TAG", "userSavingSubscriptions 에러: ${it.message}")
+                _errorMessage.value = ApiErrorParser.extractErrorMessage(it)
+            }
+        }
+    }
+
+    // 주식 가입 상품 조회
+    private val _stockList = MutableLiveData<List<StockResponse>>()
+    val stockList: LiveData<List<StockResponse>> get() = _stockList
+    fun stockList(studentId: Int){
+        viewModelScope.launch {
+            runCatching {
+                // RetrofitUtil.teacherService.payStudentBonus(mapOf("studentId" to studentId, "incentive" to incentive))
+                RetrofitUtil.teacherService.userStockList(studentId)
+            }.onSuccess {
+                _stockList.value = it.data ?: emptyList()
+
+            }.onFailure {
+                Log.e("TAG", "userSavingSubscriptions 에러: ${it.message}")
+                _errorMessage.value = ApiErrorParser.extractErrorMessage(it)
+            }
+        }
+    }
+
 }

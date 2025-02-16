@@ -8,6 +8,7 @@ import android.text.format.DateUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -24,6 +25,7 @@ import com.ladysparks.ttaenggrang.data.model.dto.VoteDataDto
 import com.ladysparks.ttaenggrang.data.model.dto.VoteMode
 import com.ladysparks.ttaenggrang.data.model.dto.VoteStatus
 import com.ladysparks.ttaenggrang.data.model.response.VoteCreateRequest
+import com.ladysparks.ttaenggrang.data.model.response.VoteOptionResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.databinding.DialogNationRegisterBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
@@ -92,6 +94,7 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
 
         nationViewModel.fetchNationData()
         nationViewModel.currentVoteInfo()
+        nationViewModel.getStudentList()
     }
 
     private fun initObserve() {
@@ -125,6 +128,35 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
                 binding.textVoteDate.text = "${startDate} ~ ${endDate}"
                 binding.textVoteTitleInfo.text = response.title
             }
+
+            if(!SharedPreferencesUtil.getValue(SharedPreferencesUtil.IS_TEACHER, false)){
+                //  학생일 경우 선생님 전용 버튼 숨김
+                binding.textVoteStatus.visibility = View.GONE
+
+                // 투표 상태에 따라 접근하지 못하도록 설정
+                if(response.voteStatus == VoteStatus.COMPLETED) {
+                    binding.textVoteNow.visibility = View.GONE
+                    binding.textVoteDate.text = "현재 진행중인 투표가 없습니다."
+                    binding.textVoteTitleInfo.visibility = View.GONE
+                }else if(response.voteStatus == VoteStatus.IN_PROGRESS){
+                    binding.textVoteNow.visibility = View.VISIBLE
+                    binding.textVoteTitleInfo.visibility = View.VISIBLE
+                }
+            }else{
+                binding.textVoteNow.visibility = View.GONE
+                binding.textVoteStatus.visibility = View.VISIBLE
+            }
+        }
+
+        // (학생) 투표 참여
+        nationViewModel.submitVoteData.observe(viewLifecycleOwner) { response ->
+            showToast("투표 참여가 완료 되었습니다")
+        }
+
+        // 투표 생성
+        nationViewModel.createVote.observe(viewLifecycleOwner) { response ->
+            nationViewModel.currentVoteInfo()
+            showToast("투표 생성이 완료되었습니다")
         }
 
         // 투표 종료
@@ -136,12 +168,6 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
 
             showNewVoteRegister()
         }
-
-        nationViewModel.createVote.observe(viewLifecycleOwner) { response ->
-            nationViewModel.currentVoteInfo()
-            showToast("투표 생성이 완료되었습니다")
-        }
-
     }
 
     private fun initSetting() {
@@ -175,45 +201,67 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
 //        binding.btnNationInfo.setOnClickListener { createNationIfoDialog() } // 국가 정보 설정 눌렀을 대
       //  binding.btnGoalSavings.setOnClickListener { createGoalDialog() } // 목표자산 설정 눌렀을 때
     }
+
     private fun showVoteNow() {
-        lifecycleScope.launch {
-            runCatching {
-                // API 호출
-            }.onSuccess {
-                // 결과
+        // 이미 투표 참여 이력이 있다면 !
+        val nowVoteId = nationViewModel.currentVoteInfo.value?.id ?: 0
+        val lastVoteId = SharedPreferencesUtil.getValue(SharedPreferencesUtil.VOTE_HISTORY_ID, -1)
 
-                // 이미 투표에 참여한 기록이 있는 경우, 재참여 할 수 없다.
-                if(false){
-                    showVoteStatus()
-                }else{
-                    // 투표 참여가능
-                    val dialogBinding = DialogVoteParticipationBinding.inflate(layoutInflater)
-                    val dialog = AlertDialog.Builder(requireContext())
-                        .setView(dialogBinding.root)
-                        .create()
-                    // Spinner
-                    val jddddob = dialogBinding.selectStudent
-                    // job 설정
-                    val studentList = arrayOf("학생 1", "학생 2", "학생 3","학생 2", "학생 3", "학생 4", "학생 5","학생 1", "학생 2", "학생 3", "학생 4", "학생 5","학생 1", "학생 2", "학생 3", "학생 4", "학생 5")
-                    val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, studentList)
-                    jddddob!!.adapter = adapter
+        // 동일 투표 항목에 참여한 기록이 있는 경우 중복 참여 방지
+        if(nowVoteId == lastVoteId){
+            showToast("투표 참여 이력이 존재합니다.")
+            showVoteStatus()
+            return
+        }
 
-                    dialogBinding.textVoteTitle.text = "우리반 봉사왕"
-                    dialogBinding.textVoteDate.text = "2021.02.03 ~ 2025.03.02"
+        // 투표 참여
+        val dialogBinding = DialogVoteParticipationBinding.inflate(layoutInflater)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogBinding.root)
+            .create()
 
-                    // Button
-                    dialogBinding.btnDialogCancel.setOnClickListener { dialog.dismiss() }
-                    dialogBinding.btnDialogConfirm.setOnClickListener {
-                        showToast("투표가 완료되었습니다.")
-                        dialog.dismiss()
-                    }
+        // 내용 구성
+        val startDate = DataUtil.formatDate(DataUtil.formatDateTimeFromServer(nationViewModel.currentVoteInfo.value!!.startDate)!!)
+        val endDate = DataUtil.formatDate(DataUtil.formatDateTimeFromServer(nationViewModel.currentVoteInfo.value!!.endDate)!!)
+        dialogBinding.textVoteTitle.text = nationViewModel.currentVoteInfo.value!!.title
+        dialogBinding.textVoteDate.text = "${startDate} ~ $endDate"
 
-                    dialog.show()
-                }
-            }.onFailure {
+        // Spinner 설정
+        val spinner = dialogBinding.spinnerSelectStudent
+        val studentList = nationViewModel.studentList.value ?: emptyList()
 
+        // ArrayAdapter에 직접 `VoteOptionResponse` 리스트를 전달
+        val adapter = object : ArrayAdapter<VoteOptionResponse>(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            studentList
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val textView = super.getView(position, convertView, parent) as TextView
+                textView.text = studentList[position].studentName// 학생 이름만 표시
+                return textView
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val textView = super.getDropDownView(position, convertView, parent) as TextView
+                textView.text = studentList[position].studentName // 드롭다운에도 학생 이름만 표시
+                return textView
             }
         }
+        spinner!!.adapter = adapter
+
+        // Button
+        dialogBinding.btnDialogCancel.setOnClickListener { dialog.dismiss() }
+        dialogBinding.btnDialogConfirm.setOnClickListener {
+            val position = spinner.selectedItemPosition
+            val selectedStudentID = studentList[position].voteItemId
+
+            nationViewModel.submitVote(selectedStudentID)
+            SharedPreferencesUtil.putValue(SharedPreferencesUtil.VOTE_HISTORY_ID, nowVoteId)
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     // 선생님용 : 투표현황 확인/새 투표 생성
@@ -239,9 +287,8 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
         VoteStatusDialog(requireContext(), voteInfo).show()
     }
 
-    //
     private fun showVoteCreate() {
-        if(nationViewModel.currentVoteInfo.value!!.voteStatus == VoteStatus.IN_PROGRESS){
+        if(nationViewModel.currentVoteInfo.value != null && nationViewModel.currentVoteInfo.value!!.voteStatus == VoteStatus.IN_PROGRESS){
             val dialog = BaseTwoButtonDialog(
                 context = requireContext(),
                 title = "진행중인 투표가 존재합니다!",

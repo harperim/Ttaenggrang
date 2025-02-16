@@ -28,6 +28,10 @@
     <color name="chartGreen">#6FD195</color>
     <color name="chartOrange">#FFAE4C</color>
 
+
+    <color name="red">#0047AB</color>
+    <color name="blue">#D6001C</color>
+
     <!--Orange-->
     <color name="foundation_orange_50">#fff5eb</color>
     <color name="foundation_orange_100">#ffdfc2</color>

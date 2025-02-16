@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.datatransport.runtime.firebase.transport.LogEventDropped
-import com.ladysparks.ttaenggrang.data.model.dto.AlarmDto
+import com.ladysparks.ttaenggrang.data.model.response.BankTransactionsResponse
 import com.ladysparks.ttaenggrang.data.model.response.EconomySummaryResponse
 import com.ladysparks.ttaenggrang.data.model.response.MainStudentSummary
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
@@ -38,8 +38,8 @@ class HomeStudentViewModel : ViewModel(){
         }
     }
 
-    private val _bankTransactionsList= MutableLiveData<MainStudentSummary?>()
-    val bankTransactionsList: LiveData<MainStudentSummary?> get() = _bankTransactionsList
+    private val _bankTransactionsList= MutableLiveData<List<BankTransactionsResponse?>>()
+    val bankTransactionsList: LiveData<List<BankTransactionsResponse?>> get() = _bankTransactionsList
     fun fetchBankTransactions(){
         viewModelScope.launch{
             runCatching {
@@ -47,9 +47,11 @@ class HomeStudentViewModel : ViewModel(){
                 RetrofitUtil.studentService.getBankTransactions()
 
             }.onSuccess {
-                _bankTransactionsList.value = it.data
+                Log.d("TAG", "fetchBankTransactions: ${it.data}")
+                _bankTransactionsList.value = it.data ?: emptyList()
             }.onFailure {
                 //                _studentList.value = emptyList()
+                Log.d("TAG", "fetchBankTransactions ERROR: ${it}")
                 _errorMessage.value = ApiErrorParser.extractErrorMessage(it)
 
             }

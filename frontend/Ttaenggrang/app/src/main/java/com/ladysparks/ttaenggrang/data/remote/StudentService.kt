@@ -5,6 +5,7 @@ import com.ladysparks.ttaenggrang.data.model.request.StudentSingleCreateRequest
 import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.dto.JobDto
 import com.ladysparks.ttaenggrang.data.model.dto.NationInfoDto
+import com.ladysparks.ttaenggrang.data.model.response.BankTransactionsResponse
 import com.ladysparks.ttaenggrang.data.model.response.EconomySummaryResponse
 import com.ladysparks.ttaenggrang.data.model.response.MainStudentSummary
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
@@ -21,7 +22,7 @@ interface StudentService {
     suspend fun getStudentDataSummary(): ApiResponse<MainStudentSummary>
 
     @GET("students/{studentId}/dashboard/bank-transactions")
-    suspend fun getBankTransactions(): ApiResponse<MainStudentSummary>
+    suspend fun getBankTransactions(): ApiResponse<List<BankTransactionsResponse>>
 
 
 

@@ -2,12 +2,14 @@ package com.ladysparks.ttaenggrang.ui.home
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
@@ -15,31 +17,77 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.ladysparks.ttaenggrang.R
+import com.ladysparks.ttaenggrang.base.ApplicationClass
 import com.ladysparks.ttaenggrang.base.BaseFragment
+import com.ladysparks.ttaenggrang.base.BaseTableAdapter
 import com.ladysparks.ttaenggrang.databinding.FragmentHomeStudentBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStudentsBinding
+import com.ladysparks.ttaenggrang.realm.NotificationModel
+import com.ladysparks.ttaenggrang.realm.NotificationRepository
+import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.ui.component.PieChartComponent
+import com.ladysparks.ttaenggrang.util.DataUtil
 import com.ladysparks.ttaenggrang.util.NumberUtil
+import com.ladysparks.ttaenggrang.util.TransactionTypeUtil
+import com.ladysparks.ttaenggrang.util.showErrorDialog
+import com.ladysparks.ttaenggrang.util.showToast
+import java.util.Date
 
 
 class HomeStudentFragment : BaseFragment<FragmentHomeStudentBinding>(FragmentHomeStudentBinding::bind, R.layout.fragment_home_student) {
 
     private lateinit var homeStudentViewModel: HomeStudentViewModel
 
+    private lateinit var studentAdapter: BaseTableAdapter
+    private lateinit var alarmAdapter: AlarmAdapter
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         homeStudentViewModel =  ViewModelProvider(this).get(HomeStudentViewModel::class.java)
 
+        initAdapter()
         initObserve()
-//        setupGoalAchievementChart()
-//        setupTotalAssetsChart()
+        loadAlarmList()
 
         // 함수 실행
         homeStudentViewModel.fetchStudentSummary()
+        homeStudentViewModel.fetchBankTransactions()
+    }
+
+    private fun initAdapter() {
+        val studentHeader = listOf("거래날짜", "거래내역", "금액", "계좌 잔고")
+        studentAdapter = BaseTableAdapter(studentHeader, emptyList())
+        binding.recyclerTransactionHistory.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerTransactionHistory .adapter = studentAdapter
+    }
+
+    private fun loadAlarmList() {
+     //   insertSampleNotifications()
+        val alarmList = NotificationRepository.getStudentNotifications()
+
+        if(alarmList.isNullOrEmpty()){
+            binding.recyclerAlarm.visibility = View.GONE
+            binding.textNullAlarm.visibility = View.VISIBLE
+        }else{
+            binding.recyclerAlarm.visibility = View.VISIBLE
+            binding.textNullAlarm.visibility = View.GONE
+
+            alarmAdapter = AlarmAdapter(alarmList)
+            binding.recyclerAlarm.adapter = alarmAdapter
+            binding.recyclerAlarm.layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 
     private fun initObserve() {
+        homeStudentViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+            errorMessage?.let {
+                showErrorDialog(Throwable(it))
+                homeStudentViewModel.clearErrorMessage()
+            }
+        }
+
         homeStudentViewModel.studentSummaryData.observe(viewLifecycleOwner){ response ->
             binding.textNationalRevenue.text = NumberUtil.formatWithComma(response!!.accountBalance.toString())
             binding.textAvgBalance.text = "${response.currentRank} 위"
@@ -51,6 +99,22 @@ class HomeStudentFragment : BaseFragment<FragmentHomeStudentBinding>(FragmentHom
 
             // 총 자산 차트 재구성
             setupTotalAssetsChart(response.accountBalance.toFloat(), response.totalSavings.toFloat(), response.totalInvestmentAmount.toFloat())
+        }
+
+        homeStudentViewModel.bankTransactionsList.observe(viewLifecycleOwner) { responsse ->
+            responsse?.let {
+                val dataRows = it.map { transactions ->
+                    BaseTableRowModel(
+                        listOf(
+                            DataUtil.formatDateTimeToDisplay(transactions!!.transactionDate),
+                            TransactionTypeUtil.convertToKorean(transactions.transactionType),
+                            NumberUtil.formatWithComma(transactions.amount),
+                            NumberUtil.formatWithComma(transactions.accountBalance)
+                        )
+                    )
+                }
+                studentAdapter.updateData(dataRows)
+            }
         }
     }
 

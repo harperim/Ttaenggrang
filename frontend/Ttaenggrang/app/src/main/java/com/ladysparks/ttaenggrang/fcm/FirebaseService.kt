@@ -42,7 +42,7 @@ class FirebaseService : FirebaseMessagingService(){ //  : FirebaseMessagingServi
             messageContent = data["message"] ?: messageContent
             category = data["notificationType"] ?: "일반"
             sender = data["sender"] ?: "System"
-            receiver = data["receiver"] ?: ""
+            receiver = data["receiver"] ?: "" // TEACHER, STUDENT
             time = data["time"]?.toLongOrNull() ?: System.currentTimeMillis()
         }
 

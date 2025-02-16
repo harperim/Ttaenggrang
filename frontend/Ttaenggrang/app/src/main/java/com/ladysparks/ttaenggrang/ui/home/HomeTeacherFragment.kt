@@ -25,13 +25,14 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.ladysparks.ttaenggrang.MainActivity
 import com.ladysparks.ttaenggrang.R
+import com.ladysparks.ttaenggrang.base.ApplicationClass
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
-import com.ladysparks.ttaenggrang.data.model.dto.AlarmDto
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
 import com.ladysparks.ttaenggrang.databinding.DialogBaseConfirmCancelBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.databinding.FragmentHomeTeacherBinding
+import com.ladysparks.ttaenggrang.realm.NotificationModel
 import com.ladysparks.ttaenggrang.realm.NotificationRepository
 import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
 import com.ladysparks.ttaenggrang.ui.component.IncentiveDialogFragment
@@ -66,7 +67,6 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
 
         // ViewModel
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-
 
         initAdapter()
         observeLiveData()
@@ -109,7 +109,7 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
                 return@observe
             }
 
-            // 변수 하랑
+            // 변수
             studentListCache = response
 
             response?.let {
@@ -118,8 +118,8 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
                         listOf(
                             student.name?.toString() ?: "N/A",
                             student.username ?: "N/A",
-                            student.job?.jobName ?: "시민",
-                            (student.job?.baseSalary ?: 0).toString(),
+                            student.jobInfo?.jobName ?: "시민",
+                            NumberUtil.formatWithComma(student.jobInfo?.baseSalary ?: 0),
                             NumberUtil.formatWithComma(student.bankAccount?.balance.toString())
                         )
                     )
@@ -264,23 +264,15 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
         legend.setDrawInside(false)
     }
 
-    private fun sampleDataAlarmList() {
-//        val tempData = listOf(
-//            AlarmDto(1, "거래 발생", "누가 물건을 샀어요", "시스템", Date().time),
-//            AlarmDto(2, "거래 발생1", "누가 물건을 샀어요2", "시스템2", Date().time),
-//            AlarmDto(3, "거래 발생2", "누가 물건을 샀어요3", "시스템3", Date().time)
-//        )
-//
-//        // 어댑터 초기화 및 RecyclerView 설정
-//        alarmAdapter = AlarmAdapter(tempData)
-//        binding.recyclerAlarm.adapter = alarmAdapter
-//        binding.recyclerAlarm.layoutManager = LinearLayoutManager(requireContext())
-//
-//        // 어댑터 데이터 갱신
-//        alarmAdapter.updateData(tempData)
 
-        // 🔹 Realm에서 저장된 알림 목록 가져오기
-        val alarmList = NotificationRepository.getAllNotifications()
+
+
+    private fun sampleDataAlarmList() {
+        // insertSampleNotifications()
+        //  Realm에서 저장된 알림 목록 가져오기
+        //  val alarmList = NotificationRepository.getAllNotifications()
+        val alarmList = NotificationRepository.getTeacherNotifications()
+
         if(alarmList.isNullOrEmpty()){
             binding.recyclerAlarm.visibility = View.GONE
             binding.textNullAlarm.visibility = View.VISIBLE
@@ -288,17 +280,13 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
             binding.recyclerAlarm.visibility = View.VISIBLE
             binding.textNullAlarm.visibility = View.GONE
 
-            // 🔹 어댑터 초기화 및 RecyclerView 설정
             alarmAdapter = AlarmAdapter(alarmList)
             binding.recyclerAlarm.adapter = alarmAdapter
             binding.recyclerAlarm.layoutManager = LinearLayoutManager(requireContext())
-
-            // 🔹 어댑터 데이터 갱신
-            alarmAdapter.updateData(alarmList)
         }
-
-
     }
+
+
 
     private fun initAdapter() {
         alarmAdapter = AlarmAdapter(arrayListOf())
