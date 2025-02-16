@@ -163,6 +163,4 @@ class NewsHistoryTeacherFragment : BaseFragment<FragmentNewsHistoryTeacherBindin
             )
         )
     }
-
-
 }
