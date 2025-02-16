@@ -22,6 +22,8 @@ import com.ladysparks.ttaenggrang.util.ApiErrorParser
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 
 class StockViewModel : ViewModel() {
     private val stockService: StockService = RetrofitUtil.stockService
@@ -100,8 +102,8 @@ class StockViewModel : ViewModel() {
     val newsDetailLiveData: LiveData<NewsDto?> get() = _newsDetailLiveData
 
     // 최신 뉴스 저장
-    private val _latestNewsLiveData  = MutableLiveData<NewsDto?>()
-    val latestNewsLiveData : LiveData<NewsDto?> get() = _latestNewsLiveData
+    private val _latestNewsLiveData = MutableLiveData<NewsDto?>()
+    val latestNewsLiveData: LiveData<NewsDto?> get() = _latestNewsLiveData
 
 
     // 로딩확인
@@ -112,9 +114,19 @@ class StockViewModel : ViewModel() {
     private val _stockSummaryList = MutableLiveData<List<BaseTableRowModel>>()
     val stockSummaryList: LiveData<List<BaseTableRowModel>> get() = _stockSummaryList
 
-    // 총 수익률만 따로 관리하는 LiveData 추가
-    private val _totalReturnRate = MutableLiveData<Float>()
-    val totalReturnRate: LiveData<Float> get() = _totalReturnRate
+
+    // 총 수익
+    private val _totalProfit = MutableLiveData<Int>()
+    val totalProfit: LiveData<Int> get() = _totalProfit
+
+    // 총 수익률
+    private val _totalYield = MutableLiveData<Float>()
+    val totalYield: LiveData<Float> get() = _totalYield
+
+    init {
+        // ✅ 앱 실행 시 자동으로 거래 내역 가져와서 데이터 업데이트
+        fetchStudentStockTransactions()
+    }
 
 
     // 전체 주식 목록 조회
@@ -130,17 +142,17 @@ class StockViewModel : ViewModel() {
     }
 
     // 학생이 보유한 주식 목록 조회
-    fun fetchOwnedStocks() = viewModelScope.launch {
-        runCatching {
-            stockService.getStocksStudent()
-        }.onSuccess { response ->
-            _ownedStocks.postValue(response.data)
-            Log.d("TAG", "fetchOwnedStocks: 학생 주식 목록 조회성공!!!${response}")
-        }.onFailure { e ->
-            Log.e("StockViewModel", "보유 주식 조회 실패", e)
-            _ownedStocks.postValue(emptyList())
-        }
-    }
+//    fun fetchOwnedStocks() = viewModelScope.launch {
+//        runCatching {
+//            stockService.getStocksStudent()
+//        }.onSuccess { response ->
+//            _ownedStocks.postValue(response.data)
+//            Log.d("TAG", "fetchOwnedStocks: 학생 주식 목록 조회성공!!!${response}")
+//        }.onFailure { e ->
+//            Log.e("StockViewModel", "보유 주식 조회 실패", e)
+//            _ownedStocks.postValue(emptyList())
+//        }
+//    }
 
     // 주식 매도
     fun sellStock(stockId: Int, shareQuantity: Int, studentId: Int) = viewModelScope.launch {
@@ -236,7 +248,8 @@ class StockViewModel : ViewModel() {
         }
     }
 
-    // 학생 주식 거래 기록 조회
+
+// 학생 주식 거래 기록 조회
     fun fetchStudentStockTransactions() = viewModelScope.launch {
         runCatching {
             stockService.getStockTransactionHistory()
@@ -264,7 +277,7 @@ class StockViewModel : ViewModel() {
         }
     }
 
-    // 학생 주식 목록 테이블 계산
+//    // 학생 주식 목록 테이블 계산
     fun updateStockTableData() {
         val transactions = stockTransactionHistory.value ?: emptyList()
 
@@ -328,32 +341,32 @@ class StockViewModel : ViewModel() {
                 )
             )
         }
-
-
         // ✅ 총 수익 & 총 수익률 계산
         val totalProfit = totalValuation - totalInvestment
-        val totalReturnRateValue =
+        val totalYield =
             if (totalInvestment > 0) (totalProfit.toFloat() / totalInvestment) * 100 else 0f
+
+        _totalProfit.postValue(totalProfit) // ✅ 총 수익 LiveData 업데이트
+        _totalYield.postValue(totalYield) // ✅ 총 수익률 LiveData 업데이트
 
         Log.d("StockSummary", "총 투자액: $totalInvestment")
         Log.d("StockSummary", "총 평가금액: $totalValuation")
         Log.d("StockSummary", "총 수익: $totalProfit")
-        Log.d("StockSummary", "총 수익률: %.2f%%".format(totalReturnRateValue))
+        Log.d("StockSummary", "총 수익률: %.2f%%".format(totalYield))
 
-        // ✅ 총 투자액, 평가금액, 수익률 LiveData 업데이트
+        // 총 투자액, 평가금액, 수익률 LiveData 업데이트
         _stockSummary.postValue(
             mapOf(
                 "totalInvestment" to totalInvestment,
                 "totalValuation" to totalValuation,
                 "totalProfit" to totalProfit,
-                "totalReturnRate" to totalReturnRate
+                "totalReturnRate" to totalYield
             )
         )
         _stockTableData.postValue(transactionBasedStocks)
-        _totalReturnRate.postValue(totalReturnRateValue)
+        _totalYield.postValue(totalYield)
 
     }
-
 
     // 뉴스 생성
     fun createNews() {
@@ -413,15 +426,16 @@ class StockViewModel : ViewModel() {
                         latestNews.id?.let { fetchNewsDetailForLatest(it) } // 최신 뉴스 상세 조회 실행
                     }
                 }
-                Log.d("NewsViewModel", "뉴스 목록 조회 성공: ${response.data?.size}건")
+                Log.d("fetchNewsList", "뉴스 목록 조회 성공: ${response.data?.size}건")
             }.onFailure { error ->
                 _errorMessage.postValue("네트워크 오류: ${error.message}")
-                Log.e("NewsViewModel", "뉴스 목록 조회 실패", error)
+                Log.e("fetchNewsList", "뉴스 목록 조회 실패", error)
             }
         }
     }
 
     private var latestNewsId: Int? = null
+
     // ✅ 주기적으로 서버에서 최신 뉴스 확인 (Polling 방식)
     fun startNewsPolling() {
         viewModelScope.launch {
@@ -448,7 +462,7 @@ class StockViewModel : ViewModel() {
                 }
             }
         }.onFailure { error ->
-            Log.e("NewsViewModel", "뉴스 목록 조회 실패: ${error.message}")
+            Log.e("checkForNewNews", "뉴스 목록 조회 실패: ${error.message}")
         }
     }
 
@@ -467,21 +481,21 @@ class StockViewModel : ViewModel() {
         }
     }
 
-        // 선택 뉴스 상세 조회
-        fun fetchNewsDetail(newsId: Int) {
-            viewModelScope.launch {
-                runCatching {
-                    RetrofitUtil.stockService.getNews(newsId)
-                }.onSuccess { response ->
-                    response.data?.let {
-                        _newsDetailLiveData.postValue(it) // ✅ 데이터 업데이트
-                    }
-                }.onFailure { error ->
-                    Log.e("NewsViewModel", "뉴스 상세 조회 실패: ${error.message}")
-                    _errorMessage.postValue("뉴스를 불러오는데 실패했습니다.")
+    // 선택 뉴스 상세 조회
+    fun fetchNewsDetail(newsId: Int) {
+        viewModelScope.launch {
+            runCatching {
+                RetrofitUtil.stockService.getNews(newsId)
+            }.onSuccess { response ->
+                response.data?.let {
+                    _newsDetailLiveData.postValue(it) // ✅ 데이터 업데이트
                 }
+            }.onFailure { error ->
+                Log.e("NewsViewModel", "뉴스 상세 조회 실패: ${error.message}")
+                _errorMessage.postValue("뉴스를 불러오는데 실패했습니다.")
             }
         }
+    }
 
     // 교사 주식 목록 조회
     fun fetchStockList() {

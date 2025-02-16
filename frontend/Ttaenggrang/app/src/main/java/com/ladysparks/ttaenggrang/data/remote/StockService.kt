@@ -55,9 +55,9 @@ interface StockService {
     suspend fun getMarketStatus(): Response<OpenMarketResponse>
 
     // 학생 보유 주식 조회
-    @GET("stocks/buy")
-    suspend fun getStocksStudent(
-    ): ApiResponse<List<StockStudentDto>>
+//    @GET("stocks/buy")
+//    suspend fun getStocksStudent(
+//    ): ApiResponse<List<StockStudentDto>>
 
     // 학생 주식 거래 조회
     @GET("stock-transactions")
