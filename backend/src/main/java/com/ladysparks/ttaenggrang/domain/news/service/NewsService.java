@@ -12,29 +12,24 @@ import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
@@ -88,15 +83,7 @@ public class NewsService {
     }
 
     // 뉴스 기사 [생성] (확인 버튼을 누를 때까지 DB에 저장되지 않음)
-//    @PostConstruct
-//    public void logConfig() {
-//        String maskedKey = (apiKey != null && apiKey.length() >= 5)
-//                ? apiKey.substring(0, 5) + "*****"
-//                : "Invalid Key";
-//        System.out.println("debug: " + maskedKey);
-//    }
-
-    public NewsDTO generateRandomNewsFromStocks(Long teacherId) throws IOException {
+    public NewsDTO generateRandomNewsFromStocks(Long teacherId) {
         String apiKey = System.getenv("OPENAI_API_KEY");
 
         String maskedKey = (apiKey != null && apiKey.length() >= 5)
@@ -156,10 +143,7 @@ public class NewsService {
         String newsTypeStr = extractValue(generatedText, "유형", "[호재/악재]");
         NewsType newsType = newsTypeStr.contains("호재") ? NewsType.POSITIVE : NewsType.NEGATIVE;
 
-        // 5. 학생들에게 FCM 알림 전송
-        notificationService.sendNewsNotificationToStudents(teacherId, title, content);
-
-        // 6. DTO 반환 (DB에 저장 X)
+        // 5. DTO 반환 (DB에 저장 X)
         return NewsDTO.builder()
                 .title(title)
                 .content(content)
@@ -170,7 +154,7 @@ public class NewsService {
     }
 
     // 사용자가 확인 버튼을 누르면 DB에 저장
-    public NewsDTO confirmNews(NewsDTO newsDTO) {
+    public NewsDTO confirmNews(NewsDTO newsDTO) throws IOException {
         Long teacherId = getTeacherIdFromSecurityContext();
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 교사를 찾을 수 없습니다."));
@@ -188,6 +172,10 @@ public class NewsService {
                 .build();
 
         newsRepository.save(news);
+
+        // 학생들에게 FCM 알림 전송
+        notificationService.sendNewsNotificationToStudents(teacherId);
+
         return newsDTO;
     }
 

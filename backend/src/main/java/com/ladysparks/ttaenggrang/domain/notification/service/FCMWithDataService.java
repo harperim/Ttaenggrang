@@ -59,7 +59,7 @@ public class FCMWithDataService {
      * 📌 FCM 메시지 생성 (DTO 활용)
      * background 대응을 위해서 data로 전송한다.
      */
-    private String makeDataMessage(NotificationDTO notificationDTO, String targetToken) throws JsonProcessingException {
+    private String makeDataMessage(String targetToken, NotificationDTO notificationDTO) throws JsonProcessingException {
         Map<String, String> data = new HashMap<>();
         data.put("title", notificationDTO.getTitle());
 
@@ -95,15 +95,19 @@ public class FCMWithDataService {
         Constants.clientTokens.add(token);
     }
 
+    // 특정 토큰을 이용해서 전송
+    public void sendToStudent(String targetToken, NotificationDTO notificationDTO) throws IOException {
+        String message = makeDataMessage(targetToken, notificationDTO);
+        String response = sendDataMessageTo(message);
+    }
+
     // 등록된 모든 토큰을 이용해서 broadcasting
-    public int broadCastToAllStudents(Long teacherId, NotificationDTO notificationDTO) throws IOException {
-        List<StudentResponseDTO> studentResponseDTOList = studentService.findAllByTeacherId(teacherId);
-        for(StudentResponseDTO student: studentResponseDTOList) {
-            String targetToken = studentService.findFCMTokenById(student.getId());
-            String message = makeDataMessage(notificationDTO, targetToken);
+    public int broadCastToAllStudents(List<String> targetTokens, NotificationDTO notificationDTO) throws IOException {
+        for(String targetToken: targetTokens) {
+            String message = makeDataMessage(targetToken, notificationDTO);
             String response = sendDataMessageTo(message);
         }
-        return studentResponseDTOList.size();
+        return targetTokens.size();
     }
 
 }

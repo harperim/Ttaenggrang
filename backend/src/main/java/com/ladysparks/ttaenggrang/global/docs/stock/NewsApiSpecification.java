@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.IOException;
 import java.util.List;
 
 @Tag(name = "[교사/학생] 뉴스 관리", description = "뉴스 관련 API")
@@ -35,7 +36,7 @@ public interface NewsApiSpecification {
             - `teacherId`를 기준으로 저장됨  
             """)
     @PostMapping("/news/confirm")
-    ResponseEntity<ApiResponse<NewsDTO>> confirmNews(@RequestBody NewsDTO newsDTO);
+    ResponseEntity<ApiResponse<NewsDTO>> confirmNews(@RequestBody NewsDTO newsDTO) throws IOException;
 
     @Operation(summary = "(교사/학생) 뉴스 전체 목록 조회", description = """
             💡 **현재 로그인한 교사가 만든 뉴스 목록을 조회**
