@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @Data
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class StockMarketStatus {
 
     @Id
