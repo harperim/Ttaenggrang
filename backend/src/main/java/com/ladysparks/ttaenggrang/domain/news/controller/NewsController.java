@@ -24,18 +24,18 @@ public class NewsController implements NewsApiSpecification {
 
     // 뉴스 [생성] Chatgpt 기반 : DB에 저장되지 않음, 미리보기 용도
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<NewsDTO>> createNews() throws IOException {
+    public ResponseEntity<ApiResponse<NewsDTO>> createNews() {
         Long teacherId = teacherService.getCurrentTeacherId();
         NewsDTO generatedNews = newsService.generateRandomNewsFromStocks(teacherId);
         return ResponseEntity.ok(ApiResponse.success(generatedNews));
     }
 
     // 뉴스 [확인 후 저장]
-//    @PostMapping("/confirm")
-//    public ResponseEntity<ApiResponse<NewsDTO>> confirmNews(@RequestBody NewsDTO newsDTO) {
-//        NewsDTO savedNews = newsService.confirmNews(newsDTO);
-//        return ResponseEntity.ok(ApiResponse.success(savedNews));
-//    }
+    @PostMapping("/confirm")
+    public ResponseEntity<ApiResponse<NewsDTO>> confirmNews(@RequestBody NewsDTO newsDTO) throws IOException {
+        NewsDTO savedNews = newsService.confirmNews(newsDTO);
+        return ResponseEntity.ok(ApiResponse.success(savedNews));
+    }
 
     // 뉴스 목록 [전체 조회]
     @GetMapping("/list")

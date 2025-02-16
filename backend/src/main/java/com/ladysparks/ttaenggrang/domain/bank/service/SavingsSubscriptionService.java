@@ -1,9 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.bank.service;
 
-import com.ladysparks.ttaenggrang.domain.bank.dto.DepositAndSavingsCountDTO;
-import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsProductDTO;
-import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDTO;
-import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsSubscriptionDetailDTO;
+import com.ladysparks.ttaenggrang.domain.bank.dto.*;
+import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsPayout;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsProduct;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription.SavingsSubscriptionStatus;
@@ -148,7 +146,7 @@ public class SavingsSubscriptionService {
                 .filter(dto -> dto.getStatus() == SavingsSubscriptionStatus.MATURED || dto.getStatus() == SavingsSubscriptionStatus.WITHDRAWN) // 2. 상품의 가입 내역
                 .toList();
 
-        // 3. 납입 상태인 금액 합산
+        // 2. 만기/중도 해지로 지급된 금액 합산
         return savingsPayoutService.getTotalPayoutAmount(savingsSubscriptionDTOList);
     }
 
@@ -174,6 +172,51 @@ public class SavingsSubscriptionService {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 만기 시 내부적으로 호출
+     * 1. savingsSubscription의 status를 Matured로 바꿈
+     * 2. savingsPayout 생성
+     */
+    @Transactional
+    public SavingsPayoutDTO processMaturity(Long subscriptionId) {
+        // 1. 적금 구독 정보 가져오기
+        SavingsSubscription subscription = savingsSubscriptionRepository.findById(subscriptionId)
+                .orElseThrow(() -> new IllegalArgumentException("적금 가입 정보를 찾을 수 없습니다."));
+
+        // 2. 이미 만기된 경우 예외 처리
+        if (subscription.getStatus() == SavingsSubscription.SavingsSubscriptionStatus.MATURED) {
+            throw new IllegalStateException("이미 만기 처리된 적금입니다.");
+        }
+
+        // 3. 적금의 상태를 MATURED로 변경
+        subscription.setStatus(SavingsSubscription.SavingsSubscriptionStatus.MATURED);
+        savingsSubscriptionRepository.save(subscription);
+
+        // 4. 이자 계산 (이자율 적용)
+        int principal = subscription.getDepositAmount();
+        float interestRate = subscription.getSavingsProduct().getInterestRate();
+        int interestAmount = Math.round(principal * interestRate);
+
+        // 5. 지급 총액 계산
+        int payoutAmount = principal + interestAmount;
+
+        // 6. 지급 내역 생성
+        SavingsPayoutDTO savingsPayout = SavingsPayoutDTO.builder()
+                .savingsSubscriptionId(subscription.getId())
+                .payoutAmount(payoutAmount)
+                .interestAmount(interestAmount)
+                .payoutDate(LocalDate.now()) // 오늘 날짜 지급
+                .payoutType(SavingsPayout.SavingsPayoutType.MATURITY)
+                .build();
+
+        // 7. 지급 내역 저장
+        return savingsPayoutService.createPayout(savingsPayout);
+    }
+
+    public String getSavingsProductName(Long savingsSubscriptionId) {
+        return savingsSubscriptionRepository.findSavingsProductNameBySubscriptionId(savingsSubscriptionId);
     }
 
 }

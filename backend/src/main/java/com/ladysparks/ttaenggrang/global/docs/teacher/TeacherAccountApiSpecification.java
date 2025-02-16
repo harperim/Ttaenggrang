@@ -30,9 +30,9 @@ public interface TeacherAccountApiSpecification {
             ---
             
             **[ 요청 필드 ]**
-            - **email**: 교사 계정 이메일
-            _ **password**: 교사 계정 비밀번호
-            - **fcmToken**: 알림 수신 FCM 토큰 (선택)
+            - **email** : 교사 계정 이메일
+            - **password** : 교사 계정 비밀번호
+            - **fcmToken** : 알림 수신 FCM 토큰 (선택)
             
             ---
             

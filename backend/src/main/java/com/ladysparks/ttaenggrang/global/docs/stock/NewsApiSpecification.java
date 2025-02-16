@@ -26,17 +26,17 @@ public interface NewsApiSpecification {
             - 응답 데이터에 뉴스 제목, 내용, 주식명, 뉴스 유형(호재/악재) 포함  
             """)
     @PostMapping("/news/create")
-    ResponseEntity<ApiResponse<NewsDTO>> createNews() throws IOException;
+    ResponseEntity<ApiResponse<NewsDTO>> createNews();
 
-//    @Operation(summary = "(교사) 뉴스 저장", description = """
-//            💡 뉴스 생성 후 **확인 버튼 클릭 시 저장**
-//
-//            - 생성된 뉴스를 `DB에 저장`
-//            - 저장된 뉴스는 **우리 반 학생들도 조회 가능**
-//            - `teacherId`를 기준으로 저장됨
-//            """)
-//    @PostMapping("/news/confirm")
-//    ResponseEntity<ApiResponse<NewsDTO>> confirmNews(@RequestBody NewsDTO newsDTO);
+    @Operation(summary = "(교사) 뉴스 저장", description = """
+            💡 뉴스 생성 후 **확인 버튼 클릭 시 저장**  
+
+            - 생성된 뉴스를 `DB에 저장`  
+            - 저장된 뉴스는 **우리 반 학생들도 조회 가능**  
+            - `teacherId`를 기준으로 저장됨  
+            """)
+    @PostMapping("/news/confirm")
+    ResponseEntity<ApiResponse<NewsDTO>> confirmNews(@RequestBody NewsDTO newsDTO) throws IOException;
 
     @Operation(summary = "(교사/학생) 뉴스 전체 목록 조회", description = """
             💡 **현재 로그인한 교사가 만든 뉴스 목록을 조회**
