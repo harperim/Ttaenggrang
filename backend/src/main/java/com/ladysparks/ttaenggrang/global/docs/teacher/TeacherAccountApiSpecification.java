@@ -24,7 +24,22 @@ public interface TeacherAccountApiSpecification {
     @PostMapping("/signup")
     ResponseEntity<ApiResponse<TeacherSignupDTO>> signup(@RequestBody TeacherSignupDTO teacherSignupDTO);
 
-    @Operation(summary = "(교사) 로그인", description = "💡 교사의 로그인을 진행합니다.")
+    @Operation(summary = "(교사) 로그인", description = """
+            💡 교사의 로그인을 진행합니다.
+            
+            ---
+            
+            **[ 요청 필드 ]**
+            - **email**: 교사 계정 이메일
+            _ **password**: 교사 계정 비밀번호
+            - **fcmToken**: 알림 수신 FCM 토큰 (선택)
+            
+            ---
+            
+            **[ 설명 ]**
+            - `fcmToken`은 알림을 수신 받을 기기에서 발급받은 FCM 토큰입니다.
+                - 로그인 단계에서 입력 받는 이유는 사용자가 다른 기기에서 로그인할 경우 현재 기기가 아닌 이전 기기에 알림이 전송되기 때문입니다.
+            """)
     @PostMapping("/login")
     ResponseEntity<ApiResponse<TeacherLoginDTO>> login(@RequestBody TeacherLoginDTO teacherLoginDTO);
 

@@ -13,7 +13,6 @@ public class OverdueTaxPaymentDTO {
     private String description;  // 미납 사유
     private int totalAmount;     // 미납된 세금 총합
 
-
     public interface OverdueTaxPaymentProjection {
         String getDescription();   // '벌금'
         String getTaxNames();      // '소득세, 주민세, 부가세'

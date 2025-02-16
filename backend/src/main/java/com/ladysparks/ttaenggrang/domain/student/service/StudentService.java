@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
-import org.springframework.boot.autoconfigure.batch.BatchProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -326,7 +325,6 @@ public class StudentService {
 
     // 학생 로그인
     public StudentLoginResponseDTO loginStudent(StudentLoginRequestDTO studentLoginRequestDTO) {
-
         // 1. 학생 ID 확인
         Student student = studentRepository.findByUsername(studentLoginRequestDTO.getUsername())
                 .orElseThrow(() -> new IllegalIdentifierException("아이디를 찾을 수 없습니다."));
@@ -334,6 +332,11 @@ public class StudentService {
         // 2. 비밀번호 검증
         if (!passwordEncoder.matches(studentLoginRequestDTO.getPassword(), student.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // FCM 토큰이 포함된 경우
+        if (studentLoginRequestDTO.getFcmToken() != null) {
+            saveFCMToken(student.getId(), studentLoginRequestDTO.getFcmToken().get());
         }
 
         // 3. JMT 토큰 생성
@@ -375,7 +378,7 @@ public class StudentService {
         return ApiResponse.success("직업을 가진 학생 목록 조회 성공", responseDTOs);
     }
 
-    // ✅ 교사 ID로 우리 반 학생 전체 조회
+    // 교사 ID로 우리 반 학생 전체 조회
     public ApiResponse<List<StudentResponseDTO>> getMyClassStudents(Long teacherId) {
         List<Student> students = studentRepository.findAllByTeacherId(teacherId);
 
@@ -497,9 +500,17 @@ public class StudentService {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID를 가진 학생이 존재하지 않습니다."));
 
-        return nationService.findNationByTeacherId(student.getTeacher().getId())
+        return nationService.findNationDTOByTeacherId(student.getTeacher().getId())
                 .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."))
                 .getId();
+    }
+
+    public NationDTO getNationById(Long studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID를 가진 학생이 존재하지 않습니다."));
+
+        return nationService.findNationDTOByTeacherId(student.getTeacher().getId())
+                .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
     }
 
     public Long findBankAccountIdById(Long studentId) {
@@ -587,7 +598,7 @@ public class StudentService {
 
         // 학생의 국가 정보 조회
         Long teacherId = findTeacherIdByStudentId(studentId);
-        NationDTO nationDTO = nationService.findNationByTeacherId(teacherId)
+        NationDTO nationDTO = nationService.findNationDTOByTeacherId(teacherId)
                 .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
 
         SavingsAchievementDTO savingsAchievementDTO = SavingsAchievementDTO.builder()
@@ -636,4 +647,11 @@ public class StudentService {
         return studentRepository.getStudentManagementListByTeacherId(teacherId);
     }
 
+    public void saveFCMToken(Long studentId, String fcmToken) {
+        studentRepository.updateFcmToken(studentId, fcmToken);
+    }
+
+    public String findFCMTokenById(Long studendId) {
+        return studentRepository.findFcmTokenById(studendId);
+    }
 }

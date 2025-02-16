@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.IOException;
 import java.util.List;
 
 @Tag(name = "[교사/학생] 뉴스 관리", description = "뉴스 관련 API")
@@ -19,11 +20,11 @@ public interface NewsApiSpecification {
 
     @Operation(summary = "(교사) 뉴스 생성", description = "💡 버튼 클릭 시 ChatGPT API를 통해 랜덤 뉴스 생성")
     @PostMapping("/news/create")
-    ResponseEntity<ApiResponse<NewsDTO>> createNews();
+    ResponseEntity<ApiResponse<NewsDTO>> createNews() throws IOException;
 
-    @Operation(summary = "(교사) 뉴스 저장", description = "💡 뉴스 생성 후 확인 버튼 클릭 시, 저장")
-    @PostMapping("/news/confirm")
-    ResponseEntity<ApiResponse<NewsDTO>> confirmNews(@RequestBody NewsDTO newsDTO);
+//    @Operation(summary = "(교사) 뉴스 저장", description = "💡 뉴스 생성 후 확인 버튼 클릭 시, 저장")
+//    @PostMapping("/news/confirm")
+//    ResponseEntity<ApiResponse<NewsDTO>> confirmNews(@RequestBody NewsDTO newsDTO);
 
     @Operation(summary = "(교사/학생) 뉴스 전체 목록 조회", description = "💡 현재 로그인한 교사가 만든 뉴스 목록을 가져와 교사/학생이 전체 목록을 조회합니다.")
     @GetMapping("/news/list")

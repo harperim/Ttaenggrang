@@ -26,7 +26,7 @@ public class TeacherDashboardService {
     public TeacherDashboardDTO getTeacherDashboardData() {
         Long teacherId = teacherService.getCurrentTeacherId();
 
-        NationDTO nationDTO = nationService.findNationByTeacherId(teacherId)
+        NationDTO nationDTO = nationService.findNationDTOByTeacherId(teacherId)
                 .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
 
         int nationalTreasuryIncome = nationDTO.getNationalTreasury();
