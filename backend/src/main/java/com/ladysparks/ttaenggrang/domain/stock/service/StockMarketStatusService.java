@@ -25,8 +25,9 @@ public class StockMarketStatusService {
     private final StockMarketStatusRepository stockMarketStatusRepository;
     private final StockMarketStatusMapper stockMarketStatusMapper;
     private final TeacherService teacherService;
+    private final StockHistoryService stockHistoryService;
 
-    // 평일 09:00 자동 개장
+    // 🕔 평일 09:00 자동 개장
     @Transactional
     public void autoMarketOpen() {
         Long teacherId = teacherService.getCurrentTeacherId();
@@ -41,7 +42,7 @@ public class StockMarketStatusService {
         }
     }
 
-    // 평일 17:00 자동 폐장
+    // 🕔 평일 17:00 자동 폐장
     @Transactional
     public void autoMarketClose() {
         Long teacherId = teacherService.getCurrentTeacherId();
@@ -49,6 +50,8 @@ public class StockMarketStatusService {
 
         // 무조건 폐장
         setStockMarketStatus(teacherId, false, stockMarketStatusDTO.isTeacherOn());
+
+        stockHistoryService.saveStockHistoryAndUpdateChangeRate();
     }
 
     // 주식 시장 활성화/비활성화 설정 (교사 수동 설정)

@@ -29,7 +29,7 @@ public class SavingsPayoutDTO {
     private SavingsPayoutType payoutType;
 
     @JsonProperty("isPaid")
-    private boolean isPaid;
+    private boolean paid;
 
     private Timestamp createdAt;
 

@@ -32,7 +32,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-
 @Service
 @RequiredArgsConstructor
 public class NewsService {
@@ -156,6 +155,7 @@ public class NewsService {
     // 사용자가 확인 버튼을 누르면 DB에 저장
     public NewsDTO confirmNews(NewsDTO newsDTO) throws IOException {
         Long teacherId = getTeacherIdFromSecurityContext();
+
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 교사를 찾을 수 없습니다."));
 
@@ -208,6 +208,7 @@ public class NewsService {
                 .map(news -> NewsSummaryDTO.builder()
                         .id(news.getId())
                         .title(news.getTitle())
+//                        .content(news.getContent())
                         .stockName(news.getStock().getName())
                         .createdAt(news.getCreatedAt())
                         .newsType(news.getNewsType().name())

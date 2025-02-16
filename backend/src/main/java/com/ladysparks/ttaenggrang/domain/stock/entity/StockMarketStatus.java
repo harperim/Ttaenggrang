@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
 @Data
+@Entity
 public class StockMarketStatus {
 
     @Id

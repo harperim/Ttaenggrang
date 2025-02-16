@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ChangeResponseDTO {
+public class ChangeResponseDTO {        // 변동률 포함
 
     private Long id;                    // 주식 ID
     private String name;                // 주식 이름

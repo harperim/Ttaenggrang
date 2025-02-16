@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface StockTransactionRepository extends JpaRepository<StockTransaction, Long> {
@@ -50,5 +51,12 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
     List<Integer> findAllTransactionVolumes();
 
     int countByStockIdAndTransactionDateAfter(Long stock_id, Timestamp transactionDate);
+
+    // 추가
+    @Query("SELECT COALESCE(SUM(st.share_count), 0) FROM StockTransaction st WHERE st.stock.id = :stockId AND st.transactionType = 'BUY' AND st.transactionDate BETWEEN :startTime AND :endTime")
+    int getBuyVolume(@Param("stockId") Long stockId, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime);
+
+    @Query("SELECT COALESCE(SUM(st.share_count), 0) FROM StockTransaction st WHERE st.stock.id = :stockId AND st.transactionType = 'SELL' AND st.transactionDate BETWEEN :startTime AND :endTime")
+    int getSellVolume(@Param("stockId") Long stockId, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime);
 
 }
