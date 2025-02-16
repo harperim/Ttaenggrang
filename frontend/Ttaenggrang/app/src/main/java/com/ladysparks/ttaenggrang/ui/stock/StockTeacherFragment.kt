@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.data.dummy.StockDummyData
+import com.ladysparks.ttaenggrang.data.model.dto.NewsDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.databinding.DialogNewsCreateBinding
 import com.ladysparks.ttaenggrang.databinding.DialogNewsDetailBinding
@@ -34,7 +35,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
     private val viewModel: StockViewModel by viewModels()
     private lateinit var stockAdapter: StockAdapter
     private var selectedStock: StockDto? = null // 선택한 주식 저장
-    private lateinit var  lineChartComponent: LineChartComponent
+    private lateinit var lineChartComponent: LineChartComponent
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,7 +68,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         }
 
         binding.btnDetail.setOnClickListener {
-            Toast.makeText(requireContext(),"눌림",Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "눌림", Toast.LENGTH_SHORT).show()
             showNews()
         }
 
@@ -98,12 +99,12 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
-        // ✅ create 버튼을 눌렀을 때만 서버 요청 후 UI 업데이트
+        // create 버튼을 눌렀을 때만 서버 요청 후 UI 업데이트
         dialogNewsCreateBinding.btnCreate.setOnClickListener {
             viewModel.createNews() // 서버에 요청 보내기
         }
 
-        // ✅ 서버 응답을 받은 후 다이얼로그 UI를 업데이트
+        // 서버 응답을 받은 후 다이얼로그 UI를 업데이트
         viewModel.newsLiveData.observe(viewLifecycleOwner) { news ->
             news?.let {
                 dialogNewsCreateBinding.textDialogNewsCreateDate.setText(it.createdAt)
@@ -136,9 +137,28 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         }
 
         dialogNewsCreateBinding.btnAdd.setOnClickListener { // fcm 알림+등록
+            val title = dialogNewsCreateBinding.textDialogNewsTitle.text.toString()
+            val content = dialogNewsCreateBinding.textDialogNewsContent.text.toString()
+            val stockName = dialogNewsCreateBinding.textDialogStockName.text.toString()
+            val createdAt =
+                dialogNewsCreateBinding.textDialogNewsCreateDate.text.toString() // 생성 시간 자동 설정
+            val newsType = "POSITIVE"
 
+            if (title.isBlank() || content.isBlank() || stockName.isBlank()) {
+                Toast.makeText(requireContext(), "생성하기 버튼을 눌러주세요", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val newsDto = NewsDto(
+                title = title,
+                content = content,
+                stockName = stockName,
+                createdAt = createdAt,
+                newsType = newsType
+            )
+            viewModel.addNews(newsDto)
+            dialog.dismiss()
         }
-
         dialog.show()
     }
 
@@ -163,7 +183,12 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                 val dummyStockData = StockDummyData.generateStockSampleData(stock.name, stock.id)
 
                 //더미데이터 로그찍기
-                dummyStockData.forEach { data -> Log.d("TAG", "setUpStockChart: 더미!!!!{${data.date}, ${data.price}") }
+                dummyStockData.forEach { data ->
+                    Log.d(
+                        "TAG",
+                        "setUpStockChart: 더미!!!!{${data.date}, ${data.price}"
+                    )
+                }
 
                 // 최근 7일치 데이터만 가져오기
                 val last7DaysStockData = dummyStockData.takeLast(7)

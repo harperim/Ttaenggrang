@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.GsonBuilder
 import com.ladysparks.ttaenggrang.data.model.dto.NewsDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionDto
@@ -85,10 +86,17 @@ class StockViewModel : ViewModel() {
     private val _stockSummary = MutableLiveData<Map<String, Any>>()
     val stockSummary: LiveData<Map<String, Any>> get() = _stockSummary
 
-    // 이전 뉴스 기록 조회
-    // 뉴스 생성
+    // 뉴스 기록 조회
+    private val _newsListLiveData = MutableLiveData<List<NewsDto>?>()
+    val newsListLiveData: MutableLiveData<List<NewsDto>?> get() = _newsListLiveData
+
+    // 뉴스 생성, 저장
     private val _newsLiveData = MutableLiveData<NewsDto?>()
     val newsLiveData: LiveData<NewsDto?> get() = _newsLiveData
+
+    // 뉴스 상세 조회
+    private val _newsDetailLiveData = MutableLiveData<NewsDto?>()
+    val newsDetailLiveData: LiveData<NewsDto?> get() = _newsDetailLiveData
 
     // 로딩확인
     private val _isLoading = MutableLiveData<Boolean>()
@@ -98,7 +106,9 @@ class StockViewModel : ViewModel() {
     private val _stockSummaryList = MutableLiveData<List<BaseTableRowModel>>()
     val stockSummaryList: LiveData<List<BaseTableRowModel>> get() = _stockSummaryList
 
-
+    // 총 수익률만 따로 관리하는 LiveData 추가
+    private val _totalReturnRate = MutableLiveData<Float>()
+    val totalReturnRate: LiveData<Float> get() = _totalReturnRate
 
     // 전체 주식 목록 조회
     fun fetchAllStocks() = viewModelScope.launch {
@@ -248,91 +258,7 @@ class StockViewModel : ViewModel() {
     }
 
     // 학생 주식 목록 테이블 계산
-//    fun updateStockTableData(studentId: Int) {
-//        val ownedStocks = ownedStocks.value ?: emptyList()
-//        val transactions = stockTransactionHistory.value ?: emptyList()
-//
-//        var totalInvestment = 0 // ✅ 총 투자액
-//        var totalValuation = 0 // ✅ 총 평가금액
-//
-//        val newData = ownedStocks.map { stock ->
-//            val matchingTransaction = transactions.find { it.stockId == stock.stockId }
-//            val stockType = matchingTransaction?.type ?: "알 수 없음" // 주식 유형 가져오기
-//
-//            // 매수한 주식 수 합산 (보유 주식)
-//            val totalShares = transactions
-//                .filter { it.stockId == stock.stockId && it.transactionType == "BUY" } // 🔥 매수 거래만 필터링
-//                .sumOf { it.shareCount }
-//            Log.d("StockDebug", "주식 ${stock.stockName} - 매수한 주식 총 개수: $totalShares")
-//
-//            // 총 매입 금액
-//            val totalCost = transactions
-//                .filter { it.stockId == stock.stockId && it.transactionType == "BUY"} //
-//                .sumOf { it.shareCount * it.purchasePricePerShare }
-//            Log.d("StockDebug", "주식 ${stock.stockName} - 총 매입 금액: $totalCost")
-//
-//            // 평균 매입 단가 계산 (총 매입 금액 / 총 매입 주식 수)
-//            val avgPurchasePrice = if (stock.quantity > 0) totalCost / totalShares else 0
-//            Log.d("StockDebug", "주식 ${stock.stockName} - 평균 매입 단가: $avgPurchasePrice")
-//
-//            // 평가금액 계산 (보유 주식 수 * 현재 주가)
-//            val valuationAmount = stock.quantity * stock.currentPrice
-//            Log.d("StockDebug", "주식 ${stock.stockName} - 평가금액: $valuationAmount")
-//
-//            // 손익금액 계산 (평가금액 - 투자금액)
-//            val investmentAmount = stock.quantity * avgPurchasePrice
-//            val profitLoss = valuationAmount - investmentAmount
-//            Log.d("StockDebug", "주식 ${stock.stockName} - 손익금액: $profitLoss")
-//
-//            // ✅ 수익률 계산
-//            val yield = if (investmentAmount > 0) {
-//                (profitLoss.toFloat() / investmentAmount) * 100
-//            } else 0f
-//            Log.d("StockDebug", "주식 ${stock.stockName} - 수익률: %.2f%%".format(yield))
-//
-//            // ✅ 총 투자액과 총 평가금액 업데이트
-//            totalInvestment += investmentAmount
-//            totalValuation += valuationAmount
-//
-//            BaseTableRowModel(
-//                listOf(
-//                    stock.purchaseDate,      // 매수일
-//                    stock.stockName,         // 주식명
-//                    stockType,               // 주식 유형
-//                    stock.quantity.toString(),  // 보유 주식 수
-//                    avgPurchasePrice.toString(), // 평균 매입 단가
-//                    stock.currentPrice.toString(), // 현재 주가
-//                    valuationAmount.toString(), // 평가금액
-//                    "%.2f%%".format(yield), // 수익률
-//                    profitLoss.toString() // 손익금액
-//                )
-//            )
-//        }
-//
-//        // 총 수익 & 총 수익률 계산
-//        val totalProfit = totalValuation - totalInvestment
-//        val totalReturnRate =
-//            if (totalInvestment > 0) (totalProfit.toFloat() / totalInvestment) * 100 else 0f
-//
-//        Log.d("StockSummary", "총 투자액: $totalInvestment")
-//        Log.d("StockSummary", "총 평가금액: $totalValuation")
-//        Log.d("StockSummary", "총 수익: $totalProfit")
-//        Log.d("StockSummary", "총 수익률: %.2f%%".format(totalReturnRate))
-//
-//        // ✅ 총 투자액, 평가금액, 수익률 LiveData 업데이트
-//        _stockSummary.postValue(
-//            mapOf(
-//                "totalInvestment" to totalInvestment,
-//                "totalValuation" to totalValuation,
-//                "totalProfit" to totalProfit,
-//                "totalReturnRate" to totalReturnRate
-//            )
-//        )
-//        _stockTableData.postValue(newData)
-//    }
-
-    fun updateStockTableData(studentId: Int) {
-        val ownedStocks = ownedStocks.value ?: emptyList()
+    fun updateStockTableData() {
         val transactions = stockTransactionHistory.value ?: emptyList()
 
         var totalInvestment = 0 // ✅ 총 투자액
@@ -344,6 +270,8 @@ class StockViewModel : ViewModel() {
         // 🔹 거래 기록이 있는 주식 목록
         val transactionBasedStocks = groupedTransactions.map { (stockId, stockTransactions) ->
             val stockType = stockTransactions.firstOrNull()?.type ?: "알 수 없음"
+            val stockName = stockTransactions.firstOrNull()?.name ?: "알 수 없음"
+            val currentPrice = stockTransactions.firstOrNull()?.currentPrice ?: 0
 
             // 🔹 매수한 주식만 필터링하여 총 매입 금액과 총 매입 주식 수 계산
             val buyTransactions = stockTransactions.filter { it.transactionType == "BUY" }
@@ -358,21 +286,8 @@ class StockViewModel : ViewModel() {
             // 🔹 평균 매입 단가 계산 (총 매입 금액 / 총 매입 주식 수)
             val avgPurchasePrice = if (totalShares > 0) totalCost / totalShares else 0
 
-            // 🔹 현재 주식 정보 찾기 (보유 목록에서 찾거나, 거래 기록에서 생성)
-            val stockInfo = ownedStocks.find { it.stockId == stockId }
-                ?: stockTransactions.firstOrNull()?.let {
-                    StockStudentDto(
-                        stockId = stockId,
-                        stockName = it.name ?: "알 수 없음",
-                        quantity = ownedShares,
-                        purchasePrice = it.purchasePricePerShare,
-                        purchaseDate = it.transactionDate ?: "",
-                        currentPrice = ownedStocks.find { s -> s.stockId == stockId }?.currentPrice ?: -1
-                    )
-                    }
-
             // 🔹 평가금액 계산 (보유 주식 수 * 현재 주가)
-            val valuationAmount = ownedShares * stockInfo!!.currentPrice
+            val valuationAmount = ownedShares * currentPrice
 
             // 🔹 손익금액 계산 (평가금액 - 총 투자금액)
             val investmentAmount = ownedShares * avgPurchasePrice
@@ -387,34 +302,36 @@ class StockViewModel : ViewModel() {
             totalInvestment += investmentAmount
             totalValuation += valuationAmount
 
-            Log.d("StockDebug", "주식: ${stockInfo.stockName}, 평균 매입 단가: $avgPurchasePrice, 수익률: $yield%, 손익금액: $profitLoss")
+            Log.d(
+                "StockDebug",
+                "주식: ${stockName}, 평균 매입 단가: $avgPurchasePrice, 수익률: $yield%, 손익금액: $profitLoss"
+            )
 
             BaseTableRowModel(
                 listOf(
-                    stockInfo.purchaseDate, // 매수일
-                    stockInfo.stockName,    // 주식명
+                    stockTransactions.firstOrNull()?.transactionDate ?: "", // 매수일 (첫 거래 날짜)
+                    stockName,              // 주식명
                     stockType,              // 주식 유형
                     ownedShares.toString(), // 보유 주식 수
                     avgPurchasePrice.toString(), // 평균 매입 단가
-                    stockInfo.currentPrice.toString(), // 현재 주가
+                    currentPrice.toString(), // 현재 주가
                     valuationAmount.toString(), // 평가금액
                     "%.2f%%".format(yield), // 수익률
                     profitLoss.toString() // 손익금액
                 )
             )
         }
-       // 🔥 두 개의 데이터를 합쳐서 최종 테이블 구성
-        val newData = transactionBasedStocks
+
 
         // ✅ 총 수익 & 총 수익률 계산
         val totalProfit = totalValuation - totalInvestment
-        val totalReturnRate =
+        val totalReturnRateValue =
             if (totalInvestment > 0) (totalProfit.toFloat() / totalInvestment) * 100 else 0f
 
         Log.d("StockSummary", "총 투자액: $totalInvestment")
         Log.d("StockSummary", "총 평가금액: $totalValuation")
         Log.d("StockSummary", "총 수익: $totalProfit")
-        Log.d("StockSummary", "총 수익률: %.2f%%".format(totalReturnRate))
+        Log.d("StockSummary", "총 수익률: %.2f%%".format(totalReturnRateValue))
 
         // ✅ 총 투자액, 평가금액, 수익률 LiveData 업데이트
         _stockSummary.postValue(
@@ -425,9 +342,10 @@ class StockViewModel : ViewModel() {
                 "totalReturnRate" to totalReturnRate
             )
         )
-        _stockTableData.postValue(newData)
-    }
+        _stockTableData.postValue(transactionBasedStocks)
+        _totalReturnRate.postValue(totalReturnRateValue)
 
+    }
 
 
     // 뉴스 생성
@@ -452,6 +370,97 @@ class StockViewModel : ViewModel() {
 
     fun clearNewsData() {
         _newsLiveData.postValue(null)
+    }
+
+    // 뉴스 저장
+//    fun addNews(newsDto: NewsDto) {
+//        viewModelScope.launch {
+//            runCatching {
+//                RetrofitUtil.stockService.addNews(newsDto) // ✅ API 요청
+//            }.onSuccess { response ->
+//                _newsLiveData.postValue(response.data) // 🟢 성공 시 데이터 업데이트
+//                Log.d("NewsViewModel", "뉴스 저장 성공: ${response.data}")
+//            }.onFailure { error ->
+//                _errorMessage.postValue("네트워크 오류: ${error.message}")
+//                Log.e("NewsViewModel", "뉴스 저장 실패", error)
+//            }
+//        }
+//    }
+    fun addNews(newsDto: NewsDto) {
+        viewModelScope.launch {
+            val startTime = System.currentTimeMillis() // 요청 시작 시간
+            Log.d("NewsViewModel", "뉴스 저장 요청 시작: ${newsDto.title}, 시간: $startTime")
+
+            runCatching {
+                RetrofitUtil.stockService.addNews(newsDto) // ✅ API 요청
+            }.onSuccess { response ->
+                val endTime = System.currentTimeMillis() // 응답 완료 시간
+                val duration = endTime - startTime // 소요 시간 계산
+
+                _newsLiveData.postValue(response.data) // 🟢 성공 시 데이터 업데이트
+                Log.d("NewsViewModel", "뉴스 저장 성공: ${response.data}, 소요 시간: ${duration}ms")
+
+            }.onFailure { error ->
+                val endTime = System.currentTimeMillis() // 실패 시에도 소요 시간 측정
+                val duration = endTime - startTime
+
+                _errorMessage.postValue("네트워크 오류: ${error.message}")
+                Log.e("NewsViewModel", "뉴스 저장 실패, 소요 시간: ${duration}ms", error)
+            }
+        }
+    }
+
+    // 뉴스 전체 조회
+//    fun fetchNewsList() {
+//        viewModelScope.launch {
+//            runCatching {
+//                RetrofitUtil.stockService.getAllNews()
+//            }.onSuccess { response ->
+//                _newsListLiveData.postValue(response.data) // ✅ 성공 시 뉴스 리스트 업데이트
+//                Log.d("NewsViewModel", "뉴스 목록 조회 성공: ${response.data?.size}건")
+//            }.onFailure { error ->
+//                _errorMessage.postValue("네트워크 오류: ${error.message}")
+//                Log.e("NewsViewModel", "뉴스 목록 조회 실패", error)
+//            }
+//        }
+//    }
+
+    fun fetchNewsList() {
+        viewModelScope.launch {
+            runCatching {
+                RetrofitUtil.stockService.getAllNews()
+            }.onSuccess { response ->
+                _newsListLiveData.postValue(response.data) // ✅ 성공 시 뉴스 리스트 업데이트
+
+                // ✅ 전체 뉴스 목록을 JSON 형식으로 출력
+                val gson = GsonBuilder().setPrettyPrinting().create()
+                val newsListJson = gson.toJson(response.data)
+
+                Log.d("NewsViewModel", "뉴스 목록 조회 성공: ${response.data?.size}건")
+                Log.d("NewsViewModel", "뉴스 목록 전체 데이터:\n$newsListJson")
+
+            }.onFailure { error ->
+                _errorMessage.postValue("네트워크 오류: ${error.message}")
+                Log.e("NewsViewModel", "뉴스 목록 조회 실패", error)
+            }
+        }
+    }
+
+
+    // 뉴스 상세 조회
+    fun fetchNewsDetail(newsId: Int) {
+        viewModelScope.launch {
+            runCatching {
+                RetrofitUtil.stockService.getNews(newsId)
+            }.onSuccess { response ->
+                response.data?.let {
+                    _newsDetailLiveData.postValue(it) // ✅ 데이터 업데이트
+                }
+            }.onFailure { error ->
+                Log.e("NewsViewModel", "뉴스 상세 조회 실패: ${error.message}")
+                _errorMessage.postValue("뉴스를 불러오는데 실패했습니다.")
+            }
+        }
     }
 
     // 교사 주식 목록 조회

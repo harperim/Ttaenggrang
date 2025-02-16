@@ -9,6 +9,7 @@ import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionHistoryDto
 import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.response.OpenMarketResponse
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -63,15 +64,30 @@ interface StockService {
     suspend fun getStockTransactionHistory(
     ): ApiResponse<List<StockTransactionHistoryDto>>
 
+    // 교사 주식 목록 조회
+    @GET("stocks/summary")
+    suspend fun getStockList(
+    ): ApiResponse<List<StockSummaryDto>>
+
     // 뉴스 생성
     @POST("news/create")
     suspend fun createNews(
     ): ApiResponse<NewsDto>
 
-    // 교사 주식 목록 조회
-    @GET("stocks/summary")
-    suspend fun getStockList(
-    ): ApiResponse<List<StockSummaryDto>>
+    // 뉴스 저장
+    @POST("news/confirm")
+    suspend fun addNews(@Body newsDto: NewsDto): ApiResponse<NewsDto>
+
+    // 뉴스 조회
+    @GET("news/list")
+    suspend fun getAllNews(
+    ): ApiResponse<List<NewsDto>>
+
+    // 뉴스 상세조회
+    @GET("news/{newsId}")
+    suspend fun getNews(
+        @Path("newsId") newsId: Int
+    ): ApiResponse<NewsDto>
 
 
 }

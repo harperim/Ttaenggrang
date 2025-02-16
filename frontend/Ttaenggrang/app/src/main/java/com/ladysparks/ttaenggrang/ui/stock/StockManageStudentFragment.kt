@@ -85,7 +85,7 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
         viewModel.stockTransactionHistory.observe(viewLifecycleOwner) { transactions ->
             Log.d("StockFragment", "stockTransaction 업데이트됨: $transactions")
             if (transactions != null && transactions.isNotEmpty()) {
-                viewModel.updateStockTableData(studentId) // ✅ 거래 내역이 있으면 업데이트
+                viewModel.updateStockTableData() // ✅ 거래 내역이 있으면 업데이트
             }
         }
 
