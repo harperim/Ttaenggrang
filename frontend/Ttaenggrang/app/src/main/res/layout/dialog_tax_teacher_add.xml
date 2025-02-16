@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_width="504dp"
+    android:layout_width="516dp"
     android:layout_height="wrap_content"
     android:padding="24dp"
     android:background="@color/white">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,7 +23,8 @@
             android:id="@+id/btnClose"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:background="@drawable/ic_close"/>
+            android:src="@drawable/ic_close"
+            android:background="@android:color/transparent"/>
     </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
@@ -36,56 +37,97 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="세금명"
-        style="@style/body2"
+        style="@style/heading4"
         android:layout_marginTop="20dp"/>
 
-    <EditText
-        android:id="@+id/editAddTaxName"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/body1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="창의 활동세"
-        style="@style/body1"
-        android:layout_marginTop="6dp"
-        android:background="@drawable/bg_edit_one_line"
-        android:paddingHorizontal="14dp"/>
+        android:background="@drawable/bg_rounded_20"
+        android:textColorHint="@color/lightGray"
+        app:boxStrokeColor="@color/lightGray"
+        app:boxStrokeWidth="1dp"
+        android:layout_marginTop="5dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editAddTaxName"
+            style="@style/body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="세금 이름을 작성하세요"
+            android:paddingStart="14dp"
+            android:textColor="@color/lightGray" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="세율"
-        style="@style/body2"
-        android:layout_marginTop="20dp"/>
+        style="@style/heading4"
+        android:layout_marginTop="15dp"/>
 
-    <EditText
-        android:id="@+id/editAddTaxRate"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/body1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="7%"
-        style="@style/body1"
-        android:layout_marginTop="6dp"
-        android:background="@drawable/bg_edit_one_line"
-        android:paddingHorizontal="14dp"/>
+        android:background="@drawable/bg_rounded_20"
+        android:textColorHint="@color/lightGray"
+        app:boxStrokeColor="@color/lightGray"
+        app:boxStrokeWidth="1dp"
+        android:layout_marginTop="5dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editAddTaxRate"
+            style="@style/body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="세율을 작성하세요"
+            android:paddingStart="14dp"
+            android:textColor="@color/lightGray" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="설명"
-        style="@style/body2"
-        android:layout_marginTop="20dp"/>
+        style="@style/heading4"
+        android:layout_marginTop="15dp"/>
 
-    <EditText
-        android:id="@+id/editAddTaxDescription"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/body1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="학급 내 특별 활동(미술, 음악, 토론 등)을 지원하기 위해 부과되는 세금으로, 창의적인 프로젝트 자금을 마련합니다."
-        style="@style/body1"
-        android:inputType="textMultiLine"
-        android:lines="4"
-        android:gravity="top"
-        android:layout_marginTop="6dp"
-        android:background="@drawable/bg_edit_multi_line"
-        android:paddingHorizontal="14dp"
-        android:paddingVertical="12dp"/>
+        android:background="@drawable/bg_rounded_20"
+        android:textColorHint="@color/lightGray"
+        app:boxStrokeColor="@color/lightGray"
+        app:boxStrokeWidth="1dp"
+        android:layout_marginTop="5dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editAddTaxDescription"
+            style="@style/body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="세금 설명을 작성하세요"
+            android:paddingStart="14dp"
+            android:textColor="@color/lightGray"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:minLines="3"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnStudentRegistration"
@@ -93,7 +135,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_rounded_full"
         android:textColor="@color/white"
-        android:text="추가"
-        style="@style/heading3"
-        android:layout_marginTop="24dp"/>
+        android:text="등록하기"
+        style="@style/heading4"
+        android:layout_marginTop="30dp"/>
 </LinearLayout>

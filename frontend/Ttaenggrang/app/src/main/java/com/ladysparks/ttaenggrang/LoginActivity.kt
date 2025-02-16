@@ -166,12 +166,14 @@ class LoginActivity : BaseActivity() {
                     updateFCMToken(token)
 
                     // 등록된 국가정보가 없을 경우, 다른 페이지로 이동
-                    if(!hasNation){
-                        startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java))
-                        return@launch
-                    }else{
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                    }
+//                    if(!hasNation){
+//                        startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java))
+//                        return@launch
+//                    }else{
+//                    }
+
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+
                 }.onFailure { error ->
                     Log.d("TAG", "initEvent: 로그인 패일")
                     showErrorDialog(error)

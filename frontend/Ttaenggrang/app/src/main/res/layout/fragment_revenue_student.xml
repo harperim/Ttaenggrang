@@ -161,7 +161,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="이번달 세금 명세서"
+                    android:text="이번 달 세금 명세서"
                     style="@style/heading3"/>
                 <View
                     android:layout_width="0dp"
@@ -310,7 +310,7 @@
                     android:id="@+id/textNullNationTax"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="국세 사용 내역이 없습니다"
+                    android:text="세금 납부 내역이 없습니다"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
