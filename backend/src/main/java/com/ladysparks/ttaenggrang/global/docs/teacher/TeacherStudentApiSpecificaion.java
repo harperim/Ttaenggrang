@@ -2,6 +2,8 @@ package com.ladysparks.ttaenggrang.global.docs.teacher;
 
 import com.ladysparks.ttaenggrang.domain.teacher.dto.SingleStudentCreateDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentJobUpdateDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentJobUpdateResponseDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentSavingsSubscriptionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;

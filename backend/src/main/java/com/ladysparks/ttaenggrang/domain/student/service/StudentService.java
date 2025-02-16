@@ -636,4 +636,37 @@ public class StudentService {
         return studentRepository.getStudentManagementListByTeacherId(teacherId);
     }
 
+    // 직업 [수정]
+    public ApiResponse<StudentJobUpdateResponseDTO> updateStudentJob(Long studentId, StudentJobUpdateDTO studentJobUpdateDTO, Long teacherId) {
+        // 1. 학생 조회
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 학생을 찾을 수 없습니다."));
+
+        // 2. 해당 학생이 교사의 반에 속해 있는지 확인
+        if (!student.getTeacher().getId().equals(teacherId)) {
+            return ApiResponse.error(HttpStatus.FORBIDDEN.ordinal(), "해당 학생의 직업을 수정할 권한이 없습니다.", null);
+        }
+
+        // 3. 직업 조회
+        Job job = jobRespository.findById(studentJobUpdateDTO.getJobId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 직업을 찾을 수 없습니다."));
+
+        // 4. 학생 직업 업데이트
+        student.setJob(job);
+        studentRepository.save(student);
+
+        // 5. 응답 DTO 생성 (전체 학생 정보 반환)
+        StudentJobUpdateResponseDTO responseDTO = StudentJobUpdateResponseDTO.builder()
+                .studentId(student.getId())
+                .name(student.getName())
+                .username(student.getUsername())
+                .password(student.getPassword())
+                .jobInfo(JobInfoDTO.builder()
+                        .jobName(job.getJobName())
+                        .baseSalary(job.getBaseSalary())
+                        .build())
+                .build();
+
+        return ApiResponse.success("학생의 직업이 성공적으로 수정되었습니다.", responseDTO);
+    }
 }
