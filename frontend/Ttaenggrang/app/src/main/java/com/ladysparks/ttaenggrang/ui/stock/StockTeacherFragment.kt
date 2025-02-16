@@ -23,6 +23,7 @@ import com.ladysparks.ttaenggrang.databinding.DialogNewsDetailBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStockManageTeacherBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStockTeacherBinding
 import com.ladysparks.ttaenggrang.ui.component.LineChartComponent
+import com.ladysparks.ttaenggrang.util.DataUtil
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -52,6 +53,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
 
         // 서버에서 주식 데이터 가져오기
         viewModel.fetchAllStocks()
+        viewModel.fetchNewsList()
 
         //주식장 오픈
         binding.btnStockOpen.setOnCheckedChangeListener { _, isChecked ->
@@ -65,11 +67,6 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                 .replace(R.id.fragment_container, NewsHistoryTeacherFragment())
                 .addToBackStack(null)
                 .commit()
-        }
-
-        binding.btnDetail.setOnClickListener {
-            Toast.makeText(requireContext(), "눌림", Toast.LENGTH_SHORT).show()
-            showNews()
         }
 
         binding.btnNewsCreate.setOnClickListener {
@@ -99,6 +96,11 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
+        dialogNewsCreateBinding.textDialogNewsCreateDate.setText("")
+        dialogNewsCreateBinding.textDialogStockName.setText("")
+        dialogNewsCreateBinding.textDialogNewsTitle.setText("")
+        dialogNewsCreateBinding.textDialogNewsContent.setText("")
+
         // create 버튼을 눌렀을 때만 서버 요청 후 UI 업데이트
         dialogNewsCreateBinding.btnCreate.setOnClickListener {
             viewModel.createNews() // 서버에 요청 보내기
@@ -124,11 +126,6 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                 dialogNewsCreateBinding.shimmerLayout.visibility = View.GONE
                 dialogNewsCreateBinding.constraintDialogBody.visibility = View.VISIBLE
             }
-        }
-
-        // 다이얼로그 닫힐 때 LiveData 초기화
-        dialog.setOnDismissListener {
-            viewModel.clearNewsData()
         }
 
         // 버튼구현
@@ -157,8 +154,15 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                 newsType = newsType
             )
             viewModel.addNews(newsDto)
+            viewModel.clearNewsData()
             dialog.dismiss()
         }
+
+        // 다이얼로그 닫힐 때 LiveData 초기화
+        dialog.setOnDismissListener {
+            viewModel.clearNewsData()
+        }
+
         dialog.show()
     }
 
@@ -223,22 +227,29 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         }
     }
 
-    //뉴스 상세
-    private fun showNews() {
-        val dialogNewsDetailBinding = DialogNewsDetailBinding.inflate(layoutInflater)
+    /// 뉴스 상세
+    private fun showNewsDetailDialog(news: NewsDto) {
+        val dialogBinding = DialogNewsDetailBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext())
-        dialog.setContentView(dialogNewsDetailBinding.root)
 
-        // 다이얼로그 ui잘리는 현상.
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialog.setContentView(dialogBinding.root)
         dialog.window?.setLayout(
-            (resources.displayMetrics.widthPixels * 0.6).toInt(),
+            (resources.displayMetrics.widthPixels * 0.5).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
-        // 닫기 버튼 클릭 시 다이얼로그 닫기
-        dialogNewsDetailBinding.btnClose.setOnClickListener {
-            dialog.dismiss()
-        }
+        // 뉴스 데이터 바인딩
+        dialogBinding.textDialogTitle.text = "땡그랑뉴스"
+        dialogBinding.textDialogContent.text = DataUtil.formatDateTimeToDisplay(news.createdAt)
+        dialogBinding.textNewsTitle.text = "\"${news.title}\""
+        dialogBinding.textNewsContent.text = news.content
+
+        // 닫기
+        dialogBinding.btnClose.setOnClickListener { dialog.dismiss() }
+        dialogBinding.btnCancel.setOnClickListener { dialog.dismiss() }
+
         dialog.show()
     }
 
@@ -256,6 +267,31 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                 binding.textHeadStockName.text = it.name.substringBefore(" ")
                 binding.textHeadStockPrice.text = it.pricePerShare.toString()
                 binding.textHeadStockChange.text = "${it.changeRate}%"
+            }
+        }
+
+        // 최신 뉴스 클릭 시 상세 조회 및 다이얼로그 표시
+        viewModel.latestNewsLiveData.observe(viewLifecycleOwner) { latestNews ->
+            latestNews?.let { it ->
+                binding.textNewsDate.text = DataUtil.formatDateTimeToDisplay(it.createdAt)
+                binding.textNewsTitle.text = "\"${it.title}\"" // 최신 뉴스 제목
+                binding.textNewsContent.text = it.content // 최신 뉴스 내용
+
+                // ✅ 최신 뉴스 내용 클릭 시 뉴스 상세 조회 실행
+                binding.textNewsContent.setOnClickListener {
+                    latestNews.id?.let { latestNewsId -> viewModel.fetchNewsDetail(latestNewsId) } // ✅ 뉴스 상세 조회 요청
+                }
+
+                binding.btnDetail.setOnClickListener {
+                    latestNews.id?.let { latestNewsId -> viewModel.fetchNewsDetail(latestNewsId) }
+                }
+            }
+        }
+
+        // ✅ 뉴스 상세 정보 가져오면 다이얼로그 띄우기
+        viewModel.newsDetailLiveData.observe(viewLifecycleOwner) { newsDetail ->
+            newsDetail?.let {
+                showNewsDetailDialog(it) // ✅ 다이얼로그 띄우기
             }
         }
     }

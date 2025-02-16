@@ -32,7 +32,7 @@ class NewsHistoryTeacherFragment : BaseFragment<FragmentNewsHistoryTeacherBindin
 
     private val viewModel: StockViewModel by viewModels()
     private lateinit var tableAdapter: BaseTableStyleAdapter
-    private val columnWeights = listOf(0.5f, 1f, 2f, 0.8f, 0.8f)
+    private val columnWeights = listOf(0.5f, 0.8f, 2f, 0.8f, 0.8f)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,48 +47,12 @@ class NewsHistoryTeacherFragment : BaseFragment<FragmentNewsHistoryTeacherBindin
         // 서버에서 데이터 가져오기
         viewModel.fetchNewsList()
 
-        //뉴스생성 버튼
-        binding.btnNewsCreate.setOnClickListener {
-            createNews()
+        //뒤로가기
+        binding.btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
         }
 
     }
-
-    // 뉴스 생성 다이얼로그
-    private fun createNews() {
-        val dialogNewsCreateBinding = DialogNewsCreateBinding.inflate(layoutInflater)
-        val dialog = Dialog(requireContext())
-        dialog.setContentView(dialogNewsCreateBinding.root)
-
-        // 다이얼로그 ui잘리는 현상.
-        dialog.window?.setLayout(
-            (resources.displayMetrics.widthPixels * 0.4).toInt(),
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-
-        // 버튼구현
-        dialogNewsCreateBinding.btnCancel.setOnClickListener { // 닫기
-            dialog.dismiss()
-        }
-        dialogNewsCreateBinding.btnCreate.setOnClickListener {// 뉴스생성
-            viewModel.createNews()
-            viewModel.newsLiveData.observe(viewLifecycleOwner) { news ->
-                news?.let {
-                    dialogNewsCreateBinding.textDialogNewsCreateDate.setText(it.createdAt)
-                    dialogNewsCreateBinding.textDialogStockName.setText(it.stockName)
-                    dialogNewsCreateBinding.textDialogNewsTitle.setText(it.title)
-                    dialogNewsCreateBinding.textDialogNewsContent.setText(it.content)
-
-                }
-            }
-        }
-        dialogNewsCreateBinding.btnAdd.setOnClickListener { // fcm 알림+등록
-
-        }
-
-        dialog.show()
-    }
-
 
     private fun initAdapter() {
         println("✅ NewsHistoryStudentFragment - columnWeights: $columnWeights")
@@ -157,7 +121,7 @@ class NewsHistoryTeacherFragment : BaseFragment<FragmentNewsHistoryTeacherBindin
             listOf(
                 index.toString(),       // 뉴스 번호 (No.)
                 DataUtil.formatDateTimeToDisplay(createdAt), // 등록일
-                title,                  // 제목
+                "\"${title}\"",                  // 제목
                 stockName,              // 관련 주식
                 if (newsType == "POSITIVE") "호재" else "악재"
             )

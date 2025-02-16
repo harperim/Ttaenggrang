@@ -23,7 +23,7 @@ class NewsHistoryStudentFragment : BaseFragment<FragmentNewsHistoryStudentBindin
 
     private val viewModel: StockViewModel by viewModels()
     private lateinit var tableAdapter: BaseTableStyleAdapter
-    private val columnWeights = listOf(0.5f, 1f, 2f, 0.8f, 0.8f)
+    private val columnWeights = listOf(0.5f, 0.8f, 2f, 0.8f, 0.8f)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -108,7 +108,7 @@ class NewsHistoryStudentFragment : BaseFragment<FragmentNewsHistoryStudentBindin
             listOf(
                 index.toString(),       // 뉴스 번호 (No.)
                 DataUtil.formatDateTimeToDisplay(createdAt),              // 등록일
-                title,                  // 제목
+                "\"${title}\"",                  // 제목
                 stockName,              // 관련 주식
                 if (newsType == "POSITIVE") "호재" else "악재" // ✅ 호재/악재 변환
             )

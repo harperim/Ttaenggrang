@@ -20,6 +20,7 @@ import com.ladysparks.ttaenggrang.data.remote.StockService
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.util.ApiErrorParser
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class StockViewModel : ViewModel() {
@@ -86,7 +87,7 @@ class StockViewModel : ViewModel() {
     private val _stockSummary = MutableLiveData<Map<String, Any>>()
     val stockSummary: LiveData<Map<String, Any>> get() = _stockSummary
 
-    // 뉴스 기록 조회
+    // 뉴스 전체 조회
     private val _newsListLiveData = MutableLiveData<List<NewsDto>?>()
     val newsListLiveData: MutableLiveData<List<NewsDto>?> get() = _newsListLiveData
 
@@ -97,6 +98,11 @@ class StockViewModel : ViewModel() {
     // 뉴스 상세 조회
     private val _newsDetailLiveData = MutableLiveData<NewsDto?>()
     val newsDetailLiveData: LiveData<NewsDto?> get() = _newsDetailLiveData
+
+    // 최신 뉴스 저장
+    private val _latestNewsLiveData  = MutableLiveData<NewsDto?>()
+    val latestNewsLiveData : LiveData<NewsDto?> get() = _latestNewsLiveData
+
 
     // 로딩확인
     private val _isLoading = MutableLiveData<Boolean>()
@@ -109,6 +115,7 @@ class StockViewModel : ViewModel() {
     // 총 수익률만 따로 관리하는 LiveData 추가
     private val _totalReturnRate = MutableLiveData<Float>()
     val totalReturnRate: LiveData<Float> get() = _totalReturnRate
+
 
     // 전체 주식 목록 조회
     fun fetchAllStocks() = viewModelScope.launch {
@@ -373,72 +380,40 @@ class StockViewModel : ViewModel() {
     }
 
     // 뉴스 저장
-//    fun addNews(newsDto: NewsDto) {
-//        viewModelScope.launch {
-//            runCatching {
-//                RetrofitUtil.stockService.addNews(newsDto) // ✅ API 요청
-//            }.onSuccess { response ->
-//                _newsLiveData.postValue(response.data) // 🟢 성공 시 데이터 업데이트
-//                Log.d("NewsViewModel", "뉴스 저장 성공: ${response.data}")
-//            }.onFailure { error ->
-//                _errorMessage.postValue("네트워크 오류: ${error.message}")
-//                Log.e("NewsViewModel", "뉴스 저장 실패", error)
-//            }
-//        }
-//    }
     fun addNews(newsDto: NewsDto) {
         viewModelScope.launch {
-            val startTime = System.currentTimeMillis() // 요청 시작 시간
-            Log.d("NewsViewModel", "뉴스 저장 요청 시작: ${newsDto.title}, 시간: $startTime")
-
             runCatching {
                 RetrofitUtil.stockService.addNews(newsDto) // ✅ API 요청
             }.onSuccess { response ->
-                val endTime = System.currentTimeMillis() // 응답 완료 시간
-                val duration = endTime - startTime // 소요 시간 계산
-
                 _newsLiveData.postValue(response.data) // 🟢 성공 시 데이터 업데이트
-                Log.d("NewsViewModel", "뉴스 저장 성공: ${response.data}, 소요 시간: ${duration}ms")
-
+                _newsLiveData.postValue(null)
+                fetchNewsList()
+                Log.d("NewsViewModel", "뉴스 저장 성공: ${response.data}")
             }.onFailure { error ->
-                val endTime = System.currentTimeMillis() // 실패 시에도 소요 시간 측정
-                val duration = endTime - startTime
-
                 _errorMessage.postValue("네트워크 오류: ${error.message}")
-                Log.e("NewsViewModel", "뉴스 저장 실패, 소요 시간: ${duration}ms", error)
+                Log.e("NewsViewModel", "뉴스 저장 실패", error)
             }
         }
     }
 
-    // 뉴스 전체 조회
-//    fun fetchNewsList() {
-//        viewModelScope.launch {
-//            runCatching {
-//                RetrofitUtil.stockService.getAllNews()
-//            }.onSuccess { response ->
-//                _newsListLiveData.postValue(response.data) // ✅ 성공 시 뉴스 리스트 업데이트
-//                Log.d("NewsViewModel", "뉴스 목록 조회 성공: ${response.data?.size}건")
-//            }.onFailure { error ->
-//                _errorMessage.postValue("네트워크 오류: ${error.message}")
-//                Log.e("NewsViewModel", "뉴스 목록 조회 실패", error)
-//            }
-//        }
-//    }
 
+    // 뉴스 전체 조회
     fun fetchNewsList() {
         viewModelScope.launch {
             runCatching {
                 RetrofitUtil.stockService.getAllNews()
             }.onSuccess { response ->
-                _newsListLiveData.postValue(response.data) // ✅ 성공 시 뉴스 리스트 업데이트
+                val newsList = response.data ?: emptyList()
+                _newsListLiveData.postValue(newsList) // 성공 시 뉴스 리스트 업데이트
+                if (newsList.isNotEmpty()) {
+                    val latestNews = newsList.first() // 최신 뉴스 ID 가져오기
 
-                // ✅ 전체 뉴스 목록을 JSON 형식으로 출력
-                val gson = GsonBuilder().setPrettyPrinting().create()
-                val newsListJson = gson.toJson(response.data)
-
+                    if (latestNewsId == null || latestNewsId != latestNews.id) {
+                        latestNewsId = latestNews.id // 최신 뉴스 ID 업데이트
+                        latestNews.id?.let { fetchNewsDetailForLatest(it) } // 최신 뉴스 상세 조회 실행
+                    }
+                }
                 Log.d("NewsViewModel", "뉴스 목록 조회 성공: ${response.data?.size}건")
-                Log.d("NewsViewModel", "뉴스 목록 전체 데이터:\n$newsListJson")
-
             }.onFailure { error ->
                 _errorMessage.postValue("네트워크 오류: ${error.message}")
                 Log.e("NewsViewModel", "뉴스 목록 조회 실패", error)
@@ -446,22 +421,67 @@ class StockViewModel : ViewModel() {
         }
     }
 
+    private var latestNewsId: Int? = null
+    // ✅ 주기적으로 서버에서 최신 뉴스 확인 (Polling 방식)
+    fun startNewsPolling() {
+        viewModelScope.launch {
+            while (true) { // 🔹 무한 루프 실행 (학생이 앱을 열고 있는 동안 계속 실행)
+                checkForNewNews() // 🔹 새로운 뉴스가 있는지 확인
+                delay(50000) // 🔹 5초마다 실행 (원하는 주기로 변경 가능)
+            }
+        }
+    }
 
-    // 뉴스 상세 조회
-    fun fetchNewsDetail(newsId: Int) {
+    // ✅ 새로운 뉴스가 있는지 확인하는 함수
+    private suspend fun checkForNewNews() {
+        runCatching {
+            RetrofitUtil.stockService.getAllNews()
+        }.onSuccess { response ->
+            val newsList = response.data ?: emptyList()
+
+            if (newsList.isNotEmpty()) {
+                val newestNews = newsList.first() // 🔹 최신 뉴스 가져오기
+
+                if (latestNewsId == null || latestNewsId != newestNews.id) { // 🔹 기존 뉴스 ID와 비교
+                    latestNewsId = newestNews.id // 🔹 최신 뉴스 ID 업데이트
+                    newestNews.id?.let { fetchNewsDetailForLatest(it) } // 🔹 최신 뉴스 상세 내용 가져오기
+                }
+            }
+        }.onFailure { error ->
+            Log.e("NewsViewModel", "뉴스 목록 조회 실패: ${error.message}")
+        }
+    }
+
+    // 최신 뉴스의 상세 조회
+    private fun fetchNewsDetailForLatest(newsId: Int) {
         viewModelScope.launch {
             runCatching {
                 RetrofitUtil.stockService.getNews(newsId)
             }.onSuccess { response ->
-                response.data?.let {
-                    _newsDetailLiveData.postValue(it) // ✅ 데이터 업데이트
+                response.data?.let { newsDetail ->
+                    _latestNewsLiveData.postValue(newsDetail) // ✅ 최신 뉴스 업데이트 (content 포함)
                 }
             }.onFailure { error ->
-                Log.e("NewsViewModel", "뉴스 상세 조회 실패: ${error.message}")
-                _errorMessage.postValue("뉴스를 불러오는데 실패했습니다.")
+                Log.e("NewsViewModel", "최신 뉴스 상세 조회 실패: ${error.message}")
             }
         }
     }
+
+        // 선택 뉴스 상세 조회
+        fun fetchNewsDetail(newsId: Int) {
+            viewModelScope.launch {
+                runCatching {
+                    RetrofitUtil.stockService.getNews(newsId)
+                }.onSuccess { response ->
+                    response.data?.let {
+                        _newsDetailLiveData.postValue(it) // ✅ 데이터 업데이트
+                    }
+                }.onFailure { error ->
+                    Log.e("NewsViewModel", "뉴스 상세 조회 실패: ${error.message}")
+                    _errorMessage.postValue("뉴스를 불러오는데 실패했습니다.")
+                }
+            }
+        }
 
     // 교사 주식 목록 조회
     fun fetchStockList() {
