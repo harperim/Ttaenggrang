@@ -2,9 +2,7 @@ package com.ladysparks.ttaenggrang.domain.tax.service;
 
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankAccountDTO;
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
-import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
-import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsDeposit;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankAccountService;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
 import com.ladysparks.ttaenggrang.domain.tax.dto.OverdueTaxPaymentDTO;
@@ -46,7 +44,7 @@ public class TaxPaymentService {
         Long studentId = studentService.getCurrentStudentId();
 
         // 국가 정보 조회
-        Long nationId = studentService.getNationIdById(studentId);
+        NationDTO nationDTO = studentService.getNationById(studentId);
 
         // 은행 계좌 거래
         Long bankAccountId = studentService.findBankAccountIdById(studentId);
@@ -64,7 +62,8 @@ public class TaxPaymentService {
         bankTransactionService.addBankTransaction(bankTransactionDTO);
 
         // 세금 납부 금액을 국가의 국고에 합산
-        NationDTO updatedNationDTO = nationService.updateNationFunding(nationId, taxPaymentDTO.getAmount());
+        int nationalTreasuryBalance = nationDTO.getNationalTreasury() + taxPaymentDTO.getAmount();
+        nationService.updateNationTreasury(nationDTO.getId(), nationalTreasuryBalance);
 
         // TaxPayment 엔티티 저장
         taxPaymentDTO.setStudentId(studentId);

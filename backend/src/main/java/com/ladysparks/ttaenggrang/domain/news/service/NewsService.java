@@ -5,6 +5,7 @@ import com.ladysparks.ttaenggrang.domain.news.dto.NewsSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.news.entity.News;
 import com.ladysparks.ttaenggrang.domain.news.entity.NewsType;
 import com.ladysparks.ttaenggrang.domain.news.repository.NewsRepository;
+import com.ladysparks.ttaenggrang.domain.notification.service.NotificationService;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
@@ -27,6 +28,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
@@ -48,6 +50,7 @@ public class NewsService {
     private final StockRepository stockRepository;
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
+    private final NotificationService notificationService;
 
     // 현재 로그인한 교사의 ID 가져오기
     private Long getTeacherIdFromSecurityContext() {
@@ -93,7 +96,7 @@ public class NewsService {
 //        System.out.println("debug: " + maskedKey);
 //    }
 
-    public NewsDTO generateRandomNewsFromStocks() {
+    public NewsDTO generateRandomNewsFromStocks(Long teacherId) throws IOException {
         String apiKey = System.getenv("OPENAI_API_KEY");
 
         String maskedKey = (apiKey != null && apiKey.length() >= 5)
@@ -152,6 +155,9 @@ public class NewsService {
         String content = extractValue(generatedText, "내용");
         String newsTypeStr = extractValue(generatedText, "유형", "[호재/악재]");
         NewsType newsType = newsTypeStr.contains("호재") ? NewsType.POSITIVE : NewsType.NEGATIVE;
+
+        // 5. 학생들에게 FCM 알림 전송
+        notificationService.sendNewsNotificationToStudents(teacherId, title, content);
 
         // 6. DTO 반환 (DB에 저장 X)
         return NewsDTO.builder()

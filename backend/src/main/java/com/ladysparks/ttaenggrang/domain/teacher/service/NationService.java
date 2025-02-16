@@ -1,6 +1,5 @@
 package com.ladysparks.ttaenggrang.domain.teacher.service;
 
-import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.NationDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Nation;
@@ -13,9 +12,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
@@ -76,7 +72,7 @@ public class NationService {
     public ApiResponse<NationDTO> getNationByTeacherId(Long teacherId) {
 
         // 2. 교사가 이미 국가를 가지고 있는지 확인
-        NationDTO nationDTO = findNationByTeacherId(teacherId)
+        NationDTO nationDTO = findNationDTOByTeacherId(teacherId)
                 .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
 
 //        Nation nation = nationMapper.toEntity(nationDTO);
@@ -111,23 +107,17 @@ public class NationService {
     }
 
     @Transactional
-    public NationDTO updateNationFunding(Long nationId, int funding) {
-        // Nation 조회
-        Nation nation = nationRepository.findById(nationId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 국가를 찾을 수 없습니다."));
-
-        // funding 값 업데이트
-        nation.setNationalTreasury(nation.getNationalTreasury() + funding);
-
-        Nation updatedNation = nationRepository.save(nation);
-
-        // NationCreateDTO로 변환 후 반환
-        return nationMapper.toDto(updatedNation);
+    public int updateNationTreasury(Long nationId, int balance) {
+        return nationRepository.updateNationalTreasury(nationId, balance);
     }
 
-    public Optional<NationDTO> findNationByTeacherId(Long teacherId) {
+    public Optional<NationDTO> findNationDTOByTeacherId(Long teacherId) {
         return nationRepository.findByTeacher_Id(teacherId)
                 .map(nationMapper::toDto);
+    }
+
+    public Optional<Nation> findNationByTeacherId(Long teacherId) {
+        return nationRepository.findByTeacher_Id(teacherId);
     }
 
     public int findSavingsGoalAmountByTeacherId(Long teacherId) {

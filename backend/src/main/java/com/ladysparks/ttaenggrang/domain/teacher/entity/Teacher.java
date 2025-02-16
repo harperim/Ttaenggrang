@@ -36,6 +36,9 @@ public class Teacher {
     @Column(length = 50, nullable = false)
     private String school;
 
+    @Column
+    private String fcmToken;
+
     @Column(nullable = false, updatable = false)
     private Timestamp createdAt;
 

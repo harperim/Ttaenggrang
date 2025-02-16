@@ -83,6 +83,11 @@ public class TeacherService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
+        // FCM 토큰이 포함된 경우
+        if (teacherLoginDTO.getFcmToken() != null) {
+            saveFCMToken(teacher.getId(), teacherLoginDTO.getFcmToken().get());
+        }
+
         // JMT 토큰 생성
         String token = jwtTokenProvider.createToken(teacher.getEmail());
 
@@ -142,6 +147,10 @@ public class TeacherService {
 
     public Optional<Teacher> findById(Long teacherId) {
         return teacherRepository.findById(teacherId);
+    }
+
+    public void saveFCMToken(Long teacherId, String fcmToken) {
+        teacherRepository.updateFcmToken(teacherId, fcmToken);
     }
 
 }
