@@ -43,15 +43,14 @@ public class StockMarketStatusService {
     // 🕔 평일 09:00 자동 개장
     @Transactional
     @Scheduled(cron = "${scheduling.stock-market.open}")
-//    @Scheduled(cron = "0 0 9 * * ?")
     public void autoMarketOpen() {
         for (TeacherResponseDTO teacher : teacherService.findAllTeachers()) {
             Long teacherId = teacher.getId();
 
             // 주가 변동 반영
-            updateStockPrices(teacherId);
+            recordStockHistory(teacherId); // 어제의 거래량으로 가격 변동률 계산하고 STOCK_HISTORY 저장
+            updateStockPrices(teacherId); // STOCK_HISTORY 기반으로 현재 주가 갱신
 
-            // STOCK_HISTORY 기반으로 현재 주가 갱신
             StockMarketStatusDTO stockMarketStatusDTO = getStockMarketStatusByTeacherId(teacherId);
 
             // 교사 On -> 개장
@@ -66,7 +65,6 @@ public class StockMarketStatusService {
 
     // 🕔 평일 17:00 자동 폐장
     @Scheduled(cron = "${scheduling.stock-market.close}")
-//    @Scheduled(cron = "0 0 17 * * ?")
     @Transactional
     public void autoMarketClose() {
         for (TeacherResponseDTO teacher : teacherService.findAllTeachers()) {
@@ -78,45 +76,7 @@ public class StockMarketStatusService {
             setStockMarketStatus(teacherId, false, stockMarketStatusDTO.isTeacherOn());
 
             // 오늘의 주식 거래량 조회 & 가격 변동량 계산 -> STOCK_HISTORY에 저장
-            recordStockHistory(teacherId);
-        }
-    }
-
-    /**
-     * 매일 17시 (주식 시장 폐장)
-     * - 해당 날짜의 주식 거래량 조회
-     * - 가격 변동량 계산
-     * - STOCK_HISTORY 테이블에 저장
-     */
-    @Transactional
-    public void recordStockHistory(Long teacherId) {
-        List<StockDTO> stocks = stockService.findStocks(teacherId);
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
-
-        for (StockDTO stockDTO : stocks) {
-            int buyVolume = stockTransactionService.getTotalBuyVolume(stockDTO.getId(), startOfDay, endOfDay);
-            int sellVolume = stockTransactionService.getTotalSellVolume(stockDTO.getId(), startOfDay, endOfDay);
-            int totalVolume = buyVolume + sellVolume;
-
-            // 최대 ±10% 변동
-            double maxChangeRate = 10.0;
-            double priceChangeRate = (totalVolume == 0) ? 0 : ((double) (buyVolume - sellVolume) / totalVolume) * maxChangeRate;
-
-            // 변동된 가격 반영 (새 가격 = 현재 가격 * (1 + 변동률 %))
-            int adjustedPrice = (int) (stockDTO.getPricePerShare() * (1 + priceChangeRate / 100.0));
-
-            // StockHistory 저장
-            StockHistory stockHistory = StockHistory.builder()
-                    .stock(StockDTO.toEntity(stockDTO))
-                    .price(adjustedPrice)
-                    .buyVolume(buyVolume)
-                    .sellVolume(sellVolume)
-                    .priceChangeRate((int) priceChangeRate)
-                    .createdAt(Timestamp.valueOf(LocalDateTime.now()))
-                    .build();
-
-            stockHistoryRepository.save(stockHistory);
+//            recordStockHistory(teacherId);
         }
     }
 
@@ -134,7 +94,21 @@ public class StockMarketStatusService {
 
             if (latestHistory != null) {
                 // 변동률을 반영한 새로운 주가 계산
-                int newPrice = stockDTO.getPricePerShare() + (int) (stockDTO.getPricePerShare() * (latestHistory.getPriceChangeRate() / 100.0));
+                // 현재 주가 가져오기
+//                int currentPrice = stockDTO.getPricePerShare();
+
+                // 변동률 가져오기 (정확한 계산을 위해 double 사용)
+//                double priceChangeRate = latestHistory.getPriceChangeRate();
+
+                // 변동 적용 (기존 가격 * 변동률)
+//                int newPrice = (int) Math.round(currentPrice * (1 + priceChangeRate / 100.0));
+
+                // 예상치 못한 급격한 주가 변동 방지: 가격 변동 폭 제한 (-5% ~ +5%)
+//                int minPrice = (int) Math.round(currentPrice * 0.95);
+//                int maxPrice = (int) Math.round(currentPrice * 1.05);
+//                newPrice = Math.max(minPrice, Math.min(maxPrice, newPrice));
+
+                int newPrice = latestHistory.getPrice();
 
                 // stock 엔티티 업데이트
                 stockDTO.setPricePerShare(newPrice);
@@ -143,6 +117,54 @@ public class StockMarketStatusService {
 
                 stockRepository.save(StockDTO.toEntity(stockDTO)); // 업데이트된 주식 정보 저장
             }
+        }
+    }
+
+    /**
+     * 매일 17시 (주식 시장 폐장)
+     * - 해당 날짜의 주식 거래량 조회
+     * - 가격 변동량 계산
+     * - STOCK_HISTORY 테이블에 저장
+     */
+    @Transactional
+    public void recordStockHistory(Long teacherId) {
+        List<StockDTO> stocks = stockService.findStocks(teacherId);
+//        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+//        LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+
+        // 어제 날짜의 시작 (00:00:00)
+        LocalDateTime startOfDay = LocalDate.now().minusDays(1).atStartOfDay();
+        // 어제 날짜의 종료 (23:59:59.999999999)
+        LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MAX);
+
+        for (StockDTO stockDTO : stocks) {
+            int buyVolume = stockTransactionService.getTotalBuyVolume(stockDTO.getId(), startOfDay, endOfDay);
+            int sellVolume = stockTransactionService.getTotalSellVolume(stockDTO.getId(), startOfDay, endOfDay);
+            int totalVolume = buyVolume + sellVolume; // 총 거래량
+
+            // 최대 ±10% 변동
+            double maxChangeRate = 10.0;
+
+            // 거래량이 있을 경우 변동률 계산
+            double priceChangeRate = (totalVolume == 0) ? 0 : ((double) (buyVolume - sellVolume) / (buyVolume + sellVolume + 1)) * maxChangeRate;
+
+            // 변동폭 제한 (-10% ~ +10%)
+            priceChangeRate = Math.max(-maxChangeRate, Math.min(maxChangeRate, priceChangeRate));
+
+            // 변동된 가격 반영 (새 가격 = 현재 가격 * (1 + 변동률 %)), 최소 단위 반올림 적용
+            int adjustedPrice = Math.max(1, (int) Math.round(stockDTO.getPricePerShare() * (1 + priceChangeRate / 100.0)));
+
+            // StockHistory 저장
+            StockHistory stockHistory = StockHistory.builder()
+                    .stock(StockDTO.toEntity(stockDTO))
+                    .price(adjustedPrice)
+                    .buyVolume(buyVolume)
+                    .sellVolume(sellVolume)
+                    .priceChangeRate((int) priceChangeRate)
+                    .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                    .build();
+
+            stockHistoryRepository.save(stockHistory);
         }
     }
 

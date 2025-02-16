@@ -252,66 +252,58 @@ public class StockTransactionService {
 
     public List<StudentStockTransactionDTO> findStudentStockTransactionsByStudentId(Long studentId) {
         List<StockTransactionResponseDTO> stockTransactionResponseDTOList = getStudentTransactions(studentId);
+        Map<Long, StudentStockTransactionDTO> stockSummaryMap = new HashMap<>();
 
-        // 주식명을 기준으로 그룹화하여 중복 제거
-        Map<String, StudentStockTransactionDTO> stockTransactionMap = new HashMap<>();
+        for (StockTransactionResponseDTO transaction : stockTransactionResponseDTOList) {
+            StockDTO stockDTO = stockService.findStock(transaction.getStockId()).orElseGet(StockDTO::new);
+            Long stockId = transaction.getStockId();
 
-        for (StockTransactionResponseDTO stockTransactionResponseDTO : stockTransactionResponseDTOList) {
-            StockDTO stockDTO = stockService.findStock(stockTransactionResponseDTO.getStockId())
-                    .orElseGet(StockDTO::new);
-
-            String stockName = stockDTO.getName();
-            int quantity = stockTransactionResponseDTO.getShareCount();
-            int purchasePrice = stockTransactionResponseDTO.getPurchasePricePerShare();
-            int currentPrice = stockDTO.getPricePerShare();
-
-            // 기존 보유 내역이 있는 경우 가져옴
-            StudentStockTransactionDTO existingDTO = stockTransactionMap.getOrDefault(stockName,
+            StudentStockTransactionDTO stockSummary = stockSummaryMap.getOrDefault(stockId,
                     StudentStockTransactionDTO.builder()
-                            .stockName(stockName)
+                            .stockName(stockDTO.getName())
                             .quantity(0)
                             .currentTotalPrice(0)
                             .purchasePrice(0)
                             .priceChangeRate(0)
-                            .build());
+                            .build()
+            );
 
-            int totalQuantity = existingDTO.getQuantity();
-            int totalPurchaseAmount = existingDTO.getPurchasePrice() * totalQuantity; // 총 매수 금액
+            int prevQuantity = stockSummary.getQuantity();
+            int prevTotalPurchasePrice = stockSummary.getPurchasePrice() * prevQuantity;
 
-            // 거래 타입에 따라 처리
-            if (stockTransactionResponseDTO.getTransactionType() == TransactionType.BUY) {
-                // 새로운 총 보유 수량
-                totalQuantity += quantity;
-                totalPurchaseAmount += purchasePrice * quantity;
-            } else if (stockTransactionResponseDTO.getTransactionType() == TransactionType.SELL) {
-                // 매도 시 보유 수량 감소 (보유 수량보다 많을 수 없음)
-                totalQuantity -= quantity;
-                if (totalQuantity < 0) totalQuantity = 0; // 방어 로직
+            // 매수 (BUY) 처리
+            if (transaction.getTransactionType() == TransactionType.BUY) {
+                int newQuantity = prevQuantity + transaction.getShareCount();
+                int totalPurchasePrice = prevTotalPurchasePrice + (transaction.getPurchasePricePerShare() * transaction.getShareCount());
+                int newAveragePurchasePrice = (newQuantity > 0) ? totalPurchasePrice / newQuantity : 0;
+
+                stockSummary.setPurchasePrice(newAveragePurchasePrice);
+                stockSummary.setQuantity(newQuantity);
             }
 
-            // 평균 구매 가격 계산 (보유 주식이 없을 경우 0 처리)
-            int averagePurchasePrice = (totalQuantity > 0) ? totalPurchaseAmount / totalQuantity : 0;
+            // 매도 (SELL) 처리
+            else if (transaction.getTransactionType() == TransactionType.SELL) {
+                int newQuantity = prevQuantity - transaction.getShareCount();
+                stockSummary.setQuantity(Math.max(newQuantity, 0)); // 음수가 되지 않도록 조정
+            }
 
-            // 주가 변동률 계산
-            int priceChangeRate = (averagePurchasePrice > 0) ?
-                    ((currentPrice - averagePurchasePrice) * 100 / averagePurchasePrice) : 0;
+            // 현재 총 평가 금액 = 현재 주가 * 보유 수량
+            int currentPrice = stockDTO.getPricePerShare();
+            stockSummary.setCurrentTotalPrice(stockSummary.getQuantity() > 0 ? currentPrice * stockSummary.getQuantity() : 0);
 
-            // DTO 업데이트
-            StudentStockTransactionDTO updatedDTO = StudentStockTransactionDTO.builder()
-                    .stockName(stockName)
-                    .quantity(totalQuantity)
-                    .currentTotalPrice(currentPrice * totalQuantity)
-                    .purchasePrice(averagePurchasePrice)
-                    .priceChangeRate(priceChangeRate)
-                    .build();
+            // 변동률 계산
+            if (stockSummary.getPurchasePrice() == 0 || stockSummary.getQuantity() == 0) {
+                stockSummary.setPriceChangeRate(0);
+            } else {
+                int priceChangeRate = Math.round(((float) (currentPrice - stockSummary.getPurchasePrice()) / stockSummary.getPurchasePrice()) * 100);
+                stockSummary.setPriceChangeRate(priceChangeRate);
+            }
 
-            stockTransactionMap.put(stockName, updatedDTO);
+            stockSummaryMap.put(stockId, stockSummary);
         }
 
-        // 최종 결과 리스트 반환
-        return new ArrayList<>(stockTransactionMap.values());
+        return new ArrayList<>(stockSummaryMap.values());
     }
-
 
     public int getTotalBuyVolume(Long stockId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
         return stockTransactionRepository.getTotalBuyVolume(stockId, startOfDay, endOfDay);
