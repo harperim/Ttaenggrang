@@ -54,7 +54,7 @@ public class Teacher {
         this.id = id;
     }
 
-    @OneToOne(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
-    private StockMarketStatus marketStatus;
+//    @OneToOne(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private StockMarketStatus marketStatus;
 
 }
