@@ -13,15 +13,17 @@ import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockTransactionRepository;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
-import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentStockTransactionDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +33,6 @@ public class StockTransactionService {
     private final StockTransactionRepository stockTransactionRepository;
     private final StudentRepository studentRepository;
     private final BankTransactionService bankTransactionService;
-    private final StockMarketStatusService stockMarketStatusService;
-    private final StudentService studentService;
     private final StockService stockService;
 
     // 주식 매수 로직
@@ -252,32 +252,72 @@ public class StockTransactionService {
 
     public List<StudentStockTransactionDTO> findStudentStockTransactionsByStudentId(Long studentId) {
         List<StockTransactionResponseDTO> stockTransactionResponseDTOList = getStudentTransactions(studentId);
-        List<StudentStockTransactionDTO> studentStockTransactionDTOList = new ArrayList<>();
+
+        // 주식명을 기준으로 그룹화하여 중복 제거
+        Map<String, StudentStockTransactionDTO> stockTransactionMap = new HashMap<>();
 
         for (StockTransactionResponseDTO stockTransactionResponseDTO : stockTransactionResponseDTOList) {
-            StockDTO stockDTO= stockService.findStock(stockTransactionResponseDTO.getStockId())
+            StockDTO stockDTO = stockService.findStock(stockTransactionResponseDTO.getStockId())
                     .orElseGet(StockDTO::new);
 
+            String stockName = stockDTO.getName();
             int quantity = stockTransactionResponseDTO.getShareCount();
             int purchasePrice = stockTransactionResponseDTO.getPurchasePricePerShare();
             int currentPrice = stockDTO.getPricePerShare();
 
-            // 주가 변동률 계산
-            int priceChangeRate = 0;
-            if (purchasePrice > 0) {
-                priceChangeRate = (currentPrice - purchasePrice) * 100 / purchasePrice;
+            // 기존 보유 내역이 있는 경우 가져옴
+            StudentStockTransactionDTO existingDTO = stockTransactionMap.getOrDefault(stockName,
+                    StudentStockTransactionDTO.builder()
+                            .stockName(stockName)
+                            .quantity(0)
+                            .currentTotalPrice(0)
+                            .purchasePrice(0)
+                            .priceChangeRate(0)
+                            .build());
+
+            int totalQuantity = existingDTO.getQuantity();
+            int totalPurchaseAmount = existingDTO.getPurchasePrice() * totalQuantity; // 총 매수 금액
+
+            // 거래 타입에 따라 처리
+            if (stockTransactionResponseDTO.getTransactionType() == TransactionType.BUY) {
+                // 새로운 총 보유 수량
+                totalQuantity += quantity;
+                totalPurchaseAmount += purchasePrice * quantity;
+            } else if (stockTransactionResponseDTO.getTransactionType() == TransactionType.SELL) {
+                // 매도 시 보유 수량 감소 (보유 수량보다 많을 수 없음)
+                totalQuantity -= quantity;
+                if (totalQuantity < 0) totalQuantity = 0; // 방어 로직
             }
 
-            studentStockTransactionDTOList.add(StudentStockTransactionDTO.builder()
-                    .stockName(stockDTO.getName())
-                    .quantity(quantity)
-                    .currentTotalPrice(currentPrice * quantity)
-                    .purchasePrice(purchasePrice)
+            // 평균 구매 가격 계산 (보유 주식이 없을 경우 0 처리)
+            int averagePurchasePrice = (totalQuantity > 0) ? totalPurchaseAmount / totalQuantity : 0;
+
+            // 주가 변동률 계산
+            int priceChangeRate = (averagePurchasePrice > 0) ?
+                    ((currentPrice - averagePurchasePrice) * 100 / averagePurchasePrice) : 0;
+
+            // DTO 업데이트
+            StudentStockTransactionDTO updatedDTO = StudentStockTransactionDTO.builder()
+                    .stockName(stockName)
+                    .quantity(totalQuantity)
+                    .currentTotalPrice(currentPrice * totalQuantity)
+                    .purchasePrice(averagePurchasePrice)
                     .priceChangeRate(priceChangeRate)
-                    .build());
+                    .build();
+
+            stockTransactionMap.put(stockName, updatedDTO);
         }
 
-        return studentStockTransactionDTOList;
+        // 최종 결과 리스트 반환
+        return new ArrayList<>(stockTransactionMap.values());
     }
 
+
+    public int getTotalBuyVolume(Long stockId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        return stockTransactionRepository.getTotalBuyVolume(stockId, startOfDay, endOfDay);
+    }
+
+    public int getTotalSellVolume(Long id, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        return stockTransactionRepository.getTotalSellVolume(id, startOfDay, endOfDay);
+    }
 }

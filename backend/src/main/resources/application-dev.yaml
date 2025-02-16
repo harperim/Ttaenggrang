@@ -7,3 +7,8 @@ spring:
 
 api:
   openai_key: ${OPENAI_API_KEY}  # 환경변수 없으면 기본값 사용
+
+scheduling:
+  stock-market:
+    open: "0 */2 * * * ?"  # 2분마다 개장 실행 (테스트용)
+    close: "0 */2 * * * ?" # 2분마다 폐장 실행 (테스트용)

@@ -99,35 +99,20 @@ public class FCMWithDataService {
         Constants.clientTokens.add(token);
     }
 
-    // 특정 토큰을 이용해서 전송
-//    public void sendToStudent(String targetToken, NotificationDTO notificationDTO) throws IOException {
-//        String message = makeDataMessage(targetToken, notificationDTO);
-//        String response = sendDataMessageTo(message);
-//    }
-
-    // 등록된 모든 토큰을 이용해서 broadcasting
-//    public int broadCastToAllStudents(List<String> targetTokens, NotificationDTO notificationDTO) throws IOException {
-//        for(String targetToken: targetTokens) {
-//            String message = makeDataMessage(targetToken, notificationDTO);
-//            String response = sendDataMessageTo(message);
-//        }
-//        return targetTokens.size();
-//    }
-
     @Async("taskExecutor") // 비동기 실행 (taskExecutor 사용)
-    public CompletableFuture<Integer> sendToStudent(String targetToken, NotificationDTO notificationDTO) throws IOException {
+    public void sendToStudent(String targetToken, NotificationDTO notificationDTO) throws IOException {
         String message = makeDataMessage(targetToken, notificationDTO);
         sendDataMessageTo(message);
-        return CompletableFuture.completedFuture(1);
+        CompletableFuture.completedFuture(1);
     }
 
     @Async("taskExecutor") // 비동기 실행 (taskExecutor 사용)
-    public CompletableFuture<Integer> broadCastToAllStudents(List<String> targetTokens, NotificationDTO notificationDTO) throws IOException {
+    public void broadCastToAllStudents(List<String> targetTokens, NotificationDTO notificationDTO) throws IOException {
         for (String targetToken : targetTokens) {
             String message = makeDataMessage(targetToken, notificationDTO);
             sendDataMessageTo(message); // 비동기 호출
         }
-        return CompletableFuture.completedFuture(targetTokens.size());
+        CompletableFuture.completedFuture(targetTokens.size());
     }
 
     private String makeDataMessage(String targetToken, NotificationDTO notificationDTO) throws JsonProcessingException {

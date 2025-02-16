@@ -53,10 +53,26 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
     int countByStockIdAndTransactionDateAfter(Long stock_id, Timestamp transactionDate);
 
     // 추가
-    @Query("SELECT COALESCE(SUM(st.share_count), 0) FROM StockTransaction st WHERE st.stock.id = :stockId AND st.transactionType = 'BUY' AND st.transactionDate BETWEEN :startTime AND :endTime")
-    int getBuyVolume(@Param("stockId") Long stockId, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime);
+    /**
+     * 특정 주식의 당일 총 매수량 조회
+     */
+    @Query("SELECT COALESCE(SUM(s.share_count), 0) FROM StockTransaction s " +
+            "WHERE s.stock.id = :stockId " +
+            "AND s.transactionType = 'BUY' " +
+            "AND s.transactionDate BETWEEN :startOfDay AND :endOfDay")
+    int getTotalBuyVolume(@Param("stockId") Long stockId,
+                          @Param("startOfDay") LocalDateTime startOfDay,
+                          @Param("endOfDay") LocalDateTime endOfDay);
 
-    @Query("SELECT COALESCE(SUM(st.share_count), 0) FROM StockTransaction st WHERE st.stock.id = :stockId AND st.transactionType = 'SELL' AND st.transactionDate BETWEEN :startTime AND :endTime")
-    int getSellVolume(@Param("stockId") Long stockId, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime);
+    /**
+     * 특정 주식의 당일 총 매도량 조회
+     */
+    @Query("SELECT COALESCE(SUM(s.share_count), 0) FROM StockTransaction s " +
+            "WHERE s.stock.id = :stockId " +
+            "AND s.transactionType = 'SELL' " +
+            "AND s.transactionDate BETWEEN :startOfDay AND :endOfDay")
+    int getTotalSellVolume(@Param("stockId") Long stockId,
+                           @Param("startOfDay") LocalDateTime startOfDay,
+                           @Param("endOfDay") LocalDateTime endOfDay);
 
 }

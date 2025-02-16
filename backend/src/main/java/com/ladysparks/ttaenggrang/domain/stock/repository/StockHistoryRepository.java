@@ -21,5 +21,11 @@ public interface StockHistoryRepository extends JpaRepository<StockHistory, Long
     // StockHistory 조회
     List<StockHistory> findByStockId(Long stockId);
 
+    /**
+     * 특정 주식의 가장 최근 StockHistory 조회 (어제 기록된 변동 내역)
+     */
+    @Query("SELECT sh FROM StockHistory sh WHERE sh.stock.id = :stockId ORDER BY sh.createdAt DESC LIMIT 1")
+    StockHistory findLatestHistoryByStockId(@Param("stockId") Long stockId);
+
 }
 

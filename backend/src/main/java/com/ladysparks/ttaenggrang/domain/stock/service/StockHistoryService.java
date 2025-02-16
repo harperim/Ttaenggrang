@@ -28,44 +28,7 @@ public class StockHistoryService {
     private final StockRepository stockRepository;
     private final StockTransactionRepository stockTransactionRepository;
 
-    /**
-     * 🕔 매일 17시에 실행 - 하루 동안의 주식 거래량 저장 & 변동률 계산
-     */
-    @Transactional
-    public void saveStockHistoryAndUpdateChangeRate() {
-        List<Stock> stocks = stockRepository.findAll(); // 모든 주식 조회
-
-        for (Stock stock : stocks) {
-            // 9시 ~ 17시 사이의 거래량 집계
-            int buyVolume = stockTransactionRepository.getBuyVolume(stock.getId(), LocalTime.of(9, 0), LocalTime.of(17, 0));
-            int sellVolume = stockTransactionRepository.getSellVolume(stock.getId(), LocalTime.of(9, 0), LocalTime.of(17, 0));
-
-            // 어제 가격 가져오기
-            Integer previousPrice = stock.getPrice_per();
-
-            // 변동률 계산
-            int currentPrice = stock.getPrice_per();
-            Integer changeRate = (previousPrice != null && previousPrice > 0)
-                    ? ((currentPrice - previousPrice) * 100) / previousPrice
-                    : 0; // 어제 가격이 없으면 변동률 0%
-
-            // StockHistory 저장
-            StockHistory stockHistory = StockHistory.builder()
-                    .stock(stock)
-                    .price(currentPrice)
-                    .buyVolume(buyVolume)
-                    .sellVolume(sellVolume)
-                    .createdAt(Timestamp.valueOf(LocalDateTime.now()))
-                    .build();
-            stockHistoryRepository.save(stockHistory);
-
-            // 주식 가격 변동률 업데이트
-            stock.setChangeRate(changeRate);
-            stockRepository.save(stock);
-        }
-    }
-
-
+    // -----------------------------------------------------------------------------------------------------------------
 
     // 가격 변동 처리 (폐장 시 적용)
     @Transactional

@@ -29,14 +29,10 @@ public class StockDTO {
     private final String type = "일반 주식";
     private LocalDateTime priceChangeTime;  // 가격 변동 시간
     private BigDecimal weight;              // 주식 비중 (각 주식의 비중을 따로 저장)
-
     private Long teacherId;                 // 교사 ID
-
     @JsonIgnore
     private Long etfId;                     // ETF ID
-
     private Long categoryId;
-
     private String categoryName;
 
 //    private Long marketStatusId;
