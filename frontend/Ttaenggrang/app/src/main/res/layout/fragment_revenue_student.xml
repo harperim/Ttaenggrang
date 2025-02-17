@@ -183,7 +183,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="서미지"
-                            style="@style/heading4"/>
+                            style="@style/heading3"/>
                         <TextView
                             android:id="@+id/textTaxStudentJobPayment"
                             android:layout_width="wrap_content"
