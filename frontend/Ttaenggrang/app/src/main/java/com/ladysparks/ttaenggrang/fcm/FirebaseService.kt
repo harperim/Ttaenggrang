@@ -21,7 +21,8 @@ class FirebaseService : FirebaseMessagingService(){ //  : FirebaseMessagingServi
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 
-        Log.d("FCM 메시지 받기", "onMessageReceived: ${remoteMessage.notification!!.title}")
+        Log.d("TAG", "onMessageReceived: FCM 메시지받기 ${remoteMessage.data}")
+//        Log.d("FCM 메시지 받기", "onMessageReceived: ${remoteMessage.notification!!.title}")
         var messageTitle = ""
         var messageContent = ""
         var category = ""
