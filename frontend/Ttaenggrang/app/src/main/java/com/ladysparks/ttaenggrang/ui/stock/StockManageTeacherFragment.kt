@@ -29,6 +29,7 @@ class StockManageTeacherFragment : BaseFragment<FragmentStockManageTeacherBindin
         //초기화
         initAdapter()
 
+
         // LiveData 관찰하여 데이터 변경 시 UI 업데이트
         observeViewModel()
 
@@ -60,6 +61,7 @@ class StockManageTeacherFragment : BaseFragment<FragmentStockManageTeacherBindin
             }
         )
         binding.recyclerStockManageList.adapter = tableAdapter
+
     }
 
     private fun observeViewModel() {
