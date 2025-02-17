@@ -18,6 +18,7 @@ import java.util.Locale
  */
 object CustomDateUtil {
 
+    private const val DATE_MONTH_DAY = "MM-dd"
     private const val DATE_FORMAT = "yyyy.MM.dd"
     private const val DATE_TIME_FORMAT = "yyyy.MM.dd HH:mm:ss"
 
@@ -39,6 +40,12 @@ object CustomDateUtil {
             } catch (_: Exception) { }
         }
         return null // 변환 실패 시 null 반환
+    }
+
+    fun formatToMonthDay(dateString: String): String{
+        return parseServerDate(dateString)?.let {
+            SimpleDateFormat(DATE_MONTH_DAY, Locale.getDefault()).format(it)
+        } ?: "Invalid Date"
     }
 
     /**

@@ -13,9 +13,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.ApplicationClass
@@ -23,6 +28,8 @@ import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
 import com.ladysparks.ttaenggrang.databinding.DialogIncomeSummaryBinding
 import com.ladysparks.ttaenggrang.databinding.DialogNewsDetailBinding
+import com.ladysparks.ttaenggrang.databinding.DialogStudentRegisterFirstBinding
+import com.ladysparks.ttaenggrang.databinding.DialogStudentWeeklyReportBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentHomeStudentBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStudentsBinding
 import com.ladysparks.ttaenggrang.realm.NotificationModel
@@ -30,6 +37,7 @@ import com.ladysparks.ttaenggrang.realm.NotificationRepository
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.ui.component.PieChartComponent
 import com.ladysparks.ttaenggrang.ui.component.PieChartComponent2
+import com.ladysparks.ttaenggrang.ui.students.StudentRegisterSecondDialog
 import com.ladysparks.ttaenggrang.util.CustomDateUtil
 import com.ladysparks.ttaenggrang.util.DataUtil
 import com.ladysparks.ttaenggrang.util.NumberUtil
@@ -74,6 +82,11 @@ class HomeStudentFragment : BaseFragment<FragmentHomeStudentBinding>(FragmentHom
 
             dialog.show()
         }
+
+        binding.btnWeekReport.setOnClickListener {
+            val dialog = WeeklyReportDialog(requireContext())
+            dialog.show()
+       }
     }
 
     private fun initAdapter() {

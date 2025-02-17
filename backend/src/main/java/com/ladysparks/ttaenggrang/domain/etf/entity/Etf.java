@@ -51,9 +51,7 @@ public class Etf {
 
     @Column
     private Integer changeRate; //가격 변동률
-//
-//    @Column(nullable = false)
-//    private Boolean isMarketActive;  //주식장 활성화
+
 
     @Column(nullable = false, updatable = false)
     private final String type = "ETF";

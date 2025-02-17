@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;
 import com.ladysparks.ttaenggrang.domain.stock.entity.StockMarketStatus;
+import com.ladysparks.ttaenggrang.domain.tax.entity.Tax;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,5 +60,8 @@ public class Teacher {
     @OneToOne(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({"teacher"})
     private StockMarketStatus marketStatus;
+
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    private List<Tax> taxes;
 
 }

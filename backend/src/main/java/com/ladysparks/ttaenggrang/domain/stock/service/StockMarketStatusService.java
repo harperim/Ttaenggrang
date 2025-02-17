@@ -134,7 +134,7 @@ public class StockMarketStatusService {
         LocalDateTime startOfDay = LocalDate.now().minusDays(1).atStartOfDay();
         // 어제 날짜의 종료 (23:59:59.999999999)
         LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MAX);
-
+ 
         for (StockDTO stockDTO : stocks) {
             int buyVolume = stockTransactionService.getTotalBuyVolume(stockDTO.getId(), startOfDay, endOfDay);
             int sellVolume = stockTransactionService.getTotalSellVolume(stockDTO.getId(), startOfDay, endOfDay);
