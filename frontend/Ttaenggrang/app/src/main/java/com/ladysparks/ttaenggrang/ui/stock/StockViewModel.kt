@@ -142,17 +142,17 @@ class StockViewModel : ViewModel() {
     }
 
     // 학생이 보유한 주식 목록 조회
-//    fun fetchOwnedStocks() = viewModelScope.launch {
-//        runCatching {
-//            stockService.getStocksStudent()
-//        }.onSuccess { response ->
-//            _ownedStocks.postValue(response.data)
-//            Log.d("TAG", "fetchOwnedStocks: 학생 주식 목록 조회성공!!!${response}")
-//        }.onFailure { e ->
-//            Log.e("StockViewModel", "보유 주식 조회 실패", e)
-//            _ownedStocks.postValue(emptyList())
-//        }
-//    }
+    fun fetchOwnedStocks() = viewModelScope.launch {
+        runCatching {
+            stockService.getStocksStudent()
+        }.onSuccess { response ->
+            _ownedStocks.postValue(response.data)
+            Log.d("TAG", "fetchOwnedStocks: 학생 주식 목록 조회성공!!!${response}")
+        }.onFailure { e ->
+            Log.e("StockViewModel", "보유 주식 조회 실패", e)
+            _ownedStocks.postValue(emptyList())
+        }
+    }
 
     // 주식 매도
     fun sellStock(stockId: Int, shareQuantity: Int, studentId: Int) = viewModelScope.launch {
