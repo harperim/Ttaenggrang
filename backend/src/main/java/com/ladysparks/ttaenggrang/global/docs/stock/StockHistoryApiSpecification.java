@@ -25,18 +25,19 @@ public interface StockHistoryApiSpecification {
 //            """)
 //    ResponseEntity<ApiResponse<List<StockHistoryDTO>>> getStockHistory(@PathVariable Long stockId);
 
+
     /**
-     * 📌 (교사) 각 주식의 최근 5일치 변동 이력 조회 (가격 변동률 포함)
+     * 📌 (교사) 각 주식의 최근 5개 평일 변동 이력 조회 (오늘 포함, 주말 제외, 오래된 순서)
      */
-    @Operation(summary = "(교사/학생) 최근 5일치 모든 주식의 주가 변동 이력 조회", description = """
-        💡 교사가 관리하는 각 주식의 최근 5일간의 가격 변동 이력을 조회합니다.
+    @Operation(summary = "(교사/학생) 최근 5개 평일 주식 변동 이력 조회", description = """
+        💡 학급 내 각 주식의 최근 5개 평일(월~금) 변동 이력을 조회합니다.
         
         ---
         
         **[ 응답 필드 ]**
         
         - **stockId** : 주식 ID
-        - **historyList** : 최근 5일치 주가 변동 이력 리스트
+        - **historyList** : 최근 5개 평일 변동 이력 리스트
         
         **[ historyList 내 개별 항목 필드 ]**
         
@@ -48,7 +49,8 @@ public interface StockHistoryApiSpecification {
         ---
 
         **[ 설명 ]**
-        - 요청한 교사가 관리하는 각 주식에 대해 최근 5일간의 변동 이력을 가져옵니다.
+        - 주말(토요일, 일요일) 데이터를 제외하고 최근 5개의 평일(월~금) 데이터를 반환합니다.
+        - 오늘이 평일이면 오늘을 포함하여 5개, 오늘이 주말이면 가장 최근 평일부터 5개 반환합니다.
         """)
     ResponseEntity<ApiResponse<Map<Long, List<StockHistoryDTO>>>> getLast5DaysStockHistory();
 

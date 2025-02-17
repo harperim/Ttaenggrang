@@ -5,21 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.ladysparks.ttaenggrang.domain.notification.dto.FcmMessageWithData;
 import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationDTO;
-import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
-import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.global.utill.Constants;
 import lombok.RequiredArgsConstructor;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.*;
 import org.apache.http.HttpHeaders;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,24 +20,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * FCM 알림 메시지 생성
- * background 대응을 위해서 data로 전송한다.
- *
- * @author taeshik.heo
- *
- */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FCMWithDataService {
 
-    private static final Logger logger = LoggerFactory.getLogger(FCMWithDataService.class);
-
     private final ObjectMapper objectMapper;
     private final OkHttpClient client;
-
-    private final StudentService studentService;
-    private final TeacherService teacherService;
 
     /**
      * 📌 FCM AccessToken 가져오기
@@ -53,90 +35,97 @@ public class FCMWithDataService {
     private String getAccessToken() throws IOException {
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(Constants.FIREBASE_KEY_FILE).getInputStream())
-                .createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+                .createScoped(Arrays.asList("https://www.googleapis.com/auth/firebase.messaging")); // ✅ 올바른 권한 설정
 
         googleCredentials.refreshIfExpired();
-        return googleCredentials.getAccessToken().getTokenValue();
+        String token = googleCredentials.getAccessToken().getTokenValue();
+
+        if (token == null || token.isEmpty()) {
+            throw new IllegalStateException("🔥 FCM Access Token을 가져오지 못했습니다!");
+        }
+
+        return token;
     }
 
     /**
-     * 📌 FCM 메시지 생성 (DTO 활용)
-     * background 대응을 위해서 data로 전송한다.
+     * 📌 FCM 메시지 전송 (비동기)
      */
-//    private String makeDataMessage(String targetToken, NotificationDTO notificationDTO) throws JsonProcessingException {
-//        Map<String, String> data = new HashMap<>();
-//        data.put("title", notificationDTO.getTitle());
-//
-//
-//        FcmMessageWithData.Message message = new FcmMessageWithData.Message();
-//        message.setToken(targetToken); // 🔥 타겟 디바이스 토큰
-//        message.setData(data);
-//
-//        return objectMapper.writeValueAsString(new FcmMessageWithData(false, message));
-//    }
+    @Async("taskExecutor") // 비동기 실행
+    public CompletableFuture<Integer> sendToStudent(String targetToken, NotificationDTO notificationDTO) throws IOException {
+        if (targetToken != null && !targetToken.trim().isEmpty()) {  // ✅ 공백 및 개행 문자 제거
+            String cleanedToken = targetToken.trim();  // ✅ FCM 토큰 정리
+            log.info("📨 정리된 FCM 토큰: {}", cleanedToken);
 
-    /**
-     * 📌 FCM 메시지 전송 후 Notification 저장
-     * targetToken에 해당하는 device로 FCM 푸시 알림 전송
-     * background 대응을 위해서 data로 전송한다.
-     */
-//    public String sendDataMessageTo(String message) throws IOException {
-//        OkHttpClient client = new OkHttpClient();
-//        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
-//        Request request = new Request.Builder()
-//                .url(Constants.API_URL)
-//                .post(requestBody)
-//                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-//                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
-//                .build();
-//
-//        Response response = client.newCall(request).execute();
-//        return response.body().string();
-//    }
-
-    // 클라이언트 토큰 관리
-    public void addToken(String token) {
-        Constants.clientTokens.add(token);
-    }
-
-    @Async("taskExecutor") // 비동기 실행 (taskExecutor 사용)
-    public void sendToStudent(String targetToken, NotificationDTO notificationDTO) throws IOException {
-        String message = makeDataMessage(targetToken, notificationDTO);
-        sendDataMessageTo(message);
-        CompletableFuture.completedFuture(1);
-    }
-
-    @Async("taskExecutor") // 비동기 실행 (taskExecutor 사용)
-    public void broadCastToAllStudents(List<String> targetTokens, NotificationDTO notificationDTO) throws IOException {
-        for (String targetToken : targetTokens) {
-            String message = makeDataMessage(targetToken, notificationDTO);
+            String message = makeDataMessage(cleanedToken, notificationDTO);
             sendDataMessageTo(message); // 비동기 호출
         }
-        CompletableFuture.completedFuture(targetTokens.size());
+        return CompletableFuture.completedFuture(1);
     }
 
+    /**
+     * 📌 FCM 메시지 전송 (비동기)
+     */
+    @Async("taskExecutor") // 비동기 실행
+    public CompletableFuture<Integer> broadCastToAllStudents(List<String> targetTokens, NotificationDTO notificationDTO) throws IOException {
+        for (String targetToken : targetTokens) {
+            if (targetToken != null && !targetToken.trim().isEmpty()) {  // ✅ 공백 및 개행 문자 제거
+                String cleanedToken = targetToken.trim();  // ✅ FCM 토큰 정리
+                log.info("📨 정리된 FCM 토큰: {}", cleanedToken);
+
+                String message = makeDataMessage(cleanedToken, notificationDTO);
+                sendDataMessageTo(message); // 비동기 호출
+            }
+        }
+        return CompletableFuture.completedFuture(targetTokens.size());
+    }
+
+    /**
+     * 📌 FCM 메시지 생성 (Data 메시지 형식)
+     */
     private String makeDataMessage(String targetToken, NotificationDTO notificationDTO) throws JsonProcessingException {
         Map<String, String> data = new HashMap<>();
+        data.put("category", notificationDTO.getCategory());
         data.put("title", notificationDTO.getTitle());
+        data.put("content", notificationDTO.getContent());
+        data.put("sendTime", String.valueOf(notificationDTO.getTime()));
+        data.put("receiver", notificationDTO.getReceiver());
 
-        FcmMessageWithData.Message message = new FcmMessageWithData.Message();
-        message.setToken(targetToken);
-        message.setData(data);
+        // FCM 메시지 포맷 (올바른 형식)
+        Map<String, Object> messageMap = new HashMap<>();
+        messageMap.put("message", Map.of(
+                "token", targetToken,  // FCM 디바이스 토큰
+                "data", data                // 데이터 메시지
+        ));
 
-        return objectMapper.writeValueAsString(new FcmMessageWithData(false, message));
+        return objectMapper.writeValueAsString(messageMap);
     }
 
-    private void sendDataMessageTo(String message) throws IOException {
+    /**
+     * 📌 FCM 메시지 전송 요청
+     */
+    private boolean sendDataMessageTo(String message) throws IOException {
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+        String accessToken = getAccessToken();
+
+        log.info("📨 FCM 요청: {}", message);
+        log.info("🔑 FCM 인증 토큰: {}", accessToken);
+
         Request request = new Request.Builder()
                 .url(Constants.API_URL)
                 .post(requestBody)
-                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)  // ✅ FCM 토큰 적용
                 .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
                 .build();
 
-        client.newCall(request).execute();
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                log.error("❌ FCM 전송 실패! 응답 코드: {}, 응답 메시지: {}", response.code(), response.body().string());
+                return false;
+            } else {
+                log.info("✅ FCM 전송 성공!");
+                return true;
+            }
+        }
     }
 
 }
-
