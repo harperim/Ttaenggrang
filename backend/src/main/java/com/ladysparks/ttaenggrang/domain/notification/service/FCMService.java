@@ -1,10 +1,8 @@
 package com.ladysparks.ttaenggrang.domain.notification.service;
 
-import java.io.IOException;
-
-import java.util.Arrays;
-import java.util.List;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.ladysparks.ttaenggrang.domain.notification.dto.BroadcastNotificationDTO;
 import com.ladysparks.ttaenggrang.domain.notification.dto.FcmMessage;
 import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationPersistanceDTO;
@@ -12,21 +10,16 @@ import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.global.utill.Constants;
+import okhttp3.*;
 import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.auth.oauth2.GoogleCredentials;
-
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * FCM 알림 메시지 생성
@@ -40,8 +33,6 @@ public class FCMService {
     private static final Logger logger = LoggerFactory.getLogger(FCMService.class);
 
     public final ObjectMapper objectMapper;
-    private final NotificationService notificationService;
-    private final TeacherService teacherService;
     private final StudentService studentService;
 
     /**
@@ -104,10 +95,7 @@ public class FCMService {
     }
 
     public NotificationPersistanceDTO sendMessageTo(NotificationPersistanceDTO notificationPersistanceDTO) throws IOException {
-        // Notification 테이블에 저장 후 FCM 메시지를 전송
-        NotificationPersistanceDTO savedNotificationPersistanceDTO = notificationService.saveNotification(notificationPersistanceDTO);
-
-        String message = makeMessage(savedNotificationPersistanceDTO);
+        String message = makeMessage(notificationPersistanceDTO);
         logger.info("📨 FCM Message: {}", message);
 
         OkHttpClient client = new OkHttpClient();
@@ -125,13 +113,11 @@ public class FCMService {
         System.out.println(response.body().string());
 //        logger.info("message : {}", message);
 
-        return savedNotificationPersistanceDTO;
+        return notificationPersistanceDTO;
     }
 
-    public FCMService(ObjectMapper objectMapper, NotificationService notificationService, TeacherService teacherService, StudentService studentService){
+    public FCMService(ObjectMapper objectMapper, StudentService studentService) {
         this.objectMapper = objectMapper;
-        this.notificationService = notificationService;
-        this.teacherService = teacherService;
         this.studentService = studentService;
     }
 
@@ -163,9 +149,9 @@ public class FCMService {
                     .message(broadcastNotificationDTO.getMessage())
                     .status(broadcastNotificationDTO.getStatus())
                     .build();
-            NotificationPersistanceDTO savedNotificationPersistanceDTO = notificationService.saveNotification(notificationPersistanceDTO);
+//            NotificationPersistanceDTO savedNotificationPersistanceDTO = notificationService.saveNotification(notificationPersistanceDTO);
 
-            String message = makeMessage(savedNotificationPersistanceDTO);
+            String message = makeMessage(notificationPersistanceDTO);
             logger.info("📨 FCM Message: {}", message);
 
             sendMessageTo(notificationPersistanceDTO);

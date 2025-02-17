@@ -53,7 +53,7 @@ public class WeeklyFinancialSummary {
     private int fineAmount; // 벌금 납부액
 
     @Column
-    private String aiFeedback;
+    private String aiFeedback; // AI 피드백
     
     @CreationTimestamp
     private Timestamp createdAt;

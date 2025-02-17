@@ -118,4 +118,12 @@ public class SwaggerConfig {
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi notiilder() {
+        return GroupedOpenApi.builder()
+                .group("10. FCM")
+                .pathsToMatch("/notifications/**")
+                .build();
+    }
+
 }

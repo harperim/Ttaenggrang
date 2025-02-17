@@ -174,7 +174,7 @@ public class NewsService {
         newsRepository.save(news);
 
         // 학생들에게 FCM 알림 전송
-        notificationService.sendNewsNotificationToStudents(teacherId);
+        notificationService.sendNewsNotificationToStudents(teacherId, newsDTO.getContent());
 
         return newsDTO;
     }
