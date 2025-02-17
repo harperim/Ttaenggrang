@@ -1,5 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.teacher.entity;
 
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
+import com.ladysparks.ttaenggrang.domain.tax.entity.TaxUsage;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -41,4 +44,12 @@ public class Nation {
     @OneToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @OneToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
+
+    @OneToMany(mappedBy = "nation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaxUsage> taxUsages;
+
 }

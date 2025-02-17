@@ -1,9 +1,7 @@
 package com.ladysparks.ttaenggrang.global.docs.nation;
 
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.JobClassDTO;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.JobCreateDTO;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.NationDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.*;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,6 +28,24 @@ public interface TeacherFunctionApiSpecification {
             """)
     ResponseEntity<ApiResponse<JobCreateDTO>> createJob(@RequestBody @Valid JobCreateDTO jobCreateDTO);
 
+    @Operation(summary = "(교사) 우리 반 학생 직업 정보 [수정]", description = """
+        💡 교사가 특정 학생의 직업 정보를 수정합니다.
+
+        - 요청 데이터:
+            - **jobId** : 변경할 직업 ID
+
+        - 응답 데이터:
+            - **studentId** : 학생 ID
+            - **name** : 학생 실명
+            - **username** : 학생 계정
+            - **profileImage** : 학생 프로필 이미지 경로
+            - **job** : 변경된 직업 정보 (직업명, 기본 급여)
+            - **teacher** : 학생의 담임 선생님 정보
+            - **bankAccount** : 학생의 계좌 정보
+        """)
+    ResponseEntity<ApiResponse<StudentJobUpdateResponseDTO>> updateStudentJob(
+            @PathVariable Long studentId, @RequestBody StudentJobUpdateDTO jobUpdateDTO);
+
     @Operation(summary = "(교사) 국가 [등록]", description = """
             💡 교사가 국가 정보를 등록합니다.
             
@@ -53,7 +69,7 @@ public interface TeacherFunctionApiSpecification {
             """)
     ResponseEntity<ApiResponse<NationDTO>> createNation(@RequestBody @Valid NationDTO nationDTO);
 
-    @Operation(summary = "(교사) 국가 [조회]", description = """
+    @Operation(summary = "(교사/학생) 국가 [조회]", description = """
             💡 교사가 국가 정보를 조회합니다.
             
             ---

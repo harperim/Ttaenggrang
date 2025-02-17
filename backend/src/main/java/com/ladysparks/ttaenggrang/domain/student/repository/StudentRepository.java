@@ -3,8 +3,10 @@ package com.ladysparks.ttaenggrang.domain.student.repository;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentManagementDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,5 +48,12 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
             "LEFT JOIN s.bankAccount b " +
             "WHERE s.teacher.id = :teacherId")
     List<StudentManagementDTO> getStudentManagementListByTeacherId(@Param("teacherId") Long teacherId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Student s SET s.fcmToken = :fcmToken WHERE s.id = :studentId")
+    int updateFcmToken(@Param("studentId") Long studentId, @Param("fcmToken") String fcmToken);
+
+    String findFcmTokenById(Long studendId);
 
 }

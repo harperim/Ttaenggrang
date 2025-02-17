@@ -1,7 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.etf.entity;
 
 import com.ladysparks.ttaenggrang.domain.news.entity.News;
-import com.ladysparks.ttaenggrang.domain.stock.entity.MarketStatus;
+import com.ladysparks.ttaenggrang.domain.stock.entity.StockMarketStatus;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
 import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
@@ -88,7 +88,7 @@ public class Etf {
 
     @ManyToOne
     @JoinColumn(name = "market_status_id")
-    private MarketStatus marketStatus; // MarketStatus와 연
+    private StockMarketStatus stockMarketStatus; // MarketStatus와 연
 
 
 }

@@ -1,48 +1,96 @@
 package com.ladysparks.ttaenggrang.domain.news.service;
 
 import com.ladysparks.ttaenggrang.domain.news.dto.NewsDTO;
+import com.ladysparks.ttaenggrang.domain.news.dto.NewsSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.news.entity.News;
 import com.ladysparks.ttaenggrang.domain.news.entity.NewsType;
 import com.ladysparks.ttaenggrang.domain.news.repository.NewsRepository;
+import com.ladysparks.ttaenggrang.domain.notification.service.NotificationService;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
-import jakarta.annotation.PostConstruct;
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
+import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
+import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.http.*;
-import org.springframework.stereotype.Service;
-
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
-
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class NewsService {
 
-    @Value("${OPENAI_API_KEY}")
-    private String apiKey;
+//    @Value("${api.openai_key}")
+//    private String apiKey;
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
     private final NewsRepository newsRepository;
     private final StockRepository stockRepository;
+    private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
+    private final NotificationService notificationService;
 
-    @PostConstruct
-    public void logConfig() {
+    // 현재 로그인한 교사의 ID 가져오기
+    private Long getTeacherIdFromSecurityContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("인증되지 않은 사용자입니다. 로그인 후 다시 시도하세요.");
+        }
+
+        Object principalObj = authentication.getPrincipal();
+        if (principalObj instanceof UserDetails) {
+            String username = ((UserDetails) principalObj).getUsername();
+
+            // ✅ 먼저 교사인지 확인
+            Optional<Teacher> teacher = teacherRepository.findByEmail(username);
+            if (teacher.isPresent()) {
+                Long teacherId = teacher.get().getId();
+//                System.out.println("✅ 로그인한 사용자가 교사입니다. teacherId: " + teacherId);
+                return teacherId;
+            }
+
+            // ✅ 교사가 아니라면 학생인지 확인
+            Optional<Student> student = studentRepository.findByUsername(username);
+            if (student.isPresent()) {
+                Long classTeacherId = student.get().getTeacher().getId();  // 🔥 학생이 속한 교사의 ID 가져오기
+//                System.out.println("✅ 로그인한 사용자가 학생입니다. 해당 반의 teacherId: " + classTeacherId);
+                return classTeacherId;
+            }
+
+            // ✅ 학생도 교사도 아닐 경우 예외 발생
+            throw new IllegalArgumentException("해당 username을 가진 교사 또는 학생을 찾을 수 없습니다.");
+        }
+
+        throw new IllegalArgumentException("현재 인증된 사용자를 찾을 수 없습니다.");
+    }
+
+    // 뉴스 기사 [생성] (확인 버튼을 누를 때까지 DB에 저장되지 않음)
+    public NewsDTO generateRandomNewsFromStocks(Long teacherId) {
+        String apiKey = System.getenv("OPENAI_API_KEY");
+
         String maskedKey = (apiKey != null && apiKey.length() >= 5)
                 ? apiKey.substring(0, 5) + "*****"
                 : "Invalid Key";
-        System.out.println("debug: " + maskedKey);
-    }
 
-    public NewsDTO generateRandomNewsFromStocks() {
+        System.out.println("debug: " + maskedKey);
+
         // 1. 모든 주식 엔터티에서 랜덤 선택
         List<Stock> stocks = stockRepository.findAll();
         if (stocks.isEmpty()) {
@@ -63,7 +111,7 @@ public class NewsService {
                 randomStock.getName()
         );
 
-
+        // GPT API 요청
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + apiKey);
         headers.set("Content-Type", "application/json");
@@ -83,7 +131,6 @@ public class NewsService {
         // 3️. 응답 파싱
         String responseBody = response.getBody();
         JSONObject jsonResponse = new JSONObject(responseBody);
-        JSONArray choices = jsonResponse.getJSONArray("choices");
         String generatedText = jsonResponse.getJSONArray("choices")
                 .getJSONObject(0)
                 .getJSONObject("message")
@@ -93,20 +140,9 @@ public class NewsService {
         String title = extractValue(generatedText, "제목");
         String content = extractValue(generatedText, "내용");
         String newsTypeStr = extractValue(generatedText, "유형", "[호재/악재]");
-
         NewsType newsType = newsTypeStr.contains("호재") ? NewsType.POSITIVE : NewsType.NEGATIVE;
 
-
-        // 5. 엔터티 저장
-        News news = new News();
-        news.setTitle(title);
-        news.setContent(content);
-        news.setStock(randomStock);
-        news.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        news.setNewsType(newsType);
-        newsRepository.save(news);
-
-        // 6. DTO 반환
+        // 5. DTO 반환 (DB에 저장 X)
         return NewsDTO.builder()
                 .title(title)
                 .content(content)
@@ -114,6 +150,33 @@ public class NewsService {
                 .createdAt(new Timestamp(System.currentTimeMillis()))
                 .newsType(newsType.name())
                 .build();
+    }
+
+    // 사용자가 확인 버튼을 누르면 DB에 저장
+    public NewsDTO confirmNews(NewsDTO newsDTO) throws IOException {
+        Long teacherId = getTeacherIdFromSecurityContext();
+
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 교사를 찾을 수 없습니다."));
+
+        Stock stock = stockRepository.findByName(newsDTO.getStockName())
+                .orElseThrow(() -> new IllegalArgumentException("해당 주식을 찾을 수 없습니다."));
+
+        News news = News.builder()
+                .title(newsDTO.getTitle())
+                .content(newsDTO.getContent())
+                .stock(stock)
+                .createdAt(new Timestamp(System.currentTimeMillis()))
+                .newsType(NewsType.valueOf(newsDTO.getNewsType()))
+                .teacher(teacher)
+                .build();
+
+        newsRepository.save(news);
+
+        // 학생들에게 FCM 알림 전송
+        notificationService.sendNewsNotificationToStudents(teacherId);
+
+        return newsDTO;
     }
 
     // chatGPT 응답에서 다양한 키워드로 값 추출
@@ -133,5 +196,40 @@ public class NewsService {
     private int countSentences(String text) {
         if (text == null || text.isEmpty()) return 0;
         return text.split("[.!?]").length;
+    }
+
+    // 뉴스 기사 [전체 조회]
+    public List<NewsSummaryDTO> getClassNewsList() {
+        Long teacherId = getTeacherIdFromSecurityContext();
+
+        List<News> newsList = newsRepository.findByTeacherId(teacherId);
+
+        return newsList.stream()
+                .map(news -> NewsSummaryDTO.builder()
+                        .id(news.getId())
+                        .title(news.getTitle())
+//                        .content(news.getContent())
+                        .stockName(news.getStock().getName())
+                        .createdAt(news.getCreatedAt())
+                        .newsType(news.getNewsType().name())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    // 뉴스 기사 [상세 조회]
+    public NewsSummaryDTO getNewsDetail(Long newsId) {
+        Long teacherId = getTeacherIdFromSecurityContext();  // 교사 또는 학생의 교사 ID 가져오기
+
+        News news = newsRepository.findByIdAndTeacherId(newsId, teacherId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 뉴스는 조회할 수 없습니다."));
+
+        return NewsSummaryDTO.builder()
+                .id(news.getId())
+                .title(news.getTitle())
+                .content(news.getContent())
+                .stockName(news.getStock().getName())
+                .createdAt(news.getCreatedAt())
+                .newsType(news.getNewsType().name())
+                .build();
     }
 }

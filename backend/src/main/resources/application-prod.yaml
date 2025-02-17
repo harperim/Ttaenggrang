@@ -4,5 +4,13 @@ spring:
       host: redis # Docker Compose의 서비스명
       port: 6379
       password: "ssafy"
+  jackson:
+    time-zone: Asia/Seoul
+
 api:
   openai_key: ${OPENAI_API_KEY}  # 환경변수 없으면 기본값 사용
+
+scheduling:
+  stock-market:
+    open: "0 0 9 * * MON-FRI"  # 운영 환경에서는 09:00 개장
+    close: "0 0 17 * * MON-FRI" # 운영 환경에서는 17:00 폐장

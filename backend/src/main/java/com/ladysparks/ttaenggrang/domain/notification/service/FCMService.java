@@ -3,16 +3,19 @@ package com.ladysparks.ttaenggrang.domain.notification.service;
 import java.io.IOException;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.ladysparks.ttaenggrang.domain.notification.dto.BroadcastNotificationDTO;
 import com.ladysparks.ttaenggrang.domain.notification.dto.FcmMessage;
-import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationDTO;
+import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationPersistanceDTO;
+import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
+import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
+import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.global.utill.Constants;
 import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +26,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.springframework.stereotype.Service;
 
 /**
  * FCM 알림 메시지 생성
@@ -30,13 +34,15 @@ import okhttp3.Response;
  * @author taeshik.heo
  *
  */
-@Component
-public class FirebaseCloudMessageService {
+@Service
+public class FCMService {
 
-    private static final Logger logger = LoggerFactory.getLogger(FirebaseCloudMessageService.class);
+    private static final Logger logger = LoggerFactory.getLogger(FCMService.class);
 
     public final ObjectMapper objectMapper;
     private final NotificationService notificationService;
+    private final TeacherService teacherService;
+    private final StudentService studentService;
 
     /**
      * FCM에 push 요청을 보낼 때 인증을 위해 Header에 포함시킬 AccessToken 생성
@@ -58,10 +64,18 @@ public class FirebaseCloudMessageService {
     /**
      * FCM 알림 메시지 생성
      */
-    private String makeMessage(NotificationDTO notificationDTO) throws JsonProcessingException {
-        String title = notificationDTO.getTitle();
-        String body = notificationDTO.getMessage();
-        String targetToken = notificationDTO.getTargetToken();
+    private String makeMessage(String title, String body, String targetToken) throws JsonProcessingException {
+        FcmMessage.Notification noti = new FcmMessage.Notification(title, body, null);
+        FcmMessage.Message message = new FcmMessage.Message(noti, targetToken);
+        FcmMessage fcmMessage = new FcmMessage(false, message);
+
+        return objectMapper.writeValueAsString(fcmMessage); // JSON 문자열로 변환(직렬화)
+    }
+
+    private String makeMessage(NotificationPersistanceDTO notificationPersistanceDTO) throws JsonProcessingException {
+        String title = notificationPersistanceDTO.getTitle();
+        String body = notificationPersistanceDTO.getMessage();
+        String targetToken = notificationPersistanceDTO.getTargetToken();
 
         FcmMessage.Notification noti = new FcmMessage.Notification(title, body, null);
         FcmMessage.Message message = new FcmMessage.Message(noti, targetToken);
@@ -73,11 +87,27 @@ public class FirebaseCloudMessageService {
     /**
      * targetToken에 해당하는 device로 FCM 푸시 알림 전송
      */
-    public NotificationDTO sendMessageTo(NotificationDTO notificationDTO) throws IOException {
-        // Notification 테이블에 저장 루 FCM 메시지를 전송
-        NotificationDTO savedNotificationDTO = notificationService.saveNotification(notificationDTO);
+    public String sendMessageTo(String message) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url(Constants.API_URL)
+                .post(requestBody)
+                // 전송 토큰 추가
+                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+                .build();
 
-        String message = makeMessage(savedNotificationDTO);
+        Response response = client.newCall(request).execute(); // 응답 올 때까지 대기
+
+        return response.body().string();
+    }
+
+    public NotificationPersistanceDTO sendMessageTo(NotificationPersistanceDTO notificationPersistanceDTO) throws IOException {
+        // Notification 테이블에 저장 후 FCM 메시지를 전송
+        NotificationPersistanceDTO savedNotificationPersistanceDTO = notificationService.saveNotification(notificationPersistanceDTO);
+
+        String message = makeMessage(savedNotificationPersistanceDTO);
         logger.info("📨 FCM Message: {}", message);
 
         OkHttpClient client = new OkHttpClient();
@@ -95,12 +125,14 @@ public class FirebaseCloudMessageService {
         System.out.println(response.body().string());
 //        logger.info("message : {}", message);
 
-        return savedNotificationDTO;
+        return savedNotificationPersistanceDTO;
     }
 
-    public FirebaseCloudMessageService(ObjectMapper objectMapper, NotificationService notificationService){
+    public FCMService(ObjectMapper objectMapper, NotificationService notificationService, TeacherService teacherService, StudentService studentService){
         this.objectMapper = objectMapper;
         this.notificationService = notificationService;
+        this.teacherService = teacherService;
+        this.studentService = studentService;
     }
 
     // 클라이언트 토큰 관리
@@ -111,22 +143,32 @@ public class FirebaseCloudMessageService {
     }
 
     // 등록된 모든 토큰을 이용해서 broadcasting
+    public int broadCastToAllStudents(Long teacherId, String title, String body) throws IOException {
+        List<StudentResponseDTO> studentResponseDTOList = studentService.findAllByTeacherId(teacherId);
+        for(StudentResponseDTO student: studentResponseDTOList) {
+            String targetToken = studentService.findFCMTokenById(student.getId());
+            String message = makeMessage(title, body, targetToken);
+            String response = sendMessageTo(message);
+        }
+        return studentResponseDTOList.size();
+    }
+
     public int broadCastMessage(BroadcastNotificationDTO broadcastNotificationDTO) throws IOException {
         for(String token: Constants.clientTokens) {
-            // Notification 테이블에 저장 루 FCM 메시지를 전송
-            NotificationDTO notificationDTO = NotificationDTO.builder()
+            // Notification 테이블에 저장 후 FCM 메시지를 전송
+            NotificationPersistanceDTO notificationPersistanceDTO = NotificationPersistanceDTO.builder()
                     .senderTeacherId(broadcastNotificationDTO.getTeacherId())
                     .notificationType(broadcastNotificationDTO.getNotificationType())
                     .title(broadcastNotificationDTO.getTitle())
                     .message(broadcastNotificationDTO.getMessage())
                     .status(broadcastNotificationDTO.getStatus())
                     .build();
-            NotificationDTO savedNotificationDTO = notificationService.saveNotification(notificationDTO);
+            NotificationPersistanceDTO savedNotificationPersistanceDTO = notificationService.saveNotification(notificationPersistanceDTO);
 
-            String message = makeMessage(savedNotificationDTO);
+            String message = makeMessage(savedNotificationPersistanceDTO);
             logger.info("📨 FCM Message: {}", message);
 
-            sendMessageTo(notificationDTO);
+            sendMessageTo(notificationPersistanceDTO);
         }
         return Constants.clientTokens.size();
     }

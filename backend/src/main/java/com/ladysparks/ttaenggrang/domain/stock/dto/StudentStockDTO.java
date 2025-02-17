@@ -12,10 +12,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class StudentStockDTO {
-    private Long stockId;           // 주식 ID
-    private String stockName;       // 주식명
-    private int ownedQty;           // 보유 주식 수
-    private int purchasePrice;      // 최초 구매 가격
+
+    private Long stockId;               // 주식 ID
+    private String stockName;           // 주식명
+    private int quantity;               // 보유 주식 수
+    private int purchasePrice;          // 최초 구매 가격
     private LocalDateTime purchaseDate; // 최초 구매 날짜
-    private int currentPrice;       // 현재 주가
+    private int currentPrice;           // 현재 주가
+
 }

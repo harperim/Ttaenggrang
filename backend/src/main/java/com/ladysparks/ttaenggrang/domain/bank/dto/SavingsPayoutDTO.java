@@ -1,11 +1,11 @@
 package com.ladysparks.ttaenggrang.domain.bank.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsPayout.SavingsPayoutType;
 import lombok.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,11 +15,22 @@ import java.time.LocalDateTime;
 public class SavingsPayoutDTO {
 
     private Long id;
+
     private Long savingsSubscriptionId;
-    private int payoutAmount;
+
+    private int principalAmount;
+
     private int interestAmount;
+
+    private int payoutAmount;
+
     private LocalDate payoutDate;
+
     private SavingsPayoutType payoutType;
+
+    @JsonProperty("isPaid")
+    private boolean paid;
+
     private Timestamp createdAt;
 
 }

@@ -22,6 +22,7 @@ public interface StudentAccountApiSpecification {
             
             - username : 로그인 시 사용되는 학생 ID (교사가 생성)
             - name : 학생의 실명
+            - **fcmToken** : 알림 수신 FCM 토큰 (선택)
             """)
     @PostMapping("/login")
     ResponseEntity<ApiResponse<StudentLoginResponseDTO>> loginStudents(@RequestBody @Valid StudentLoginRequestDTO studentLoginDTO);

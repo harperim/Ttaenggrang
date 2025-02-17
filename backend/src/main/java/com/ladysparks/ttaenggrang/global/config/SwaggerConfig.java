@@ -66,7 +66,7 @@ public class SwaggerConfig {
     public GroupedOpenApi homeApi() {
         return GroupedOpenApi.builder()
                 .group("3. 홈 화면")
-                .pathsToMatch("/**/dashboard/**", "/notifications/**")
+                .pathsToMatch("/**/dashboard/**")
                 .build();
     }
 
@@ -98,7 +98,7 @@ public class SwaggerConfig {
     public GroupedOpenApi stockApi() {
         return GroupedOpenApi.builder()
                 .group("7. 주식")
-                .pathsToMatch("/stocks/**", "/etfs/**", "/news/**")
+                .pathsToMatch("/stocks/**", "/etfs/**", "/news/**", "/stock-market/**", "/stock-history/**", "/stock-transactions/**")
                 .build();
     }
 
