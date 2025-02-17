@@ -1,41 +1,39 @@
 package com.ladysparks.ttaenggrang.domain.stock.dto;
 
 import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+@Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class StockHistoryDTO {
 
     private Long id;
-    private int price;
-    private int buyVolume;
-    private int sellVolume;
-    private Timestamp date;
+    private int price;              // 해당 날짜의 주식 가격
+//    private int buyVolume;          // 매수량
+//    private int sellVolume;         // 매도량
+    private int priceChangeRate;    // 가격 변동률
+    private Timestamp date;         // 기록 날짜
 
-    // 조인
-    // Stock
-    private Long stockId;     // stock_id 외래 키
-
-    // Etf 관련 (etf_id 외래 키를 참조)
-    private Long etfId;      // etf_id 외래 키
+//    private Long stockId;           // stock_id 외래 키
+//    private Long etfId;             // etf_id 외래 키
 
     public static StockHistoryDTO fromEntity(StockHistory stockHistory) {
         return StockHistoryDTO.builder()
                 .id(stockHistory.getId())
-                .price(stockHistory.getPrice())  // 가격
-                .buyVolume(stockHistory.getBuyVolume())  // 구매량
-                .sellVolume(stockHistory.getSellVolume())  // 판매량
-                .date(stockHistory.getCreatedAt())  // 거래 일자
-                .stockId(stockHistory.getStock() != null ? Long.valueOf(stockHistory.getStock().getId()) : null)  // 주식 ID
-                .etfId(stockHistory.getEtf() != null ? Long.valueOf(stockHistory.getEtf().getId()) : null)  // ETF ID
+                .price(stockHistory.getPrice())
+//                .buyVolume(stockHistory.getBuyVolume())
+//                .sellVolume(stockHistory.getSellVolume())
+                .priceChangeRate(stockHistory.getPriceChangeRate())  // 가격 변동률 추가
+                .date(stockHistory.getCreatedAt())
+//                .stockId(stockHistory.getStock() != null ? stockHistory.getStock().getId() : null)
+//                .etfId(stockHistory.getEtf() != null ? stockHistory.getEtf().getId() : null)
                 .build();
     }
 
 }
+

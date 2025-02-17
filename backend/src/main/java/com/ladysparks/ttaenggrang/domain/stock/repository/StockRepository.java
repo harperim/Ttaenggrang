@@ -44,4 +44,6 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     List<Stock> findAllByTeacher_Id(Long teacherId);
 
+    List<Stock> findByTeacherId(Long teacherId);
+
 }
