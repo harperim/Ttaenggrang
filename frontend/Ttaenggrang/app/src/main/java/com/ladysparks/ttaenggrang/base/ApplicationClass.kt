@@ -6,7 +6,11 @@ import android.util.Log
 import com.ladysparks.ttaenggrang.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.ladysparks.ttaenggrang.realm.NotificationModel
+import com.ladysparks.ttaenggrang.realm.NotificationRepository
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
+import io.realm.kotlin.Realm
+import io.realm.kotlin.RealmConfiguration
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -21,12 +25,20 @@ class ApplicationClass : Application() {
         const val IMGS_URL = ""
 
         lateinit var retrofit: Retrofit
+        lateinit var realm: Realm
     }
 
     override fun onCreate() {
         super.onCreate()
+
         // SharedPreferencesUtil
         SharedPreferencesUtil.init(this)
+
+        // Realm 초기화 추가
+        val config = RealmConfiguration.Builder(schema = setOf(NotificationModel::class))
+            .schemaVersion(1) // 스키마 버전 설정
+            .build()
+        realm = Realm.open(config) // Realm 전역 인스턴스 생성
 
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="516dp"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="24dp">
+
+    <!--다이얼로그 헤드-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogHead"
+        android:layout_width="516dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/constraintDialogBody"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            android:id="@+id/textDialogTitle"
+            style="@style/heading2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이번달 소득 명세서"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnCancel"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--다이얼로그 바디-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/spacing_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintDialogHead">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerIncomeList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <!--예상 결제 금액-->
+        <TextView
+            android:id="@+id/textContentTitle1"
+            style="@style/body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:layout_marginBottom="@dimen/spacing_10"
+            android:text="급여"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerIncomeList" />
+
+        <TextView
+            android:id="@+id/textSalary"
+            style="@style/body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="학생 급여"
+            android:textColor="@color/mainOrange"
+            app:layout_constraintBottom_toBottomOf="@id/textContentTitle1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textContentTitle1" />
+
+        <!--결제 후 내 자산-->
+        <TextView
+            android:id="@+id/textContentTitle2"
+            style="@style/body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_10"
+            android:text="예상 실수령액"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textContentTitle1" />
+
+        <TextView
+            android:id="@+id/textExpectedSalary"
+            style="@style/body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="예상 실수령액"
+            android:text=""
+            android:textColor="@color/mainOrange"
+            app:layout_constraintBottom_toBottomOf="@id/textContentTitle2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textContentTitle2" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--다이얼로그 풋-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogFoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintDialogBody">
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnYes"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_30"
+            android:background="@drawable/btn_rounded_full"
+            android:text="확인"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

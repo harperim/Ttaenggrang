@@ -35,6 +35,7 @@ class PieChartComponent(private val context: Context, private val pieChart: PieC
         pieChart.apply {
             data = pieData
             description.isEnabled = false
+            isClickable = false
             setUsePercentValues(true)
             setDrawEntryLabels(false)
             animateY(1000)

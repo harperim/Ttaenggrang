@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.gms.google-services")
+    id("io.realm.kotlin")
 }
 
 val localProperties = Properties()
@@ -89,5 +90,11 @@ dependencies {
 
     //shimmer 라이브러리
     implementation ("com.facebook.shimmer:shimmer:0.5.0")
+
+    // Realm Database
+    implementation("io.realm:realm-gradle-plugin:10.15.1")
+
+    // Realm (Kotlin SDK)
+    implementation("io.realm.kotlin:library-base:1.11.0")
 
 }
