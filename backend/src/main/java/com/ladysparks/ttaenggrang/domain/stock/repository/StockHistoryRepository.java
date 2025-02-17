@@ -38,16 +38,16 @@ public interface StockHistoryRepository extends JpaRepository<StockHistory, Long
                                               @Param("endDate") LocalDateTime endDate);
 
     /**
-     * 📌 특정 주식의 최근 5개의 평일 변동 이력 조회 (가격 변동률 포함, 오래된 순서로 정렬)
+     * 📌 특정 주식의 최근 5개의 평일 변동 이력 조회 (주말 제외, 오늘 포함, 오래된 순서)
      * 📌 주말(일요일: 1, 토요일: 7) 제외
      */
     @Query("""
         SELECT sh FROM StockHistory sh
         WHERE sh.stock.id = :stockId
         AND FUNCTION('DAYOFWEEK', sh.createdAt) NOT IN (1, 7)
-        ORDER BY sh.createdAt ASC
+        ORDER BY sh.createdAt DESC
     """)
-    List<StockHistory> findLast5WeekdaysByStockId(@Param("stockId") Long stockId, Pageable pageable);
+    List<StockHistory> findLast5WeekdaysIncludingToday(@Param("stockId") Long stockId, Pageable pageable);
 
 }
 
