@@ -26,7 +26,7 @@ import com.ladysparks.ttaenggrang.databinding.DialogStudentRegistrationBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStudentsBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.ui.component.IncentiveDialogFragment
-import com.ladysparks.ttaenggrang.ui.component.PieChartComponent
+import com.ladysparks.ttaenggrang.ui.component.PieChartComponent2
 import com.ladysparks.ttaenggrang.util.NumberUtil
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
@@ -41,7 +41,6 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
     private var jobListCache: List<JobDto> = emptyList()
     private var studentListCache: List<StudentMultiCreateResponse> = emptyList()
     private var savingProductCache: List<StudentSavingResponse> = emptyList()
-
 
     // Recycleriew 를 표시하기 위한 Adapter : finance의경우 클릭이벤트가있어서 새로운 Adapter 사용
     private lateinit var studentAdapter: BaseTableAdapter
@@ -95,10 +94,10 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
     }
 
     private fun showStudentInfoDialog(rowData: List<String>) {
-        Log.d("TAG", "showStudentInfoDialog: ${jobListCache}")
-        val bottomSheet = StudentInfoDialog.newInstance(rowData, jobListCache)
+        val bottomSheet = StudentDetailDialog.newInstance(rowData, jobListCache)
         bottomSheet.show(childFragmentManager, "StudentInfoBottomSheet")
     }
+
     private var pendingUserId: Int? = null
 
     private fun initObserver() {
@@ -150,7 +149,6 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
 
         if (isStudentTab) {
             val formattedData = studentList!!.mapIndexed { index, student ->
-                Log.d("TTT", "${student.jobInfo?.jobName}")
                 BaseTableRowModel(
                     listOf(
 //                        (index + 1).toString(),
@@ -241,16 +239,14 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
         binding.btnCreateStudent.setOnClickListener {
             val dialog = BaseTwoButtonDialog(
                 context = requireContext(),
-                title = "학생 정보를 추가합니다",
-                message = "",
+                title = "추가할 방법을 선택하세요",
+                message = null,
                 positiveButtonText = "여러 학생 추가",
                 negativeButtonText = "신규 학생 추가",
-                statusImageResId = R.drawable.ic_vote,
+                statusImageResId = R.drawable.ic_alert,
                 showCloseButton = false,
                 onPositiveClick = {
-                    // 🔹 1단계 다이얼로그 표시
-//                    val viewModel = ViewModelProvider(requireActivity())[StudentViewModel::class.java]
-                    val stepOneDialog = StudentStepOneDialogFragment(studentsViewModel)
+                    val stepOneDialog = StudentRegisterFirstDialog(studentsViewModel)
                     stepOneDialog.show(parentFragmentManager, "StepOneDialog")
                 },
                 onNegativeClick = {
@@ -290,9 +286,8 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, jobList)
         dialogBinding.editJob.adapter = adapter
 
-        dialogBinding.btnClose.setOnClickListener {
-            dialog.dismiss()
-        }
+        dialogBinding.btnCancel.setOnClickListener { dialog.dismiss() }
+        dialogBinding.btnClose.setOnClickListener { dialog.dismiss() }
 
         dialogBinding.btnStudentRegistration.setOnClickListener {
             // 유효성 검사
@@ -356,6 +351,8 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
         dialog.show() // 다이얼로그 띄우기
     }
 
+    private lateinit var stockDialog: AlertDialog
+    lateinit var studentStockList: List<StockResponse>
 
     private fun showStockPopup(userId: String, data: List<String>) {
         studentsViewModel.stockList(userId.toInt())
@@ -366,12 +363,13 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
             .create()
 
         // 어댑터 설정
-        val stockAdapter = StockAdapter(emptyList())
+        val stockAdapter = StudentStockAdapter(emptyList())
         dialogBinding.recyclerStockList.layoutManager = LinearLayoutManager(requireContext())
         dialogBinding.recyclerStockList.adapter = stockAdapter
 
         //  LiveData 옵저버 추가 (주식 데이터 업데이트 시 UI 자동 반영)
         studentsViewModel.stockList.observe(viewLifecycleOwner) { stockResponse ->
+            studentStockList = stockResponse
             stockAdapter.updateData(stockResponse)
             dialogBinding.textTotalSaving.text = NumberUtil.formatWithComma(selectStudentSavingSum)
             updateChart(dialogBinding)
@@ -386,26 +384,43 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
     }
 
     private fun updateChart(dialogBinding: DialogStockDetailBinding) {
-        val pieChartComponent = PieChartComponent(requireContext(), dialogBinding.pieChart)
+        dialogBinding.pieChart.post {
+            val pieChartComponent = PieChartComponent2(requireContext(), dialogBinding.pieChart)
+            // 주식 수량이 0 이상인 데이터만 필터링
+            val filteredStockList = studentStockList.filter { it.quantity > 0 }
 
-        // 데이터 설정 (뷰모델 값 반영)
-        val dataList = listOf(
-            3.2f to "삼성",
-            5.5f to "LG",
-            8f to "JYP"
-        )
+            // 총 보유 주식 수 계산 (0 방지)
+            val totalShares = filteredStockList.sumOf { it.quantity }.toFloat().takeIf { it > 0 } ?: 1f
 
-        // 색상 설정
-        val colorList = listOf(
-            R.color.chartBlue,  // 계좌 잔액
-            R.color.chartPink,  // 투자
-            R.color.chartPurple // 저축
-        )
+            // 데이터 설정 (filteredStockList 기반)
+            val dataList = filteredStockList.map { stock ->
+                val percentage = (stock.quantity.toFloat() / totalShares) * 100  // 비율 계산
+                percentage to stock.stockName
+            }
 
-        // 동적 데이터 전달하여 차트 업데이트
-        pieChartComponent.setupPieChart(dataList, colorList)
+            // 색상 설정 (주식 수에 따라 유동적으로 색상 적용)
+            val dynamicColorList = generateColorList(filteredStockList.size)
+
+            // 데이터가 없을 경우 차트 표시 X
+            if (dataList.isNotEmpty()) {
+                pieChartComponent.setupPieChart(dataList, dynamicColorList)
+            }
+        }
     }
 
+
+    private fun generateColorList(size: Int): List<Int> {
+        val predefinedColors = listOf(
+            R.color.chartBlue,
+            R.color.chartPink,
+            R.color.chartPurple,
+            R.color.chartGreen,
+            R.color.chartYellow,
+//            R.color.chartRed
+        )
+
+        return List(size) { predefinedColors[it % predefinedColors.size] }
+    }
 
 
     // Tab 변경 이벤트
@@ -415,7 +430,7 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
 
         if (isStudentInfo) {
             // "학생 정보 탭" 활성화
-            binding.tvStudentInfo.setTextAppearance(R.style.heading4)
+            binding.tvStudentInfo.setTextAppearance(R.style.heading3)
             binding.tvStudentInfo.setTextColor(ContextCompat.getColor(context, R.color.mainOrange))
             binding.underlineStudentInfo.visibility = View.VISIBLE
             if (studentsViewModel.studentList.value.isNullOrEmpty()) {
@@ -429,7 +444,7 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
             }
 
             // "재정 상태" 비활성화
-            binding.tvFinancialStatus.setTextAppearance(R.style.body2)
+            binding.tvFinancialStatus.setTextAppearance(R.style.body1)
             binding.tvFinancialStatus.setTextColor(
                 ContextCompat.getColor(
                     context,
@@ -439,7 +454,7 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
             binding.underlineFinancialStatus.visibility = View.GONE
         } else {
             // 학생 정보 비활성화
-            binding.tvStudentInfo.setTextAppearance(R.style.body2)
+            binding.tvStudentInfo.setTextAppearance(R.style.body1)
             binding.tvStudentInfo.setTextColor(ContextCompat.getColor(context, R.color.lightGray))
             binding.underlineStudentInfo.visibility = View.GONE
 
@@ -454,7 +469,7 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
             }
 
             // 재정 상태 활성화
-            binding.tvFinancialStatus.setTextAppearance(R.style.heading4)
+            binding.tvFinancialStatus.setTextAppearance(R.style.heading3)
             binding.tvFinancialStatus.setTextColor(
                 ContextCompat.getColor(
                     context,

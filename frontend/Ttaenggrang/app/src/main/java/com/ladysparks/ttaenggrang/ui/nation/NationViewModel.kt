@@ -22,6 +22,7 @@ class NationViewModel : ViewModel(){
         _errorMessage.value = null
     }
 
+    // 국가 정보 불러오기
     private val _nationInfoList = MutableLiveData<NationInfoDto>()
     val nationInfoData: LiveData<NationInfoDto> get() = _nationInfoList
     fun fetchNationData(){
@@ -38,6 +39,7 @@ class NationViewModel : ViewModel(){
         }
     }
 
+    // 현재 투표 정보 불러오기
     private val _currentVoteInfo = MutableLiveData<VoteDataDto>()
     val currentVoteInfo: LiveData<VoteDataDto> get() = _currentVoteInfo
     fun currentVoteInfo(){
@@ -47,13 +49,13 @@ class NationViewModel : ViewModel(){
             }.onSuccess {
                 _currentVoteInfo.value = it.data!!
             }.onFailure {
-//                _errorMessage.value = ApiErrorParser.extractErrorMessage(it)
                 Log.e("TAG", "createVote: ${ApiErrorParser.extractErrorMessage(it)}", )
 //                _errorMessage.value = ApiErrorParser.extractErrorMessage(it)
             }
         }
     }
 
+    // 투표 생성
     private val _createVoteInfo = MutableLiveData<ApiResponse<VoteCreateRequest>>()
     val createVote: LiveData<ApiResponse<VoteCreateRequest>> get() = _createVoteInfo
     fun createVote(data: VoteCreateRequest){
@@ -69,6 +71,7 @@ class NationViewModel : ViewModel(){
         }
     }
 
+    // 투표 종료
     private val _endCurrentVote = MutableLiveData<ApiResponse<String>>()
     val endCurrentVote: LiveData<ApiResponse<String>> get() = _endCurrentVote
     fun endCurrentVote(){
@@ -83,8 +86,7 @@ class NationViewModel : ViewModel(){
         }
     }
 
-
-    // 학생
+    // 학생 리스트 불러오기 (투표할 때 목록 필요)
     private val _studentList = MutableLiveData<List<VoteOptionResponse>>()
     val studentList: LiveData<List<VoteOptionResponse>> get() = _studentList
     fun getStudentList(){
@@ -100,6 +102,7 @@ class NationViewModel : ViewModel(){
         }
     }
 
+    // 학생기능) 투표 참여
     private val _submitVoteData = MutableLiveData<ApiResponse<String>>()
     val submitVoteData: LiveData<ApiResponse<String>> get() = _submitVoteData
     fun submitVote(selectStudentId: Int){

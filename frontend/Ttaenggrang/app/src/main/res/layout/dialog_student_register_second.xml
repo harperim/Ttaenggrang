@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/spacing_20"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:paddingHorizontal="@dimen/spacing_20">
 
     <ImageButton
+        android:id="@+id/ic_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="26dp"
@@ -53,19 +54,18 @@
                 android:text="  학생 이름 일괄 등록 (선택)" />
         </LinearLayout>
 
-<!--        &lt;!&ndash; 예시 이미지 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="133dp"-->
-<!--            android:layout_marginVertical="@dimen/spacing_20"-->
-<!--            android:src="@drawable/ic_launcher_background" />-->
-
+        <!-- 예시 이미지 -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="133dp"
+            android:layout_marginVertical="@dimen/spacing_20"
+            android:src="@drawable/register_example" />
 
         <TextView
-            android:layout_marginTop="20dp"
             style="@style/heading4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:text="파일 등록 안내" />
 
         <TextView
@@ -93,22 +93,22 @@
 
         <!-- 파일 등록 from -->
         <com.google.android.material.button.MaterialButton
-            android:layout_gravity="center"
             android:id="@+id/btnFileUpload"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_20"
             android:background="@drawable/btn_rounded_border"
             android:backgroundTint="@null"
             android:paddingHorizontal="@dimen/spacing_10"
             android:text="File Upload"
-            app:iconGravity="textStart"
             android:textAppearance="@style/body2"
             android:textColor="@color/lightGray"
             app:backgroundTint="@color/lightGray"
-            app:iconTint="@color/lightGray"
             app:icon="@drawable/ic_upload"
+            app:iconGravity="textStart"
+            app:iconTint="@color/lightGray"
             app:strokeWidth="2dp" />
     </LinearLayout>
 
@@ -124,6 +124,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClose"
             style="@style/heading4"
             android:layout_width="228dp"
             android:layout_height="50dp"

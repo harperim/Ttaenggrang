@@ -32,6 +32,7 @@ class StudentsViewModel : ViewModel(){
         _errorMessage.value = null
     }
 
+    // 학생 리스트
     private val _studentList = MutableLiveData<List<StudentMultiCreateResponse>?>() // LiveData를 활용
     val studentList: LiveData<List<StudentMultiCreateResponse>?> get() = _studentList
     fun fetchStudentList() {
@@ -48,27 +49,12 @@ class StudentsViewModel : ViewModel(){
         }
     }
 
-    // 학생 등록(복수)
+    // 학생 등록 함수 (복수)
     val studentCount = MutableLiveData<Int>()
     val studentPrefix = MutableLiveData<String>()
     val uploadedFile = MutableLiveData<Uri?>()
-    val uploadedFileName = MutableLiveData<String>() // 🔹 파일명을 저장할 LiveData
-    val uploadedFileRequestBody = MutableLiveData<RequestBody?>()  // 🔹 추가된 부분
-
-    // 서버 전송 함수
-    fun uploadFile(uri: Uri, context: Context) {
-        viewModelScope.launch {
-            runCatching {
-                val file = FileUtils.getFileFromUri(context, uri)
-                uploadedFile.value = uri  // 🔹 파일 URI 저장
-                uploadedFileName.value = file.name  // 🔹 파일명 저장
-                uploadedFileRequestBody.value = createBinaryRequestBody(context, uri)
-            }.onFailure {
-                _errorMessage.value = "파일 업로드 실패: ${it.message}"
-            }
-        }
-    }
-
+    val uploadedFileName = MutableLiveData<String>() // 파일명을 저장할 LiveData
+    val uploadedFileRequestBody = MutableLiveData<RequestBody?>()
 
     fun sendStudentDataToServer(context: Context) {
         val count = studentCount.value ?: 0
@@ -83,14 +69,7 @@ class StudentsViewModel : ViewModel(){
 
         viewModelScope.launch {
             runCatching {
-//                val fileRequestBody = createBinaryRequestBody(context, fileUri)
-//                RetrofitUtil.teacherService.uploadStudentData(
-//                    baseId = prefix,
-//                    studentCount = count,
-//                    file = fileRequestBody // ✅ 수정된 부분
-//                )
-
-                val filePart = createMultipartFile(context, fileUri) // ✅ 수정된 부분
+                val filePart = createMultipartFile(context, fileUri)
                 RetrofitUtil.teacherService.uploadStudentData(
                     baseId = prefix,
                     studentCount = count,
@@ -109,6 +88,19 @@ class StudentsViewModel : ViewModel(){
         val file = FileUtils.getFileFromUri(context, uri)
         val requestFile = file.asRequestBody("application/octet-stream".toMediaTypeOrNull()) // ✅ Content-Type 수정
         return MultipartBody.Part.createFormData("file", file.name, requestFile)
+    }
+
+    fun uploadFile(uri: Uri, context: Context) {
+        viewModelScope.launch {
+            runCatching {
+                val file = FileUtils.getFileFromUri(context, uri)
+                uploadedFile.value = uri  // 🔹 파일 URI 저장
+                uploadedFileName.value = file.name  // 🔹 파일명 저장
+                uploadedFileRequestBody.value = createBinaryRequestBody(context, uri)
+            }.onFailure {
+                _errorMessage.value = "파일 업로드 실패: ${it.message}"
+            }
+        }
     }
 
     private fun createBinaryRequestBody(context: Context, uri: Uri): RequestBody {
@@ -147,7 +139,6 @@ class StudentsViewModel : ViewModel(){
                 _jobList.value = it.data ?: emptyList()
                 Log.e("JobViewModel", "fetchJobList 22: Error FeatchJobList ${it.message}" )
             }.onFailure {
-//                _jobList.value = emptyList()
                 _errorMessage.value = ApiErrorParser.extractErrorMessage(it)
                 Log.e("JobViewModel", "fetchJobList 33: Error FeatchJobList ${ApiErrorParser.extractErrorMessage(it)}" )
             }
@@ -192,7 +183,6 @@ class StudentsViewModel : ViewModel(){
     fun userSavingSubscriptions(studentId: Int){
         viewModelScope.launch {
             runCatching {
-               // RetrofitUtil.teacherService.payStudentBonus(mapOf("studentId" to studentId, "incentive" to incentive))
                 RetrofitUtil.teacherService.userSavingSubscription(studentId)
             }.onSuccess {
                 _savingList.value = it.data ?: emptyList()
@@ -210,11 +200,9 @@ class StudentsViewModel : ViewModel(){
     fun stockList(studentId: Int){
         viewModelScope.launch {
             runCatching {
-                // RetrofitUtil.teacherService.payStudentBonus(mapOf("studentId" to studentId, "incentive" to incentive))
                 RetrofitUtil.teacherService.userStockList(studentId)
             }.onSuccess {
                 _stockList.value = it.data ?: emptyList()
-
             }.onFailure {
                 Log.e("TAG", "userSavingSubscriptions 에러: ${it.message}")
                 _errorMessage.value = ApiErrorParser.extractErrorMessage(it)

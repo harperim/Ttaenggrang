@@ -485,7 +485,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintAlarmArea"
         android:layout_width="340dp"
-        android:layout_height="359dp"
+        android:layout_height="0dp"
         android:background="@drawable/bg_rounded_15"
         app:layout_constraintBottom_toBottomOf="@+id/constraintLayoutReportArea"
         app:layout_constraintEnd_toEndOf="parent"

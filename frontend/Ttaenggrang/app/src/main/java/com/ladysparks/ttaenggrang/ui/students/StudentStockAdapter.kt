@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ladysparks.ttaenggrang.R
@@ -12,8 +11,8 @@ import com.ladysparks.ttaenggrang.data.model.response.StockResponse
 import com.ladysparks.ttaenggrang.databinding.ItemStockBinding
 import com.ladysparks.ttaenggrang.util.NumberUtil
 
-class StockAdapter(private var stockList: List<StockResponse>) :
-    RecyclerView.Adapter<StockAdapter.StockViewHolder>() {
+class StudentStockAdapter(private var stockList: List<StockResponse>) :
+    RecyclerView.Adapter<StudentStockAdapter.StockViewHolder>() {
 
     inner class StockViewHolder(val binding: ItemStockBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -27,7 +26,11 @@ class StockAdapter(private var stockList: List<StockResponse>) :
         val stock = stockList[position]
 
         with(holder.binding) {
-            var currentPrice = (stock.currentTotalPrice / stock.quantity) //현재 주식 가격
+            val currentPrice = if (stock.quantity > 0) {
+                stock.currentTotalPrice / stock.quantity // ✅ 정상 계산
+            } else {
+                0
+            }
 
             textStockName.text = stock.stockName
             textStockQuantity.text = "${stock.quantity}주"
@@ -40,30 +43,30 @@ class StockAdapter(private var stockList: List<StockResponse>) :
 
             if(stockChangeValue > 0) {
                 textStockChangeValue.text = "▲ $formattedChangeValue%"
-                textStockChangeValue.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.red))
+                textStockChangeValue.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.blue))
                 imageStockChangeIcon.setImageResource(R.drawable.ic_chevron_up)
+                imageStockChangeIcon.setColorFilter(ContextCompat.getColor(holder.itemView.context, R.color.blue))
             }else if ( stockChangeValue < 0){
                 textStockChangeValue.text = "▼ $formattedChangeValue%"
-                textStockChangeValue.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.blue))
+                textStockChangeValue.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.red))
                 imageStockChangeIcon.setImageResource(R.drawable.ic_chevron_down)
+                imageStockChangeIcon.setColorFilter(ContextCompat.getColor(holder.itemView.context, R.color.red))
+
             }else{
                 textStockChangeValue.text = "0"
                 textStockChangeValue.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.lightGray))
                 imageStockChangeIcon.visibility = View.GONE
             }
 
-
-
-            Log.d("TAG", "onBindViewHolder: 가격 변동 체크 ${currentPrice} . ${stock.purchasePrice} , ${stockChangeValue}")
             textStockChangeValue.text = "$formattedChangeValue %"
-//            textStockPrice.text = "현재 가격: ${NumberUtil.formatWithComma(stock.purchasePrice)}"
         }
     }
 
     override fun getItemCount(): Int = stockList.size
 
     fun updateData(newStockList: List<StockResponse>) {
-        stockList = newStockList
+        stockList = newStockList.filter { it.quantity > 0 } //  0주인 항목 제외
         notifyDataSetChanged()
     }
+
 }

@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.ladysparks.ttaenggrang.databinding.DialogStudentRegisterFirstBinding
 
-class StudentStepOneDialogFragment(private val viewModel: StudentsViewModel) : DialogFragment() {
+class StudentRegisterFirstDialog(private val viewModel: StudentsViewModel) : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = DialogStudentRegisterFirstBinding.inflate(inflater, container, false)
+
+        binding.btnClose.setOnClickListener { dismiss() }
+        binding.icClose.setOnClickListener { dismiss() }
 
         binding.btnNext.setOnClickListener {
             val count = binding.editPeople.text.toString().toIntOrNull() ?: 0
@@ -20,7 +23,7 @@ class StudentStepOneDialogFragment(private val viewModel: StudentsViewModel) : D
             viewModel.studentPrefix.value = prefix
 
             // 2단계 다이얼로그 표시
-            val stepTwoDialog = StudentStepTwoDialogFragment(viewModel)
+            val stepTwoDialog = StudentRegisterSecondDialog(viewModel)
             stepTwoDialog.show(parentFragmentManager, "StepTwoDialog")
             dismiss()
         }

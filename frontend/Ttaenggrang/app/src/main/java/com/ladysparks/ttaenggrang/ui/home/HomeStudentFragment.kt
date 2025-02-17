@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.ui.home
 
+import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -20,12 +21,16 @@ import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.ApplicationClass
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
+import com.ladysparks.ttaenggrang.databinding.DialogIncomeSummaryBinding
+import com.ladysparks.ttaenggrang.databinding.DialogNewsDetailBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentHomeStudentBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStudentsBinding
 import com.ladysparks.ttaenggrang.realm.NotificationModel
 import com.ladysparks.ttaenggrang.realm.NotificationRepository
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.ui.component.PieChartComponent
+import com.ladysparks.ttaenggrang.ui.component.PieChartComponent2
+import com.ladysparks.ttaenggrang.util.CustomDateUtil
 import com.ladysparks.ttaenggrang.util.DataUtil
 import com.ladysparks.ttaenggrang.util.NumberUtil
 import com.ladysparks.ttaenggrang.util.TransactionTypeUtil
@@ -49,11 +54,26 @@ class HomeStudentFragment : BaseFragment<FragmentHomeStudentBinding>(FragmentHom
 
         initAdapter()
         initObserve()
+        initEvent()
         loadAlarmList()
 
         // 함수 실행
         homeStudentViewModel.fetchStudentSummary()
         homeStudentViewModel.fetchBankTransactions()
+    }
+
+    private fun initEvent() {
+        binding.btnSalary.setOnClickListener {
+            val dialogNewsDetailBinding = DialogIncomeSummaryBinding.inflate(layoutInflater)
+            val dialog = Dialog(requireContext())
+            dialog.setContentView(dialogNewsDetailBinding.root)
+
+            // 세금 리스트 (이름 + 세율) + API
+            // 학생 Token 기준 : 내 (직업 + 급여정보) API
+
+
+            dialog.show()
+        }
     }
 
     private fun initAdapter() {
@@ -106,7 +126,7 @@ class HomeStudentFragment : BaseFragment<FragmentHomeStudentBinding>(FragmentHom
                 val dataRows = it.map { transactions ->
                     BaseTableRowModel(
                         listOf(
-                            DataUtil.formatDateTimeToDisplay(transactions!!.transactionDate),
+                            CustomDateUtil.formatToDateTime(transactions!!.transactionDate),
                             TransactionTypeUtil.convertToKorean(transactions.transactionType),
                             NumberUtil.formatWithComma(transactions.amount),
                             NumberUtil.formatWithComma(transactions.accountBalance)
@@ -163,7 +183,7 @@ class HomeStudentFragment : BaseFragment<FragmentHomeStudentBinding>(FragmentHom
     }
 
     private fun setupTotalAssetsChart(accountBalance: Float, totalSavings: Float, totalInvestmentAmount: Float) {
-        val pieChartComponent = PieChartComponent(requireContext(), binding.pieChart)
+        val pieChartComponent = PieChartComponent2(requireContext(), binding.pieChart)
 
         // 데이터 설정 (뷰모델 값 반영)
         val dataList = listOf(

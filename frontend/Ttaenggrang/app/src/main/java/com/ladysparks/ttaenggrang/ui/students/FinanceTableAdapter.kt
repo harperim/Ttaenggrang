@@ -107,13 +107,13 @@ class FinanceTableAdapter(
 
     fun updateData(newRows: List<BaseTableRowModel>) {
         data = newRows
-        notifyDataSetChanged() // ✅ RecyclerView 새로고침
+        notifyDataSetChanged() // RecyclerView 새로고침
     }
 
     fun updateData(newHeaders: List<String>, newRows: List<BaseTableRowModel>, newColumnWeights: List<Float>? = null) {
         header = newHeaders
         data = newRows
         columnWeights = newColumnWeights ?: columnWeights
-        notifyDataSetChanged() // ✅ RecyclerView 새로고침
+        notifyDataSetChanged() // RecyclerView 새로고침
     }
 }

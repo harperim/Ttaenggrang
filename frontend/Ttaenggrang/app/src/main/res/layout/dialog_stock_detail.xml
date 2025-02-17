@@ -37,6 +37,7 @@
 <!--        app:layout_constraintEnd_toEndOf="@+id/layoutInput" />-->
 
     <LinearLayout
+        android:gravity="center"
         android:layout_marginHorizontal="@dimen/spacing_20"
         android:id="@+id/layoutInput"
         app:layout_constraintBottom_toTopOf="@+id/layoutBottomBtn"
@@ -49,6 +50,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.github.mikephil.charting.charts.PieChart
+            android:layout_gravity="center"
             android:layout_marginHorizontal="@dimen/spacing_10"
             android:id="@+id/pieChart"
             android:layout_width="0dp"

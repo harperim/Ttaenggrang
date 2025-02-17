@@ -35,6 +35,7 @@ import com.ladysparks.ttaenggrang.databinding.DialogVoteStatusBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentNationBinding
 import com.ladysparks.ttaenggrang.ui.component.DatePickerDialogHelper
 import com.ladysparks.ttaenggrang.ui.component.VoteStatusDialog
+import com.ladysparks.ttaenggrang.util.CustomDateUtil
 import com.ladysparks.ttaenggrang.util.DataUtil
 import com.ladysparks.ttaenggrang.util.DataUtil.convertDateTime
 import com.ladysparks.ttaenggrang.util.ImageUtils
@@ -51,37 +52,6 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
 
     private lateinit var nationViewModel: NationViewModel
 
-    // 갤러리에서 이미지 선택 후 처리하는 launcher
-    private lateinit var uploadButton: Button
-    private var imageUri: Uri? = null
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            imageUri = it
-            binding.imgClassPhoto.visibility = View.VISIBLE
-            binding.textClassPhotoNull.visibility = View.GONE
-            binding.imgClassPhoto.setImageURI(it) // ✅ 선택한 이미지 표시
-
-            saveImageToPrefs(it) // ✅ 유틸을 활용한 저장
-            showToast("이미지 저장 완료!")
-        }
-    }
-
-    private fun saveImageToPrefs(uri: Uri) {
-        val bitmap = ImageUtils.uriToBitmap(requireContext(), uri) // ✅ 유틸 사용
-        val encodedImage = ImageUtils.bitmapToBase64(bitmap) // ✅ Base64 변환
-        SharedPreferencesUtil.putValue("NationPhoto", encodedImage) // ✅ 저장
-    }
-
-    private fun loadImageFromPrefs() {
-        val savedBase64 = SharedPreferencesUtil.getValue("NationPhoto", "")
-
-        if (!savedBase64.isNullOrEmpty()) {
-            val bitmap = ImageUtils.base64ToBitmap(savedBase64) // ✅ Base64 → Bitmap 변환
-            binding.imgClassPhoto.visibility = View.VISIBLE
-            binding.textClassPhotoNull.visibility = View.GONE
-            binding.imgClassPhoto.setImageBitmap(bitmap) // ✅ 이미지 표시
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -107,11 +77,8 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
 
         // 기본 정보
         nationViewModel.nationInfoData.observe(viewLifecycleOwner) { response ->
-            val parseDate = DataUtil.formatDateTimeFromServer(response.establishedDate.toString())
-            val formattedDate = DataUtil.formatDate(parseDate!!)
-
             binding.textNationName.text = response.nationName ?: "??"
-            binding.textNationCreated.text = formattedDate
+            binding.textNationCreated.text = CustomDateUtil.formatToDate(response.establishedDate ?: "")
             binding.textNationCurrency.text = response.currency
             binding.textNationPopulation.text = (response.population ?: "0").toString()
             binding.textGoal.text = NumberUtil.formatWithComma(response.savingsGoalAmount)
@@ -119,13 +86,8 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
 
         // 투표 현황
         nationViewModel.currentVoteInfo.observe(viewLifecycleOwner) { response ->
-            var parseDate = DataUtil.formatDateTimeFromServer(response.startDate.toString())
-            val startDate = DataUtil.formatDate(parseDate!!)
-            parseDate = DataUtil.formatDateTimeFromServer(response.endDate.toString())
-            val endDate = DataUtil.formatDate(parseDate!!)
-
             if(response.voteStatus == VoteStatus.IN_PROGRESS) {
-                binding.textVoteDate.text = "${startDate} ~ ${endDate}"
+                binding.textVoteDate.text = "${CustomDateUtil.formatToDate(response.startDate)} ~ ${CustomDateUtil.formatToDate(response.endDate)}"
                 binding.textVoteTitleInfo.text = response.title
             }
 
@@ -183,10 +145,6 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
 //            binding.btnClassVote.visibility = View.GONE
 //            binding.btnNationInfo.visibility = View.GONE
             //binding.btnGoalSavings.visibility = View.GONE
-            binding.constraintClassPhoto.apply {
-                isClickable = false
-                isEnabled = false
-            }
         }
 
         // 학급 이미지 설정
@@ -221,8 +179,8 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
             .create()
 
         // 내용 구성
-        val startDate = DataUtil.formatDate(DataUtil.formatDateTimeFromServer(nationViewModel.currentVoteInfo.value!!.startDate)!!)
-        val endDate = DataUtil.formatDate(DataUtil.formatDateTimeFromServer(nationViewModel.currentVoteInfo.value!!.endDate)!!)
+        val startDate = CustomDateUtil.formatToDate(nationViewModel.currentVoteInfo.value!!.startDate)
+        val endDate = CustomDateUtil.formatToDate(nationViewModel.currentVoteInfo.value!!.endDate)
         dialogBinding.textVoteTitle.text = nationViewModel.currentVoteInfo.value!!.title
         dialogBinding.textVoteDate.text = "${startDate} ~ $endDate"
 
@@ -459,4 +417,38 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
         dialog.show()
 
     }
+
+
+    /**
+     * 학급 이미지 등록 함수
+     */
+    private var imageUri: Uri? = null
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            imageUri = it
+            binding.imgClassPhoto.visibility = View.VISIBLE
+            binding.textClassPhotoNull.visibility = View.GONE
+            binding.imgClassPhoto.setImageURI(it) // ✅ 선택한 이미지 표시
+
+            saveImageToPrefs(it) // ✅ 유틸을 활용한 저장
+            showToast("이미지 저장 완료!")
+        }
+    }
+
+    private fun saveImageToPrefs(uri: Uri) {
+        val bitmap = ImageUtils.uriToBitmap(requireContext(), uri) // ✅ 유틸 사용
+        val encodedImage = ImageUtils.bitmapToBase64(bitmap) // ✅ Base64 변환
+        SharedPreferencesUtil.putValue("NationPhoto", encodedImage) // ✅ 저장
+    }
+
+    private fun loadImageFromPrefs() {
+        val savedBase64 = SharedPreferencesUtil.getValue("NationPhoto", "")
+        if (!savedBase64.isNullOrEmpty()) {
+            val bitmap = ImageUtils.base64ToBitmap(savedBase64) // ✅ Base64 → Bitmap 변환
+            binding.imgClassPhoto.visibility = View.VISIBLE
+            binding.textClassPhotoNull.visibility = View.GONE
+            binding.imgClassPhoto.setImageBitmap(bitmap) // ✅ 이미지 표시
+        }
+    }
+
 }

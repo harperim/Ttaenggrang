@@ -1,9 +1,9 @@
 package com.ladysparks.ttaenggrang.data.model.response
 
 data class StockResponse(
-    val currentTotalPrice: Int,
-    val priceChangeRate: Int,
-    val purchasePrice: Int,
+    val stockName: String,
     val quantity: Int,
-    val stockName: String
+    val currentTotalPrice: Int,
+    val purchasePrice: Int,
+    val priceChangeRate: Int,
 )

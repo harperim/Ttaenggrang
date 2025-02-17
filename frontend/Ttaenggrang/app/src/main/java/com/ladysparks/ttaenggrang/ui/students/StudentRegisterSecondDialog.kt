@@ -10,19 +10,21 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import com.ladysparks.ttaenggrang.databinding.DialogStudentRegisterSecondBinding
 
-class StudentStepTwoDialogFragment(private val viewModel: StudentsViewModel) : DialogFragment() {
+class StudentRegisterSecondDialog(private val viewModel: StudentsViewModel) : DialogFragment() {
 
     private val filePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            viewModel.uploadFile(it, requireContext())  // 🔹 ViewModel에 업로드 요청
+            viewModel.uploadFile(it, requireContext())  //  ViewModel에 업로드 요청
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = DialogStudentRegisterSecondBinding.inflate(inflater, container, false)
 
+        binding.btnClose.setOnClickListener { dismiss() }
+        binding.icClose.setOnClickListener { dismiss() }
+
         binding.btnFileUpload.setOnClickListener {
-//            filePickerLauncher.launch(arrayOf("text/csv", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
             filePickerLauncher.launch("*/*")  // CSV 또는 XLSX 선택 가능
         }
 

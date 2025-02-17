@@ -1,18 +1,7 @@
 package com.ladysparks.ttaenggrang.ui.home
 
-import android.app.Dialog
-import android.content.Context
-import android.content.Intent
-import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TableLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,26 +11,18 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
-import com.ladysparks.ttaenggrang.MainActivity
 import com.ladysparks.ttaenggrang.R
-import com.ladysparks.ttaenggrang.base.ApplicationClass
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
-import com.ladysparks.ttaenggrang.databinding.DialogBaseConfirmCancelBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.databinding.FragmentHomeTeacherBinding
-import com.ladysparks.ttaenggrang.realm.NotificationModel
 import com.ladysparks.ttaenggrang.realm.NotificationRepository
 import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
 import com.ladysparks.ttaenggrang.ui.component.IncentiveDialogFragment
-import com.ladysparks.ttaenggrang.util.NavigationManager
-import com.ladysparks.ttaenggrang.util.NavigationManager.FRAGMENT_STUDENT_MANAGEMENT
 import com.ladysparks.ttaenggrang.util.NumberUtil
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
-import java.util.Date
 
 
 //class HomeFragment : Fragment() {
@@ -251,9 +232,15 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
         binding.barChart.setDrawMarkers(true)  // 마커 활성화
         binding.barChart.isHighlightPerTapEnabled = true  // 막대 클릭 시 값 표시
 
-        incomeSet.setDrawValues(true)  /* 수입 막대 위에 값 표시 */
-        expenseSet.setDrawValues(true)  // 지출 막대 위에 값 표시
+        incomeSet.setDrawValues(false) // 값 숨기기
+        expenseSet.setDrawValues(false) // 값 숨기기
 
+        // ✅ MarkerView 설정
+        val markerView = ChartMarkerView(requireContext())
+        binding.barChart.marker = markerView
+
+        binding.barChart.setDrawMarkers(true)  // 마커 활성화
+        binding.barChart.isHighlightPerTapEnabled = true  // 막대 클릭 시 값 표시
         binding.barChart.invalidate()  // 차트 갱신
 
         // 범례 설정

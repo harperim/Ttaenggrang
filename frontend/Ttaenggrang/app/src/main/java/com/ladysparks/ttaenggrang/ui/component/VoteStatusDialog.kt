@@ -7,6 +7,7 @@ import android.widget.Toast
 import com.ladysparks.ttaenggrang.databinding.DialogVoteStatusBinding
 import com.ladysparks.ttaenggrang.data.model.dto.VoteDataDto
 import com.ladysparks.ttaenggrang.data.model.dto.VoteStatus
+import com.ladysparks.ttaenggrang.util.CustomDateUtil
 import com.ladysparks.ttaenggrang.util.DataUtil
 
 class VoteStatusDialog(private val context: Context, private val voteInfo: VoteDataDto) {
@@ -23,8 +24,8 @@ class VoteStatusDialog(private val context: Context, private val voteInfo: VoteD
             .create()
 
         // 날짜 변환
-        val startDate = DataUtil.formatDate(DataUtil.formatDateTimeFromServer(voteInfo.startDate)!!)
-        val endDate = DataUtil.formatDate(DataUtil.formatDateTimeFromServer(voteInfo.endDate)!!)
+        val startDate = CustomDateUtil.formatToDate(voteInfo.startDate)
+        val endDate = CustomDateUtil.formatToDate(voteInfo.endDate)
 
         // Info
         dialogBinding.textVoteTitle.text = voteInfo.title

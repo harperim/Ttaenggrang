@@ -39,20 +39,20 @@
 
         <!-- 인센티브  + 학생 등록 -->
         <LinearLayout
-            android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSalary"
-                android:paddingHorizontal="@dimen/spacing_10"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/spacing_10"
                 android:background="@drawable/btn_rounded_border"
                 android:backgroundTint="@null"
+                android:paddingHorizontal="@dimen/spacing_10"
                 android:text="주급 지급"
                 android:textAppearance="@style/body2"
                 android:textColor="@color/mainOrange"
@@ -61,13 +61,13 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnIncentive"
-                android:paddingHorizontal="@dimen/spacing_10"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/spacing_10"
                 android:background="@drawable/btn_rounded_border"
                 android:backgroundTint="@null"
+                android:paddingHorizontal="@dimen/spacing_10"
                 android:text="인센티브 지급"
                 android:textAppearance="@style/body2"
                 android:textColor="@color/mainOrange"
@@ -83,7 +83,7 @@
                 android:text="학생 등록"
                 android:textAppearance="@style/body2"
                 android:textColor="@color/white"
-                app:backgroundTint="@color/mainOrange"/>
+                app:backgroundTint="@color/mainOrange" />
 
         </LinearLayout>
 
@@ -92,6 +92,7 @@
 
     <!-- Tab -->
     <LinearLayout
+        android:gravity="left|center_vertical"
         android:id="@+id/tabContainerArea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -112,47 +113,43 @@
 
             <TextView
                 android:id="@+id/tv_student_info"
-                style="@style/heading4"
+                style="@style/heading3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:text="학생 정보"
-                android:textColor="@color/mainOrange"/>
+                android:textColor="@color/mainOrange" />
 
             <View
                 android:id="@+id/underline_student_info"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="@color/mainOrange"/>
+                android:background="@color/mainOrange" />
         </LinearLayout>
 
         <!-- 재정 상태 (탭) -->
         <LinearLayout
+            android:layout_marginStart="@dimen/spacing_10"
             android:id="@+id/btnTabFincialStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical">
-
-
             <TextView
                 android:id="@+id/tv_financial_status"
-                style="@style/body2"
+                style="@style/body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:text="재정 상태"
-                android:textColor="@color/lightGray"/>
-
-
-
+                android:textColor="@color/lightGray" />
             <View
-                android:visibility="gone"
                 android:id="@+id/underline_financial_status"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="@color/mainOrange"/>
+                android:background="@color/mainOrange"
+                android:visibility="gone" />
         </LinearLayout>
 
     </LinearLayout>
@@ -160,47 +157,47 @@
 
     <!-- Table + Scroll -->
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:background="@drawable/btn_rounded_full"
         android:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabContainerArea"
         app:layout_constraintStart_toStartOf="@+id/tabContainerArea"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
+        app:layout_constraintTop_toBottomOf="@+id/tabContainerArea">
 
         <TextView
-            android:visibility="gone"
             android:id="@+id/textNullStudent"
+            style="@style/heading3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="등록된 학생 정보가 없습니다."
+            android:textColor="@color/lightGray"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            style="@style/heading3"
-            android:textColor="@color/lightGray"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerStudents"
-            tools:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerFinance"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
