@@ -555,6 +555,10 @@ public class StudentService {
         return responseDTOs;
     }
 
+    public List<Student> findAllStudentByTeacherId(Long teacherId) {
+        return studentRepository.findAllByTeacherId(teacherId);
+    }
+
     public Long findTeacherIdByStudentId(Long studentId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID를 가진 학생이 존재하지 않습니다."));

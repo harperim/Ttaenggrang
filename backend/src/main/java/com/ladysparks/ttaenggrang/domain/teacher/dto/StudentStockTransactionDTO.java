@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StudentStockTransactionDTO {
 
+    private Long stockId;           // 주식 ID
     private String stockName;       // 주식명
     private int quantity;           // 보유 수량
     private int currentTotalPrice;  // 현재가 (총 평가 금액)
