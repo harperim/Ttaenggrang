@@ -42,7 +42,7 @@ public class StockHistoryController implements StockHistoryApiSpecification {
     @GetMapping("/stocks")
     public ResponseEntity<ApiResponse<Map<Long, List<StockHistoryDTO>>>> getLast5DaysStockHistory() {
         Long teacherId = teacherService.getCurrentTeacherId();
-        Map<Long, List<StockHistoryDTO>> historyMap = stockHistoryService.getLast5DaysStockHistory(teacherId);
+        Map<Long, List<StockHistoryDTO>> historyMap = stockHistoryService.getLast5WeekdaysStockHistory(teacherId);
         return ResponseEntity.ok(ApiResponse.success(historyMap));
     }
 

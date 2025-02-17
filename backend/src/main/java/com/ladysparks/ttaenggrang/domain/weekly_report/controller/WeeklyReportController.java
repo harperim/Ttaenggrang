@@ -2,6 +2,7 @@ package com.ladysparks.ttaenggrang.domain.weekly_report.controller;
 
 import com.ladysparks.ttaenggrang.domain.weekly_report.dto.StudentFinancialSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.weekly_report.dto.WeeklyFinancialSummaryDTO;
+import com.ladysparks.ttaenggrang.domain.weekly_report.dto.WeeklyReportDTO;
 import com.ladysparks.ttaenggrang.domain.weekly_report.service.WeeklyFinancialSummaryService;
 import com.ladysparks.ttaenggrang.domain.weekly_report.service.WeeklyReportService;
 import com.ladysparks.ttaenggrang.global.docs.weekly.WeeklyReportApiSpecification;

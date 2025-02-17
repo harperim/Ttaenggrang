@@ -10,6 +10,8 @@ import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockTransactionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -149,17 +151,16 @@ public class StockHistoryService {
 
     // 모든 주식 가격 변동 이력 조회
     /**
-     * 📌 특정 교사가 관리하는 주식의 최근 5일치 변동 이력 조회 (가격 변동률 포함)
+     * 📌 특정 교사가 관리하는 주식의 최근 5개 평일 변동 이력 조회 (오래된 순서)
      */
-    public Map<Long, List<StockHistoryDTO>> getLast5DaysStockHistory(Long teacherId) {
+    public Map<Long, List<StockHistoryDTO>> getLast5WeekdaysStockHistory(Long teacherId) {
         List<Stock> stocks = stockRepository.findByTeacherId(teacherId); // 교사가 관리하는 모든 주식 조회
         Map<Long, List<StockHistoryDTO>> historyMap = new HashMap<>();
 
-        LocalDateTime fiveDaysAgo = LocalDate.now().minusDays(5).atStartOfDay();
-        LocalDateTime todayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+        Pageable pageable = PageRequest.of(0, 5); // 최신 5개만 조회
 
         for (Stock stock : stocks) {
-            List<StockHistory> histories = stockHistoryRepository.findLast5DaysByStockId(stock.getId(), fiveDaysAgo, todayEnd);
+            List<StockHistory> histories = stockHistoryRepository.findLast5WeekdaysByStockId(stock.getId(), pageable);
             List<StockHistoryDTO> historyDTOs = histories.stream().map(StockHistoryDTO::fromEntity).collect(Collectors.toList());
             historyMap.put(stock.getId(), historyDTOs);
         }

@@ -51,6 +51,9 @@ public class WeeklyFinancialSummary {
 
     @Column(nullable = false)
     private int fineAmount; // 벌금 납부액
+
+    @Column
+    private String aiFeedback;
     
     @CreationTimestamp
     private Timestamp createdAt;
