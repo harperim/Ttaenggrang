@@ -14,15 +14,23 @@ data class StockHistoryDto(
 //    val date: String,  // 날짜 (yyyy-MM-dd)
 //    val stockId: Int,
 
-    @SerializedName("id") val id: Int,
-    @SerializedName("price") val price: Float,
-    @SerializedName("priceChangeRate") val priceChangeRate: Float,
-    @SerializedName("date") val date: String
-) {
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getFormattedDate(): String {
-        return LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME)
-            .format(DateTimeFormatter.ofPattern("MM-dd"))
-    }
-}
+//    @SerializedName("id") val id: Int,
+//    @SerializedName("stockId") val stockId: Int,
+//    @SerializedName("price") val price: Float,
+//    @SerializedName("priceChangeRate") val priceChangeRate: Float,
+//    @SerializedName("date") val date: String
+
+    val id: Int,
+    val stockId: Int,
+    val price: Float,
+    val priceChangeRate: Float,
+    val date: String
+)
+//) {
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    fun getFormattedDate(): String {
+//        return LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME)
+//            .format(DateTimeFormatter.ofPattern("MM-dd"))
+//    }
+//}
 

@@ -128,6 +128,7 @@ class StockViewModel : ViewModel() {
     init {
         // ✅ 앱 실행 시 자동으로 거래 내역 가져와서 데이터 업데이트
         fetchStudentStockTransactions()
+        fetchStockHistory()
     }
 
 
@@ -544,16 +545,21 @@ class StockViewModel : ViewModel() {
     fun fetchStockHistory() {
         viewModelScope.launch {
             runCatching {
-                stockService.getStockHistory()
+                stockService.getStockHistory() // ✅ API 요청
             }.onSuccess { response ->
                 if (response.isSuccessful) {
                     response.body()?.data?.values?.flatten()?.let { stockData ->
-                        val sortedStockData = stockData.sortedBy { it.date }.takeLast(5) // 최근 5일 데이터
+                        val sortedStockData = stockData.sortedBy { it.date }
                         _stockHistory.postValue(sortedStockData)
-                    }
+
+                        // ✅ 데이터 로그 확인
+                        Log.d("ViewModel", "StockHistory 업데이트됨: ${sortedStockData.size}")
+                    } ?: Log.d("ViewModel", "StockHistory 응답은 성공했지만 데이터 없음")
+                } else {
+                    Log.d("ViewModel", "StockHistory API 실패: ${response.code()}")
                 }
             }.onFailure { e ->
-                e.printStackTrace()
+                Log.e("ViewModel", "StockHistory API 호출 오류", e)
             }
         }
     }
