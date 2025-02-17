@@ -3,13 +3,333 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/backgroundGray"
     tools:context=".ui.bank.BankTeacherFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="은행. 선생님" />
+        android:background="@color/backgroundGray">
+
+        <LinearLayout
+            android:id="@+id/llItemBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/spacing_40">
+
+            <!-- 배너 1-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="696dp"
+                android:layout_height="127dp"
+                android:background="@drawable/img_banner">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="은행"
+                        style="@style/heading2"
+                        android:textColor="@color/white"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="돈을 모으는 가장 좋은 방법!"
+                        android:textColor="@color/white"
+                        style="@style/body2" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="저축하고, 계획적으로 금융 생활을 시작해보세요!"
+                        android:textColor="@color/white"
+                        style="@style/body2"/>
+
+                </LinearLayout>
+                <!-- ImageView를 감쌀 FrameLayout 추가 -->
+                <FrameLayout
+                    android:layout_marginEnd="@dimen/spacing_20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="true"
+                    android:clipToPadding="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <!-- 이미지 추가 (크게 설정해서 배너 바깥으로 넘기기) -->
+                    <ImageView
+                        android:id="@+id/bannerImage"
+                        android:layout_width="126dp"
+                        android:layout_height="126dp"
+                        android:src="@drawable/fox_coins"
+                        android:scaleType="centerCrop"
+                        android:translationX="20dp"
+                        android:translationY="20dp" />
+                </FrameLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!--배너 2-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="288dp"
+                android:layout_height="127dp"
+                android:background="@drawable/bg_rounded_15"
+                android:layout_marginLeft="@dimen/spacing_20">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="@dimen/spacing_20"
+                    android:layout_marginHorizontal="@dimen/spacing_20"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="37dp"
+                        android:layout_height="37dp"
+                        android:src="@drawable/img_deposit"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_marginStart="15dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="예금 상품"
+                            style="@style/heading5"
+                            android:textColor="@color/lightGray"/>
+                        <TextView
+                            android:id="@+id/textCountDeposit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3개"
+                            style="@style/heading3"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_marginStart="40dp"
+                        android:layout_width="37dp"
+                        android:layout_height="37dp"
+                        android:src="@drawable/img_saving"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_marginStart="15dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="적금 상품"
+                            style="@style/heading5"
+                            android:textColor="@color/lightGray"/>
+                        <TextView
+                            android:id="@+id/textCountSaving"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3개"
+                            style="@style/heading3"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRegisterItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:src="@drawable/bg_rounded_15"
+                    android:backgroundTint="@color/mainOrange"
+                    app:cornerRadius="5dp"
+                    android:text="은행 상품 등록하기"
+                    android:textColor="@color/white"
+                    style="@style/heading4"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginHorizontal="20dp"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <!--등록된 아이템 레이아웃-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="1005dp"
+            android:layout_height="574dp"
+            android:background="@drawable/bg_rounded_15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="40dp"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="27dp">
+            <TextView
+                android:id="@+id/textRegisteredItemLayoutTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="은행 상품"
+                style="@style/heading3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent
+"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/linearRegisteredItemTableHeader">
+
+                <TextView
+                    android:id="@+id/textTab1"
+                    style="@style/caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:background="@drawable/tab"
+                    android:paddingHorizontal="@dimen/spacing_10"
+                    android:paddingVertical="3dp"
+                    android:text="전체"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/textTab2"
+                    style="@style/caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_10"
+                    android:background="@drawable/tab"
+                    android:paddingHorizontal="@dimen/spacing_10"
+                    android:paddingVertical="3dp"
+                    android:text="예금"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/textTab3"
+                    style="@style/caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_10"
+                    android:background="@drawable/tab"
+                    android:paddingHorizontal="@dimen/spacing_10"
+                    android:paddingVertical="3dp"
+                    android:text="적금"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearRegisteredItemTableHeader"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:layout_constraintTop_toBottomOf="@+id/textRegisteredItemLayoutTitle"
+                app:layout_constraintStart_toStartOf="@+id/textRegisteredItemLayoutTitle"
+                android:background="@drawable/bg_rounded_15"
+                android:backgroundTint="@color/lightOrange"
+                android:layout_marginTop="44dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="No."
+                    style="@style/heading4"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="상품명"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="상품 유형"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="가입 기간"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="이자율"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="납입금액"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="노출기간"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="가입자 수"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+
+
+            </LinearLayout>
+
+            <!--item_registered_item.xml-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/linearRegisteredItemTableHeader"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TextView
+                    tools:visibility="visible"
+                    android:visibility="gone"
+                    android:id="@+id/textNullRegisteredItem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="등록된 상품이 없습니다"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    style="@style/body2"
+                    android:textColor="@color/lightGray"/>
+
+                <!--은행 상품 리사이클러-->
+                <!--item_bank_registered-->
+                <androidx.recyclerview.widget.RecyclerView
+                    tools:visibility="gone"
+                    android:id="@+id/recyclerRegistedItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
