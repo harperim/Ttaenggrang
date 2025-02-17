@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.store.StoreStudentFragment">
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@color/backgroundGray">-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/llItemBanner"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            android:layout_marginTop="@dimen/spacing_40">-->
+
+<!--            &lt;!&ndash; 배너 1&ndash;&gt;-->
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="696dp"-->
+<!--                android:layout_height="127dp"-->
+<!--                android:background="@drawable/img_banner">-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    android:layout_marginTop="19dp"-->
+<!--                    android:layout_marginStart="27dp">-->
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="아이템 판매"-->
+<!--                        style="@style/heading2"-->
+<!--                        android:textColor="@color/white"/>-->
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="이곳에서 자유롭게 물건을 사고팔 수 있어요!"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        style="@style/body2" />-->
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="사고! 팔고! 원하는 아이템을 거래해 보세요!"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        style="@style/body2"/>-->
+
+<!--                </LinearLayout>-->
+<!--                &lt;!&ndash; ImageView를 감쌀 FrameLayout 추가 &ndash;&gt;-->
+<!--                <FrameLayout-->
+<!--                    android:layout_marginEnd="@dimen/spacing_20"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:clipChildren="true"-->
+<!--                    android:clipToPadding="true"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent">-->
+
+<!--                    &lt;!&ndash; 이미지 추가 (크게 설정해서 배너 바깥으로 넘기기) &ndash;&gt;-->
+<!--                    <ImageView-->
+<!--                        android:id="@+id/bannerImage"-->
+<!--                        android:layout_width="126dp"-->
+<!--                        android:layout_height="126dp"-->
+<!--                        android:src="@drawable/fox_coins"-->
+<!--                        android:scaleType="centerCrop"-->
+<!--                        android:translationX="20dp"-->
+<!--                        android:translationY="20dp" />-->
+<!--                </FrameLayout>-->
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--            &lt;!&ndash;배너 2&ndash;&gt;-->
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="288dp"-->
+<!--                android:layout_height="127dp"-->
+<!--                android:background="@drawable/img_banner_green"-->
+<!--                android:layout_marginLeft="@dimen/spacing_20">-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    android:layout_marginTop="34dp"-->
+<!--                    android:layout_marginStart="26dp">-->
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="입출금 통장"-->
+<!--                        style="@style/heading4"-->
+<!--                        android:textColor="@color/white"/>-->
+<!--                    <TextView-->
+<!--                        android:id="@+id/textNationAmount"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="100,000,000"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        style="@style/heading2"/>-->
+<!--                </LinearLayout>-->
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--        </LinearLayout>-->
+<!--        <LinearLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/llItemBanner"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            android:layout_marginTop="@dimen/spacing_20">-->
+<!--            &lt;!&ndash;아이템 구매 레이아웃&ndash;&gt;-->
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="696dp"-->
+<!--                android:layout_height="575dp"-->
+<!--                android:paddingVertical="20dp"-->
+<!--                android:paddingHorizontal="27dp">-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:orientation="vertical"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent">-->
+
+</FrameLayout>

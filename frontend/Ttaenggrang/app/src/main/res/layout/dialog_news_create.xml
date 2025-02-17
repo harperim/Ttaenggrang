@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="24dp">
+
+    <!--다이얼로그 헤드-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogHead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/frameLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textDialogTitle"
+            style="@style/heading3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="뉴스 생성하기"
+            app:layout_constraintBottom_toTopOf="@id/textDialogContent"
+            app:layout_constraintEnd_toStartOf="@id/btnCancel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textDialogContent"
+            style="@style/body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ai를 이용해 랜덤으로 뉴스를 생성하세요"
+            android:textColor="@color/black200"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textDialogTitle"
+            app:layout_constraintTop_toBottomOf="@id/textDialogTitle" />
+
+
+        <ImageButton
+            android:id="@+id/btnCancel"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textDialogTitle"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/constraintDialogFoot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@id/constraintDialogHead"
+        >
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:shimmer_auto_start="true"
+            app:shimmer_duration="1500">
+
+                <!-- ✨ 기존 UI와 동일한 뷰를 뼈대 UI로 설정 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintDialogBody2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/spacing_20"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent"
+>
+
+                    <!--주식명 타이틀, 필드-->
+                    <TextView
+                        android:id="@+id/textTitle12"
+                        style="@style/heading4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="뉴스 생성일"
+                        app:layout_constraintBottom_toTopOf="@id/textLayoutContent12"
+                        app:layout_constraintStart_toStartOf="@id/textLayoutContent12"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textLayoutContent12"
+                        style="@style/body1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/bg_rounded_20"
+                        android:textColorHint="@color/lightGray"
+                        app:boxStrokeColor="@color/lightGray"
+                        app:boxStrokeWidth="1dp"
+                        app:layout_constraintEnd_toStartOf="@id/textLayoutContent22"
+                        app:layout_constraintHorizontal_weight="1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/textTitle12">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/textDialogNewsCreateDate2"
+                            style="@style/body1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:paddingStart="14dp"
+                            android:textColor="@color/black" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!--관련 주식-->
+                    <TextView
+                        android:id="@+id/textTitle22"
+                        style="@style/heading4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="관련 주식"
+                        app:layout_constraintBottom_toTopOf="@id/textLayoutContent22"
+                        app:layout_constraintStart_toStartOf="@id/textLayoutContent22"
+                        app:layout_constraintTop_toTopOf="@id/textTitle12" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textLayoutContent22"
+                        style="@style/body1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_10"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/bg_rounded_20"
+                        android:textColorHint="@color/lightGray"
+                        app:boxStrokeColor="@color/lightGray"
+                        app:boxStrokeWidth="1dp"
+                        app:layout_constraintBottom_toBottomOf="@id/textLayoutContent12"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_weight="1"
+                        app:layout_constraintStart_toEndOf="@id/textLayoutContent12"
+                        app:layout_constraintTop_toBottomOf="@id/textTitle22">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/textDialogStockName2"
+                            style="@style/body1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:paddingStart="14dp"
+                            android:textColor="@color/black" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!--뉴스 제목-->
+                    <TextView
+                        android:id="@+id/textTitle32"
+                        style="@style/heading4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_15"
+                        android:text="뉴스 제목"
+                        app:layout_constraintStart_toStartOf="@id/textLayoutContent32"
+                        app:layout_constraintTop_toBottomOf="@id/textLayoutContent12"
+
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textLayoutContent32"
+                        style="@style/body1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/bg_rounded_20"
+                        android:textColorHint="@color/lightGray"
+                        app:boxStrokeColor="@color/lightGray"
+                        app:boxStrokeWidth="1dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/textTitle32">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/textDialogNewsTitle2"
+                            style="@style/body1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:paddingStart="14dp"
+                            android:textColor="@color/black" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!--뉴스 내용-->
+                    <TextView
+                        android:id="@+id/textTitle42"
+                        style="@style/heading4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_15"
+                        android:text="뉴스 내용"
+                        app:layout_constraintStart_toStartOf="@id/textLayoutContent42"
+                        app:layout_constraintTop_toBottomOf="@id/textLayoutContent32" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textLayoutContent42"
+                        style="@style/body1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/bg_rounded_20"
+                        android:textColorHint="@color/lightGray"
+                        app:boxStrokeColor="@color/lightGray"
+                        app:boxStrokeWidth="1dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/textTitle42">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/textDialogNewsContent2"
+                            style="@style/body1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:hint="ai가 뉴스 내용을 생성합니다"
+                            android:minHeight="200dp"
+                            android:paddingStart="14dp"
+                            android:textColor="@color/black" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <!--다이얼로그 바디(실제 ui)-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintDialogBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/spacing_20"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/constraintDialogHead">
+
+            <!--주식명 타이틀, 필드-->
+            <TextView
+                android:id="@+id/textTitle1"
+                style="@style/heading4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="뉴스 생성일"
+                app:layout_constraintBottom_toTopOf="@id/textLayoutContent1"
+                app:layout_constraintStart_toStartOf="@id/textLayoutContent1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textLayoutContent1"
+                style="@style/body1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bg_rounded_20"
+                android:textColorHint="@color/lightGray"
+                app:boxStrokeColor="@color/lightGray"
+                app:boxStrokeWidth="1dp"
+                app:layout_constraintEnd_toStartOf="@id/textLayoutContent2"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textTitle1">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textDialogNewsCreateDate"
+                    style="@style/body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:paddingStart="14dp"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--관련 주식-->
+            <TextView
+                android:id="@+id/textTitle2"
+                style="@style/heading4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="관련 주식"
+                app:layout_constraintBottom_toTopOf="@id/textLayoutContent2"
+                app:layout_constraintStart_toStartOf="@id/textLayoutContent2"
+                app:layout_constraintTop_toTopOf="@id/textTitle1" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textLayoutContent2"
+                style="@style/body1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_10"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bg_rounded_20"
+                android:textColorHint="@color/lightGray"
+                app:boxStrokeColor="@color/lightGray"
+                app:boxStrokeWidth="1dp"
+                app:layout_constraintBottom_toBottomOf="@id/textLayoutContent1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/textLayoutContent1"
+                app:layout_constraintTop_toBottomOf="@id/textTitle2">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textDialogStockName"
+                    style="@style/body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:paddingStart="14dp"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--뉴스 제목-->
+            <TextView
+                android:id="@+id/textTitle3"
+                style="@style/heading4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_15"
+                android:text="뉴스 제목"
+                app:layout_constraintStart_toStartOf="@id/textLayoutContent3"
+                app:layout_constraintTop_toBottomOf="@id/textLayoutContent1"
+
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textLayoutContent3"
+                style="@style/body1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bg_rounded_20"
+                android:textColorHint="@color/lightGray"
+                app:boxStrokeColor="@color/lightGray"
+                app:boxStrokeWidth="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textTitle3">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textDialogNewsTitle"
+                    style="@style/body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:paddingStart="14dp"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--뉴스 내용-->
+            <TextView
+                android:id="@+id/textTitle4"
+                style="@style/heading4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_15"
+                android:text="뉴스 내용"
+                app:layout_constraintStart_toStartOf="@id/textLayoutContent4"
+                app:layout_constraintTop_toBottomOf="@id/textLayoutContent3" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textLayoutContent4"
+                style="@style/body1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bg_rounded_20"
+                android:textColorHint="@color/lightGray"
+                app:boxStrokeColor="@color/lightGray"
+                app:boxStrokeWidth="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textTitle4">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textDialogNewsContent"
+                    style="@style/body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:hint="ai가 뉴스 내용을 생성합니다"
+                    android:minHeight="200dp"
+                    android:paddingStart="14dp"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+
+    <!--다이얼로그 풋-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogFoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout">
+
+        <!--재생성하기-->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCreate"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_30"
+            android:layout_marginEnd="@dimen/spacing_10"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@color/black200"
+            android:text="생성하기"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnAdd"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--등록하기-->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnAdd"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_30"
+            android:background="@drawable/btn_rounded_full"
+            android:text="등록하기"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/btnCreate"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundGray"
+    android:padding="@dimen/spacing_40"
+    tools:context=".ui.students.StudentsFragment">
+
+    <!-- Title Header -->
+    <LinearLayout
+        android:id="@+id/linearHeaderArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/heading2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="학생정보 관리" />
+
+            <TextView
+                style="@style/body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="학생 정보를 확인하고, 재정 상태를 점검할 수 있습니다" />
+
+        </LinearLayout>
+
+        <!-- 인센티브  + 학생 등록 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSalary"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/spacing_10"
+                android:background="@drawable/btn_rounded_border"
+                android:backgroundTint="@null"
+                android:paddingHorizontal="@dimen/spacing_10"
+                android:text="주급 지급"
+                android:textAppearance="@style/body2"
+                android:textColor="@color/mainOrange"
+                app:backgroundTint="@color/lightOrange"
+                app:strokeWidth="2dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnIncentive"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/spacing_10"
+                android:background="@drawable/btn_rounded_border"
+                android:backgroundTint="@null"
+                android:paddingHorizontal="@dimen/spacing_10"
+                android:text="인센티브 지급"
+                android:textAppearance="@style/body2"
+                android:textColor="@color/mainOrange"
+                app:backgroundTint="@color/lightOrange"
+                app:strokeWidth="2dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCreateStudent"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_rounded_full"
+                android:text="학생 등록"
+                android:textAppearance="@style/body2"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/mainOrange" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- Tab -->
+    <LinearLayout
+        android:gravity="left|center_vertical"
+        android:id="@+id/tabContainerArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/linearHeaderArea"
+        app:layout_constraintTop_toBottomOf="@+id/linearHeaderArea">
+
+        <!-- 학생 정보 (탭) -->
+        <LinearLayout
+            android:id="@+id/btnTabStudentInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_10"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_student_info"
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="학생 정보"
+                android:textColor="@color/mainOrange" />
+
+            <View
+                android:id="@+id/underline_student_info"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/mainOrange" />
+        </LinearLayout>
+
+        <!-- 재정 상태 (탭) -->
+        <LinearLayout
+            android:layout_marginStart="@dimen/spacing_10"
+            android:id="@+id/btnTabFincialStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_financial_status"
+                style="@style/body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="재정 상태"
+                android:textColor="@color/lightGray" />
+            <View
+                android:id="@+id/underline_financial_status"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/mainOrange"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- Table + Scroll -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/btn_rounded_full"
+        android:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tabContainerArea"
+        app:layout_constraintTop_toBottomOf="@+id/tabContainerArea">
+
+        <TextView
+            android:id="@+id/textNullStudent"
+            style="@style/heading3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="등록된 학생 정보가 없습니다."
+            android:textColor="@color/lightGray"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerStudents"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerFinance"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

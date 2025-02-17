@@ -1,0 +1,7 @@
+UI 패키지 구조 설명
+
+- UI 계층을 기능(페이지)별로 나누어 관리하는 구조
+- 각 페이지의 Fragment, ViewModel, Adapter를 하나의 패키지에서 함께 관리
+
+
+- component : 재사용 가능한 항목들 모음 (Dialog, chart.. 등)

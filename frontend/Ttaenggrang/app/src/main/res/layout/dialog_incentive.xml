@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="516dp"
+    android:layout_height="472dp"
+    android:background="@drawable/btn_rounded_full"
+    android:backgroundTint="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_20">
+
+    <ImageView
+        app:layout_constraintBottom_toTopOf="@+id/textDialogTitle"
+        android:id="@+id/imgDialogStatus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_shop_money"
+        android:backgroundTint="@color/mainOrange"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/textDialogTitle"
+        app:layout_constraintBottom_toTopOf="@+id/textDialogContent"
+        style="@style/heading2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_10"
+        android:text="인센티브 지급"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgDialogStatus" />
+
+    <TextView
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
+        android:id="@+id/textDialogContent"
+        style="@style/body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:gravity="center"
+        android:textColor="@color/black300"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textDialogTitle"
+        android:text="인센티브를 지급할 학생을 선택하세요"/>
+
+
+    <LinearLayout
+        app:layout_constraintBottom_toTopOf="@+id/linearLayoutPrice"
+        android:paddingHorizontal="@dimen/spacing_20"
+        android:id="@+id/linearLayout6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textDialogContent">
+
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="지급 대상" />
+
+        <Spinner
+            android:layout_marginTop="@dimen/spacing_10"
+            android:paddingStart="@dimen/spacing_10"
+            android:background="@drawable/spinner_background"
+            android:id="@+id/studentSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            android:dropDownAnchor="@id/studentSpinner"
+            android:overlapAnchor="false"
+            android:popupBackground="@color/white"
+            android:dropDownHeight="300dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/spacing_20"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="금액" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginTop="@dimen/spacing_10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_rounded_20"
+            android:textColorHint="@color/lightGray"
+            app:boxStrokeColor="@color/lightGray"
+            app:hintTextColor="@color/lightGray"
+            app:boxStrokeWidth="1dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editBonus"
+                style="@style/body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="숫자만 입력해주세요"
+                android:textColorHint="@color/lightGray"
+                android:inputType="number"
+                android:paddingStart="14dp"
+                android:textColor="@color/lightGray" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutPrice"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:id="@+id/linearLayout7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btDialogCancel"
+            style="@style/heading3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_10"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@color/lightGray"
+            android:text="취소"
+            android:textColor="@color/deepBlack" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDialogConfirm"
+            style="@style/heading3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rounded_full"
+            android:text="확인"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

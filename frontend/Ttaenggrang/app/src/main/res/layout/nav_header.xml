@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/spacing_10"
+    android:paddingTop="@dimen/spacing_20"
+    android:paddingBottom="@dimen/spacing_40">
+
+    <ImageView
+        android:id="@+id/imgUser"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/img_teacher"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/navHeaderEmail"
+        style="@style/body2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_10"
+        android:text="test@naver.com"
+        android:textColor="@color/deepBlack"
+        app:layout_constraintStart_toEndOf="@+id/imgUser"
+        app:layout_constraintTop_toTopOf="@+id/imgUser" />
+
+    <TextView
+        android:id="@+id/navHeaderUserRole"
+        style="@style/caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="교사"
+        android:textColor="@color/lightGray"
+        app:layout_constraintStart_toStartOf="@+id/navHeaderEmail"
+        app:layout_constraintTop_toBottomOf="@+id/navHeaderEmail" />
+
+    <!--        app:layout_constraintBottom_toTopOf="@+id/navHeaderEmail"-->
+    <!--        android:id="@+id/navHeaderName"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="-"-->
+    <!--        style="@style/body1"-->
+    <!--        android:layout_marginStart="@dimen/spacing_10"-->
+    <!--        app:layout_constraintStart_toEndOf="@+id/imgUser"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/imgUser" />-->
+
+    <!--    <TextView-->
+    <!--        app:layout_constraintBottom_toBottomOf="@+id/navHeaderName"-->
+    <!--        android:id="@+id/navHeaderUserRole"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="@dimen/spacing_10"-->
+    <!--        android:text="교사"-->
+    <!--        style="@style/caption"-->
+    <!--        android:background="@drawable/btn_rounded_full"-->
+    <!--        android:backgroundTint="@color/lightOrange"-->
+    <!--        android:textColor="@color/mainOrange"-->
+    <!--        app:layout_constraintStart_toEndOf="@+id/navHeaderName"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/navHeaderName" />-->
+
+    <!---->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

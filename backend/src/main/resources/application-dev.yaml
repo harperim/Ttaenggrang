@@ -1,0 +1,14 @@
+spring:
+  data:
+    redis:
+      host: localhost # local 환경
+      port: 6379
+      password: "ssafy"
+
+api:
+  openai_key: ${OPENAI_API_KEY}  # 환경변수 없으면 기본값 사용
+
+scheduling:
+  stock-market:
+    open: "0 * * * * ?"  # 매분 실행
+    close: "30 * * * * ?" # 매 30초 실행

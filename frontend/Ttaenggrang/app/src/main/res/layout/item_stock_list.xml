@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_10">
+    <!--주식아이콘-->
+    <ImageView
+        android:id="@+id/imageStock"
+        android:layout_width="31dp"
+        android:layout_height="31dp"
+        android:src="@drawable/ic_jyp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <!--주식이름-->
+    <TextView
+        android:id="@+id/textStockName"
+        style="@style/heading4"
+        android:layout_width="60dp"
+        android:gravity="start"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_10"
+        android:text="JYP"
+        app:layout_constraintBottom_toBottomOf="@id/imageStock"
+        app:layout_constraintStart_toEndOf="@id/imageStock"
+        app:layout_constraintTop_toTopOf="@+id/imageStock" />
+
+
+
+    <!--주식 그래프-->
+    <com.ladysparks.ttaenggrang.ui.component.LineChartComponent
+        android:id="@+id/stockMiniChart"
+        android:layout_width="85dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/spacing_30"
+        android:background="@color/foundation_black_50"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/imageStock"
+        app:layout_constraintStart_toEndOf="@id/textStockName"
+        app:layout_constraintTop_toTopOf="@id/imageStock">
+
+    </com.ladysparks.ttaenggrang.ui.component.LineChartComponent>
+
+    <TextView
+        android:id="@+id/textStockPrice"
+        style="@style/heading4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_10"
+        android:text="100,000"
+        app:layout_constraintBottom_toTopOf="@id/textStockChangeRate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/stockMiniChart" />
+
+    <TextView
+        android:id="@+id/textStockChangeRate"
+        style="@style/heading4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+1.0%"
+        android:textColor="@color/foundation_green_600"
+        app:layout_constraintBottom_toBottomOf="@id/stockMiniChart"
+        app:layout_constraintEnd_toEndOf="@id/textStockPrice"
+        app:layout_constraintTop_toBottomOf="@id/textStockPrice" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

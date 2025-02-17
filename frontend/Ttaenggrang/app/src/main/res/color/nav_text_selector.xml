@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 선택된 상태: 흰색 글씨 -->
+    <item android:color="@color/mainOrange" android:state_checked="true"/>
+
+    <!-- 기본 상태: 검정 글씨 -->
+    <item android:color="@color/lightGray"/>
+</selector>

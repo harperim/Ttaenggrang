@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="480dp"
+    android:layout_height="690dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="19dp"
+        android:layout_marginEnd="19dp"
+        android:src="@drawable/ic_close"
+        android:background="@android:color/transparent"/>
+
+    <ImageView
+        android:id="@+id/imgItemBuyFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_item_buy_detail_frame"
+        android:layout_marginTop="58dp"/>
+
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/imgItemBuyFrame"
+        app:layout_constraintEnd_toEndOf="@+id/imgItemBuyFrame"
+        app:layout_constraintTop_toTopOf="@id/imgItemBuyFrame"
+        app:layout_constraintBottom_toBottomOf="@+id/imgItemBuyFrame"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+        <ImageView
+            android:layout_width="53dp"
+            android:layout_height="53dp"
+            android:src="@drawable/ic_shop_item"
+            android:layout_marginTop="22.06dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="미지미지 교환권"
+            style="@style/heading3"
+            android:layout_marginTop="22.74dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="미지미지 교환권입니다"
+            style="@style/caption"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="136dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="52dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="판매자"
+                style="@style/body1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="판매자"
+                style="@style/body1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="136dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="금액"
+                style="@style/body1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10,000"
+                style="@style/body1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <View
+            android:layout_width="278dp"
+            android:layout_height="5dp"
+            android:background="@drawable/line_dashed_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="63.45dp"/>
+        <ImageView
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:src="@drawable/qr_example"
+            android:layout_marginTop="42dp"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="17dp"
+            android:layout_marginBottom="15dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_share"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Valid until 03 March 2022"
+                style="@style/caption"
+                android:layout_marginHorizontal="51dp"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_info"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="22dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="212dp"
+            android:layout_height="39dp"
+            android:src="@drawable/bg_rounded_15"
+            android:backgroundTint="@color/white"
+            app:cornerRadius="6dp"
+            app:strokeColor="#D5D7DA"
+            app:strokeWidth="0.75dp"
+            android:text="취소"
+            android:textColor="@color/black"
+            style="@style/heading4"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="212dp"
+            android:layout_height="39dp"
+            android:src="@drawable/bg_rounded_15"
+            android:backgroundTint="@color/mainOrange"
+            app:cornerRadius="6dp"
+            android:text="구매하기"
+            app:backgroundTint="@color/mainOrange"
+            android:textColor="@color/white"
+            style="@style/heading4"
+            android:layout_marginStart="11dp"/>
+
+
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

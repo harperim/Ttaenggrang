@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingHorizontal="@dimen/spacing_20">
+
+    <ImageButton
+        android:id="@+id/ic_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="26dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="학생 추가 등록" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="2단계"
+                android:textColor="@color/mainGreen" />
+
+            <TextView
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="  학생 이름 일괄 등록 (선택)" />
+        </LinearLayout>
+
+        <!-- 예시 이미지 -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="133dp"
+            android:layout_marginVertical="@dimen/spacing_20"
+            android:src="@drawable/register_example" />
+
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="파일 등록 안내" />
+
+        <TextView
+            style="@style/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_20"
+            android:text="@string/fileRegisterInfo" />
+
+
+        <!-- 데이터 보안 안내 -->
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:text="데이터 보안 안내" />
+
+        <TextView
+            style="@style/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_20"
+            android:text="@string/dataSecurityInfo" />
+
+        <!-- 파일 등록 from -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFileUpload"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@null"
+            android:paddingHorizontal="@dimen/spacing_10"
+            android:text="File Upload"
+            android:textAppearance="@style/body2"
+            android:textColor="@color/lightGray"
+            app:backgroundTint="@color/lightGray"
+            app:icon="@drawable/ic_upload"
+            app:iconGravity="textStart"
+            app:iconTint="@color/lightGray"
+            app:strokeWidth="2dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClose"
+            style="@style/heading4"
+            android:layout_width="228dp"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/bg_rounded_15"
+            android:text="취소"
+            android:textColor="@color/black"
+            app:cornerRadius="6dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="0.75dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSaveData"
+            style="@style/heading4"
+            android:layout_width="228dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="11dp"
+            android:backgroundTint="@color/mainOrange"
+            android:src="@drawable/bg_rounded_15"
+            android:text="저장"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/mainOrange"
+            app:cornerRadius="6dp" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

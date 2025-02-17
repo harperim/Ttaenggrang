@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingHorizontal="@dimen/spacing_20">
+
+    <ImageButton
+        android:id="@+id/ic_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="학생 추가 등록" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="1단계"
+                android:textColor="@color/mainGreen" />
+
+            <TextView
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="  등록 정보 설정" />
+        </LinearLayout>
+
+
+        <!-- 학급 인원 -->
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="1. 추가할 학급 인원은 몇명인가요?" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/spacing_20">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/bg_rounded_20"
+                android:textColorHint="@color/lightGray"
+                app:boxStrokeColor="@color/lightGray"
+                app:boxStrokeWidth="1dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editPeople"
+                    style="@style/body1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:hint="숫자"
+                    android:inputType="number"
+                    android:paddingStart="14dp"
+                    android:textColor="@color/lightGray" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <TextView
+                style="@style/body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_10"
+                android:text="명" />
+
+        </LinearLayout>
+
+
+        <!-- 화폐 단위 -->
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="2. 학생이 사용할 아이디의 앞글자를 입력해주세요" />
+
+        <TextView
+            style="@style/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="지정하신 키워드 뒤에 순차적으로 번호가 부여됩니다\nex) test001, text002 ..." />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="468dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_rounded_20"
+            android:paddingHorizontal="@dimen/spacing_20"
+            android:textColorHint="@color/lightGray"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/lightGray"
+            app:boxStrokeWidth="1dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etStudentPrefix"
+                style="@style/body1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="test"
+                android:paddingStart="14dp"
+                android:textColor="@color/lightGray" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClose"
+            style="@style/heading4"
+            android:layout_width="228dp"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/bg_rounded_15"
+            android:text="취소"
+            android:textColor="@color/black"
+            app:cornerRadius="6dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="0.75dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNext"
+            style="@style/heading4"
+            android:layout_width="228dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="11dp"
+            android:backgroundTint="@color/mainOrange"
+            android:src="@drawable/bg_rounded_15"
+            android:text="다음"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/mainOrange"
+            app:cornerRadius="6dp" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="516dp"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <ImageButton
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="26dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_marginHorizontal="@dimen/spacing_20"
+        android:id="@+id/layoutInput"
+        app:layout_constraintBottom_toTopOf="@+id/layoutBottomBtn"
+        android:layout_width="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            style="@style/heading3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="직업 추가 등록" />
+
+        <TextView
+            style="@style/body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="학생들이 활동할 직업 정보를 추가하세요"
+            android:textColor="@color/lightGray" />
+
+        <!-- 직업명 -->
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="직업명" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_rounded_20"
+            android:textColorHint="@color/lightGray"
+            app:boxStrokeColor="@color/lightGray"
+            app:boxStrokeWidth="1dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editJobName"
+                style="@style/body1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="직업명을 입력하세요"
+                android:paddingStart="14dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 직업 설명 -->
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="직업 설명" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_rounded_20"
+            android:textColorHint="@color/lightGray"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/lightGray"
+            app:boxStrokeWidth="1dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editJobDescription"
+                style="@style/body1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top|start"
+                android:hint="어떤 역할을 하는지 알려주세요"
+                android:paddingStart="14dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 기본급 -->
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="기본급" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_rounded_20"
+            android:textColorHint="@color/lightGray"
+            app:boxStrokeColor="@color/lightGray"
+            app:boxStrokeWidth="1dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editBaseSalary"
+                style="@style/body1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="숫자만 입력하세요"
+                android:paddingStart="14dp"
+                android:inputType="number"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 인원제한 -->
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="인원 제한" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_rounded_20"
+            android:textColorHint="@color/lightGray"
+            app:boxStrokeColor="@color/lightGray"
+            app:boxStrokeWidth="1dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editMaxPeople"
+                style="@style/body1"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="직업별 최대 인원"
+                android:paddingStart="14dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </LinearLayout>
+
+    <!-- 등록, 취소 버튼 영역 -->
+    <LinearLayout
+        android:layout_marginHorizontal="@dimen/spacing_20"
+        app:layout_constraintTop_toBottomOf="@+id/layoutInput"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:id="@+id/layoutBottomBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancel"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="44dp"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/bg_rounded_15"
+            android:text="취소"
+            android:textColor="@color/black"
+            app:cornerRadius="6dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="0.75dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRegister"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="44dp"
+            android:layout_marginStart="11dp"
+            android:backgroundTint="@color/mainOrange"
+            android:src="@drawable/bg_rounded_15"
+            android:text="등록하기"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/mainOrange"
+            app:cornerRadius="6dp" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

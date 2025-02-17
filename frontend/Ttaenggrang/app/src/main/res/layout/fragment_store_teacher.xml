@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.store.StoreTeacherFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/backgroundGray">
+
+        <LinearLayout
+            android:id="@+id/llItemBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/spacing_40">
+
+            <!-- 배너 1-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="696dp"
+                android:layout_height="127dp"
+                android:background="@drawable/img_banner">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="19dp"
+                    android:layout_marginStart="27dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="아이템 판매"
+                        style="@style/heading2"
+                        android:textColor="@color/white"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="이곳에서 자유롭게 물건을 사고팔 수 있어요!"
+                        android:textColor="@color/white"
+                        style="@style/body2" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="사고! 팔고! 원하는 아이템을 거래해 보세요!"
+                        android:textColor="@color/white"
+                        style="@style/body2"/>
+
+                </LinearLayout>
+                <!-- ImageView를 감쌀 FrameLayout 추가 -->
+                <FrameLayout
+                    android:layout_marginEnd="@dimen/spacing_20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="true"
+                    android:clipToPadding="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <!-- 이미지 추가 (크게 설정해서 배너 바깥으로 넘기기) -->
+                    <ImageView
+                        android:id="@+id/bannerImage"
+                        android:layout_width="126dp"
+                        android:layout_height="126dp"
+                        android:src="@drawable/fox_coins"
+                        android:scaleType="centerCrop"
+                        android:translationX="20dp"
+                        android:translationY="20dp" />
+                </FrameLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!--배너 2-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="288dp"
+                android:layout_height="127dp"
+                android:background="@drawable/bg_rounded_15"
+                android:layout_marginLeft="@dimen/spacing_20">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="@dimen/spacing_20"
+                    android:layout_marginHorizontal="@dimen/spacing_20"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="37dp"
+                        android:layout_height="37dp"
+                        android:src="@drawable/ic_shop_item"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_marginStart="15dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="등록된 아이템"
+                            style="@style/heading5"
+                            android:textColor="@color/lightGray"/>
+                        <TextView
+                            android:id="@+id/textCountRegisteredItem"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3개"
+                            style="@style/heading3"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRegisterItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:src="@drawable/bg_rounded_15"
+                    android:backgroundTint="@color/mainOrange"
+                    app:cornerRadius="5dp"
+                    android:text="아이템 등록하기"
+                    android:textColor="@color/white"
+                    style="@style/heading4"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginHorizontal="20dp"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <!--등록된 아이템 레이아웃-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="1005dp"
+            android:layout_height="574dp"
+            android:background="@drawable/bg_rounded_15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="40dp"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="27dp">
+            <TextView
+                android:id="@+id/textRegisteredItemLayoutTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="등록된 아이템"
+                style="@style/heading3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+            <LinearLayout
+                android:id="@+id/linearRegisteredItemTableHeader"
+                android:layout_width="954dp"
+                android:layout_height="48dp"
+                app:layout_constraintTop_toBottomOf="@+id/textRegisteredItemLayoutTitle"
+                app:layout_constraintStart_toStartOf="@+id/textRegisteredItemLayoutTitle"
+                android:background="@drawable/bg_rounded_15"
+                android:backgroundTint="@color/lightOrange"
+                android:layout_marginTop="44dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="72dp"
+                    android:layout_height="wrap_content"
+                    android:text="No."
+                    style="@style/heading4"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="292dp"
+                    android:layout_height="wrap_content"
+                    android:text="상품명"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="208dp"
+                    android:layout_height="wrap_content"
+                    android:text="상품금액"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="223dp"
+                    android:layout_height="wrap_content"
+                    android:text="판매자"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="169dp"
+                    android:layout_height="wrap_content"
+                    android:text="등록 갯수"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+            <!--item_registered_item.xml-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/linearRegisteredItemTableHeader"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TextView
+                    tools:visibility="visible"
+                    android:visibility="gone"
+                    android:id="@+id/textNullRegisteredItem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="등록된 아이템이 없습니다"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    style="@style/body2"
+                    android:textColor="@color/lightGray"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    tools:visibility="gone"
+                    android:id="@+id/recyclerRegistedItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

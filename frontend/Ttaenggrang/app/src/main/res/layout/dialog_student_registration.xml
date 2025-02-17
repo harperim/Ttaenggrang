@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="504dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/spacing_20"
+    android:background="@drawable/btn_rounded_full"
+    android:backgroundTint="@color/white"
+    android:orientation="vertical">
+
+    <!-- Header-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+        <TextView
+            android:id="@+id/dialogTitle"
+            style="@style/heading3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="학생 추가 등록"/>
+        
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/ic_close"/>
+    </LinearLayout>
+
+    <!-- 이름 -->
+    <TextView
+        android:layout_marginTop="@dimen/spacing_20"
+        style="@style/body2"
+        android:textColor="@color/deepBlack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이름"/>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_rounded_20"
+        android:textColorHint="@color/lightGray"
+        app:boxStrokeColor="@color/lightGray"
+        app:hintTextColor="@color/lightGray"
+        app:hintEnabled="false"
+        app:boxStrokeWidth="1dp">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editAddName"
+            style="@style/body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="이름을 입력하세요"
+            android:textColorHint="@color/lightGray"
+            android:paddingStart="14dp"
+            android:textColor="@color/lightGray" />
+    </com.google.android.material.textfield.TextInputLayout>
+<!--    <EditText-->
+<!--        android:id="@+id/editAddName"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="@dimen/spacing_10"-->
+<!--        android:hint="이름을 입력하세요" />-->
+
+    <!-- 직업 -->
+    <TextView
+        android:layout_marginTop="@dimen/spacing_10"
+        style="@style/body2"
+        android:textColor="@color/deepBlack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="직업"/>
+
+    <Spinner
+        android:id="@+id/editJob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner_background"
+        android:spinnerMode="dropdown"
+        android:popupBackground="@color/white"
+        android:dropDownHeight="wrap_content"
+         android:overlapAnchor="false"/>
+<!--    <EditText-->
+<!--        android:id="@+id/editJob"-->
+<!--        android:layout_marginBottom="@dimen/spacing_10"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="직업을 입력하세요"/>-->
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@drawable/bg_rounded_20"-->
+<!--        android:textColorHint="@color/lightGray"-->
+<!--        app:boxStrokeColor="@color/lightGray"-->
+<!--        app:hintTextColor="@color/lightGray"-->
+<!--        app:boxStrokeWidth="1dp">-->
+
+<!--        <com.google.android.material.textfield.TextInputEditText-->
+<!--            android:id="@+id/editJob"-->
+<!--            style="@style/body1"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="직업을 입력하세요"-->
+<!--            android:textColorHint="@color/lightGray"-->
+<!--            android:paddingStart="14dp"-->
+<!--            android:textColor="@color/lightGray" />-->
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
+
+
+    <!-- 직업 -->
+    <TextView
+        android:layout_marginTop="@dimen/spacing_10"
+        style="@style/body2"
+        android:textColor="@color/deepBlack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="아이디"/>
+<!--    <EditText-->
+<!--        android:id="@+id/editId"-->
+<!--        android:layout_marginBottom="@dimen/spacing_10"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="아이디를 입력하세요"/>-->
+    <com.google.android.material.textfield.TextInputLayout
+        app:hintEnabled="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_rounded_20"
+        android:textColorHint="@color/lightGray"
+        app:boxStrokeColor="@color/lightGray"
+        app:hintTextColor="@color/lightGray"
+        app:boxStrokeWidth="1dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editId"
+            style="@style/body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="아이디를 입력하세요"
+            android:textColorHint="@color/lightGray"
+            android:paddingStart="14dp"
+            android:textColor="@color/lightGray" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- 비밀번호 -->
+    <TextView
+        android:layout_marginTop="@dimen/spacing_10"
+        style="@style/body2"
+        android:textColor="@color/deepBlack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="비밀번호"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        app:hintEnabled="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_rounded_20"
+        android:textColorHint="@color/lightGray"
+        app:boxStrokeColor="@color/lightGray"
+        app:hintTextColor="@color/lightGray"
+        app:boxStrokeWidth="1dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editPassword"
+            style="@style/body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="비밀번호를 입력하세요"
+            android:textColorHint="@color/lightGray"
+            android:paddingStart="14dp"
+            android:textColor="@color/lightGray" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutPrice"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:id="@+id/linearLayout7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCancel"
+            style="@style/heading3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_10"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@color/lightGray"
+            android:text="취소"
+            android:textColor="@color/deepBlack" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnStudentRegistration"
+            style="@style/heading3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rounded_full"
+            android:text="추가"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,104 @@
+version: '3'
+services: # 컨테이너
+  db:
+    image: mysql
+    container_name: ttgr-db
+    environment:
+      - MYSQL_DATABASE=ttgr
+      - MYSQL_ROOT_PASSWORD=ssafy
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    volumes:
+      # 데이터 베이스 초기화(init.sql)
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql  # MySQL 데이터 디렉터리를 외부로 마운트
+
+  spring-boot-app:
+    image: spring-boot-app
+    container_name: ttgr-app
+    ports:
+      - "8080:8080"
+    links:
+      - db
+    depends_on:
+      - db # spring-boot-app
+      - redis                           # Redis를 스케줄러 중복 방지에 사용
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/ttgr?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=ssafy
+      - TZ=Asia/Seoul                    # 타임존 설정 (한국)
+    env_file:
+      - .env
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"                 # 로그 파일 최대 크기
+        max-file: "3"                   # 로그 파일 개수
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # 호스트의 설정 파일(nginx.conf)을 컨테이너 내부로 마운트 -> Nginx 설정 유지
+      - ./data/certbot/conf:/etc/letsencrypt # SSL 인증서 유지
+      - ./data/certbot/www:/var/www/certbot
+    depends_on:
+      - spring-boot-app
+    networks:
+      - app-network
+
+  certbot:
+      image: certbot/certbot
+      volumes:
+        - ./data/certbot/conf:/etc/letsencrypt
+        - ./data/certbot/www:/var/www/certbot
+      entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      - app-network
+
+#  jenkins:
+#    image: jenkins/jenkins:lts
+#    container_name: jenkins
+#    restart: always
+#    user: root  # 🛠 root 권한 부여 (필수)
+#    privileged: true  # 🛠 권한 문제 해결을 위해 추가
+#    ports:
+#      - "8081:8080"
+#      - "50000:50000"
+#    volumes:
+#      - jenkins_home:/var/jenkins_home  # # Jenkins 설정 및 플러그인 유지
+#      - /var/run/docker.sock:/var/run/docker.sock  # 🚀 Docker 실행 권한 추가
+#      - /usr/bin/docker:/usr/bin/docker  # 🚀 Docker CLI 공유 (일부 환경에서 필요)
+#    environment:
+#      - DOCKER_HOST=unix:///var/run/docker.sock  # 🛠 환경 변수 설정
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql_data: # Docker 볼륨 선언
+  redis_data:
+    driver: local
+  jenkins_home: # 볼륨을 정의하여 Jenkins 설정을 유지

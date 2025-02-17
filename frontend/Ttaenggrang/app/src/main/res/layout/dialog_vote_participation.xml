@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="516dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/btn_rounded_full"
+    android:backgroundTint="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_20">
+
+    <TextView
+        android:id="@+id/textVoteTitle"
+        style="@style/heading3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="우리반 봉사왕"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textVoteDate"
+        android:layout_marginTop="5dp"
+        style="@style/body2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2025.01.02 ~ 2025.02.04"
+        android:textColor="@color/black300"
+        app:layout_constraintStart_toStartOf="@+id/textVoteTitle"
+        app:layout_constraintTop_toBottomOf="@+id/textVoteTitle" />
+
+
+<!--    <EditText-->
+<!--        android:layout_marginTop="@dimen/spacing_20"-->
+<!--        android:layout_marginHorizontal="@dimen/spacing_40"-->
+<!--        android:id="@+id/selectStudent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/textVoteDate"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/textVoteDate"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="드롭 다운으로 변경 필요"/>-->
+    <Spinner
+        android:layout_marginTop="@dimen/spacing_20"
+        android:id="@+id/spinnerSelectStudent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner_background"
+        app:layout_constraintTop_toBottomOf="@+id/textVoteDate"
+        app:layout_constraintStart_toStartOf="@+id/textVoteDate"
+        android:spinnerMode="dropdown"
+        android:popupBackground="@color/white"
+        android:dropDownHeight="wrap_content"
+        android:overlapAnchor="false"/> <!-- ✅ 드롭다운 위치 조정 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_30"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStudent">
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDialogCancel"
+            style="@style/heading3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_10"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@color/lightGray"
+            android:text="뒤로"
+            android:textColor="@color/deepBlack" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDialogConfirm"
+            style="@style/heading3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rounded_full"
+            android:text="확인"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundGray"
+    android:orientation="horizontal"
+    android:padding="40dp"
+    tools:context=".ui.home.HomeTeacherFragment">
+
+    <!-- 배너 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintBannerArea"
+        android:layout_width="696dp"
+        android:layout_height="126dp"
+        android:background="@drawable/img_banner"
+        app:layout_constraintBottom_toTopOf="@+id/btnNationalRevenue"
+        app:layout_constraintEnd_toStartOf="@+id/view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- 텍스트 추가 -->
+        <TextView
+            android:id="@+id/textCountry"
+            style="@style/heading2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:text="대한민국"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textInfo"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:text="여러분이 직접 경제를 운영하는 주인공이에요"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="@+id/textCountry"
+            app:layout_constraintTop_toBottomOf="@+id/textCountry" />
+
+
+        <!-- ImageView를 감쌀 FrameLayout 추가 -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_20"
+            android:clipChildren="true"
+            android:clipToPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- 이미지 추가 (크게 설정해서 배너 바깥으로 넘기기) -->
+            <ImageView
+                android:id="@+id/bannerImage"
+                android:layout_width="126dp"
+                android:layout_height="126dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/fox_coins"
+                android:translationX="20dp"
+                android:translationY="20dp" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 국고 수입 btn -->
+    <LinearLayout
+        android:id="@+id/btnNationalRevenue"
+        android:layout_width="220dp"
+        android:layout_height="75dp"
+        android:layout_marginVertical="@dimen/spacing_20"
+        android:background="@drawable/bg_rounded_15"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_10"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayoutReportArea"
+        app:layout_constraintStart_toStartOf="@+id/constraintBannerArea"
+        app:layout_constraintTop_toBottomOf="@+id/constraintBannerArea">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center|start"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/heading4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="국고 수입" />
+
+            <TextView
+                style="@style/caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="국세청" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/textNationalRevenue"
+            style="@style/heading3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textColor="@color/mainOrange" />
+
+
+    </LinearLayout>
+
+    <!-- 1인 평균 잔고 view -->
+    <LinearLayout
+        android:id="@+id/btnAvgBalance"
+        android:layout_width="220dp"
+        android:layout_height="75dp"
+        android:background="@drawable/bg_rounded_15"
+        android:gravity="center"
+        android:padding="@dimen/spacing_10"
+        android:stateListAnimator="@null"
+        app:layout_constraintEnd_toStartOf="@+id/btnActiveProducts"
+        app:layout_constraintStart_toEndOf="@+id/btnNationalRevenue"
+        app:layout_constraintTop_toTopOf="@+id/btnNationalRevenue">
+
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1인 평균 잔고" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/textAvgBalance"
+            style="@style/heading3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textColor="@color/mainOrange" />
+
+    </LinearLayout>
+
+    <!-- 판매중 상품 view -->
+    <LinearLayout
+        android:id="@+id/btnActiveProducts"
+        android:layout_width="220dp"
+        android:layout_height="75dp"
+        android:background="@drawable/bg_rounded_15"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_10"
+        android:stateListAnimator="@null"
+        app:layout_constraintEnd_toEndOf="@+id/constraintBannerArea"
+        app:layout_constraintTop_toTopOf="@+id/btnNationalRevenue">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center|start"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/heading4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="판매중 상품" />
+
+            <TextView
+                style="@style/caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="상점" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/textActiveProducts"
+            style="@style/heading3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textColor="@color/mainOrange" />
+
+    </LinearLayout>
+
+    <!-- row 3 button -->
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:id="@+id/linearMiddleArea"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        android:paddingVertical="@dimen/spacing_20"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/constraintTableArea"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/constraintBannerArea"-->
+    <!--        app:layout_constraintStart_toStartOf="@+id/constraintBannerArea"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/constraintBannerArea">-->
+
+
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutReportArea"
+        android:layout_width="0dp"
+        android:layout_height="133dp"
+        android:layout_marginBottom="@dimen/spacing_20"
+        android:background="@drawable/bg_rounded_15"
+        android:padding="@dimen/spacing_20"
+        app:layout_constraintBottom_toTopOf="@+id/constraintTableArea"
+        app:layout_constraintEnd_toEndOf="@+id/btnAvgBalance"
+        app:layout_constraintStart_toStartOf="@+id/constraintBannerArea"
+        app:layout_constraintTop_toBottomOf="@+id/btnNationalRevenue">
+
+        <TextView
+            android:id="@+id/textAiTitle"
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AI 추천 활동"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textAiReport"
+            style="@style/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="학생들의 저축률이 낮다.\n저축 보너스나 인센티브를 제공해볼까요"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textAiTitle" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:background="@drawable/btn_rounded_border"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/spacing_10"
+            app:layout_constraintBottom_toBottomOf="@+id/imgAiFox"
+            app:layout_constraintEnd_toStartOf="@+id/imgAiFox"
+            app:layout_constraintTop_toBottomOf="@+id/textAiReport">
+
+            <TextView
+                style="@style/heading5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="주간보고서 확인"
+                android:textColor="@color/mainGreen" />
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:background="@drawable/ic_chevron_right"
+                android:backgroundTint="@color/mainGreen" />
+
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/imgAiFox"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:src="@drawable/fox_coins"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:background="@drawable/bg_rounded_15"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_10"
+        app:layout_constraintBottom_toTopOf="@+id/btnSalary"
+        app:layout_constraintEnd_toEndOf="@+id/constraintBannerArea"
+        app:layout_constraintStart_toStartOf="@+id/btnActiveProducts"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayoutReportArea">
+
+        <TextView
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="우리반 목표 저축액"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textSavingGoal"
+            style="@style/heading3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:text="-"
+            android:textColor="@color/mainOrange"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSalary"
+        android:layout_width="0dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:background="@drawable/btn_rounded_full"
+        android:backgroundTint="@color/mainGreen"
+        android:text="월급 &amp;  인센티브 지급하기 >"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayoutReportArea"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+
+    <!--  학생 관리표  -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintTableArea"
+        android:layout_width="0dp"
+        android:layout_height="327dp"
+        android:background="@drawable/bg_rounded_15"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/constraintBannerArea"
+        app:layout_constraintStart_toStartOf="@+id/constraintBannerArea"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutReportArea">
+
+
+        <TextView
+            android:id="@+id/textStudentManage"
+            style="@style/heading3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_20"
+            android:text="학생 목록"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--        <ImageButton-->
+        <!--            android:id="@+id/btnStudentMore"-->
+        <!--            android:layout_width="15dp"-->
+        <!--            android:layout_height="15dp"-->
+        <!--            android:layout_marginStart="@dimen/spacing_10"-->
+        <!--            android:background="@android:color/transparent"-->
+        <!--            android:src="@drawable/ic_chevron_right"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/textStudentManage"-->
+        <!--            app:layout_constraintStart_toEndOf="@+id/textStudentManage"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/textStudentManage" />-->
+
+        <TextView
+            android:id="@+id/textNullStudent"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="등록된 학생 정보가 없습니다."
+            android:textColor="@color/lightGray"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textStudentManage" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerStudent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/spacing_30"
+            android:layout_marginVertical="@dimen/spacing_20"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textStudentManage" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!-- 세로 중심 선 -->
+    <View
+        android:id="@+id/view"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/constraintAlarmArea"
+        app:layout_constraintStart_toEndOf="@+id/constraintBannerArea"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 알람 영역 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintAlarmArea"
+        android:layout_width="340dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_rounded_15"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayoutReportArea"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@+id/constraintBannerArea"
+        tools:ignore="NotSibling">
+
+        <TextView
+            android:id="@+id/textAlarm"
+            style="@style/heading3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_20"
+            android:text="알림판"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/spacing_10"
+            app:layout_constraintBottom_toBottomOf="@+id/textAlarm"
+            app:layout_constraintStart_toEndOf="@+id/textAlarm"
+            app:layout_constraintTop_toTopOf="@+id/textAlarm">  <!-- 터치 영역 확장 -->
+
+            <ImageButton
+                android:id="@+id/btnAlarmMore"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_chevron_right"
+                app:layout_constraintBottom_toBottomOf="@+id/textAlarm"
+                app:layout_constraintStart_toEndOf="@+id/textAlarm"
+                app:layout_constraintTop_toTopOf="@+id/textAlarm" />
+        </FrameLayout>
+
+
+        <TextView
+            android:id="@+id/textNullAlarm"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="등록된 알림 정보가 없습니다"
+            android:textColor="@color/lightGray"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textAlarm"
+            tools:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/spacing_20"
+            android:layout_marginVertical="@dimen/spacing_10"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textAlarm"
+            tools:visibility="visible" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!-- 수입/지출 차트 영역 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintChartArea"
+        android:layout_width="340dp"
+        android:layout_height="340dp"
+        android:background="@drawable/bg_rounded_15"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintTableArea"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@+id/constraintTableArea">
+
+
+        <TextView
+            android:id="@+id/textStudentChart"
+            style="@style/heading3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_20"
+            android:text="학생 평균 수입/지출 현황"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textChartNull"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="표시할 데이터가 없습니다"
+            android:textColor="@color/lightGray"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textStudentChart" />
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:layout_marginBottom="5dp"
+            android:id="@+id/barChart"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/spacing_20"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textStudentChart" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--    <androidx.appcompat.widget.AppCompatButton-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="410dp"/>-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

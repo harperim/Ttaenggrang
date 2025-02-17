@@ -1,4 +1,8 @@
 spring:
+  jackson:
+    time-zone: Asia/Seoul
+  profiles:
+    active: prod
   application:
     name: ttaenggrang
   datasource:
@@ -7,25 +11,52 @@ spring:
     password: ssafy
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
+        show_sql: true
+        format_sql: false
         dialect: org.hibernate.dialect.MySQL8Dialect
+        jdbc:
+          time_zone: Asia/Seoul
     show-sql:
         true
   sql:
-    init:
-      mode: always  # 서버 실행 시 init.sql 실행
+    init: 실행 시 init.sql 실행
   springdoc: # Swagger
     swagger-ui:
-      path: /api-test  # swagger-ui 접근 경로에 대한 별칭, 해당 주소로 접속해도 http://localhost:8080/swagger-ui/index.html로 리다이렉션 됨.
       groups-order: DESC # path, query, body, response 순으로 출력
       tags-sorter: alpha # 태그를 알파벳 순으로 정렬
-      operations-sorter: method  # delete - get - patch - post - put 순으로 정렬, alpha를 사용하면 알파벳 순으로 정렬 가능
+      operations-sorter: meth
+      mode: always  # 서버od  # method: delete - get - patch - post - put 순으로 정렬, alpha: 알파벳 순으로 정렬 가능
     paths-to-match:
       - /api/** # swagger-ui에 표시할 api의 엔드포인트 패턴
+    api-docs:
+      path: /api/v3/api-docs  # ✅ OpenAPI 문서 경로를 /api로 설정
+  servlet:
+    multipart:
+      enabled: true           # 파일 업로드 기능 활성화
+      max-file-size: 10MB     # 업로드 가능한 개별 파일의 최대 크기를 10MB로 설정
+      max-request-size: 10MB  # 전체 요청(Request)의 최대 크기를 10MB로 설정
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  data:
+    redis:
+      timeout: 6000
+
+jwt:
+  secret: "dF8hX29jVnMbQ3pA6xYzK8eU4pTfH2vN"  # ✅ 반드시 안전한 키로 설정
+
 server:
   servlet:
     context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+api:
+  openai_key: ${OPENAI_API_KEY}  # 환경변수 없으면 기본값 사용

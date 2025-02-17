@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+  <!-- 모서리 반경 10dp 설정 -->
+  <corners android:radius="10dp"/>
+
+  <!-- 기본 배경색 (주황색50) -->
+  <solid android:color="@color/foundation_orange_50"/> <!-- 주황색(Orange) -->
+
+  <!-- 패딩 (선택 사항) -->
+  <padding android:left="10dp" android:right="10dp" android:top="3dp" android:bottom="3dp"/>
+</shape>

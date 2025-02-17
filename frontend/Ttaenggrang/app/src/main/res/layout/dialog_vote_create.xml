@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="480dp"
+    android:layout_height="500dp"
+    android:background="@drawable/btn_rounded_full"
+    android:backgroundTint="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_20">
+
+    <TextView
+        android:id="@+id/textVoteTitle"
+        style="@style/heading3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="투표 생성"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textVoteTitle">
+
+        <!-- 투표 제목 -->
+        <TextView
+            style="@style/heading5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="투표 제목"
+            android:textColor="@color/deepBlack" />
+
+<!--        <EditText-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/spacing_10"-->
+<!--            android:hint="투표 제목을 입력하세요" />-->
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_rounded_20"
+            android:textColorHint="@color/lightGray"
+            app:boxStrokeColor="@color/lightGray"
+            app:hintTextColor="@color/lightGray"
+            app:boxStrokeWidth="1dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editAddName"
+                style="@style/body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="투표 제목을 입력하세요"
+                android:textColorHint="@color/lightGray"
+                android:paddingStart="14dp"
+                android:textColor="@color/lightGray" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- 투표 기간 -->
+        <TextView
+            style="@style/heading5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:layout_marginBottom="@dimen/spacing_10"
+            android:text="투표 기간"
+            android:textColor="@color/deepBlack" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <!-- 시작 날짜 선택 -->
+            <EditText
+                android:id="@+id/etStartDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="시작 날짜"
+                android:drawableStart="@drawable/ic_calendar"
+                android:drawablePadding="8dp"
+                android:focusable="false"
+                android:clickable="true" />
+
+            <TextView
+                style="@style/body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_10"
+                android:text="~" />
+
+            <!-- 종료 날짜 선택 -->
+            <EditText
+                android:id="@+id/etEndDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="종료 날짜"
+                android:drawableStart="@drawable/ic_calendar"
+                android:drawablePadding="8dp"
+                android:focusable="false"
+                android:clickable="true" />
+
+
+        </LinearLayout>
+
+        <!-- 투표 제ㅔ목 -->
+        <TextView
+            style="@style/heading5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:text="투표 방법"
+            android:textColor="@color/deepBlack" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/radioStudentMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/radio_button_selector"
+                    android:text="학생 전체 투표"
+                    android:checked="true"
+                    android:textColor="@color/radio_button_selector" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/radioSelectMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_20"
+                    android:buttonTint="@color/radio_button_selector"
+                    android:text="선택형"
+                    android:enabled="false"
+                    android:textColor="@color/radio_button_selector" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/textRadioStudentMode"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="@dimen/spacing_10"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="* 반 학급 인원 모두 투표 가능한 항목으로 제공됩니다"
+                android:textColor="@color/mainOrange" />
+
+            <TextView
+                style="@style/caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이달의 봉사왕, 우수 참여자 등 선별시 사용" />
+        </LinearLayout>
+
+        <LinearLayout
+            tools:visibility="visible"
+            android:id="@+id/textRadioSelectMode"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="@dimen/spacing_10"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="* 직접 투표 항목을 추가 합니다"
+                android:textColor="@color/mainOrange" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- 하단 버튼 영역 -->
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btDialogCancel"
+            style="@style/heading3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_10"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@color/lightGray"
+            android:text="취소"
+            android:textColor="@color/deepBlack" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDialogConfirm"
+            style="@style/heading3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rounded_full"
+            android:text="확인"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

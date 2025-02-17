@@ -2,4 +2,67 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Material -->
+    <color name="black200">#8A8A8A</color>
+    <color name="black300">#545454</color>
+
+    <!-- Custom Color -->
+    <color name="mainOrange">#FF993A</color>
+    <color name="lightOrange">#ffdfc2</color>
+    <color name="mainGreen">#5CB85C</color>
+
+    <color name="backgroundGray">#f9f9f9</color>
+    <color name="deepBlack">#444444</color>
+    <color name="lightGray">#ADACAC</color>
+
+    <color name="transparent">#00000000</color>  <!-- 완전 투명 -->
+
+
+    <!-- Chart Color -->
+    <color name="chartGray">#F2F3F6</color>
+    <color name="chartYellow">#FFD144</color>
+    <color name="chartPink">#F765A3</color>
+    <color name="chartPurple">#A155B9</color>
+    <color name="chartBlue">#7987FF</color>
+    <color name="chartGreen">#6FD195</color>
+    <color name="chartOrange">#FFAE4C</color>
+
+
+    <color name="red">#0047AB</color>
+    <color name="blue">#D6001C</color>
+
+    <!--Orange-->
+    <color name="foundation_orange_50">#fff5eb</color>
+    <color name="foundation_orange_100">#ffdfc2</color>
+    <color name="foundation_orange_200">#ffd0a4</color>
+    <color name="foundation_orange_300">#ffbb7b</color>
+    <color name="foundation_orange_400">#ffad61</color>
+    <color name="foundation_orange_500">#ff993a</color>
+    <color name="foundation_orange_600">#e88b35</color>
+    <color name="foundation_orange_700">#b56d29</color>
+    <color name="foundation_orange_800">#8c5420</color>
+    <color name="foundation_orange_900">#6b4018</color>
+    <!--Green-->
+    <color name="foundation_green_50">#eff8ef</color>
+    <color name="foundation_green_100">#cce9cc</color>
+    <color name="foundation_green_200">#b4deb4</color>
+    <color name="foundation_green_300">#92cf92</color>
+    <color name="foundation_green_400">#7dc67d</color>
+    <color name="foundation_green_500">#5cb85c</color>
+    <color name="foundation_green_600">#54a754</color>
+    <color name="foundation_green_700">#418341</color>
+    <color name="foundation_green_800">#336533</color>
+    <color name="foundation_green_900">#274d27</color>
+    <!--Black-->
+    <color name="foundation_black_50">#e6e6e6</color>
+    <color name="foundation_black_100">#b0b0b0</color>
+    <color name="foundation_black_200">#8a8a8a</color>
+    <color name="foundation_black_300">#545454</color>
+    <color name="foundation_black_400">#333333</color>
+    <color name="foundation_black_500">#000000</color>
+
+    <!--주식 상승 하락-->
+    <color name="positive_green">#1B781B</color>
+    <color name="negative_red">#93221F</color>
 </resources>

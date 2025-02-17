@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="745dp"
+    android:layout_height="515dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/llGoalAssetText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="60dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="목표 자산 설정"
+            style="@style/heading2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="원하는 목표 자산을 설정하고, 다양한 금융 활동으로 목표를 달성해 보세요."
+            style="@style/body1"
+            android:textColor="@color/lightGray"
+            android:layout_marginTop="28dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="목표액"
+            style="@style/heading4"
+            android:layout_marginTop="@dimen/spacing_30"/>
+
+        <EditText
+            android:id="@+id/editAssetGoal"
+            android:layout_width="625dp"
+            android:layout_height="60dp"
+            android:background="#F2F4F8"
+            android:layout_marginTop="@dimen/spacing_10"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintStart_toStartOf="@id/editAssetGoal"
+            app:layout_constraintEnd_toEndOf="@id/editAssetGoal"
+            app:layout_constraintTop_toBottomOf="@+id/editAssetGoal"
+            android:background="@color/lightGray"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="24dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="342dp"
+            android:layout_height="50dp"
+            android:src="@drawable/bg_rounded_15"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:backgroundTint="@color/white"
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="2dp"
+            android:text="뒤로"
+            android:textColor="@color/black"
+            style="@style/heading3"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="342dp"
+            android:layout_height="50dp"
+            android:src="@drawable/bg_rounded_15"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:backgroundTint="@color/mainOrange"
+            app:cornerRadius="8dp"
+            android:text="확인"
+            android:textColor="@color/white"
+            style="@style/heading3"
+            android:layout_marginStart="12dp"/>
+
+        </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

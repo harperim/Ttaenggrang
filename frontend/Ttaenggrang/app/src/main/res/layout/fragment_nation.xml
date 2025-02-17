@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundGray"
+    tools:context=".ui.nation.NationFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/textNationName"
+            style="@style/heading1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            app:layout_constraintBottom_toTopOf="@+id/constraintClassPhoto"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintClassPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="318dp"
+            android:layout_marginTop="112dp"
+            android:background="@color/lightGray"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imgClassPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/textClassPhotoNull"
+                style="@style/body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="등록된 사진이 없습니다\n학급 사진을 추가해 보세요"
+                android:textColor="@color/deepBlack"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/constraintClassPhoto">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_marginEnd="40dp"
+                app:layout_constraintEnd_toStartOf="@+id/clNationInfo"
+                app:layout_constraintTop_toTopOf="@+id/clNationInfo">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clVoteIc"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/bg_rounded_15"
+                    android:backgroundTint="@color/lightOrange"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_vote_border"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/textVoteTitle"
+                    style="@style/heading3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/spacing_10"
+                    android:text="국민 참여 투표"
+                    app:layout_constraintBottom_toBottomOf="@id/clVoteIc"
+                    app:layout_constraintStart_toEndOf="@+id/clVoteIc"
+                    app:layout_constraintTop_toTopOf="@+id/clVoteIc" />
+
+                <!--                <ImageButton-->
+                <!--                    android:id="@+id/btnClassVote"-->
+                <!--                    android:layout_width="20dp"-->
+                <!--                    android:layout_height="20dp"-->
+                <!--                    android:src="@drawable/ic_setting"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="@+id/clVoteIc"-->
+                <!--                    app:layout_constraintStart_toEndOf="@id/textVoteTitle"-->
+                <!--                    app:layout_constraintTop_toTopOf="@+id/clVoteIc"-->
+                <!--                    app:tint="@color/lightGray" />-->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_20"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/spacing_20"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/clVoteIc">
+
+                    <TextView
+                        android:id="@+id/textVoteDate"
+                        style="@style/body2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textColor="@color/lightGray"
+                        tools:text="2025.01.03 ~ 2025.01.15" />
+
+                    <TextView
+                        android:id="@+id/textVoteTitleInfo"
+                        style="@style/heading2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-" />
+
+                    <TextView
+                        android:id="@+id/textVoteNow"
+                        style="@style/heading3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="80dp"
+                        android:text="투표하러 가기"
+                        android:textColor="@color/mainGreen"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/textVoteStatus"
+                        style="@style/heading3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="80dp"
+                        android:text="투표 생성/관리"
+                        android:textColor="@color/mainGreen"
+                        android:visibility="visible" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clNationInfo"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <View
+                    android:id="@+id/lineNationInfo"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/backgroundGray"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clFinanceIc"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="@dimen/spacing_20"
+                    android:background="@drawable/bg_rounded_15"
+                    android:backgroundTint="@color/lightOrange"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_info_border"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/textInfo"
+                    style="@style/heading3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/spacing_10"
+                    android:text="국가 정보"
+                    app:layout_constraintBottom_toBottomOf="@id/clFinanceIc"
+                    app:layout_constraintStart_toEndOf="@+id/clFinanceIc"
+                    app:layout_constraintTop_toTopOf="@+id/clFinanceIc" />
+
+                <!--                <ImageButton-->
+                <!--                    android:id="@+id/btnNationInfo"-->
+                <!--                    android:layout_width="20dp"-->
+                <!--                    android:layout_height="20dp"-->
+                <!--                    android:src="@drawable/ic_setting"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="@+id/clFinanceIc"-->
+                <!--                    app:layout_constraintStart_toEndOf="@id/textInfo"-->
+                <!--                    app:layout_constraintTop_toTopOf="@+id/clFinanceIc"-->
+                <!--                    app:tint="@color/lightGray" />-->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_20"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/spacing_40"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/clFinanceIc">
+
+                    <TextView
+                        style="@style/body2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="국가 설립일"
+                        android:textColor="@color/lightGray" />
+
+                    <TextView
+                        android:id="@+id/textNationCreated"
+                        style="@style/heading3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-" />
+
+                    <TextView
+                        style="@style/body2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_20"
+                        android:text="화폐 단위"
+                        android:textColor="@color/lightGray" />
+
+                    <TextView
+                        android:id="@+id/textNationCurrency"
+                        style="@style/heading3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-" />
+
+                    <TextView
+                        style="@style/body2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_20"
+                        android:text="학급 인원"
+                        android:textColor="@color/lightGray" />
+
+                    <TextView
+                        android:id="@+id/textNationPopulation"
+                        style="@style/heading3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_marginStart="40dp"
+                app:layout_constraintStart_toEndOf="@+id/clNationInfo"
+                app:layout_constraintTop_toTopOf="@+id/clNationInfo">
+
+                <View
+                    android:id="@+id/lineAsset"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/backgroundGray"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clDollarIc"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="@dimen/spacing_20"
+                    android:background="@drawable/bg_rounded_15"
+                    android:backgroundTint="@color/lightOrange"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_goal_border"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/titleGoal"
+                    style="@style/heading3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/spacing_10"
+                    android:text="목표 자산"
+                    app:layout_constraintBottom_toBottomOf="@id/clDollarIc"
+                    app:layout_constraintStart_toEndOf="@+id/clDollarIc"
+                    app:layout_constraintTop_toTopOf="@+id/clDollarIc" />
+
+                <!--                <ImageButton-->
+                <!--                    android:id="@+id/btnGoalSavings"-->
+                <!--                    android:layout_width="20dp"-->
+                <!--                    android:layout_height="20dp"-->
+                <!--                    android:src="@drawable/ic_setting"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="@+id/clDollarIc"-->
+                <!--                    app:layout_constraintStart_toEndOf="@id/titleGoal"-->
+                <!--                    app:layout_constraintTop_toTopOf="@+id/clDollarIc"-->
+                <!--                    app:tint="@color/lightGray" />-->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_20"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/spacing_40"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/clDollarIc">
+
+                    <TextView
+                        style="@style/body2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="목표 자산 금액"
+                        android:textColor="@color/lightGray" />
+
+                    <TextView
+                        android:id="@+id/textGoal"
+                        style="@style/heading3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-" />
+
+                    <!--                    <TextView-->
+                    <!--                        style="@style/body2"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="@dimen/spacing_30"-->
+                    <!--                        android:layout_marginBottom="5dp"-->
+                    <!--                        android:text="자산 순위"-->
+                    <!--                        android:textColor="@color/lightGray" />-->
+
+                    <!--                    <LinearLayout-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:gravity="center_vertical"-->
+                    <!--                        android:orientation="horizontal">-->
+
+                    <!--                        <ImageView-->
+                    <!--                            android:layout_width="30dp"-->
+                    <!--                            android:layout_height="30dp"-->
+                    <!--                            android:src="@drawable/ic_score1" />-->
+
+                    <!--                        <TextView-->
+                    <!--                            style="@style/body1"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:text="-" />-->
+                    <!--                    </LinearLayout>-->
+
+                    <!--                    <LinearLayout-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:gravity="center_vertical"-->
+                    <!--                        android:orientation="horizontal">-->
+
+                    <!--                        <ImageView-->
+                    <!--                            android:layout_width="30dp"-->
+                    <!--                            android:layout_height="30dp"-->
+                    <!--                            android:src="@drawable/ic_score1" />-->
+
+                    <!--                        <TextView-->
+                    <!--                            style="@style/body1"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:text="-" />-->
+                    <!--                    </LinearLayout>-->
+
+                    <!--                    <LinearLayout-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:gravity="center_vertical"-->
+                    <!--                        android:orientation="horizontal">-->
+
+                    <!--                        <ImageView-->
+                    <!--                            android:layout_width="30dp"-->
+                    <!--                            android:layout_height="30dp"-->
+                    <!--                            android:src="@drawable/ic_score1" />-->
+
+                    <!--                        <TextView-->
+                    <!--                            style="@style/body1"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:text="-" />-->
+                    <!--                    </LinearLayout>-->
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="501dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:padding="24dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="미납금 납부하기"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"/>
+
+            <ImageButton
+                android:id="@+id/btnClose"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/ic_close"/>
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="아이템을 등록하세요"
+            style="@style/body1"
+            android:textColor="@color/lightGray"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="세금명"
+            style="@style/body2"
+            android:layout_marginTop="20dp"/>
+
+        <EditText
+            android:id="@+id/editUnpaidTaxName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="벌금"
+            style="@style/body1"
+            android:background="@drawable/bg_edit_one_line"
+            android:layout_marginTop="6dp"
+            android:paddingHorizontal="14dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="설명"
+            style="@style/body2"
+            android:layout_marginTop="20dp"/>
+
+        <EditText
+            android:id="@+id/editUnpaidTaxDescriptioni"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="지각으로 인한 벌금"
+            style="@style/body1"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:gravity="top"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_edit_multi_line"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="12dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="납부 총액"
+            style="@style/body2"
+            android:layout_marginTop="20dp"/>
+
+        <EditText
+            android:id="@+id/editUnpaidAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="50,000"
+            style="@style/body1"
+            android:background="@drawable/bg_edit_one_line"
+            android:layout_marginTop="6dp"
+            android:paddingHorizontal="14dp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPayUnpiadTax"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_rounded_full"
+            android:textColor="@color/white"
+            android:text="추가"
+            style="@style/heading3"
+            android:layout_marginTop="24dp"/>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

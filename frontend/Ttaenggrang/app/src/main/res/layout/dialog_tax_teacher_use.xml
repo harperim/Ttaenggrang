@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="504dp"
+    android:layout_height="wrap_content"
+    android:padding="24dp"
+    android:background="@color/white">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="국세 사용하기"
+            style="@style/heading3"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"/>
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/ic_close"/>
+    </LinearLayout>
+
+    <TextView
+        style="@style/body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="국가를 위한 세금 사용 내역입니다"
+        android:textColor="@color/lightGray" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="사용 내역"
+        style="@style/body2"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/editUseTaxName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="과자 구매"
+        style="@style/body1"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_edit_one_line"
+        android:paddingHorizontal="14dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="금액"
+        style="@style/body2"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/editUseTaxRate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="100,000"
+        style="@style/body1"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_edit_one_line"
+        android:paddingHorizontal="14dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="설명"
+        style="@style/body2"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/editUseTaxDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="국가를 위한 과자 구매"
+        style="@style/body1"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:gravity="top"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_edit_multi_line"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="12dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnUseNationTax"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_rounded_full"
+        android:textColor="@color/white"
+        android:text="국세 사용하기"
+        style="@style/heading3"
+        android:layout_marginTop="24dp"/>
+</LinearLayout>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navHomeTeacher"
+            android:icon="@drawable/ic_home"
+            android:title="홈"
+            android:background="@drawable/nav_item_selector"/>
+        <item
+            android:id="@+id/navStudentsTeacher"
+            android:icon="@drawable/ic_students"
+            android:title="학생 관리"
+            android:background="@drawable/nav_item_selector"/>
+        <item
+            android:id="@+id/navStudentsJob"
+            android:icon="@drawable/ic_job"
+            android:title="직업 관리"
+            android:background="@drawable/nav_item_selector"/>
+        <item
+            android:id="@+id/navCountryInfo"
+            android:icon="@drawable/ic_country_info"
+            android:title="국가 정보"
+            android:background="@drawable/nav_item_selector"/>
+        <item
+            android:id="@+id/navRevenueTeacher"
+            android:icon="@drawable/ic_revenue"
+            android:title="국세청"
+            android:background="@drawable/nav_item_selector"/>
+        <item
+            android:id="@+id/navBankTeacher"
+            android:icon="@drawable/ic_bank"
+            android:title="은행"
+            android:background="@drawable/nav_item_selector"/>
+        <item
+            android:id="@+id/navStockTeacher"
+            android:icon="@drawable/ic_stock"
+            android:title="주식"
+            android:background="@drawable/nav_item_selector"/>
+        <item
+            android:id="@+id/navStoreTeacher"
+            android:icon="@drawable/ic_store"
+            android:title="상점"
+            android:background="@drawable/nav_item_selector"/>
+    </group>
+</menu>

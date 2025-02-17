@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.revenue.RevenueStudentFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/backgroundGray">
+
+        <!-- 배너 레이아웃-->
+        <LinearLayout
+            android:id="@+id/linearRevenueBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/spacing_40">
+
+            <!-- 배너 1-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="696dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/img_banner">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="19dp"
+                    android:layout_marginStart="27dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="국세청"
+                        style="@style/heading2"
+                        android:textColor="@color/white"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="이곳에서 세금에 대해 알아볼 수 있어요!"
+                        android:textColor="@color/white"
+                        style="@style/body2" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="세금을 납부하고 국세 사용 내역을 알아보세요!"
+                        android:textColor="@color/white"
+                        style="@style/body2"/>
+
+                </LinearLayout>
+                <!-- ImageView를 감쌀 FrameLayout 추가 -->
+                <FrameLayout
+                    android:layout_marginEnd="@dimen/spacing_20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="true"
+                    android:clipToPadding="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <!-- 이미지 추가 (크게 설정해서 배너 바깥으로 넘기기) -->
+                    <ImageView
+                        android:id="@+id/bannerImage"
+                        android:layout_width="126dp"
+                        android:layout_height="126dp"
+                        android:src="@drawable/fox_coins"
+                        android:scaleType="centerCrop"
+                        android:translationX="20dp"
+                        android:translationY="20dp" />
+                </FrameLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!--배너 2-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="288dp"
+                android:layout_height="127dp"
+                android:background="@drawable/img_banner_green"
+                android:layout_marginLeft="@dimen/spacing_20">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnShowNationTax"
+                    android:layout_width="105dp"
+                    android:layout_height="30dp"
+                    app:cornerRadius="6dp"
+                    android:backgroundTint="@color/white"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="21dp"
+                    android:layout_marginEnd="27dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="국세 내역 보기"
+                    android:textColor="@color/mainGreen"
+                    app:layout_constraintStart_toStartOf="@+id/btnShowNationTax"
+                    app:layout_constraintTop_toTopOf="@+id/btnShowNationTax"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnShowNationTax"
+                    style="@style/heading5"
+                    android:layout_marginStart="15dp"/>
+                
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:background="@drawable/ic_chevron_right"
+                    app:layout_constraintEnd_toEndOf="@id/btnShowNationTax"
+                    app:layout_constraintTop_toTopOf="@id/btnShowNationTax"
+                    app:layout_constraintBottom_toBottomOf="@id/btnShowNationTax"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="@color/mainGreen"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="31dp"
+                    android:layout_marginStart="26dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="국세 잔고"
+                        style="@style/heading3"
+                        android:textColor="@color/white"/>
+
+                    <TextView
+                        android:id="@+id/textStudentShowNationTaxAmount"
+                        style="@style/heading2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="100,000,000"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <!--이번달 세금 명세서 레이아웃-->
+        <LinearLayout
+            android:layout_width="1004dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/linearRevenueBanner"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/spacing_40"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:background="@drawable/bg_rounded_15"
+            android:orientation="vertical"
+            android:padding="20dp">
+            <!--헤더-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="이번달 세금 명세서"
+                    style="@style/heading3"/>
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:id="@+id/linearTaxStudentInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+                        <TextView
+                            android:id="@+id/textTaxStudentName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="서미지"
+                            style="@style/heading3"/>
+                        <TextView
+                            android:id="@+id/textTaxStudentJobPayment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="의사(10,000,000)"
+                            style="@style/heading4"
+                            android:textColor="@color/lightGray"
+                            android:layout_marginLeft="10dp"/>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/lightGray"
+                        app:layout_constraintStart_toStartOf="@+id/linearTaxStudentInfo"
+                        app:layout_constraintEnd_toEndOf="@+id/linearTaxStudentInfo"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!--날짜 선택 버튼 영역-->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="121dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="121dp"
+                        android:layout_height="30dp"
+                        app:cornerRadius="4dp"
+                        android:backgroundTint="@color/white"
+                        app:strokeColor="@color/black"
+                        app:strokeWidth="1dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+                    <ImageView
+                        android:id="@+id/img_calender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_calendar"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginLeft="9dp"/>
+                    <!--선택 날짜 보여주는 텍스트-->
+                    <TextView
+                        android:id="@+id/textDateThisMonthTax"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2025/01/01"
+                        app:layout_constraintStart_toEndOf="@+id/img_calender"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        style="@style/body2"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center_vertical"/>
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginEnd="9dp"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+            <!--테이블 헤더-->
+            <LinearLayout
+                android:layout_width="963dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_rounded_15"
+                android:backgroundTint="@color/lightOrange"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:text="납부일"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="141dp"
+                    android:layout_height="wrap_content"
+                    android:text="세금명"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="358dp"
+                    android:layout_height="wrap_content"
+                    android:text="설명"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="세율"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="141dp"
+                    android:layout_height="wrap_content"
+                    android:text="납부액"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="93dp"
+                    android:layout_height="wrap_content"
+                    android:text="미납여부"
+                    style="@style/heading4"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="963dp"
+                android:layout_height="330dp">
+
+                <TextView
+                    tools:visibility="visible"
+                    android:visibility="gone"
+                    android:id="@+id/textNullNationTax"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="국세 사용 내역이 없습니다"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    style="@style/body2"
+                    android:textColor="@color/lightGray" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    tools:visibility="gone"
+                    android:id="@+id/recyclerStudnetThisMonthTax"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightGray"
+                android:layout_marginTop="30dp"
+                android:layout_marginHorizontal="30dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginTop="25dp">
+                
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="210dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="30dp">
+
+                    <ImageView
+                        android:layout_width="21dp"
+                        android:layout_height="21dp"
+                        android:background="@drawable/ic_chevron_right"
+                        android:backgroundTint="@color/white"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:elevation="4dp"
+                        android:layout_marginEnd="30dp"/>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnStduentPayUnpiadTax"
+                        style="@style/heading4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/btn_rounded_full"
+                        android:text="미납 세금 납부하기"
+                        android:backgroundTint="@color/mainGreen"
+                        android:textColor="@color/white"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="총 납부 금액"
+                    style="@style/heading3"/>
+                <TextView
+                    android:id="@+id/textStudentTaxAmount"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    style="@style/heading3"
+                    android:text="100,000"
+                    android:gravity="end"
+                    android:layout_marginEnd="30dp"/>
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

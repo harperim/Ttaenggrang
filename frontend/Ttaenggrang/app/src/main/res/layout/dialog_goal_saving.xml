@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:gravity="center"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/btn_rounded_full"
+    android:backgroundTint="@color/white"
+    android:layout_width="516dp"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_20"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/heading2"
+        android:text="목표 자산설정"/>
+
+    <TextView
+        style="@style/body1"
+        android:textColor="@color/lightGray"
+        android:layout_width="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_40"
+        android:layout_height="wrap_content"
+        android:text="학생들의 저축습관을 기를 수 있도록 목표 자산을 설정해주세요"/>
+
+
+
+    <EditText
+        android:id="@+id/editGoalSaving"
+        android:layout_marginBottom="@dimen/spacing_20"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="1000000"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_rounded_border"
+            android:layout_marginRight="@dimen/spacing_10"
+            android:backgroundTint="@color/lightGray"
+            android:text="뒤로"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnConfirm"
+            android:background="@drawable/btn_rounded_full"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:text="확인"/>
+    </LinearLayout>
+
+
+
+
+
+
+</LinearLayout>

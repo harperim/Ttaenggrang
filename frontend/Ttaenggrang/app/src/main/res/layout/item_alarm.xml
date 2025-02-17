@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="@dimen/spacing_10"
+    android:layout_height="wrap_content">
+
+
+    <ImageView
+        android:id="@+id/icAlarmState"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:src="@drawable/ic_launcher_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textAlarmTitle"
+        app:layout_constraintBottom_toBottomOf="@+id/textAlarmTitle"/>
+
+    <TextView
+        android:layout_marginStart="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/textAlarmContent"
+        android:id="@+id/textAlarmTitle"
+        style="@style/heading4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/icAlarmState"
+        tools:text="Alarm Title" />
+
+    <TextView
+        android:id="@+id/textAlarmDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_20"
+        app:layout_constraintBottom_toBottomOf="@+id/textAlarmTitle"
+        app:layout_constraintStart_toEndOf="@+id/textAlarmTitle"
+        app:layout_constraintTop_toTopOf="@+id/textAlarmTitle"
+        tools:text="2025.09.02. 18:00:00" />
+
+    <TextView
+        android:id="@+id/textAlarmContent"
+        style="@style/caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/textAlarmTitle"
+        app:layout_constraintTop_toBottomOf="@+id/textAlarmTitle"
+        tools:text="Alarm Content" />
+
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="1dp"
+        android:layout_height="8dp"
+        android:layout_marginHorizontal="5dp"
+        android:background="@color/lightGray"
+        app:layout_constraintBottom_toBottomOf="@+id/textAlarmContent"
+        app:layout_constraintEnd_toStartOf="@+id/textAlarmPublish"
+        app:layout_constraintStart_toEndOf="@+id/textAlarmContent"
+        app:layout_constraintTop_toTopOf="@+id/textAlarmContent" />
+
+    <TextView
+        android:id="@+id/textAlarmPublish"
+        style="@style/caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textAlarmContent"
+        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@+id/textAlarmContent"
+        tools:text="publish" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
