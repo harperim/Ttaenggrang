@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Map;
+
 @Tag(name = "[교사] 주급", description = "주급 관련 API")
 public interface SalaryApiSpecification {
 
@@ -30,7 +32,7 @@ public interface SalaryApiSpecification {
             - `500 Internal Server Error` : 서버 내부 오류 발생
             - `200 OK` : "주급이 성공적으로 지급되었습니다."
             """)
-    ResponseEntity<ApiResponse<String>> distributeBaseSalary();
+    ResponseEntity<ApiResponse<Map<String, Object>>> distributeBaseSalary();
 
     @Operation(summary = "(교사) 학생 인센티브 지급", description = """
             💡 교사가 우리 반 학생들에게 인센티브를 지급하는 기능입니다.
