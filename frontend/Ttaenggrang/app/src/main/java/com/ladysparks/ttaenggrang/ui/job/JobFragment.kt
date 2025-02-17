@@ -49,10 +49,10 @@ class JobFragment : BaseFragment<FragmentJobBinding>(FragmentJobBinding::bind, R
 
         jobAdapter = if (isRowClickable){
             BaseTableAdapter(jobTableHeader, emptyList()){ rowIndex, rowData ->
-                showToast("${rowIndex} Click Event !")
+//                showToast("${rowIndex} Click Event !")
             }
         } else{
-            BaseTableAdapter(jobTableHeader, emptyList(), null)
+            BaseTableAdapter(jobTableHeader, emptyList())
         }
         binding.recyclerJob.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerJob.adapter = jobAdapter
@@ -116,6 +116,7 @@ class JobFragment : BaseFragment<FragmentJobBinding>(FragmentJobBinding::bind, R
             .setView(dialogBinding.root)
             .create()
 
+        dialogBinding.btnClose.setOnClickListener { registerDialog.dismiss() }
         dialogBinding.btnCancel.setOnClickListener { registerDialog.dismiss() }
         dialogBinding.btnRegister.setOnClickListener {
 

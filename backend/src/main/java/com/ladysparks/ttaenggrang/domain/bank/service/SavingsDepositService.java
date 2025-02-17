@@ -33,17 +33,51 @@ public class SavingsDepositService {
                 .collect(Collectors.toList());
     }
 
-    // 적금 납입 내역 추가
+    /**
+     * 적금 납입 (자동 납입)
+     * 해당 날짜에 자동으로 호출
+     */
     @Transactional
-    public SavingsDepositDTO addSavingsDeposit(SavingsDepositDTO savingsDepositDTO) {
-        // 적금 납입 내역 저장
-        SavingsDeposit savingsDeposit = savingsDepositMapper.toEntity(savingsDepositDTO);
-        SavingsDeposit savedDeposit = savingsDepositRepository.save(savingsDeposit);
+    public SavingsDepositDTO updateSavingsDeposit(SavingsSubscription savingsSubscription, LocalDate depositDate, Long bankAccountId) {
+        // 적금 가입 ID로 적금 가입 정보 불러오기
+//        SavingsSubscription savingsSubscription = savingsSubscriptionService.findSavingsSubscriptionById(savingsSubscriptionId); // TODO: DTO로 수정
+        Long savingsSubscriptionId = savingsSubscription.getId();
 
-        return savingsDepositMapper.toDto(savedDeposit);
+        // 적금 납입 내역 불러와서 depositDate에 해당하는 적금 납입 내역(List<SavingsDepositDTO>) 가져오기
+        SavingsDepositDTO savingsDepositDTO = findSavingsDeposits(savingsSubscriptionId).stream()
+                .filter(dto -> dto.getScheduledDate() == depositDate)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜에 납입해야 하는 내역이 없습니다"));
+
+        // 그 날짜의 납입해야 하는 금액 가져옴
+        int amount = savingsDepositDTO.getAmount();
+
+        // 적금 납입 처리
+        BankAccountDTO bankAccountDTO = bankAccountService.findBankAccount(bankAccountId);
+        if (bankAccountDTO.getBalance() < amount) {
+            throw new IllegalArgumentException("현재 은행 계좌 잔액이 부족합니다. (현재 잔액: " + bankAccountDTO.getBalance() + ")");
+        }
+
+        BankTransactionDTO bankTransactionDTO = BankTransactionDTO.builder()
+                .bankAccountId(bankAccountDTO.getId())
+                .type(BankTransactionType.SAVINGS_DEPOSIT)
+                .amount(amount)
+                .description("[적금 납입] 적금 상품: " + savingsSubscription.getSavingsProduct().getName())
+                .build();
+        bankTransactionService.addBankTransaction(bankTransactionDTO);
+
+        SavingsDeposit savingsDeposit = savingsDepositMapper.toEntity(savingsDepositDTO);
+        savingsDeposit.updateAmount(amount);
+        savingsDeposit.updateStatus(SavingsDepositStatus.COMPLETED);
+
+        SavingsDeposit savedSavingsDeposit = savingsDepositRepository.save(savingsDeposit);
+
+        // TODO: SavingsSubscription의 balance 업데이트
+
+        return savingsDepositMapper.toDto(savedSavingsDeposit);
     }
 
-    // 적금 납입 내역 추가 (수동 납입)
+    // 적금 납입 (수동 납입)
     @Transactional
     public SavingsDepositDTO retrySavingsDeposit(Long savingsDepositId, Long bankAccountId) {
         SavingsDeposit savingsDeposit = savingsDepositRepository.findById(savingsDepositId)
@@ -62,7 +96,7 @@ public class SavingsDepositService {
                 .bankAccountId(bankAccountDTO.getId())
                 .type(BankTransactionType.SAVINGS_DEPOSIT)
                 .amount(amount)
-                .description("[적금 납입] 적금 상품명: " + savingsDeposit.getSavingsSubscription().getSavingsProduct().getName())
+                .description("[적금 납입] 적금 상품: " + savingsDeposit.getSavingsSubscription().getSavingsProduct().getName())
                 .build();
         bankTransactionService.addBankTransaction(bankTransactionDTO);
 
@@ -82,7 +116,7 @@ public class SavingsDepositService {
                     .savingsSubscription(savingsSubscription)
                     .amount(0)
                     .scheduledDate(scheduledDate)
-                    .status(SavingsDepositStatus.PENDING) // 처음에는 납입되지 않은 상태
+                    .status(SavingsDepositStatus.PENDING)  // 최초는 대기 상태(납입되지 않은 상태)
                     .build();
             depositList.add(savingsDeposit);
         }
@@ -105,12 +139,27 @@ public class SavingsDepositService {
                 .sum();
     }
 
-    public List<SavingsDepositHistoryDTO> getSavingsDepositHistory(Long savingsSubscriptionId) {
+    public SavingsSubscriptionDetailDTO getSavingsDepositHistory(SavingsSubscription savingsSubscription) {
+        Long savingsSubscriptionId = savingsSubscription.getId();
+
         List<SavingsDeposit> deposits = savingsDepositRepository.findBySavingsSubscriptionId(savingsSubscriptionId);
-        return deposits.stream()
+        List<SavingsDepositHistoryDTO> savingsDepositHistoryDTOList = deposits.stream()
                 .filter(deposit -> deposit.getStatus() != SavingsDepositStatus.PENDING)
                 .map(savingsDepositMapper::toHistoryDto)
                 .collect(Collectors.toList());
+
+        String savingsName = savingsSubscription.getSavingsProduct().getName();
+        LocalDate startDate = savingsSubscription.getStartDate();
+        LocalDate endDate = savingsSubscription.getEndDate();
+        int payoutAmount =savingsSubscription.getSavingsProduct().getPayoutAmount();
+
+        return SavingsSubscriptionDetailDTO.builder()
+                .savingsName(savingsName)
+                .startDate(startDate)
+                .endDate(endDate)
+                .depositHistory(savingsDepositHistoryDTOList)
+                .payoutAmount(payoutAmount)
+                .build();
     }
 
 }

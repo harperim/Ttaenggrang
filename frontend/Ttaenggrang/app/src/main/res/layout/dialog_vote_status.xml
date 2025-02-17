@@ -276,6 +276,7 @@
             android:text="투표 참여 인원 " />
 
         <TextView
+
             android:textColor="@color/black300"
             style="@style/caption"
             android:id="@+id/textVoteTotal"

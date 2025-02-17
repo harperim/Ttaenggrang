@@ -3,79 +3,136 @@ package com.ladysparks.ttaenggrang.ui.nation
 import android.Manifest
 import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract.Data
+import android.text.format.DateUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
+import com.ladysparks.ttaenggrang.data.model.dto.VoteDataDto
+import com.ladysparks.ttaenggrang.data.model.dto.VoteMode
+import com.ladysparks.ttaenggrang.data.model.dto.VoteStatus
+import com.ladysparks.ttaenggrang.data.model.response.VoteCreateRequest
+import com.ladysparks.ttaenggrang.data.model.response.VoteOptionResponse
+import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.databinding.DialogNationRegisterBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
 import com.ladysparks.ttaenggrang.databinding.DialogVoteCreateBinding
 import com.ladysparks.ttaenggrang.databinding.DialogVoteParticipationBinding
 import com.ladysparks.ttaenggrang.databinding.DialogVoteStatusBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentNationBinding
+import com.ladysparks.ttaenggrang.ui.component.DatePickerDialogHelper
+import com.ladysparks.ttaenggrang.ui.component.VoteStatusDialog
+import com.ladysparks.ttaenggrang.util.CustomDateUtil
+import com.ladysparks.ttaenggrang.util.DataUtil
+import com.ladysparks.ttaenggrang.util.DataUtil.convertDateTime
+import com.ladysparks.ttaenggrang.util.ImageUtils
+import com.ladysparks.ttaenggrang.util.NumberUtil
 import com.ladysparks.ttaenggrang.util.PermissionUtil
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
+import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
+import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding::bind, R.layout.fragment_nation) {
 
-    private lateinit var permissionChecker: PermissionUtil
-
     private lateinit var nationViewModel: NationViewModel
-
-    // 갤러리에서 이미지 선택 후 처리하는 launcher
-//    private lateinit var uploadButton: Button
-//    private var imageUri: Uri? = null
-//    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-//        uri?.let {
-//            imageUri = it
-//            binding.imgClassPhoto.visibility = View.VISIBLE
-//            binding.textClassPhotoNull.visibility = View.GONE
-//            binding?.imgClassPhoto?.setImageURI(it) // ✅ 선택한 이미지 표시
-//            uploadImageToServer(imageUri!!)
-//        }
-//    }
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        nationViewModel = ViewModelProvider(this).get(NationViewModel::class.java)
+
         initSetting()
-        initData()
+        initObserve()
         initEvent()
+
+        nationViewModel.fetchNationData()
+        nationViewModel.currentVoteInfo()
+        nationViewModel.getStudentList()
+    }
+
+    private fun initObserve() {
+        nationViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+            errorMessage?.let {
+                showErrorDialog(Throwable(it))
+                nationViewModel.clearErrorMessage()
+            }
+        }
+
+        // 기본 정보
+        nationViewModel.nationInfoData.observe(viewLifecycleOwner) { response ->
+            binding.textNationName.text = response.nationName ?: "??"
+            binding.textNationCreated.text = CustomDateUtil.formatToDate(response.establishedDate ?: "")
+            binding.textNationCurrency.text = response.currency
+            binding.textNationPopulation.text = (response.population ?: "0").toString()
+            binding.textGoal.text = NumberUtil.formatWithComma(response.savingsGoalAmount)
+        }
+
+        // 투표 현황
+        nationViewModel.currentVoteInfo.observe(viewLifecycleOwner) { response ->
+            if(response.voteStatus == VoteStatus.IN_PROGRESS) {
+                binding.textVoteDate.text = "${CustomDateUtil.formatToDate(response.startDate)} ~ ${CustomDateUtil.formatToDate(response.endDate)}"
+                binding.textVoteTitleInfo.text = response.title
+            }
+
+            if(!SharedPreferencesUtil.getValue(SharedPreferencesUtil.IS_TEACHER, false)){
+                //  학생일 경우 선생님 전용 버튼 숨김
+                binding.textVoteStatus.visibility = View.GONE
+
+                // 투표 상태에 따라 접근하지 못하도록 설정
+                if(response.voteStatus == VoteStatus.COMPLETED) {
+                    binding.textVoteNow.visibility = View.GONE
+                    binding.textVoteDate.text = "현재 진행중인 투표가 없습니다."
+                    binding.textVoteTitleInfo.visibility = View.GONE
+                }else if(response.voteStatus == VoteStatus.IN_PROGRESS){
+                    binding.textVoteNow.visibility = View.VISIBLE
+                    binding.textVoteTitleInfo.visibility = View.VISIBLE
+                }
+            }else{
+                binding.textVoteNow.visibility = View.GONE
+                binding.textVoteStatus.visibility = View.VISIBLE
+            }
+        }
+
+        // (학생) 투표 참여
+        nationViewModel.submitVoteData.observe(viewLifecycleOwner) { response ->
+            showToast("투표 참여가 완료 되었습니다")
+        }
+
+        // 투표 생성
+        nationViewModel.createVote.observe(viewLifecycleOwner) { response ->
+            nationViewModel.currentVoteInfo()
+            showToast("투표 생성이 완료되었습니다")
+        }
+
+        // 투표 종료
+        nationViewModel.endCurrentVote.observe(viewLifecycleOwner) { response ->
+            showToast(response.data.toString())
+            nationViewModel.currentVoteInfo()
+            binding.textVoteDate.text = "-"
+            binding.textVoteTitle.text = "-"
+
+            showNewVoteRegister()
+        }
     }
 
     private fun initSetting() {
-
-        // 1. 국가 정보에 대한 데이터가 없을 경우, 정보를 추가하라는 팝업이 먼저 보여져야 한다. && 선생님일 때
-        if(false){
-            val dialog = BaseTwoButtonDialog(
-                context = requireContext(),
-                statusImageResId = R.drawable.ic_warning,
-                showCloseButton = false,
-                title = "등록된 국가 정보가 존재하지 않습니다!",
-                message = "화면을 눌러 국가 정보를 추가해보세요",
-                positiveButtonText = "확인",
-                onPositiveClick = {
-                    showNationRegistration()
-                }
-            )
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(false)
-            dialog.show()
-
-
-            return
-        }
 
         // 선생님이 아닐 경우 일부기능을 보이지 않게 설정 합니다.
         if(SharedPreferencesUtil.getValue(SharedPreferencesUtil.IS_TEACHER, false)){
@@ -86,106 +143,83 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
             binding.textVoteNow.visibility = View.VISIBLE
             binding.textVoteStatus.visibility = View.GONE
 //            binding.btnClassVote.visibility = View.GONE
-            binding.btnNationInfo.visibility = View.GONE
-            binding.btnGoalSavings.visibility = View.GONE
-            binding.constraintClassPhoto.apply {
-                isClickable = false
-                isEnabled = false
-            }
+//            binding.btnNationInfo.visibility = View.GONE
+            //binding.btnGoalSavings.visibility = View.GONE
         }
+
+        // 학급 이미지 설정
+        loadImageFromPrefs()
     }
 
-    private fun showNationRegistration() {
-        val dialogBinding = DialogNationRegisterBinding.inflate(layoutInflater)
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogBinding.root)
-            .create()
-
-
-//        dialogBinding.textVoteTitle.text = "우리반 봉사왕"
-//        dialogBinding.textVoteDate.text = "2021.02.03 ~ 2025.03.02"
-//
-//        // Button
-//        dialogBinding.btnDialogCancel.setOnClickListener { dialog.dismiss() }
-//        dialogBinding.btnDialogConfirm.setOnClickListener {
-//            showToast("투표가 완료되었습니다.")
-//            dialog.dismiss()
-//        }
-
-        dialog.setCanceledOnTouchOutside(false)
-        dialog.setCancelable(false)
-        dialog.show()
-    }
-
-    private fun initData() {
-        lifecycleScope.launch {
-            runCatching {
-                // 국가 정보. 목표 자산, 투표현황 등의 내용을가져옴
-                // RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "aa@aa.com", password = "1234"))
-            }.onSuccess {
-                showToast("학급 정보 불러오기 API 추가해야함")
-                // 학급 이미지 처리 로직
-                if(true){
-                    // 학급 사진이 있는 경우
-                }else{
-                    // 학급 사진이 없는 경우
-                    binding.imgClassPhoto.visibility = View.GONE
-                    binding.textClassPhotoNull.visibility= View.VISIBLE
-                }
-
-            }.onFailure { error ->
-                showToast("학급정보 불러오기 실패 ${error}")
-            }
-        }
-    }
 
     private fun initEvent() {
         binding.constraintClassPhoto.setOnClickListener{ loadClassPhoto() }
         binding.textVoteNow.setOnClickListener { showVoteNow() }  // 학생이 '투표하러 가기' 눌렀을 때
         binding.textVoteStatus.setOnClickListener { showVoteTeacher() } // 선생님이 '투표 생성/관리' 눌렀을 때
-        binding.btnNationInfo.setOnClickListener { createNationIfoDialog() } // 국가 정보 설정 눌렀을 대
-        binding.btnGoalSavings.setOnClickListener { createGoalDialog() } // 목표자산 설정 눌렀을 때
+//        binding.btnNationInfo.setOnClickListener { createNationIfoDialog() } // 국가 정보 설정 눌렀을 대
+      //  binding.btnGoalSavings.setOnClickListener { createGoalDialog() } // 목표자산 설정 눌렀을 때
     }
+
     private fun showVoteNow() {
-        lifecycleScope.launch {
-            runCatching {
-                // API 호출
-            }.onSuccess {
-                // 결과
+        // 이미 투표 참여 이력이 있다면 !
+        val nowVoteId = nationViewModel.currentVoteInfo.value?.id ?: 0
+        val lastVoteId = SharedPreferencesUtil.getValue(SharedPreferencesUtil.VOTE_HISTORY_ID, -1)
 
-                // 이미 투표에 참여한 기록이 있는 경우, 재참여 할 수 없다.
-                if(false){
-                    showVoteStatus()
-                }else{
-                    // 투표 참여가능
-                    val dialogBinding = DialogVoteParticipationBinding.inflate(layoutInflater)
-                    val dialog = AlertDialog.Builder(requireContext())
-                        .setView(dialogBinding.root)
-                        .create()
-                    // Spinner
-                    val jddddob = dialogBinding.selectStudent
-                    // job 설정
-                    val studentList = arrayOf("학생 1", "학생 2", "학생 3","학생 2", "학생 3", "학생 4", "학생 5","학생 1", "학생 2", "학생 3", "학생 4", "학생 5","학생 1", "학생 2", "학생 3", "학생 4", "학생 5")
-                    val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, studentList)
-                    jddddob!!.adapter = adapter
-
-                    dialogBinding.textVoteTitle.text = "우리반 봉사왕"
-                    dialogBinding.textVoteDate.text = "2021.02.03 ~ 2025.03.02"
-
-                    // Button
-                    dialogBinding.btnDialogCancel.setOnClickListener { dialog.dismiss() }
-                    dialogBinding.btnDialogConfirm.setOnClickListener {
-                        showToast("투표가 완료되었습니다.")
-                        dialog.dismiss()
-                    }
-
-                    dialog.show()
-                }
-            }.onFailure {
-
-            }
+        // 동일 투표 항목에 참여한 기록이 있는 경우 중복 참여 방지
+        if(nowVoteId == lastVoteId){
+            showToast("투표 참여 이력이 존재합니다.")
+            showVoteStatus()
+            return
         }
 
+        // 투표 참여
+        val dialogBinding = DialogVoteParticipationBinding.inflate(layoutInflater)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogBinding.root)
+            .create()
+
+        // 내용 구성
+        val startDate = CustomDateUtil.formatToDate(nationViewModel.currentVoteInfo.value!!.startDate)
+        val endDate = CustomDateUtil.formatToDate(nationViewModel.currentVoteInfo.value!!.endDate)
+        dialogBinding.textVoteTitle.text = nationViewModel.currentVoteInfo.value!!.title
+        dialogBinding.textVoteDate.text = "${startDate} ~ $endDate"
+
+        // Spinner 설정
+        val spinner = dialogBinding.spinnerSelectStudent
+        val studentList = nationViewModel.studentList.value ?: emptyList()
+
+        // ArrayAdapter에 직접 `VoteOptionResponse` 리스트를 전달
+        val adapter = object : ArrayAdapter<VoteOptionResponse>(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            studentList
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val textView = super.getView(position, convertView, parent) as TextView
+                textView.text = studentList[position].studentName// 학생 이름만 표시
+                return textView
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val textView = super.getDropDownView(position, convertView, parent) as TextView
+                textView.text = studentList[position].studentName // 드롭다운에도 학생 이름만 표시
+                return textView
+            }
+        }
+        spinner!!.adapter = adapter
+
+        // Button
+        dialogBinding.btnDialogCancel.setOnClickListener { dialog.dismiss() }
+        dialogBinding.btnDialogConfirm.setOnClickListener {
+            val position = spinner.selectedItemPosition
+            val selectedStudentID = studentList[position].voteItemId
+
+            nationViewModel.submitVote(selectedStudentID)
+            SharedPreferencesUtil.putValue(SharedPreferencesUtil.VOTE_HISTORY_ID, nowVoteId)
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     // 선생님용 : 투표현황 확인/새 투표 생성
@@ -198,51 +232,21 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
             negativeButtonText = "현재 투표 현황",
             statusImageResId = R.drawable.ic_vote,
             showCloseButton = true,
-            onPositiveClick = { showVoteCreate() },
             onNegativeClick = { showVoteStatus() },
+            onPositiveClick = { showVoteCreate() },
             onCloseClick = {}
         )
         dialog.show()
     }
 
+    // 투표 진행상황 확인
     private fun showVoteStatus() {
-        val dialogBinding = DialogVoteStatusBinding.inflate(layoutInflater)
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogBinding.root)
-            .create()
-
-        // Info
-        dialogBinding.textVoteTitle.text = "우리반 봉사왕"
-        dialogBinding.textVoteDate.text = "1998.02.16 ~ 2025.02.10"
-        dialogBinding.textVoteTotal.text = "31명"
-
-        // 1등
-        dialogBinding.textRankFirstName.text = "서미지"
-        dialogBinding.tvVoteCountFirst.text = "12명"
-        dialogBinding.progressBarFirst.progress = 70
-
-        // 2등
-        dialogBinding.textRankSecondName.text = "김미지"
-        dialogBinding.tvVoteCountSecond.text = "8명"
-        dialogBinding.progressBarSecond.progress = 40
-
-        // 3등
-        dialogBinding.textRankThirdName.text = "박미지"
-        dialogBinding.tvVoteCountThird.text = "1명"
-        dialogBinding.progressBarThird.progress = 20
-
-
-        // Button
-        dialogBinding.btnDialogConfirm.setOnClickListener { dialog.dismiss() }
-
-
-        // 실행
-        dialog.show()
+        val voteInfo = nationViewModel.currentVoteInfo.value ?: return
+        VoteStatusDialog(requireContext(), voteInfo).show()
     }
 
     private fun showVoteCreate() {
-        if(false){
-            // 투표 생성 불가 : 이미 진행 중인 투표가 있음
+        if(nationViewModel.currentVoteInfo.value != null && nationViewModel.currentVoteInfo.value!!.voteStatus == VoteStatus.IN_PROGRESS){
             val dialog = BaseTwoButtonDialog(
                 context = requireContext(),
                 title = "진행중인 투표가 존재합니다!",
@@ -252,70 +256,94 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
                 statusImageResId = R.drawable.ic_warning,
                 showCloseButton = true,
                 onPositiveClick = { showToast("취소") },
-                onNegativeClick = { showToast("종료시키고 새롭게...") },
+                onNegativeClick = { nationViewModel.endCurrentVote() },
                 onCloseClick = {}
             )
             dialog.show()
         }else{
-            val dialogBinding = DialogVoteCreateBinding.inflate(layoutInflater)
-            val dialog = AlertDialog.Builder(requireContext())
-                .setView(dialogBinding.root)
-                .create()
-
-            dialogBinding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
-                when(checkedId){
-                    R.id.radioStudentMode -> {
-                        dialogBinding.textRadioStudentMode.visibility = View.VISIBLE
-                        dialogBinding.textRadioSelectMode.visibility = View.GONE
-                    }
-                    R.id.radioSelectMode -> {
-                        dialogBinding.textRadioStudentMode.visibility = View.GONE
-                        dialogBinding.textRadioSelectMode.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-            // Button
-            dialogBinding.btDialogCancel.setOnClickListener { dialog.dismiss() }
-            dialogBinding.btnDialogConfirm.setOnClickListener {
-                showToast("투표가 생성되었습니다")
-                dialog.dismiss()
-            }
-
-            // Start
-            dialog.show()
-
+            showNewVoteRegister()
         }
 
     }
 
-    private fun cameraPermissionCheck() {
-        showToast("클릭")
+    // 새 투표 생성 다이얼로그
+    private fun showNewVoteRegister() {
+        var selectedStartDate: String? = null
+        var selectedEndDate: String? = null
 
-        permissionChecker = PermissionUtil(this)
-        permissionChecker.setOnGrantedListener {
-            // showToast("✅ 권한이 허용되었습니다.!")
-            loadClassPhoto()
-//            openGallery()
+        val dialogBinding = DialogVoteCreateBinding.inflate(layoutInflater)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogBinding.root)
+            .create()
+
+        // Radio Button
+        dialogBinding.radioStudentMode.buttonTintList =
+            ContextCompat.getColorStateList(requireContext(), R.color.radio_button_selector)
+        dialogBinding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            when(checkedId){
+                R.id.radioStudentMode -> {
+                    dialogBinding.textRadioStudentMode.visibility = View.VISIBLE
+                    dialogBinding.textRadioSelectMode.visibility = View.GONE
+                }
+                R.id.radioSelectMode -> {
+                    dialogBinding.textRadioStudentMode.visibility = View.GONE
+                    dialogBinding.textRadioSelectMode.visibility = View.VISIBLE
+                }
+            }
         }
 
-        val cameraPermission = arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+        // 투표 시작 기간 : 현재보다 이전 날짜를 설정 할 수 없다.
 
-        // 권한이 없는 경우에만 요청
-        if (!permissionChecker.checkPermission(requireContext(), cameraPermission)) {
-            permissionChecker.requestPermissionLauncher.launch(cameraPermission)
+
+        // 투표 종료 기간
+        dialogBinding.etStartDate.setOnClickListener {
+            DatePickerDialogHelper.showDatePickerDialog(requireContext(), isStartTime = true) { selectedDate ->
+                selectedStartDate = selectedDate // 변수에 값 저장
+                dialogBinding.etStartDate.setText(selectedDate) // EditText에 표시
+                Log.d("TAG", "showNewVoteRegister: 값 테스트 ${selectedDate}")
+            }
         }
+
+        dialogBinding.etEndDate.setOnClickListener {
+            DatePickerDialogHelper.showDatePickerDialog(requireContext(), isStartTime = false) { selectedDate ->
+                selectedEndDate = selectedDate // 변수에 값 저장
+                dialogBinding.etEndDate.setText(selectedDate) // EditText에 표시
+                Log.d("TAG", "showNewVoteRegister: 값 테스트 ${selectedEndDate}")
+            }
+        }
+
+        // Button
+        dialogBinding.btDialogCancel.setOnClickListener { dialog.dismiss() }
+        dialogBinding.btnDialogConfirm.setOnClickListener {
+            val startDate = selectedStartDate?.let { convertDateTime(it) as? Date }
+            val endDate = selectedEndDate?.let { convertDateTime(it) as? Date }
+
+            // Date → 서버에 보낼 ISO 8601 형식으로 변환
+            val serverStartDate = startDate?.let { convertDateTime(it, forDisplay = false) } as? String
+            val serverEndDate = endDate?.let { convertDateTime(it, forDisplay = false) } as? String
+
+            val createData = VoteCreateRequest(
+                title = dialogBinding.editAddName.text.toString(),
+                startDate = serverStartDate ?: "", // 변환된 값 사용
+                endDate = serverEndDate ?: "",
+                voteMode = VoteMode.STUDENT
+            )
+
+            nationViewModel.createVote(createData)
+            dialog.dismiss()
+        }
+        // Start
+        dialog.show()
     }
 
     private fun uploadImageToServer(imageUri: Uri) {
         lifecycleScope.launch {
             runCatching {
-                // RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "aa@aa.com", password = "1234"))
+                 //RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "aa@aa.com", password = "1234"))
 
                 // Type? : MultipartBody.Part
             }.onSuccess {
                 showToast("학급 사진 저장 완료")
-
             }.onFailure { error ->
                 showToast("학급사진 저장 실패 ${error}")
             }
@@ -323,7 +351,7 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
     }
 
     private fun loadClassPhoto() {
-//        pickImageLauncher?.launch("image/*")
+        pickImageLauncher?.launch("image/*")
     }
 
     private fun createGoalDialog() {
@@ -358,9 +386,6 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
     }
 
     private fun createNationIfoDialog(){
-        // 수정 : 국가 설립일, 단위, 학급인원 추가 되어야 함
-        // 학급이원이 변경된 경우 수정 요청 api 날려야함. 후순위
-
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_nation_info, null)
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
@@ -392,4 +417,38 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
         dialog.show()
 
     }
+
+
+    /**
+     * 학급 이미지 등록 함수
+     */
+    private var imageUri: Uri? = null
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            imageUri = it
+            binding.imgClassPhoto.visibility = View.VISIBLE
+            binding.textClassPhotoNull.visibility = View.GONE
+            binding.imgClassPhoto.setImageURI(it) // ✅ 선택한 이미지 표시
+
+            saveImageToPrefs(it) // ✅ 유틸을 활용한 저장
+            showToast("이미지 저장 완료!")
+        }
+    }
+
+    private fun saveImageToPrefs(uri: Uri) {
+        val bitmap = ImageUtils.uriToBitmap(requireContext(), uri) // ✅ 유틸 사용
+        val encodedImage = ImageUtils.bitmapToBase64(bitmap) // ✅ Base64 변환
+        SharedPreferencesUtil.putValue("NationPhoto", encodedImage) // ✅ 저장
+    }
+
+    private fun loadImageFromPrefs() {
+        val savedBase64 = SharedPreferencesUtil.getValue("NationPhoto", "")
+        if (!savedBase64.isNullOrEmpty()) {
+            val bitmap = ImageUtils.base64ToBitmap(savedBase64) // ✅ Base64 → Bitmap 변환
+            binding.imgClassPhoto.visibility = View.VISIBLE
+            binding.textClassPhotoNull.visibility = View.GONE
+            binding.imgClassPhoto.setImageBitmap(bitmap) // ✅ 이미지 표시
+        }
+    }
+
 }

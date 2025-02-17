@@ -2,6 +2,10 @@ package com.ladysparks.ttaenggrang.global.docs.teacher;
 
 import com.ladysparks.ttaenggrang.domain.teacher.dto.SingleStudentCreateDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentJobUpdateDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentJobUpdateResponseDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentSavingsSubscriptionDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentStockTransactionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -66,5 +70,51 @@ public interface TeacherStudentApiSpecificaion {
             - **bankAccount** : 학생의 계좌 정보
             """)
     ResponseEntity<ApiResponse<StudentResponseDTO>> getStudentById(@PathVariable Long studentId);
+
+    @Operation(summary = "(교사) 학생 은행 가입 상품 내역 [조회]", description = """
+            💡 교사가 특정 학생의 은행 가입 상품 내역을 조회합니다.
+
+            ---
+
+            **[ 요청 값 ]**
+            - **studentId** : 조회할 학생 ID
+
+            **[ 응답 필드 ]**
+            - **subscriptionDate** : 적금 가입 날짜
+            - **savingsName** : 적금 상품명
+            - **amount** : 월 납입 금액
+            - **interest** : 이자율
+            - **totalAmount** : 현재 총 납입 금액
+
+            ---
+
+            **[ 설명 ]**
+            - 특정 학생(`studentId`)의 적금 가입 내역을 조회합니다.
+            - 적금 가입 후 현재까지의 납입 총액이 포함됩니다.
+            """)
+    ResponseEntity<ApiResponse<List<StudentSavingsSubscriptionDTO>>> studentSavingsSubscriptionList(@PathVariable Long studentId);
+
+    @Operation(summary = "(교사) 학생 보유 주식 현황 [조회]", description = """
+            💡 교사가 특정 학생이 보유한 주식 현황을 조회합니다.
+    
+            ---
+    
+            **[ 요청 값 ]**
+            - **studentId** : 조회할 학생의 ID
+    
+            **[ 응답 필드 ]**
+            - **stockName** : 주식명
+            - **quantity** : 보유 수량
+            - **currentTotalPrice** : 현재가 (총 평가 금액)
+            - **purchasePrice** : 주당 구매 가격
+            - **priceChangeRate** : 주가 변동률 (%)
+    
+            ---
+    
+            **[ 설명 ]**
+            - 교사가 특정 학생의 주식 보유 현황을 조회할 수 있습니다.
+            - 주가 변동률은 `(현재가 - 구매가) / 구매가 * 100` 으로 계산됩니다.
+            """)
+    ResponseEntity<ApiResponse<List<StudentStockTransactionDTO>>> studentStockTransactionList(@PathVariable Long studentId);
 
 }

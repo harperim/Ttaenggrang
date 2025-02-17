@@ -19,10 +19,9 @@ public interface SavingsProductApiSpecification {
 
             **[ 요청 필드 ]**
             - **name** : 적금 상품명
-            - **interestRate** : 이자율
             - **earlyInterestRate** : 중도 해지시 적용되는 이자율
             - **durationWeeks** : 가입 기간 (주 단위)
-            - **amount** : 적금 금액 (주마다 납입하는 금액)
+            - **amount** : 매주 납입 금액
             - **saleStartDate** : 노출 시작일
             - **saleEndDate** : 노출 종료일
             
@@ -41,10 +40,12 @@ public interface SavingsProductApiSpecification {
 
             **[ 응답 필드 ]**
             - **name** : 적금 상품명
+            - **description** : 적금 설명
             - **interestRate** : 이자율
             - **earlyInterestRate** : 중도 해지시 적용되는 이자율
             - **durationWeeks** : 가입 기간 (주 단위)
-            - **amount** : 적금 금액 (주마다 납입하는 금액)
+            - **amount** : 매주 납입 금액
+            - **payoutAmount** : 만기 시 예상 지급액(복리 적용)
             - **saleStartDate** : 노출 시작일
             - **saleEndDate** : 노출 종료일
             - **subscriberCount** : 가입자 수
@@ -58,20 +59,19 @@ public interface SavingsProductApiSpecification {
     ResponseEntity<ApiResponse<List<SavingsProductDTO>>> savingsProductList();
 
     @Operation(summary = "(교사) 적금/예금 상품 판매 현황 [조회]", description = """
-        💡 특정 교사가 판매 중인 예금 및 적금 상품의 개수를 조회합니다.
-        
-        ---
-        
-        **[ 응답 필드 ]**
-        - **depositProductCount** : 예금 상품 개수
-        - **savingsProductCount** : 적금 상품 개수
-        
-        ---
-        
-        **[ 설명 ]**
-        - 현재 로그인한 교사 ID(`teacherId`)를 기준으로 해당 교사가 등록한 상품 개수를 반환합니다.
-        - 전체 예금 상품과 적금 상품의 개수를 반환합니다.
-        """)
+            💡 특정 교사가 판매 중인 예금 및 적금 상품의 개수를 조회합니다.
+            
+            ---
+            
+            **[ 응답 필드 ]**
+            - **depositProductCount** : 예금 상품 개수
+            - **savingsProductCount** : 적금 상품 개수
+            
+            ---
+            
+            **[ 설명 ]**
+            - 현재 로그인한 교사 ID(`teacherId`)를 기준으로 해당 교사가 등록한 상품 개수를 반환합니다.
+            """)
     ResponseEntity<ApiResponse<DepositAndSavingsCountDTO>> depositAndSavingsCounts();
 
 }

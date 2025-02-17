@@ -80,11 +80,17 @@
             android:layout_gravity="center"
             android:orientation="horizontal">
 
+            <!-- 시작 날짜 선택 -->
             <EditText
+                android:id="@+id/etStartDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="시작 날짜" />
+                android:hint="시작 날짜"
+                android:drawableStart="@drawable/ic_calendar"
+                android:drawablePadding="8dp"
+                android:focusable="false"
+                android:clickable="true" />
 
             <TextView
                 style="@style/body2"
@@ -93,11 +99,17 @@
                 android:layout_marginHorizontal="@dimen/spacing_10"
                 android:text="~" />
 
+            <!-- 종료 날짜 선택 -->
             <EditText
+                android:id="@+id/etEndDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="종료 날짜" />
+                android:hint="종료 날짜"
+                android:drawableStart="@drawable/ic_calendar"
+                android:drawablePadding="8dp"
+                android:focusable="false"
+                android:clickable="true" />
 
 
         </LinearLayout>
@@ -127,18 +139,20 @@
                     android:id="@+id/radioStudentMode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@drawable/radio_button_selector"
+                    android:buttonTint="@color/radio_button_selector"
                     android:text="학생 전체 투표"
-                    android:textColor="@drawable/radio_button_selector" />
+                    android:checked="true"
+                    android:textColor="@color/radio_button_selector" />
 
                 <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/radioSelectMode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_20"
-                    android:buttonTint="@drawable/radio_button_selector"
+                    android:buttonTint="@color/radio_button_selector"
                     android:text="선택형"
-                    android:textColor="@drawable/radio_button_selector" />
+                    android:enabled="false"
+                    android:textColor="@color/radio_button_selector" />
             </RadioGroup>
         </LinearLayout>
 

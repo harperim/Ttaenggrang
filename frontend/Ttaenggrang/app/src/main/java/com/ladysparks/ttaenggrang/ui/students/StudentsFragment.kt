@@ -1,19 +1,11 @@
 package com.ladysparks.ttaenggrang.ui.students
 
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -24,14 +16,18 @@ import com.ladysparks.ttaenggrang.base.BaseTableAdapter
 import com.ladysparks.ttaenggrang.data.model.dto.JobDto
 import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
 import com.ladysparks.ttaenggrang.data.model.request.StudentSingleCreateRequest
+import com.ladysparks.ttaenggrang.data.model.response.StockResponse
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
+import com.ladysparks.ttaenggrang.data.model.response.StudentSavingResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
-import com.ladysparks.ttaenggrang.databinding.DialogIncentiveBinding
+import com.ladysparks.ttaenggrang.databinding.DialogProductDetailBinding
+import com.ladysparks.ttaenggrang.databinding.DialogStockDetailBinding
 import com.ladysparks.ttaenggrang.databinding.DialogStudentRegistrationBinding
-import com.ladysparks.ttaenggrang.databinding.DialogVoteParticipationBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStudentsBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.ui.component.IncentiveDialogFragment
+import com.ladysparks.ttaenggrang.ui.component.PieChartComponent2
+import com.ladysparks.ttaenggrang.util.NumberUtil
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
 import kotlinx.coroutines.launch
@@ -42,25 +38,67 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
 ) {
     private lateinit var studentsViewModel: StudentsViewModel
 
-    // 직업 리스트
     private var jobListCache: List<JobDto> = emptyList()
     private var studentListCache: List<StudentMultiCreateResponse> = emptyList()
+    private var savingProductCache: List<StudentSavingResponse> = emptyList()
+
+    // Recycleriew 를 표시하기 위한 Adapter : finance의경우 클릭이벤트가있어서 새로운 Adapter 사용
+    private lateinit var studentAdapter: BaseTableAdapter
+    private lateinit var financeAdapter: FinanceTableAdapter
+    private lateinit var savingAdapter: BaseTableAdapter
+
+    // 현재 홞성화된 탭을 저장하는 변수
+    private var isStudentTab: Boolean = true
+    private var selectStudentSavingSum: Double = 0.0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // viewModel
         studentsViewModel = ViewModelProvider(this).get(StudentsViewModel::class.java)
 
-        // LifeData
+        initAdapter()
         initObserver()
-        fetchStudentList()
-
         initEvent()
 
         // Data 요청
+        studentsViewModel.fetchStudentList()
         studentsViewModel.fetchJobList()
+    } // ....onViewCreated
+
+    private fun initAdapter() {
+        // Tap: 학생정보
+        val studentHeader = listOf("고유번호", "이름", "직업 (월급)", "아이디", "비밀번호")
+        studentAdapter = BaseTableAdapter(studentHeader, emptyList()) { rowIndex, rowData ->
+            showStudentInfoDialog(rowData)
+        }
+        binding.recyclerStudents.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerStudents.adapter = studentAdapter
+
+        // Tap: 재정 상태
+        val financeHeader = listOf("고유번호", "이름", "계좌 잔액", "은행 가입 상품", "보유 주식")
+        financeAdapter = FinanceTableAdapter(financeHeader, emptyList(),
+            onProductClick = { _, rowData ->
+                val userId = rowData[0] // ✅ 사용자 ID 가져오기
+                showProductPopup(userId, rowData)
+            },
+            onStockClick = { _, rowData ->
+                val userId = rowData[0] // ✅ 사용자 ID 가져오기
+                showStockPopup(userId, rowData)
+            }
+        )
+        binding.recyclerFinance.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerFinance.adapter = financeAdapter
+
+
+        // 주식 savingAdapter
     }
+
+    private fun showStudentInfoDialog(rowData: List<String>) {
+        val bottomSheet = StudentDetailDialog.newInstance(rowData, jobListCache)
+        bottomSheet.show(childFragmentManager, "StudentInfoBottomSheet")
+    }
+
+    private var pendingUserId: Int? = null
 
     private fun initObserver() {
         // Error
@@ -71,11 +109,17 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
             }
         }
 
+        // 학생 리스트
+        studentsViewModel.studentList.observe(viewLifecycleOwner) { studentList ->
+            updateRecyclerView(studentList)
+        }
+
         // Other Response
         studentsViewModel.studentList.observe(viewLifecycleOwner) { studentList ->
             studentListCache = studentList!!
         }
 
+        // 직업리스트
         studentsViewModel.jobList.observe(viewLifecycleOwner) { jobList ->
             jobListCache = jobList // ✅ LiveData 변경 시 전역 변수 업데이트
         }
@@ -87,75 +131,85 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
         studentsViewModel.bonusPaymentStatus.observe(viewLifecycleOwner) { response ->
             showToast("인센티브가 지급되었습니다")
         }
-    }
 
-    private fun fetchStudentList() {
-        val studentHeader = listOf("번호", "이름", "직업(월급)", "아이디", "비밀번호")
-
-        // 행 클릭 이벤트 여부 설정 (필요하면 추가, 필요 없으면 null)
-        val isRowClickable = true // 🔥 필요 없으면 false로 설정
-
-        // 어댑터 초기화 (처음에는 빈 리스트)
-        val adapter = if (isRowClickable) {
-            // 클릭 이벤트를 사용하는 경우, 아래 {} 안에 작성 : Intent, Toast, ShowDialog 등....
-            BaseTableAdapter(studentHeader, emptyList()) { rowIndex, rowData ->
-                Log.d("TAG", "Row 클릭됨: $rowIndex, 데이터: $rowData")
-                showToast("${rowIndex} : ${rowData[2]}")
-            }
-        } else {
-            // 행 클릭 비활성화
-            BaseTableAdapter(studentHeader, emptyList(), null)
+        studentsViewModel.savingList.observe(viewLifecycleOwner) { response ->
+            selectStudentSavingSum = response.sumOf { it.totalAmount }
+            savingProductCache = response
+            updateSavingRcyclerView(response)
         }
 
-        binding.recyclerStudents.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerStudents.adapter = adapter
+        studentsViewModel.stockList.observe(viewLifecycleOwner) { response ->
+            selectStudentSavingSum = response.sumOf { it.currentTotalPrice.toDouble() }
 
-        binding.recyclerStudents.visibility = View.VISIBLE
-        binding.textNullStudent.visibility = View.GONE
-        studentsViewModel.studentList.observe(viewLifecycleOwner) { studentList ->
-            if(studentList.isNullOrEmpty()){
-                binding.recyclerStudents.visibility = View.GONE
-                binding.textNullStudent.visibility = View.VISIBLE
-                return@observe
-            }
+        }
+    }
 
-            val studentList = studentList.mapIndexed { index, student ->
+    private fun updateRecyclerView(studentList: List<StudentMultiCreateResponse>?) {
+        if (studentList.isNullOrEmpty()) return
+
+        if (isStudentTab) {
+            val formattedData = studentList!!.mapIndexed { index, student ->
                 BaseTableRowModel(
                     listOf(
-                        (index + 1).toString(),  // 번호
-                        student.name ?: "N/A",        // 이름 (원래는 student.name 이었겠지만 username 사용)
-                        student.job?.jobName ?: "시민",                      // 현재 직업 + 월급 정보 제공하지 않음
-                        student.username,        // 아이디
-                        student.teacher.password  // 비밀번호 대신 학교명 (데이터에 비밀번호 없음)
+//                        (index + 1).toString(),
+                        student.id.toString(),
+                        student.name ?: "N/A",
+                        "${student.jobInfo?.jobName ?: "시민"} (${NumberUtil.formatWithComma(student.jobInfo?.baseSalary ?: 0)})",
+                        student.username,
+                        student.teacher.password
                     )
                 )
             }
+            studentAdapter.updateData(formattedData)
+            studentAdapter.notifyDataSetChanged()
+        } else {
+            binding.recyclerStudents.visibility = View.GONE
+            binding.recyclerFinance.visibility = View.VISIBLE
 
-            // 데이터 변동 사항이 생길 경우 업데이트
-            adapter.updateData(studentHeader, studentList)
+            val formattedData = studentList!!.mapIndexed { index, student ->
+                BaseTableRowModel(
+                    listOf(
+                        student.id.toString(),
+//                        (index + 1).toString(),
+                        student.name ?: "N/A",
+                        NumberUtil.formatWithComma(student.bankAccount?.balance ?: 0),
+                        "자세히",
+                        "자세히",
+                    )
+                )
+            }
+            financeAdapter.updateData(formattedData)
+            financeAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun updateSavingRcyclerView(studentList: List<StudentSavingResponse>?) {
+        val formattedData = studentList!!.mapIndexed { index, savingItem ->
+            BaseTableRowModel(
+                listOf(
+                    savingItem.subscriptionDate,
+                    savingItem.savingsName,
+                    NumberUtil.formatWithComma(savingItem.amount),
+                    "${savingItem.interest}%",
+                    NumberUtil.formatWithComma(savingItem.totalAmount)
+                )
+            )
         }
 
-        // ViewModel에서 데이터 가져오기
-        studentsViewModel.fetchStudentList()
+        savingAdapter.updateData(formattedData)
+        savingAdapter.notifyDataSetChanged()
     }
 
 
     private fun initEvent() {
-
-        // 학생 정보 탭
         binding.btnTabStudentInfo.setOnClickListener {
             selectTab(true)
-            binding.recyclerStudents.visibility = View.VISIBLE
-            binding.textNullStudent.visibility = View.GONE
+            updateRecyclerView(studentsViewModel.studentList.value)
         }
 
-        // 재정 상태 탭
         binding.btnTabFincialStatus.setOnClickListener {
-            // if 조건 추가. 데이터가 없으면 recyclerview 가리고, 텍스트만 보이도록
-            binding.recyclerStudents.visibility = View.GONE
-            binding.textNullStudent.visibility = View.GONE
             selectTab(false)
-            sampleDataFinance()
+            updateRecyclerView(studentsViewModel.studentList.value)
         }
 
         // 주급 버튼
@@ -174,7 +228,6 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
                 }
             )
             dialog.show()
-
         }
 
         // 인센티브 버튼
@@ -186,14 +239,15 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
         binding.btnCreateStudent.setOnClickListener {
             val dialog = BaseTwoButtonDialog(
                 context = requireContext(),
-                title = "학생 정보를 추가합니다",
-                message = "",
+                title = "추가할 방법을 선택하세요",
+                message = null,
                 positiveButtonText = "여러 학생 추가",
                 negativeButtonText = "신규 학생 추가",
-                statusImageResId = R.drawable.ic_vote,
+                statusImageResId = R.drawable.ic_alert,
                 showCloseButton = false,
                 onPositiveClick = {
-                    showToast("확인 버튼")
+                    val stepOneDialog = StudentRegisterFirstDialog(studentsViewModel)
+                    stepOneDialog.show(parentFragmentManager, "StepOneDialog")
                 },
                 onNegativeClick = {
                     showSingleStudentAddDialog()
@@ -207,7 +261,8 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
     }
 
     private fun showIncentiveDialog() {
-        val studentMap = studentListCache.associateBy({ it.name ?: "이름 없음" }, { it.id ?: -1 }) // 학생 데이터
+        val studentMap =
+            studentListCache.associateBy({ it.name ?: "이름 없음" }, { it.id ?: -1 }) // 학생 데이터
         val dialog = IncentiveDialogFragment.newInstance(studentMap)
 
         dialog.setOnConfirmListener { studentId, price ->
@@ -219,32 +274,38 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
 
 
     private fun showSingleStudentAddDialog() {
-        val dialogBinding = DialogStudentRegistrationBinding.inflate(LayoutInflater.from(requireContext()))
+        val dialogBinding =
+            DialogStudentRegistrationBinding.inflate(LayoutInflater.from(requireContext()))
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogBinding.root)
             .create()
 
         // job 설정
         val jobList = jobListCache.map { it.jobName }
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, jobList)
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, jobList)
         dialogBinding.editJob.adapter = adapter
 
-        dialogBinding.btnClose.setOnClickListener {
-            dialog.dismiss()
-        }
+        dialogBinding.btnCancel.setOnClickListener { dialog.dismiss() }
+        dialogBinding.btnClose.setOnClickListener { dialog.dismiss() }
 
         dialogBinding.btnStudentRegistration.setOnClickListener {
             // 유효성 검사
             val name = dialogBinding.editAddName.text
             val id = dialogBinding.editId.text
             val password = dialogBinding.editPassword.text
-            if(name.isNullOrEmpty() || id.isNullOrEmpty() || password.isNullOrEmpty()){
+            if (name.isNullOrEmpty() || id.isNullOrEmpty() || password.isNullOrEmpty()) {
                 showToast("모든 항목을 빠짐없이 입력해주세요")
                 return@setOnClickListener
             }
 
             // 단순 데이터 추가
-            val user = StudentSingleCreateRequest(username = id.toString(), name = name.toString(), password = password.toString(), profileImage = "")
+            val user = StudentSingleCreateRequest(
+                username = id.toString(),
+                name = name.toString(),
+                password = password.toString(),
+                profileImage = ""
+            )
             lifecycleScope.launch {
                 runCatching {
                     RetrofitUtil.teacherService.singleCreate(user)
@@ -262,50 +323,153 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
         dialog.show()
     }
 
+    //    recyclerStudents
 
-    private fun sampleDataFinance() {
-        // 컬럼 개수가 5개 일 때 사용 방법
-        val header2 = listOf("번호", "이름", "계좌 잔액", "은행 가입상품", "보유 주식")
-        val data2 = listOf(
-            BaseTableRowModel(listOf("박지성", "user04", "34,000", "3개", "1개")),
-            BaseTableRowModel(listOf("손흥민", "user05", "23,999", "1개", "2개"))
+
+    // 은행 가입 상품 조회 팝업
+    private fun showProductPopup(userId: String, data: List<String>) {
+        studentsViewModel.userSavingSubscriptions(userId.toInt())
+
+        val dialogBinding = DialogProductDetailBinding.inflate(layoutInflater)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogBinding.root)
+            .create()
+        // Adapter 설정
+        val savingListHeader = listOf("가입날자", "상품명", "월 납입액", "이자율", "잔액")
+        savingAdapter = BaseTableAdapter(savingListHeader, emptyList())
+        dialogBinding.recyclerSaving.layoutManager = LinearLayoutManager(requireContext())
+        dialogBinding.recyclerSaving.adapter = savingAdapter
+        dialogBinding.recyclerSaving.post {
+            dialogBinding.textTotalSaving.text = NumberUtil.formatWithComma(selectStudentSavingSum)
+        }
+
+        dialogBinding.btnRegister.visibility = View.GONE
+        dialogBinding.btnCancel.text = "확인"
+        dialogBinding.imageButton.setOnClickListener { dialog.dismiss() }
+        dialogBinding.btnCancel.setOnClickListener { dialog.dismiss() }
+
+        dialog.show() // 다이얼로그 띄우기
+    }
+
+    private lateinit var stockDialog: AlertDialog
+    lateinit var studentStockList: List<StockResponse>
+
+    private fun showStockPopup(userId: String, data: List<String>) {
+        studentsViewModel.stockList(userId.toInt())
+
+        val dialogBinding = DialogStockDetailBinding.inflate(layoutInflater)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogBinding.root)
+            .create()
+
+        // 어댑터 설정
+        val stockAdapter = StudentStockAdapter(emptyList())
+        dialogBinding.recyclerStockList.layoutManager = LinearLayoutManager(requireContext())
+        dialogBinding.recyclerStockList.adapter = stockAdapter
+
+        //  LiveData 옵저버 추가 (주식 데이터 업데이트 시 UI 자동 반영)
+        studentsViewModel.stockList.observe(viewLifecycleOwner) { stockResponse ->
+            studentStockList = stockResponse
+            stockAdapter.updateData(stockResponse)
+            dialogBinding.textTotalSaving.text = NumberUtil.formatWithComma(selectStudentSavingSum)
+            updateChart(dialogBinding)
+        }
+
+        // UI 설정
+        dialogBinding.btnCancel.visibility = View.GONE
+        dialogBinding.btnRegister.text = "확인"
+        dialogBinding.btnRegister.setOnClickListener { dialog.dismiss() }
+
+        dialog.show()
+    }
+
+    private fun updateChart(dialogBinding: DialogStockDetailBinding) {
+        dialogBinding.pieChart.post {
+            val pieChartComponent = PieChartComponent2(requireContext(), dialogBinding.pieChart)
+            // 주식 수량이 0 이상인 데이터만 필터링
+            val filteredStockList = studentStockList.filter { it.quantity > 0 }
+
+            // 총 보유 주식 수 계산 (0 방지)
+            val totalShares = filteredStockList.sumOf { it.quantity }.toFloat().takeIf { it > 0 } ?: 1f
+
+            // 데이터 설정 (filteredStockList 기반)
+            val dataList = filteredStockList.map { stock ->
+                val percentage = (stock.quantity.toFloat() / totalShares) * 100  // 비율 계산
+                percentage to stock.stockName
+            }
+
+            // 색상 설정 (주식 수에 따라 유동적으로 색상 적용)
+            val dynamicColorList = generateColorList(filteredStockList.size)
+
+            // 데이터가 없을 경우 차트 표시 X
+            if (dataList.isNotEmpty()) {
+                pieChartComponent.setupPieChart(dataList, dynamicColorList)
+            }
+        }
+    }
+
+
+    private fun generateColorList(size: Int): List<Int> {
+        val predefinedColors = listOf(
+            R.color.chartBlue,
+            R.color.chartPink,
+            R.color.chartPurple,
+            R.color.chartGreen,
+            R.color.chartYellow,
+//            R.color.chartRed
         )
 
-        // 컬럼 개수가 5개인 테이블
-        val adapter2 = BaseTableAdapter(header2, data2)
-        binding.recyclerStudents.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerStudents.adapter = adapter2
+        return List(size) { predefinedColors[it % predefinedColors.size] }
     }
+
 
     // Tab 변경 이벤트
     private fun selectTab(isStudentInfo: Boolean) {
         val context = context ?: return
+        isStudentTab = isStudentInfo  // ✅ 선택된 탭을 변수에 저장
 
         if (isStudentInfo) {
             // "학생 정보 탭" 활성화
-            // 조건 추가 : 탭이 바뀔 경우 : ReyclerView 의 내용을 ViewModel 에 있는 listData로 변경해야 한다.
-
-            binding.tvStudentInfo.setTextAppearance(R.style.heading4)
+            binding.tvStudentInfo.setTextAppearance(R.style.heading3)
             binding.tvStudentInfo.setTextColor(ContextCompat.getColor(context, R.color.mainOrange))
             binding.underlineStudentInfo.visibility = View.VISIBLE
+            if (studentsViewModel.studentList.value.isNullOrEmpty()) {
+                binding.textNullStudent.visibility = View.VISIBLE
+                binding.recyclerStudents.visibility = View.GONE
+                binding.recyclerFinance.visibility = View.GONE
+            } else {
+                binding.textNullStudent.visibility = View.GONE
+                binding.recyclerFinance.visibility = View.GONE
+                binding.recyclerStudents.visibility = View.VISIBLE
+            }
 
             // "재정 상태" 비활성화
-            binding.tvFinancialStatus.setTextAppearance(R.style.body2)
+            binding.tvFinancialStatus.setTextAppearance(R.style.body1)
             binding.tvFinancialStatus.setTextColor(
                 ContextCompat.getColor(
                     context,
                     R.color.lightGray
                 )
             )
-            binding.underlineFinancialStatus.visibility = View.INVISIBLE
+            binding.underlineFinancialStatus.visibility = View.GONE
         } else {
             // 학생 정보 비활성화
-            binding.tvStudentInfo.setTextAppearance(R.style.body2)
+            binding.tvStudentInfo.setTextAppearance(R.style.body1)
             binding.tvStudentInfo.setTextColor(ContextCompat.getColor(context, R.color.lightGray))
-            binding.underlineStudentInfo.visibility = View.INVISIBLE
+            binding.underlineStudentInfo.visibility = View.GONE
+
+            if (studentsViewModel.studentList.value.isNullOrEmpty()) {
+                binding.textNullStudent.visibility = View.VISIBLE
+                binding.recyclerStudents.visibility = View.GONE
+                binding.recyclerFinance.visibility = View.GONE
+            } else {
+                binding.textNullStudent.visibility = View.GONE
+                binding.recyclerStudents.visibility = View.GONE
+                binding.recyclerFinance.visibility = View.VISIBLE
+            }
 
             // 재정 상태 활성화
-            binding.tvFinancialStatus.setTextAppearance(R.style.heading4)
+            binding.tvFinancialStatus.setTextAppearance(R.style.heading3)
             binding.tvFinancialStatus.setTextColor(
                 ContextCompat.getColor(
                     context,
