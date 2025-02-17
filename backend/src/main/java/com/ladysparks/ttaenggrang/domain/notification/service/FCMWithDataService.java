@@ -51,6 +51,21 @@ public class FCMWithDataService {
      * 📌 FCM 메시지 전송 (비동기)
      */
     @Async("taskExecutor") // 비동기 실행
+    public CompletableFuture<Integer> sendToStudent(String targetToken, NotificationDTO notificationDTO) throws IOException {
+        if (targetToken != null && !targetToken.trim().isEmpty()) {  // ✅ 공백 및 개행 문자 제거
+            String cleanedToken = targetToken.trim();  // ✅ FCM 토큰 정리
+            log.info("📨 정리된 FCM 토큰: {}", cleanedToken);
+
+            String message = makeDataMessage(cleanedToken, notificationDTO);
+            sendDataMessageTo(message); // 비동기 호출
+        }
+        return CompletableFuture.completedFuture(1);
+    }
+
+    /**
+     * 📌 FCM 메시지 전송 (비동기)
+     */
+    @Async("taskExecutor") // 비동기 실행
     public CompletableFuture<Integer> broadCastToAllStudents(List<String> targetTokens, NotificationDTO notificationDTO) throws IOException {
         for (String targetToken : targetTokens) {
             if (targetToken != null && !targetToken.trim().isEmpty()) {  // ✅ 공백 및 개행 문자 제거

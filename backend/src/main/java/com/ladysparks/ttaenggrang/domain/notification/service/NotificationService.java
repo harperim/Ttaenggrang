@@ -28,7 +28,6 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
     private final FCMWithDataService fcmWithDataService;
-    private final FCMService fcmService;
     private final StudentService studentService;
 
     /**
@@ -55,8 +54,6 @@ public class NotificationService {
                 .toList();
 
         fcmWithDataService.broadCastToAllStudents(targetTokens, notificationDTO);
-
-        fcmService.sendMessageTo("TEST");
     }
 
     /**
@@ -108,7 +105,7 @@ public class NotificationService {
 
         String targetToken = studentService.findFCMTokenById(studentId);
 
-//        fcmWithDataService.sendToStudent(targetToken, notificationDTO);
+        fcmWithDataService.sendToStudent(targetToken, notificationDTO);
     }
 
     /**

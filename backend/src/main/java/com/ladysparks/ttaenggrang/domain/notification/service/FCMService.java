@@ -8,7 +8,6 @@ import com.ladysparks.ttaenggrang.domain.notification.dto.FcmMessage;
 import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationPersistanceDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
-import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.global.utill.Constants;
 import okhttp3.*;
 import org.apache.http.HttpHeaders;
@@ -149,7 +148,6 @@ public class FCMService {
                     .message(broadcastNotificationDTO.getMessage())
                     .status(broadcastNotificationDTO.getStatus())
                     .build();
-//            NotificationPersistanceDTO savedNotificationPersistanceDTO = notificationService.saveNotification(notificationPersistanceDTO);
 
             String message = makeMessage(notificationPersistanceDTO);
             logger.info("📨 FCM Message: {}", message);

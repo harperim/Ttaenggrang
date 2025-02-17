@@ -41,4 +41,23 @@ public interface WeeklyReportApiSpecification {
            """)
     ResponseEntity<ApiResponse<StudentFinancialSummaryDTO>> weeklyReportGrowthList();
 
+    @Operation(summary = "(학생) 최신 AI 피드백 [조회]", description = """
+        💡 특정 학생의 가장 최신 주간 AI 피드백을 조회합니다.
+
+        ---
+
+        **[ 요청 값 ]**
+        - `studentId`: 조회할 학생의 ID
+
+        **[ 응답 필드 ]**
+        - `aiFeedback` : AI 피드백 내용
+
+        ---
+
+        **[ 설명 ]**
+        - 해당 학생의 최신 주간 리포트에서 AI 피드백만 가져옵니다.
+        - 데이터가 없을 경우 `"AI 피드백이 없습니다."` 메시지를 반환합니다.
+        """)
+    ResponseEntity<ApiResponse<String>> getLatestAIFeedback();
+
 }
