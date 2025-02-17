@@ -87,4 +87,7 @@ dependencies {
     // 뷰모델
     implementation ("androidx.fragment:fragment-ktx:1.5.7")
 
+    //shimmer 라이브러리
+    implementation ("com.facebook.shimmer:shimmer:0.5.0")
+
 }

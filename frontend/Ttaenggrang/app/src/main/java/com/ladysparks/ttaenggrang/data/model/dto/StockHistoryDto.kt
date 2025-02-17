@@ -1,5 +1,5 @@
 package com.ladysparks.ttaenggrang.data.model.dto
-
+// 그래프 띄울때 필요한 dto
 data class StockHistoryDto(
     val stockId: Int,
     val stockName: String, // 주식 이름

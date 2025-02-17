@@ -29,7 +29,7 @@ class StockAdapter(
 
         fun bind(item: StockDto, isSelected: Boolean) {
             title.text = item.name.substringBefore(" ")
-            price.text = item.pricePer.toString()
+            price.text = item.pricePerShare.toString()
             changeRate.text = "${item.changeRate}%"
 
 //            // ✅ 선택된 아이템 스타일 변경

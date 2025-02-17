@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/bg_rounded_15"
     android:padding="24dp">
 
     <!--다이얼로그 헤드-->
@@ -58,6 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/spacing_20"
+        android:layout_marginHorizontal="@dimen/spacing_20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/constraintDialogHead">
@@ -76,12 +77,10 @@
         <TextView
             android:id="@+id/textNewsContent"
             android:layout_width="0dp"
-            style="@style/body1"
+            style="@style/body3"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/spacing_10"
-            android:text="넥슨이 최근  게임을 출시하며 기대를 모으고 있지만, 실적 성장 여부에 대한 투자자들의 신중한 판단이 필요한 시점입니다. 넥슨은 이번 분기에 신작 게임을 선보이며 글로벌 시장에서 좋은 반응을 얻고 있다고 밝혔습니다. 하지만 게임 개발비용 증가와 경쟁 심화로 인해 수익성이 개선될지는 아직 불확실한 상황입니다.
-한 금융 전문가는 **신작 게임이 성공하면 향후 넥슨의 매출 확대에 긍정적인   줄 수 있지만, 시장의 반응을 조금 더 지켜볼 필요가 있다**고 전했습니다.
-        이에 따라 투자자들은 넥슨의 향후 업데이트 전략과 실적 발표를 확인한 후 신중한 투자를 고려할 필요가 있습니다."
+            android:text=""
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
