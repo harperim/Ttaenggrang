@@ -31,7 +31,7 @@ interface TaxService {
 
     // 교사/학생이 본인 총 납부액 조회 - 확인 완료
     @GET("tax-payments/total-amount")
-    suspend fun getStudentTaxAmount(@Query("studentId") studentId: Int): ApiResponse<TaxStudentTotalResponse>
+    suspend fun getStudentTaxAmount(@Query("studentId") studentId: Int?): ApiResponse<TaxStudentTotalResponse>
 
     // 교사의 전체 학생의 개별 세금 납부 총액 조회 - 확인 완료
     @GET("tax-payments/students")
@@ -56,10 +56,8 @@ interface TaxService {
     @GET("tax-payments/teacher")
     suspend fun getStudentTaxPaymentsTeacher(): ApiResponse<List<TaxStudentPaymentAmountResponse>>
 
-//    @GET("tax-payments/overdue")
-//    suspend fun get
-
-
+    @GET("tax-payments/overdue")
+    suspend fun getOverDueTax(): ApiResponse<TaxStudentTotalResponse>
 
 
 

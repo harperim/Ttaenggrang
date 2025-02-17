@@ -23,7 +23,6 @@ class RevenueViewModel: ViewModel() {
     fun fetchTaxStudentAmount(studentId: Int? = null) {
 
         // 학생 아이디가 없으면 요청하지 않음
-        if (studentId == null) return
 
         viewModelScope.launch {
             runCatching {
@@ -150,6 +149,22 @@ class RevenueViewModel: ViewModel() {
                 _nationTaxHistory.value = it.data ?: emptyList()
             }.onFailure { throwable ->
                 Log.e("getNationTaxHistory Failure", "Failure:", throwable)
+            }
+        }
+    }
+
+    private val _overdueTotal = MutableLiveData<TaxStudentTotalResponse?>()
+    val overdueTotal : LiveData<TaxStudentTotalResponse?>get() = _overdueTotal
+
+    fun getOverDueTax() {
+        viewModelScope.launch {
+            runCatching {
+                RetrofitUtil.taxService.getOverDueTax()
+            }.onSuccess {
+                Log.d("getOverDueTax Success", "success ${it}")
+                _overdueTotal.value = it.data
+            }.onFailure { throwable ->
+                Log.e("getOverDueTax Failure", "Failure:", throwable)
             }
         }
     }
