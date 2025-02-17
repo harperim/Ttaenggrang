@@ -4,6 +4,7 @@ import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.*;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.service.JobService;
@@ -93,6 +94,20 @@ public class TeacherFunctionController implements TeacherFunctionApiSpecificatio
         }
 
         throw new IllegalArgumentException("현재 인증된 사용자를 찾을 수 없습니다.");
+    }
+
+    // 현재 로그인한 학생ID 가져오는 메서드
+    private Long getStudentIdFromSecurityContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principalObj = authentication.getPrincipal();
+        if (principalObj instanceof UserDetails) {
+            String username = ((UserDetails) principalObj).getUsername();
+            Optional<Student> student = studentRepository.findByUsername(username);
+            if (student.isPresent()) {
+                return student.get().getId();
+            }
+        }
+        throw new IllegalArgumentException("학생을 찾을 수 없습니다.");
     }
 
 
