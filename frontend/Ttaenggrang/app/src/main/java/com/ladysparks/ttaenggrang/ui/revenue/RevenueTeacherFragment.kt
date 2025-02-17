@@ -23,6 +23,7 @@ import com.ladysparks.ttaenggrang.databinding.DialogTaxTeacherStudentBinding
 import com.ladysparks.ttaenggrang.databinding.DialogTaxTeacherUseBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentRevenueTeacherBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseDatePickerRange
+import com.ladysparks.ttaenggrang.ui.component.DatePickerDialogHelper
 import com.ladysparks.ttaenggrang.util.NumberUtil.formatWithComma
 import com.ladysparks.ttaenggrang.util.showToast
 import kotlinx.coroutines.launch
@@ -187,6 +188,14 @@ class RevenueTeacherFragment : BaseFragment<FragmentRevenueTeacherBinding>(Fragm
             layoutManager = LinearLayoutManager(requireContext())
         }
 
+        revenueViewModel.startDate.observe(viewLifecycleOwner) { date ->
+            dialogBinding.textTaxHistoryStudentDateStart.setText(date)
+        }
+
+        revenueViewModel.endDate.observe(viewLifecycleOwner) { date ->
+            dialogBinding.textTaxHistoryStudentDateEnd.setText(date)
+        }
+
         // 기존 옵저버 제거
         studentTaxObserver?.let {
             revenueViewModel.studentTaxHistory.removeObserver(it)
@@ -225,23 +234,56 @@ class RevenueTeacherFragment : BaseFragment<FragmentRevenueTeacherBinding>(Fragm
         var endDate = format.format(calendar.time)
 
         // UI 초기화 및 데이터 로드
-        dialogBinding.textTaxHistoryStudentDateStart.text = startDate
-        dialogBinding.textTaxHistoryStudentDateEnd.text = endDate
+        dialogBinding.textTaxHistoryStudentDateStart.setText(startDate)
+        dialogBinding.textTaxHistoryStudentDateEnd.setText(endDate)
         revenueViewModel.fetchStudentTaxHistory(studentId, startDate, endDate)
 
         // 다이얼로그 표시
         dialog.show()
 
-        // 날짜 선택 버튼 설정
-        dialogBinding.btnSetDate.setOnClickListener {
-            BaseDatePickerRange(requireContext()) { selectedStart, selectedEnd ->
-                startDate = selectedStart
-                endDate = selectedEnd
-                dialogBinding.textTaxHistoryStudentDateStart.text = startDate
-                dialogBinding.textTaxHistoryStudentDateEnd.text = endDate
-                revenueViewModel.fetchStudentTaxHistory(studentId, startDate, endDate)
-            }.show()
+
+        dialogBinding.textTaxHistoryStudentDateStart.setOnClickListener {
+            DatePickerDialogHelper.showDatePickerDialog(requireContext(), isStartTime = true) { selectedDate ->
+                val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(selectedDate) ?: selectedDate)
+                startDate = formattedDate
+
+                val startDateParsed = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(formattedDate)
+                val endDateParsed = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(endDate)
+
+                if (startDateParsed != null && endDateParsed != null && startDateParsed.after(endDateParsed)) {
+                    showToast("시작 날짜는 종료 날짜보다 나중일 수 없습니다")
+                    return@showDatePickerDialog
+                }
+
+                dialogBinding.textTaxHistoryStudentDateStart.setText(formattedDate)
+                studentTaxHistoryAdapter.updateData(emptyList())
+                revenueViewModel.updateSelectedDates(formattedDate, endDate, studentId)
+            }
         }
+
+        dialogBinding.textTaxHistoryStudentDateEnd.setOnClickListener {
+            DatePickerDialogHelper.showDatePickerDialog(requireContext(), isStartTime = false) { selectedDate ->
+                val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(
+                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(selectedDate) ?: selectedDate
+                )
+                endDate = formattedDate // 변수에 값 저장
+
+                // 종료 날짜는 시작 날짜보다 빠를 수 없음
+                val endDateParsed = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(formattedDate)
+                val startDateParsed = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(startDate)
+
+                if (endDateParsed != null && startDateParsed != null && endDateParsed.before(startDateParsed)) {
+                    showToast("종료 날짜는 시작날짜보다 빠를 수 없습니다")
+                    return@showDatePickerDialog
+                }
+
+                dialogBinding.textTaxHistoryStudentDateEnd.setText(formattedDate) // EditText에 표시
+                studentTaxHistoryAdapter.updateData(emptyList())
+                revenueViewModel.updateSelectedDates(startDate, formattedDate, studentId)
+            }
+        }
+
+        revenueViewModel.fetchStudentTaxHistory(studentId, startDate, endDate)
 
         // 클린업
         dialog.setOnDismissListener {

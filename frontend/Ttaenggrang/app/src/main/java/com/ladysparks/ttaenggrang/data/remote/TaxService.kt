@@ -4,6 +4,7 @@ import com.ladysparks.ttaenggrang.data.model.dto.TaxDto
 import com.ladysparks.ttaenggrang.data.model.request.TaxUseRequest
 import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxNationHistoryResponse
+import com.ladysparks.ttaenggrang.data.model.response.TaxNationTreasuryResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxStudentHistoryResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxStudentPaymentAmountResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxStudentTotalResponse
@@ -58,6 +59,9 @@ interface TaxService {
 
     @GET("tax-payments/overdue")
     suspend fun getOverDueTax(): ApiResponse<TaxStudentTotalResponse>
+
+    @GET("teachers/nations")
+    suspend fun getNationalTreasury(): ApiResponse<TaxNationTreasuryResponse>
 
 
 

@@ -8,12 +8,16 @@ import androidx.lifecycle.viewModelScope
 import com.ladysparks.ttaenggrang.data.model.dto.TaxDto
 import com.ladysparks.ttaenggrang.data.model.request.TaxUseRequest
 import com.ladysparks.ttaenggrang.data.model.response.TaxNationHistoryResponse
+import com.ladysparks.ttaenggrang.data.model.response.TaxNationTreasuryResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxStudentHistoryResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxStudentTotalResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxTeacherInfoResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 class RevenueViewModel: ViewModel() {
 
@@ -95,11 +99,42 @@ class RevenueViewModel: ViewModel() {
         }
     }
 
+    private val _startDate = MutableLiveData<String>()
+    val startDate: LiveData<String> get() = _startDate
+
+    private val _endDate = MutableLiveData<String>()
+    val endDate: LiveData<String> get() = _endDate
+
+
+    init {
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+
+        // ✅ 이번 달의 첫째 날 설정
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        val firstDay = format.format(calendar.time)
+
+        // ✅ 이번 달의 마지막 날 설정
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+        val lastDay = format.format(calendar.time)
+
+        _startDate.value = firstDay
+        _endDate.value = lastDay
+    }
+
+    fun updateSelectedDates(start: String, end: String, studentId: Int?) {
+        _startDate.value = start
+        _endDate.value = end
+
+        fetchStudentTaxHistory(studentId, start, end)
+    }
+
+
     private val _studentTaxHistory = MutableLiveData<List<TaxStudentHistoryResponse>>()
     val studentTaxHistory : LiveData<List<TaxStudentHistoryResponse>>get() = _studentTaxHistory
 
     //  특정 학생의 기간에 따른 세금 납부 내역 조회(교사/학생)
-    fun fetchStudentTaxHistory(studentId: Int, startDate: String, endDate: String) {
+    fun fetchStudentTaxHistory(studentId: Int?, startDate: String?, endDate: String?) {
 
         viewModelScope.launch {
             runCatching {
@@ -169,5 +204,21 @@ class RevenueViewModel: ViewModel() {
         }
     }
 
+
+    private val _nationTreasury = MutableLiveData<TaxNationTreasuryResponse?>()
+    val nationTreasury : LiveData<TaxNationTreasuryResponse?>get() = _nationTreasury
+
+    fun getNationalTreasury() {
+        viewModelScope.launch {
+            runCatching {
+                RetrofitUtil.taxService.getNationalTreasury()
+            }.onSuccess {
+                Log.d("getNationalTreasury Success", "success ${it}")
+                _nationTreasury.value = it.data
+            }.onFailure { throwable ->
+                Log.e("getNationalTreasury Failure", "Failure:", throwable)
+            }
+        }
+    }
 
 }

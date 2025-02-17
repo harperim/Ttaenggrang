@@ -15,14 +15,19 @@ import kotlinx.coroutines.launch
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.databinding.DialogTaxStudentNationBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
+import com.ladysparks.ttaenggrang.ui.component.DatePickerDialogHelper
 import com.ladysparks.ttaenggrang.util.NumberUtil
 import com.ladysparks.ttaenggrang.util.NumberUtil.formatWithComma
 import com.ladysparks.ttaenggrang.util.showToast
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 class RevenueStudentFragment : BaseFragment<FragmentRevenueStudentBinding>(FragmentRevenueStudentBinding::bind, R.layout.fragment_revenue_student) {
 
     private lateinit var revenueViewModel: RevenueViewModel
+    private lateinit var revenueStudentMyHistoryAdapter: RevenueStudentMyHistoryAdapter
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,9 +36,11 @@ class RevenueStudentFragment : BaseFragment<FragmentRevenueStudentBinding>(Fragm
         revenueViewModel = ViewModelProvider(this).get(RevenueViewModel::class.java)
 
         revenueViewModel.fetchTaxStudentAmount()
+        revenueViewModel.fetchStudentTaxHistory(null, null, null)
         observeLiveData()
 
         revenueViewModel.fetchNationTaxHistory()
+        revenueViewModel.getNationalTreasury()
 
 
         binding.btnShowNationTax.setOnClickListener{
@@ -43,17 +50,94 @@ class RevenueStudentFragment : BaseFragment<FragmentRevenueStudentBinding>(Fragm
         binding.btnStduentPayUnpiadTax.setOnClickListener{
             showSuccessUnpaidDialog()
         }
+        // 리사이클러 어뎁터 초기화 설명
+        revenueStudentMyHistoryAdapter = RevenueStudentMyHistoryAdapter(emptyList())
+        binding.recyclerStudnetThisMonthTax.apply {
+            adapter = revenueStudentMyHistoryAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
 
-//        getStudentPayments()
+        revenueViewModel.studentTaxHistory.observe(viewLifecycleOwner) {
+        }
     }
 
     private fun observeLiveData() {
+        revenueViewModel.nationTreasury.observe(viewLifecycleOwner) { response ->
+            binding.textStudentShowNationTaxAmount.text = formatWithComma(response?.nationalTreasury ?:0)
+        }
 
         revenueViewModel.studentTotalTaxInfo.observe(viewLifecycleOwner) { response ->
             binding.textTaxStudentName.text = response.studentName
             binding.textStudentTaxAmount.text = formatWithComma(response.totalAmount)
 
         }
+
+        revenueViewModel.studentTaxHistory.observe(viewLifecycleOwner) { response ->
+            val studentTaxHistory = response?: emptyList()
+            revenueStudentMyHistoryAdapter.updateData(studentTaxHistory)
+        }
+
+        // 날짜 관련 초기 설정
+        val calendar = Calendar.getInstance()
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        var startDate = format.format(calendar.time)
+
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+        var endDate = format.format(calendar.time)
+
+        // UI 초기화 및 데이터 로드
+        binding.textTaxHistoryStudentDateStart.setText(startDate)
+        binding.textTaxHistoryStudentDateEnd.setText(endDate)
+        revenueViewModel.fetchStudentTaxHistory(null, startDate, endDate)
+
+        binding.textTaxHistoryStudentDateStart.setOnClickListener {
+            DatePickerDialogHelper.showDatePickerDialog(requireContext(), isStartTime = true) { selectedDate ->
+                val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(selectedDate) ?: selectedDate)
+
+                val startDateParsed = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(formattedDate)
+                val endDateParsed = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(endDate)
+
+                if (startDateParsed != null && endDateParsed != null && startDateParsed.after(endDateParsed)) {
+                    showToast("시작 날짜는 종료 날짜보다 나중일 수 없습니다")
+                    return@showDatePickerDialog
+                }
+
+
+
+                startDate = formattedDate
+                binding.textTaxHistoryStudentDateStart.setText(formattedDate)
+                Log.d("TAG", "showNewVoteRegister: 값 테스트 $startDate")
+                revenueStudentMyHistoryAdapter.updateData(emptyList())
+                revenueViewModel.updateSelectedDates(formattedDate, endDate, null)
+//                Log.d("testtest", "$formattedDate $endDate")
+            }
+        }
+
+        binding.textTaxHistoryStudentDateEnd.setOnClickListener {
+            DatePickerDialogHelper.showDatePickerDialog(requireContext(), isStartTime = false) { selectedDate ->
+                val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(
+                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(selectedDate) ?: selectedDate
+                )
+                // 종료 날짜는 시작 날짜보다 빠를 수 없음
+                val endDateParsed = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(formattedDate)
+                val startDateParsed = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(startDate)
+
+                if (endDateParsed != null && startDateParsed != null && endDateParsed.before(startDateParsed)) {
+                    showToast("종료 날짜는 시작날짜보다 빠를 수 없습니다")
+                    return@showDatePickerDialog
+                }
+
+                endDate = formattedDate // 변수에 값 저장
+                binding.textTaxHistoryStudentDateEnd.setText(formattedDate) // EditText에 표시
+                Log.d("TAG", "showNewVoteRegister: 값 테스트 $endDate")
+                revenueStudentMyHistoryAdapter.updateData(emptyList())
+                revenueViewModel.updateSelectedDates(startDate, formattedDate, null)
+            }
+        }
+
+
     }
 
 
