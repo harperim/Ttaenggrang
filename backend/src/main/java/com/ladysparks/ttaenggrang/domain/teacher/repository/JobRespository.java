@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.teacher.repository;
 
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,8 @@ public interface JobRespository extends JpaRepository<Job, Long> {
     int findBaseSalaryById(Long jobId);
 
     Optional<Job> findByJobNameAndTeacherId(String jobName, Long teacherId);
+
+    Optional<Job> findByStudents_Id(Long studentId);
+
+    Optional<Job> findById(Long jobId);  // job의 id로 학생 찾기
 }
