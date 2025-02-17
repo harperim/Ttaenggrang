@@ -29,8 +29,8 @@ public interface StockHistoryApiSpecification {
     /**
      * 📌 (교사) 각 주식의 최근 5개 평일 변동 이력 조회 (오늘 포함, 주말 제외, 오래된 순서)
      */
-    @Operation(summary = "(교사) 최근 5개 평일 주식 변동 이력 조회", description = """
-        💡 교사가 관리하는 각 주식의 최근 5개 평일(월~금) 변동 이력을 조회합니다.
+    @Operation(summary = "(교사/학생) 최근 5개 평일 주식 변동 이력 조회", description = """
+        💡 학급 내 각 주식의 최근 5개 평일(월~금) 변동 이력을 조회합니다.
         
         ---
         
