@@ -59,6 +59,11 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
 
         // studentId 가져오기
         studentId = SharedPreferencesUtil.getUserId()
+
+        //뒤로가기
+        binding.btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

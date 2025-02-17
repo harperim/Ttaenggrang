@@ -36,6 +36,11 @@ class StockManageTeacherFragment : BaseFragment<FragmentStockManageTeacherBindin
         // 서버에서 주식 데이터 가져오기
         viewModel.fetchAllStocks()
         viewModel.fetchStockList()
+
+        //뒤로가기
+        binding.btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
 
 
