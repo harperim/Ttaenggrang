@@ -12,3 +12,5 @@ scheduling:
   stock-market:
     open: "0 * * * * ?"  # 매분 실행
     close: "30 * * * * ?" # 매 30초 실행
+  weekly-report:
+    generate: "0 0 14 ? * FRI"

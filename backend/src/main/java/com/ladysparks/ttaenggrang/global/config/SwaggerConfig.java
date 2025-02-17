@@ -118,4 +118,12 @@ public class SwaggerConfig {
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi presentationApi() {
+        return GroupedOpenApi.builder()
+                .group("0. 시연")
+                .pathsToMatch("/presentation/**")
+                .build();
+    }
+
 }

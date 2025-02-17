@@ -4,13 +4,14 @@ import com.ladysparks.ttaenggrang.domain.stock.service.StockMarketStatusService;
 import com.ladysparks.ttaenggrang.global.redis.RedisLockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-// @Profile("prod")  // 운영 환경에서만 스케줄러 실행
+@Profile("prod")  // 운영 환경에서만 스케줄러 실행
 public class StockMarketScheduler {
 
     private final StockMarketStatusService stockMarketService;
