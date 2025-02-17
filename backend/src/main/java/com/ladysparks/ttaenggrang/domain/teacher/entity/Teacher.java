@@ -62,6 +62,7 @@ public class Teacher {
     private StockMarketStatus marketStatus;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"teacher"})
     private List<Tax> taxes;
 
 }
