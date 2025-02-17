@@ -15,7 +15,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
-import com.ladysparks.ttaenggrang.data.dummy.StockDummyData
 import com.ladysparks.ttaenggrang.data.model.dto.NewsDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.databinding.DialogNewsCreateBinding
@@ -117,15 +116,15 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                dialogNewsCreateBinding.shimmerLayout.startShimmer()
-                dialogNewsCreateBinding.shimmerLayout.visibility = View.VISIBLE
-                dialogNewsCreateBinding.constraintDialogBody.visibility = View.GONE
-            } else {
-                dialogNewsCreateBinding.shimmerLayout.stopShimmer()
-                dialogNewsCreateBinding.shimmerLayout.visibility = View.GONE
-                dialogNewsCreateBinding.constraintDialogBody.visibility = View.VISIBLE
-            }
+//            if (isLoading) {
+//                dialogNewsCreateBinding.shimmerLayout.startShimmer()
+//                dialogNewsCreateBinding.shimmerLayout.visibility = View.VISIBLE
+//                dialogNewsCreateBinding.constraintDialogBody.visibility = View.GONE
+//            } else {
+//                dialogNewsCreateBinding.shimmerLayout.stopShimmer()
+//                dialogNewsCreateBinding.shimmerLayout.visibility = View.GONE
+//                dialogNewsCreateBinding.constraintDialogBody.visibility = View.VISIBLE
+//            }
         }
 
         // 버튼구현
@@ -180,51 +179,51 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
     private fun setUpStockChart() {
         lineChartComponent = binding.chartStock
 
-        viewModel.selectedStock.observe(viewLifecycleOwner) { selectedStock ->
-            selectedStock?.let { stock ->
-                Log.d("StockChart", "선택된 주식: ${stock.name}, ID: ${stock.id}")
-                // stockId를 기반으로 더미 데이터 중 해당 주식 데이터 찾기
-                val dummyStockData = StockDummyData.generateStockSampleData(stock.name, stock.id)
-
-                //더미데이터 로그찍기
-                dummyStockData.forEach { data ->
-                    Log.d(
-                        "TAG",
-                        "setUpStockChart: 더미!!!!{${data.date}, ${data.price}"
-                    )
-                }
-
-                // 최근 7일치 데이터만 가져오기
-                val last7DaysStockData = dummyStockData.takeLast(7)
-
-                // ✅ 최근 7일치 데이터 로그 출력
-                last7DaysStockData.forEach { data ->
-                    Log.d("StockChart", "최근 7일 데이터: ${data.date}, ${data.price}")
-                }
-
-                // ✅ 날짜 리스트 생성 (X축 레이블로 사용)
-                //val dateLabels = last7DaysStockData.map { it.date }
-
-                // ✅ 날짜 변환 (YYYY-MM-DD → MM-DD)
-                val dateFormatter = DateTimeFormatter.ofPattern("MM-dd")
-                val dateLabels = last7DaysStockData.map {
-                    LocalDate.parse(it.date).format(dateFormatter)
-                }
-
-                // x축을 0~6으로 변환하여 그래프에 적용
-                val stockHistory = last7DaysStockData.mapIndexed { index, data ->
-                    Pair(index.toFloat(), data.price)
-                }
-
-                // ✅ 차트에 적용될 데이터 확인
-                stockHistory.forEach { (x, y) ->
-                    Log.d("StockChart", "차트 데이터: X=$x, Y=$y")
-                }
-
-                // 그래프에 데이터 적용
-                lineChartComponent.setChartData(stockHistory, dateLabels, R.color.chartBlue)
-            }
-        }
+//        viewModel.selectedStock.observe(viewLifecycleOwner) { selectedStock ->
+//            selectedStock?.let { stock ->
+//                Log.d("StockChart", "선택된 주식: ${stock.name}, ID: ${stock.id}")
+//                // stockId를 기반으로 더미 데이터 중 해당 주식 데이터 찾기
+//                val dummyStockData = StockDummyData.generateStockSampleData(stock.name, stock.id)
+//
+//                //더미데이터 로그찍기
+//                dummyStockData.forEach { data ->
+//                    Log.d(
+//                        "TAG",
+//                        "setUpStockChart: 더미!!!!{${data.date}, ${data.price}"
+//                    )
+//                }
+//
+//                // 최근 7일치 데이터만 가져오기
+//                val last7DaysStockData = dummyStockData.takeLast(7)
+//
+//                // ✅ 최근 7일치 데이터 로그 출력
+//                last7DaysStockData.forEach { data ->
+//                    Log.d("StockChart", "최근 7일 데이터: ${data.date}, ${data.price}")
+//                }
+//
+//                // ✅ 날짜 리스트 생성 (X축 레이블로 사용)
+//                //val dateLabels = last7DaysStockData.map { it.date }
+//
+//                // ✅ 날짜 변환 (YYYY-MM-DD → MM-DD)
+//                val dateFormatter = DateTimeFormatter.ofPattern("MM-dd")
+//                val dateLabels = last7DaysStockData.map {
+//                    LocalDate.parse(it.date).format(dateFormatter)
+//                }
+//
+//                // x축을 0~6으로 변환하여 그래프에 적용
+//                val stockHistory = last7DaysStockData.mapIndexed { index, data ->
+//                    Pair(index.toFloat(), data.price)
+//                }
+//
+//                // ✅ 차트에 적용될 데이터 확인
+//                stockHistory.forEach { (x, y) ->
+//                    Log.d("StockChart", "차트 데이터: X=$x, Y=$y")
+//                }
+//
+//                // 그래프에 데이터 적용
+//                lineChartComponent.setChartData(stockHistory, dateLabels, R.color.chartBlue)
+//            }
+//        }
     }
 
     /// 뉴스 상세

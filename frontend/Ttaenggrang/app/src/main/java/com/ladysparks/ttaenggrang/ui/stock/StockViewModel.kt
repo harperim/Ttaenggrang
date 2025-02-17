@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.GsonBuilder
 import com.ladysparks.ttaenggrang.data.model.dto.NewsDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
+import com.ladysparks.ttaenggrang.data.model.dto.StockHistoryDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockStudentDto
 
@@ -64,7 +65,6 @@ class StockViewModel : ViewModel() {
     private val _expectedPayment = MutableLiveData<Int>()
     val expectedPayment: LiveData<Int> get() = _expectedPayment
 
-
     // 거래 후 내 보유 현금 계산
     private val _updatedBalance = MutableLiveData<Int>()
     val updatedBalance: LiveData<Int> get() = _updatedBalance
@@ -105,7 +105,6 @@ class StockViewModel : ViewModel() {
     private val _latestNewsLiveData = MutableLiveData<NewsDto?>()
     val latestNewsLiveData: LiveData<NewsDto?> get() = _latestNewsLiveData
 
-
     // 로딩확인
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -114,7 +113,6 @@ class StockViewModel : ViewModel() {
     private val _stockSummaryList = MutableLiveData<List<BaseTableRowModel>>()
     val stockSummaryList: LiveData<List<BaseTableRowModel>> get() = _stockSummaryList
 
-
     // 총 수익
     private val _totalProfit = MutableLiveData<Int>()
     val totalProfit: LiveData<Int> get() = _totalProfit
@@ -122,6 +120,10 @@ class StockViewModel : ViewModel() {
     // 총 수익률
     private val _totalYield = MutableLiveData<Float>()
     val totalYield: LiveData<Float> get() = _totalYield
+
+    // 뉴스 그래프 조회
+    private val _stockHistory = MutableLiveData<List<StockHistoryDto>>()
+    val stockHistory: LiveData<List<StockHistoryDto>> get() = _stockHistory
 
     init {
         // ✅ 앱 실행 시 자동으로 거래 내역 가져와서 데이터 업데이트
@@ -249,7 +251,7 @@ class StockViewModel : ViewModel() {
     }
 
 
-// 학생 주식 거래 기록 조회
+    // 학생 주식 거래 기록 조회
     fun fetchStudentStockTransactions() = viewModelScope.launch {
         runCatching {
             stockService.getStockTransactionHistory()
@@ -277,7 +279,7 @@ class StockViewModel : ViewModel() {
         }
     }
 
-//    // 학생 주식 목록 테이블 계산
+    //    // 학생 주식 목록 테이블 계산
     fun updateStockTableData() {
         val transactions = stockTransactionHistory.value ?: emptyList()
 
@@ -535,6 +537,24 @@ class StockViewModel : ViewModel() {
             frequency >= 50 -> "🔥🔥🔥"
             frequency in 20..49 -> "🔥🔥"
             else -> "🔥"
+        }
+    }
+
+    // 주식 그래프 조회
+    fun fetchStockHistory() {
+        viewModelScope.launch {
+            runCatching {
+                stockService.getStockHistory()
+            }.onSuccess { response ->
+                if (response.isSuccessful) {
+                    response.body()?.data?.values?.flatten()?.let { stockData ->
+                        val sortedStockData = stockData.sortedBy { it.date }.takeLast(5) // 최근 5일 데이터
+                        _stockHistory.postValue(sortedStockData)
+                    }
+                }
+            }.onFailure { e ->
+                e.printStackTrace()
+            }
         }
     }
 

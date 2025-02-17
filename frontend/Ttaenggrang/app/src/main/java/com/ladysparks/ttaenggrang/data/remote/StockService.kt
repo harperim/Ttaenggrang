@@ -2,6 +2,7 @@ package com.ladysparks.ttaenggrang.data.remote
 
 import com.ladysparks.ttaenggrang.data.model.dto.NewsDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
+import com.ladysparks.ttaenggrang.data.model.dto.StockHistoryDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockStudentDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockSummaryDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionDto
@@ -38,11 +39,6 @@ interface StockService {
     @GET("stocks")
     suspend fun getAllStocks(): ApiResponse<List<StockDto>>
 
-    //주식 상세 조회
-//    @GET("stocks/{stockId}")
-//    suspend fun getStock(
-//        @Path("stockId") stockId: Int
-//    ):  Response<>
 
     //주식장 열림(교사)
     @POST("stocks/manage")
@@ -89,5 +85,9 @@ interface StockService {
         @Path("newsId") newsId: Int
     ): ApiResponse<NewsDto>
 
+    // 주식 그래프 조회
+        @GET("stock-history/stocks")
+        suspend fun getStockHistory(
+        ):Response<ApiResponse<Map<String, List<StockHistoryDto>>>>
 
 }
