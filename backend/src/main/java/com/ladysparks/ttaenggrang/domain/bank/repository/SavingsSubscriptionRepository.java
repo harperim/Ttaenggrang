@@ -20,4 +20,7 @@ public interface SavingsSubscriptionRepository extends JpaRepository<SavingsSubs
     @Query("SELECT COALESCE(SUM(sd.amount), 0) FROM SavingsDeposit sd WHERE sd.savingsSubscription.id = :subscriptionId AND sd.status = 'COMPLETED'")
     int findTotalDepositedAmount(@Param("subscriptionId") Long subscriptionId);
 
+    @Query("SELECT s.savingsProduct.name FROM SavingsSubscription s WHERE s.id = :savingsSubscriptionId")
+    String findSavingsProductNameBySubscriptionId(@Param("savingsSubscriptionId") Long savingsSubscriptionId);
+
 }

@@ -5,36 +5,32 @@ import com.ladysparks.ttaenggrang.domain.news.dto.NewsSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.news.entity.News;
 import com.ladysparks.ttaenggrang.domain.news.entity.NewsType;
 import com.ladysparks.ttaenggrang.domain.news.repository.NewsRepository;
+import com.ladysparks.ttaenggrang.domain.notification.service.NotificationService;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +44,7 @@ public class NewsService {
     private final StockRepository stockRepository;
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
+    private final NotificationService notificationService;
 
     // 현재 로그인한 교사의 ID 가져오기
     private Long getTeacherIdFromSecurityContext() {
@@ -85,15 +82,7 @@ public class NewsService {
     }
 
     // 뉴스 기사 [생성] (확인 버튼을 누를 때까지 DB에 저장되지 않음)
-//    @PostConstruct
-//    public void logConfig() {
-//        String maskedKey = (apiKey != null && apiKey.length() >= 5)
-//                ? apiKey.substring(0, 5) + "*****"
-//                : "Invalid Key";
-//        System.out.println("debug: " + maskedKey);
-//    }
-
-    public NewsDTO generateRandomNewsFromStocks() {
+    public NewsDTO generateRandomNewsFromStocks(Long teacherId) {
         String apiKey = System.getenv("OPENAI_API_KEY");
 
         String maskedKey = (apiKey != null && apiKey.length() >= 5)
@@ -111,14 +100,15 @@ public class NewsService {
 
         // 2. chatGPT API 요청 준비
         String prompt = String.format(
-                "초등학생이 이해할 수 있는 주식 시장 뉴스를 작성해주세요.\n" +
-                        "주식명: %s\n" +
-                        "조건: 내용은 반드시 **5문장 이상**으로 작성해주세요. 미만 시 재생성.\n" +
-                        "형식:\n" +
-                        "제목: [뉴스 제목]\n" +
-                        "내용: [뉴스 내용 (최소 5문장)]\n" +
-                        "유형: [호재/악재]\n" +
-                        "반드시 위 형식을 정확히 따라야 합니다. **5문장 이상** 작성 필수!",
+                "1. 구독 대상 : 초등학생\n" +
+                "2. 출력 조건 : 내용은 반드시 **5문장 이상**으로 작성해주세요. 미만 시 재생성\n" +
+                "3. 요구사항 : 해당 주식에 대하여 호재 or 악재 와 관련된 공시정보를 생성. 단, 직접적인 주식 상승, 하락이 아니라 연관 정보(ex 주변 산업 동향, 환경변화) 를 간접적으로 제시해야함. 문어체 사용.\n" +
+                "4. 공시정보 대상 주식: %s\n" +
+                "3. 형식:\n" +
+                "제목: [뉴스 제목]\n" +
+                "내용: [뉴스 내용]\n" +
+                "유형: [호재/악재 중 하나]\n" +
+                "반드시 위 형식을 정확히 따라야 합니다. **5문장 이상** 작성 필수!",
                 randomStock.getName()
         );
 
@@ -153,7 +143,7 @@ public class NewsService {
         String newsTypeStr = extractValue(generatedText, "유형", "[호재/악재]");
         NewsType newsType = newsTypeStr.contains("호재") ? NewsType.POSITIVE : NewsType.NEGATIVE;
 
-        // 6. DTO 반환 (DB에 저장 X)
+        // 5. DTO 반환 (DB에 저장 X)
         return NewsDTO.builder()
                 .title(title)
                 .content(content)
@@ -164,8 +154,9 @@ public class NewsService {
     }
 
     // 사용자가 확인 버튼을 누르면 DB에 저장
-    public NewsDTO confirmNews(NewsDTO newsDTO) {
+    public NewsDTO confirmNews(NewsDTO newsDTO) throws IOException {
         Long teacherId = getTeacherIdFromSecurityContext();
+
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 교사를 찾을 수 없습니다."));
 
@@ -182,6 +173,10 @@ public class NewsService {
                 .build();
 
         newsRepository.save(news);
+
+        // 학생들에게 FCM 알림 전송
+        notificationService.sendNewsNotificationToStudents(teacherId, newsDTO.getContent());
+
         return newsDTO;
     }
 
@@ -214,6 +209,7 @@ public class NewsService {
                 .map(news -> NewsSummaryDTO.builder()
                         .id(news.getId())
                         .title(news.getTitle())
+//                        .content(news.getContent())
                         .stockName(news.getStock().getName())
                         .createdAt(news.getCreatedAt())
                         .newsType(news.getNewsType().name())

@@ -6,7 +6,6 @@ import com.ladysparks.ttaenggrang.domain.student.dto.StudentDashboardDTO;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentDashboardService;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.global.docs.home.StudentDashboardApiSpecification;
-import com.ladysparks.ttaenggrang.global.redis.RedisGoalService;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,6 @@ public class StudentDashboardController implements StudentDashboardApiSpecificat
 
     private final StudentService studentService;
     private final StudentDashboardService studentDashboardService;
-    private final RedisGoalService redisGoalService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<StudentDashboardDTO>> studentDashboardDetails() {

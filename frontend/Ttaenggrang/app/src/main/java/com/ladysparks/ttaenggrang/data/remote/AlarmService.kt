@@ -1,6 +1,5 @@
 package com.ladysparks.ttaenggrang.data.remote
 
-import com.ladysparks.ttaenggrang.data.model.dto.AlarmDto
 import retrofit2.http.Body
 import retrofit2.http.POST
 

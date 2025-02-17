@@ -2,8 +2,10 @@ package com.ladysparks.ttaenggrang.domain.teacher.repository;
 
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Nation;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,5 +26,9 @@ public interface NationRepository extends JpaRepository<Nation, Long> {
     @Query("SELECT n FROM Nation n WHERE n.teacher.id = :teacherId")
     Optional<Nation> findNationByTeacherId(@Param("teacherId") Long teacherId);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE Nation n SET n.nationalTreasury = :nationalTreasury WHERE n.id = :nationId")
+    int updateNationalTreasury(@Param("nationId") Long nationId, @Param("nationalTreasury") int nationalTreasury);
 
 }

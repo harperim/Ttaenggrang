@@ -282,4 +282,14 @@ public class WeeklyFinancialSummaryService {
                 .build();
     }
 
+    /**
+     * 📌 특정 학생의 최신 AI 피드백 조회
+     */
+    public String getLatestAIFeedback(Long studentId) {
+        Pageable pageable = PageRequest.of(0, 1);
+        List<String> feedbackList = weeklyFinancialSummaryRepository.findLatestAIFeedbackByStudentId(studentId, pageable);
+
+        return feedbackList.isEmpty() ? "AI 피드백이 없습니다." : feedbackList.get(0);
+    }
+
 }

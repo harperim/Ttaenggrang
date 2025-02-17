@@ -34,7 +34,10 @@ public class Student {
     private String name;  // 학생 이름
 
     @Column(length = 2083)
-    private String profileImageUrl;  // ✅ AWS S3 이미지 URL 저장 필드
+    private String profileImageUrl;  // AWS S3 이미지 URL 저장 필드
+
+    @Column
+    private String fcmToken;
 
     @Column(nullable = false, updatable = false)
     private Timestamp createdAt;

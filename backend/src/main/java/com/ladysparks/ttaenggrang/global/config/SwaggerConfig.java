@@ -66,7 +66,7 @@ public class SwaggerConfig {
     public GroupedOpenApi homeApi() {
         return GroupedOpenApi.builder()
                 .group("3. 홈 화면")
-                .pathsToMatch("/**/dashboard/**", "/notifications/**")
+                .pathsToMatch("/**/dashboard/**")
                 .build();
     }
 

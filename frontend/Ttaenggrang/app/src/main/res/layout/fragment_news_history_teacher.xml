@@ -8,6 +8,12 @@
     android:background="@color/backgroundGray"
     tools:context=".ui.stock.NewsHistoryStudentFragment">
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="textStudentStockListHead" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintNewsHistoryArea"
         android:layout_width="match_parent"
@@ -28,38 +34,36 @@
             app:layout_constraintBottom_toTopOf="@id/recyclerNewsHistoryTable"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <!--뉴스생성 버튼-->
+        <!--뒤로가기 버튼-->
         <LinearLayout
-            android:id="@+id/btnNewsCreate"
+            android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
-            android:background="@drawable/btn_rounded_full"
-            android:backgroundTint="@color/foundation_green_500"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@color/black200"
             android:gravity="center"
             android:paddingHorizontal="@dimen/spacing_10"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textNewHistoryTitle"
-            app:layout_constraintBottom_toBottomOf="@id/textNewHistoryTitle"
-            >
+            app:layout_constraintTop_toTopOf="@+id/textNewHistoryTitle"
+            app:layout_constraintBottom_toBottomOf="@+id/textNewHistoryTitle"
 
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_left"
+                android:adjustViewBounds="true"
+                android:layout_marginVertical="3dp"
+                android:scaleType="fitCenter"
+                app:tint="@color/black200" />
             <TextView
                 style="@style/heading5"
                 android:gravity="center_vertical"
                 android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="뉴스 생성하기"
-                android:textColor="@color/white" />
-
-            <ImageView
-                android:layout_marginStart="5dp"
-                android:layout_gravity="center_vertical"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@drawable/ic_chevron_right"
-                app:tint="@color/white" />
-
-
+                android:text="뒤로가기"
+                android:textColor="@color/black200" />
         </LinearLayout>
 
 

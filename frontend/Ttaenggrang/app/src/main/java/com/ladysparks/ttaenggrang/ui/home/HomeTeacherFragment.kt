@@ -1,18 +1,7 @@
 package com.ladysparks.ttaenggrang.ui.home
 
-import android.app.Dialog
-import android.content.Context
-import android.content.Intent
-import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TableLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,24 +11,18 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
-import com.ladysparks.ttaenggrang.MainActivity
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
-import com.ladysparks.ttaenggrang.data.model.dto.AlarmDto
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
-import com.ladysparks.ttaenggrang.databinding.DialogBaseConfirmCancelBinding
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.databinding.FragmentHomeTeacherBinding
+import com.ladysparks.ttaenggrang.realm.NotificationRepository
 import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
 import com.ladysparks.ttaenggrang.ui.component.IncentiveDialogFragment
-import com.ladysparks.ttaenggrang.util.NavigationManager
-import com.ladysparks.ttaenggrang.util.NavigationManager.FRAGMENT_STUDENT_MANAGEMENT
 import com.ladysparks.ttaenggrang.util.NumberUtil
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
-import java.util.Date
 
 
 //class HomeFragment : Fragment() {
@@ -65,7 +48,6 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
 
         // ViewModel
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-
 
         initAdapter()
         observeLiveData()
@@ -108,7 +90,7 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
                 return@observe
             }
 
-            // 변수 하랑
+            // 변수
             studentListCache = response
 
             response?.let {
@@ -117,8 +99,8 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
                         listOf(
                             student.name?.toString() ?: "N/A",
                             student.username ?: "N/A",
-                            student.job?.jobName ?: "시민",
-                            (student.job?.baseSalary ?: 0).toString(),
+                            student.jobInfo?.jobName ?: "시민",
+                            NumberUtil.formatWithComma(student.jobInfo?.baseSalary ?: 0),
                             NumberUtil.formatWithComma(student.bankAccount?.balance.toString())
                         )
                     )
@@ -185,18 +167,18 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
 
         // 데이터셋 생성 (수입 & 지출)
         val incomeSet = BarDataSet(incomeEntries, "수입").apply {
-            color = getColor(R.color.mainGreen)  // 초록색
+            color = getColor(R.color.chartGreen)  // 주황색
             setDrawValues(false)
         }
 
         val expenseSet = BarDataSet(expenseEntries, "지출").apply {
-            color = getColor(R.color.mainOrange)  // 주황색
+            color = getColor(R.color.chartOrange)  // 주황색
             setDrawValues(false)
         }
 
         // 색상
-        incomeSet.colors =  listOf(ContextCompat.getColor(requireContext(), R.color.mainGreen))
-        expenseSet.colors = listOf(ContextCompat.getColor(requireContext(), R.color.mainOrange))
+        incomeSet.colors =  listOf(ContextCompat.getColor(requireContext(), R.color.chartGreen))
+        expenseSet.colors = listOf(ContextCompat.getColor(requireContext(), R.color.chartOrange))
 
         // BarData 생성 (두 개의 데이터셋 포함)
         val barData = BarData(incomeSet, expenseSet)
@@ -250,9 +232,15 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
         binding.barChart.setDrawMarkers(true)  // 마커 활성화
         binding.barChart.isHighlightPerTapEnabled = true  // 막대 클릭 시 값 표시
 
-        incomeSet.setDrawValues(true)  /* 수입 막대 위에 값 표시 */
-        expenseSet.setDrawValues(true)  // 지출 막대 위에 값 표시
+        incomeSet.setDrawValues(false) // 값 숨기기
+        expenseSet.setDrawValues(false) // 값 숨기기
 
+        // ✅ MarkerView 설정
+        val markerView = ChartMarkerView(requireContext())
+        binding.barChart.marker = markerView
+
+        binding.barChart.setDrawMarkers(true)  // 마커 활성화
+        binding.barChart.isHighlightPerTapEnabled = true  // 막대 클릭 시 값 표시
         binding.barChart.invalidate()  // 차트 갱신
 
         // 범례 설정
@@ -263,21 +251,29 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
         legend.setDrawInside(false)
     }
 
+
+
+
     private fun sampleDataAlarmList() {
-        val tempData = listOf(
-            AlarmDto(1, "거래 발생", "누가 물건을 샀어요", "시스템", Date().time),
-            AlarmDto(2, "거래 발생1", "누가 물건을 샀어요2", "시스템2", Date().time),
-            AlarmDto(3, "거래 발생2", "누가 물건을 샀어요3", "시스템3", Date().time)
-        )
+        // insertSampleNotifications()
+        //  Realm에서 저장된 알림 목록 가져오기
+        //  val alarmList = NotificationRepository.getAllNotifications()
+        val alarmList = NotificationRepository.getTeacherNotifications()
 
-        // 어댑터 초기화 및 RecyclerView 설정
-        alarmAdapter = AlarmAdapter(tempData)
-        binding.recyclerAlarm.adapter = alarmAdapter
-        binding.recyclerAlarm.layoutManager = LinearLayoutManager(requireContext())
+        if(alarmList.isNullOrEmpty()){
+            binding.recyclerAlarm.visibility = View.GONE
+            binding.textNullAlarm.visibility = View.VISIBLE
+        }else{
+            binding.recyclerAlarm.visibility = View.VISIBLE
+            binding.textNullAlarm.visibility = View.GONE
 
-        // 어댑터 데이터 갱신
-        alarmAdapter.updateData(tempData)
+            alarmAdapter = AlarmAdapter(alarmList)
+            binding.recyclerAlarm.adapter = alarmAdapter
+            binding.recyclerAlarm.layoutManager = LinearLayoutManager(requireContext())
+        }
     }
+
+
 
     private fun initAdapter() {
         alarmAdapter = AlarmAdapter(arrayListOf())
@@ -323,9 +319,9 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
             showToast("알람 내역 더보기")
         }
 
-        binding.btnStudentMore.setOnClickListener {
-            NavigationManager.moveFragment(FRAGMENT_STUDENT_MANAGEMENT)
-        }
+//        binding.btnStudentMore.setOnClickListener {
+//            NavigationManager.moveFragment(FRAGMENT_STUDENT_MANAGEMENT)
+//        }
     }
 
 

@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.stock.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,9 +11,9 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
 @Data
+@Entity
 public class StockMarketStatus {
 
     @Id

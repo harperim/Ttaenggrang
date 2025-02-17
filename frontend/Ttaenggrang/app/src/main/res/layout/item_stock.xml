@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/btn_rounded_full"
+    android:backgroundTint="@color/backgroundGray"
+    android:padding="12dp"
+    android:layout_marginBottom="@dimen/spacing_10">
+
+    <!-- 첫 번째 줄: 주식 이름 | 보유 수량 | 총 평가금액 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="4dp">
+
+        <TextView
+            style="@style/body1"
+            android:id="@+id/textStockName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="아이스크림주"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black" />
+
+        <TextView
+            style="@style/caption"
+            android:layout_marginStart="@dimen/spacing_10"
+            android:id="@+id/textStockQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20주"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:paddingEnd="8dp"/>
+
+        <TextView
+            style="@style/body1"
+            android:id="@+id/textStockTotalValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="78,200 원"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <!-- 두 번째 줄: 주당 구매 가격 (회색 텍스트) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            style="@style/caption"
+            android:id="@+id/textStockBuyPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="주당 구매 가격 3,400"
+            android:textSize="12sp"
+            android:textColor="@color/lightGray" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="1dp"/>
+
+        <!-- 세 번째 줄: 가격 변화량 (파란색 텍스트 & 아이콘 포함) -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="4dp">
+
+            <ImageView
+                android:id="@+id/imageStockChangeIcon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_chevron_up"/>
+
+            <TextView
+                style="caption"
+                android:id="@+id/textStockChangeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="30,800"
+                android:textSize="14sp"
+                android:textColor="@color/mainGreen"
+                android:paddingStart="4dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

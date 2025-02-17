@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class StockSummaryDTO {
 
     private Long id;                    // 주식 ID
-    private LocalDate createdDate;       // 등록일
+    private LocalDate createdDate;      // 등록일
     private String name;                // 종목명
     private String type;                // 주식 종류 (일반 주식/ETF)
     private String category;            // 카테고리

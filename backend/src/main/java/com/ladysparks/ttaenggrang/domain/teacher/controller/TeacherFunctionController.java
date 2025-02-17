@@ -110,7 +110,6 @@ public class TeacherFunctionController implements TeacherFunctionApiSpecificatio
         throw new IllegalArgumentException("학생을 찾을 수 없습니다.");
     }
 
-
     // 직업 [등록]
     @PostMapping("/jobs/create")
     public ResponseEntity<ApiResponse<JobCreateDTO>> createJob(@RequestBody @Valid JobCreateDTO jobCreateDTO) {
@@ -178,4 +177,5 @@ public class TeacherFunctionController implements TeacherFunctionApiSpecificatio
         ApiResponse<StudentJobUpdateResponseDTO> response = studentService.updateStudentJob(studentId, jobUpdateDTO, teacherId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+
 }

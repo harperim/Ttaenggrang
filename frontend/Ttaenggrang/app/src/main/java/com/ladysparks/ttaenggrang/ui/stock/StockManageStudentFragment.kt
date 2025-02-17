@@ -1,0 +1,102 @@
+package com.ladysparks.ttaenggrang.ui.stock
+
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import com.ladysparks.ttaenggrang.R
+import com.ladysparks.ttaenggrang.base.BaseFragment
+import com.ladysparks.ttaenggrang.base.BaseTableAdapter
+import com.ladysparks.ttaenggrang.data.model.dto.StockDto
+import com.ladysparks.ttaenggrang.databinding.FragmentStockManageStudentBinding
+import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
+
+class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBinding>(
+    FragmentStockManageStudentBinding::bind,
+    R.layout.fragment_stock_manage_student
+) {
+
+    private val viewModel: StockViewModel by viewModels()
+    private var studentId: Int = -1
+    private lateinit var tableAdapter: BaseTableAdapter
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //초기화
+        initAdapter()
+
+        // LiveData 관찰하여 데이터 변경 시 UI 업데이트
+        observeViewModel()
+
+        // 서버에서 데이터 가져오기
+        viewModel.fetchAllStocks()
+        viewModel.fetchBalance()
+        viewModel.fetchStudentStockTransactions()
+
+        // studentId 가져오기
+        studentId = SharedPreferencesUtil.getUserId()
+    }
+
+    private fun initAdapter() {
+        // 학생 보유 주식 목록 테이블 생성
+        tableAdapter = BaseTableAdapter(
+            header = listOf(
+                "매수일",
+                "주식명",
+                "유형",
+                "보유 주식 수",
+                "평균 매입 단가",
+                "현재주가",
+                "평가금액",
+                "수익률",
+                "손익금액"
+            ), // ✅ 헤더 컬럼 설정
+            data = emptyList(), // ✅ 초기 데이터 없음
+            onRowClickListener = { rowIndex, rowData ->
+                Toast.makeText(
+                    requireContext(),
+                    "클릭한 행: ${rowData.joinToString()}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
+        binding.recyclerStudentStockList.adapter = tableAdapter
+    }
+
+    private fun observeViewModel() {
+
+        viewModel.stockTransactionHistory.observe(viewLifecycleOwner) { transactions ->
+            Log.d("StockFragment", "stockTransaction 업데이트됨: $transactions")
+            if (transactions != null && transactions.isNotEmpty()) {
+                viewModel.updateStockTableData() // ✅ 거래 내역이 있으면 업데이트
+            }
+        }
+
+        viewModel.stockTableData.observe(viewLifecycleOwner) { newData ->
+            Log.d("StockFragment", "stockTableData 업데이트됨: $newData")
+            tableAdapter.updateData(newData)
+        }
+
+        viewModel.balance.observe(viewLifecycleOwner) { balance ->
+            binding.textContent5.text = "$balance"
+        }
+
+        viewModel.stockSummary.observe(viewLifecycleOwner) { summary ->
+            binding.textContent1.text = "${summary["totalInvestment"]}"
+            binding.textContent2.text = "${summary["totalValuation"]}"
+        }
+
+        viewModel.totalProfit.observe(viewLifecycleOwner) { totalProfit ->
+            binding.textContent3.text = "${totalProfit}"
+        }
+
+        viewModel.totalYield.observe(viewLifecycleOwner) { totalYield ->
+            binding.textContent4.text = "%.2f%%".format(totalYield)
+        }
+
+    }
+}

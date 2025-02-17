@@ -32,7 +32,7 @@ public class TaxPayment {
     @Column(nullable = false)
     private int amount;
 
-    @CreatedDate
+    @CreationTimestamp
     private LocalDate paymentDate;
 
     @Column(nullable = false)

@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.teacher.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;
 import com.ladysparks.ttaenggrang.domain.stock.entity.StockMarketStatus;
 import jakarta.persistence.*;
@@ -17,6 +18,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "teacher")
 public class Teacher {
 
@@ -36,6 +38,9 @@ public class Teacher {
     @Column(length = 50, nullable = false)
     private String school;
 
+    @Column
+    private String fcmToken;
+
     @Column(nullable = false, updatable = false)
     private Timestamp createdAt;
 
@@ -52,6 +57,7 @@ public class Teacher {
     }
 
     @OneToOne(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"teacher"})
     private StockMarketStatus marketStatus;
 
 }
