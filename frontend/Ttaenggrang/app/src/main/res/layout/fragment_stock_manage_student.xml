@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundGray"
     android:padding="@dimen/spacing_40"
-    tools:context=".ui.stock.StockListStudentFragment">
+    tools:context=".ui.stock.StockManageStudentFragment">
 
     <!-- 배너 -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -213,6 +213,37 @@
             style="@style/heading2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
+
+        <!--뒤로가기 버튼-->
+        <LinearLayout
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@color/black200"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/spacing_10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textStudentStockListHead"
+            app:layout_constraintBottom_toBottomOf="@+id/textStudentStockListHead"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_left"
+                android:adjustViewBounds="true"
+                android:layout_marginVertical="3dp"
+                android:scaleType="fitCenter"
+                app:tint="@color/black200" />
+            <TextView
+                style="@style/heading5"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="뒤로가기"
+                android:textColor="@color/black200" />
+        </LinearLayout>
 
         <!--주식 목록 리사이클러뷰-->
         <androidx.recyclerview.widget.RecyclerView

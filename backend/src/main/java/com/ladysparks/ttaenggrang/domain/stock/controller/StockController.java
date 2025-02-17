@@ -4,7 +4,9 @@ import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StudentStockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.service.StockService;
+import com.ladysparks.ttaenggrang.domain.stock.service.StockTransactionService;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentStockTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.global.docs.stock.StockApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -24,6 +26,7 @@ public class StockController implements StockApiSpecification {
     private final StockService stockService;
     private final StudentService studentService;
     private final TeacherService teacherService;
+    private final StockTransactionService stockTransactionService;
 
     // 주식 등록
     @PostMapping
@@ -54,23 +57,23 @@ public class StockController implements StockApiSpecification {
     }
 
     // 주식 상세 조회
-    @GetMapping("/{stockId}")
-    public ResponseEntity<ApiResponse<StockDTO>> getStock(@PathVariable("stockId") Long stockId) {
-        Optional<StockDTO> result = stockService.findStock(stockId);
-
-        // 값이 없으면 404 Not Found 반환
-        if (result.isPresent()) {
-            return ResponseEntity.ok(ApiResponse.success(result.get())); // 값이 있으면 200 OK와 함께 결과 반환
-        } else {
-            return ResponseEntity.notFound().build(); // 값이 없으면 404 Not Found 반환
-        }
-    }
+//    @GetMapping("/{stockId}")
+//    public ResponseEntity<ApiResponse<StockDTO>> getStock(@PathVariable("stockId") Long stockId) {
+//        Optional<StockDTO> result = stockService.findStock(stockId);
+//
+//        // 값이 없으면 404 Not Found 반환
+//        if (result.isPresent()) {
+//            return ResponseEntity.ok(ApiResponse.success(result.get())); // 값이 있으면 200 OK와 함께 결과 반환
+//        } else {
+//            return ResponseEntity.notFound().build(); // 값이 없으면 404 Not Found 반환
+//        }
+//    }
 
     // 학생 보유 주식 조회
     @GetMapping("/buy")
-    public ResponseEntity<ApiResponse<List<StudentStockDTO>>> getStudentStocks() {
+    public ResponseEntity<ApiResponse<List<StudentStockTransactionDTO>>> getStudentStocks() {
         Long studentId = studentService.getCurrentStudentId();
-        List<StudentStockDTO> stockList = stockService.getStudentStocks(studentId);
+        List<StudentStockTransactionDTO> stockList = stockTransactionService.findStudentStockTransactionsByStudentId(studentId);
         return ResponseEntity.ok(ApiResponse.success(stockList));
     }
 

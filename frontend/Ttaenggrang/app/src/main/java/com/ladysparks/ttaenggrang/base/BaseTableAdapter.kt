@@ -80,7 +80,8 @@ class BaseTableAdapter(
                     this.text = text
                     setPadding(16, 8, 16, 8)
                     gravity = Gravity.CENTER
-                    layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+                    layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, weight)
+
                 }
                 container.addView(textView)
             }

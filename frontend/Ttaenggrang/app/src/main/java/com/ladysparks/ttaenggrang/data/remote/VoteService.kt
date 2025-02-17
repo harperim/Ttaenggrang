@@ -23,7 +23,7 @@ interface VoteService {
     suspend fun submitVote(@Query("voteItemId") voteItemId: Int): ApiResponse<String>
 
     @GET("votes/list") //투표하기 위한 학생 목록 조회
-    suspend fun getStudentList(): ApiResponse<VoteOptionResponse>
+    suspend fun getStudentList(): ApiResponse<List<VoteOptionResponse>>
 
 
     /*************** 교사 전용 Service ***************/

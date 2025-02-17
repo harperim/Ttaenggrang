@@ -42,7 +42,7 @@
 <!--        android:hint="드롭 다운으로 변경 필요"/>-->
     <Spinner
         android:layout_marginTop="@dimen/spacing_20"
-        android:id="@+id/selectStudent"
+        android:id="@+id/spinnerSelectStudent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/spinner_background"
@@ -60,7 +60,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectStudent">
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSelectStudent">
 
 
         <androidx.appcompat.widget.AppCompatButton

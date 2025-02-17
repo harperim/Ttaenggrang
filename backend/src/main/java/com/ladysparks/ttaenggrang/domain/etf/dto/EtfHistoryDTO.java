@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.etf.dto;
 
+import com.ladysparks.ttaenggrang.domain.etf.entity.EtfHistory;
 import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,15 +24,15 @@ public class EtfHistoryDTO {
     private Long etfId;      // etf_id 외래 키
 
 
-    public static com.ladysparks.ttaenggrang.domain.stock.dto.StockHistoryDTO fromEntity(StockHistory stockHistory) {
-        return com.ladysparks.ttaenggrang.domain.stock.dto.StockHistoryDTO.builder()
-                .id(stockHistory.getId())
-                .price(stockHistory.getPrice())  // 가격
-                .buyVolume(stockHistory.getBuyVolume())  // 구매량
-                .sellVolume(stockHistory.getSellVolume())  // 판매량
-                .date(stockHistory.getCreatedAt())  // 거래 일자
-                .stockId(stockHistory.getStock() != null ? Long.valueOf(stockHistory.getStock().getId()) : null)  // 주식 ID
-                .etfId(stockHistory.getEtf() != null ? Long.valueOf(stockHistory.getEtf().getId()) : null)  // ETF ID
+    public static com.ladysparks.ttaenggrang.domain.etf.dto.EtfHistoryDTO fromEntity(EtfHistory etfHistory) {
+        return com.ladysparks.ttaenggrang.domain.etf.dto.EtfHistoryDTO.builder()
+                .id(etfHistory.getId())
+                .price(etfHistory.getPrice())  // 가격
+                .buyVolume(etfHistory.getBuyVolume())  // 구매량
+                .sellVolume(etfHistory.getSellVolume())  // 판매량
+                .date(etfHistory.getCreatedAt())  // 거래 일자
+//                .stockId(etfHistory.getStock() != null ? Long.valueOf(etfHistory.getStock().getId()) : null)  // 주식 ID
+                .etfId(etfHistory.getEtf() != null ? Long.valueOf(etfHistory.getEtf().getId()) : null)  // ETF ID
                 .build();
         }
 }

@@ -4,19 +4,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
-import com.ladysparks.ttaenggrang.databinding.FragmentStockListStudentBinding
-import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
+import com.ladysparks.ttaenggrang.databinding.FragmentStockManageStudentBinding
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 
-class StockListStudentFragment : BaseFragment<FragmentStockListStudentBinding>(
-    FragmentStockListStudentBinding::bind,
-    R.layout.fragment_stock_list_student
-), OnStockClickListener {
+class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBinding>(
+    FragmentStockManageStudentBinding::bind,
+    R.layout.fragment_stock_manage_student
+) {
 
     private val viewModel: StockViewModel by viewModels()
     private var studentId: Int = -1
@@ -32,26 +32,17 @@ class StockListStudentFragment : BaseFragment<FragmentStockListStudentBinding>(
         // LiveData 관찰하여 데이터 변경 시 UI 업데이트
         observeViewModel()
 
-        // 서버에서 주식 데이터 가져오기
+        // 서버에서 데이터 가져오기
         viewModel.fetchAllStocks()
-
-        // 서버에서 거래 가능 현금 가져오기
         viewModel.fetchBalance()
+        viewModel.fetchStudentStockTransactions()
 
         // studentId 가져오기
         studentId = SharedPreferencesUtil.getUserId()
-
-        // 서버에서 학생 주식 보유 내역 가져오기
-        viewModel.fetchOwnedStocks(studentId)
-        viewModel.fetchStudentStockTransactions(studentId)
-
-    }
-
-    override fun onStockClick(stock: StockDto) {
-
     }
 
     private fun initAdapter() {
+        // 학생 보유 주식 목록 테이블 생성
         tableAdapter = BaseTableAdapter(
             header = listOf(
                 "매수일",
@@ -77,17 +68,11 @@ class StockListStudentFragment : BaseFragment<FragmentStockListStudentBinding>(
     }
 
     private fun observeViewModel() {
-        viewModel.ownedStocks.observe(viewLifecycleOwner) { ownedStocks ->
-            Log.d("StockFragment", "ownedStocks 업데이트됨: $ownedStocks")
-            if (ownedStocks.isNotEmpty() && viewModel.stockTransaction.value != null) {
-                viewModel.updateStockTableData(studentId)
-            }
-        }
 
-        viewModel.stockTransaction.observe(viewLifecycleOwner) { transactions ->
+        viewModel.stockTransactionHistory.observe(viewLifecycleOwner) { transactions ->
             Log.d("StockFragment", "stockTransaction 업데이트됨: $transactions")
-            if (transactions.isNotEmpty() && viewModel.ownedStocks.value != null) {
-                viewModel.updateStockTableData(studentId)
+            if (transactions != null && transactions.isNotEmpty()) {
+                viewModel.updateStockTableData() // ✅ 거래 내역이 있으면 업데이트
             }
         }
 
@@ -101,10 +86,16 @@ class StockListStudentFragment : BaseFragment<FragmentStockListStudentBinding>(
         }
 
         viewModel.stockSummary.observe(viewLifecycleOwner) { summary ->
-            binding.textContent1.text = "${summary["totalInvestment"]} 원"
-            binding.textContent2.text = "${summary["totalValuation"]} 원"
-            binding.textContent3.text = "${summary["totalProfit"]} 원"
-            binding.textContent4.text = "%.2f%%".format(summary["totalReturnRate"])
+            binding.textContent1.text = "${summary["totalInvestment"]}"
+            binding.textContent2.text = "${summary["totalValuation"]}"
+        }
+
+        viewModel.totalProfit.observe(viewLifecycleOwner) { totalProfit ->
+            binding.textContent3.text = "${totalProfit}"
+        }
+
+        viewModel.totalYield.observe(viewLifecycleOwner) { totalYield ->
+            binding.textContent4.text = "%.2f%%".format(totalYield)
         }
 
     }

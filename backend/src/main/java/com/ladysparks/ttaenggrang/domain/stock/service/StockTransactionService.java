@@ -260,6 +260,7 @@ public class StockTransactionService {
 
             StudentStockTransactionDTO stockSummary = stockSummaryMap.getOrDefault(stockId,
                     StudentStockTransactionDTO.builder()
+                            .stockId(stockId)
                             .stockName(stockDTO.getName())
                             .quantity(0)
                             .currentTotalPrice(0)
@@ -312,4 +313,5 @@ public class StockTransactionService {
     public int getTotalSellVolume(Long id, LocalDateTime startOfDay, LocalDateTime endOfDay) {
         return stockTransactionRepository.getTotalSellVolume(id, startOfDay, endOfDay);
     }
+
 }

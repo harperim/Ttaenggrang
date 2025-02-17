@@ -40,7 +40,7 @@ public interface TaxUsageApiSpecification {
             """)
     ResponseEntity<ApiResponse<TaxUsageDTO>> taxUsage(@RequestBody TaxUsageDTO taxUsageDTO);
 
-    @Operation(summary = "(교사) 국세 사용 내역 [전체 조회]", description = """
+    @Operation(summary = "(교사/학생) 국세 사용 내역 [전체 조회]", description = """
             💡 특정 국가의 모든 국세 사용 내역을 조회합니다.
             
             ---

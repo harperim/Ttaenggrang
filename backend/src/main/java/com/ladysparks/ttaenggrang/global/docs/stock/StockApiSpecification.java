@@ -3,6 +3,7 @@ package com.ladysparks.ttaenggrang.global.docs.stock;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StudentStockDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentStockTransactionDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,10 +48,10 @@ public interface StockApiSpecification {
             """)
     ResponseEntity<ApiResponse<List<StockDTO>>> getStockList();
 
-    @Operation(summary = "(교사/학생) 주식 상품 [상세 조회]", description = """
-            💡 특정 주식 상품을 상세 조회합니다.
-            """)
-    ResponseEntity<ApiResponse<StockDTO>> getStock(@PathVariable("stockId") Long stockId);
+//    @Operation(summary = "(교사/학생) 주식 상품 [상세 조회]", description = """
+//            💡 특정 주식 상품을 상세 조회합니다.
+//            """)
+//    ResponseEntity<ApiResponse<StockDTO>> getStock(@PathVariable("stockId") Long stockId);
 
     @Operation(summary = "(교사) 주식 상품 [등록]", description = """
             💡 교사가 판매할 주식 상품을 등록합니다.
@@ -60,6 +61,6 @@ public interface StockApiSpecification {
     @Operation(summary = "(학생) 보유 주식 [전체 조회]", description = """
             💡 학생이 보유한 주식 목록을 조회합니다.
             """)
-    ResponseEntity<ApiResponse<List<StudentStockDTO>>> getStudentStocks();
+    ResponseEntity<ApiResponse<List<StudentStockTransactionDTO>>> getStudentStocks();
 
 }

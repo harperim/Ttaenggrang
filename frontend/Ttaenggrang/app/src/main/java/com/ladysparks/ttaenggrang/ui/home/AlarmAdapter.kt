@@ -7,40 +7,39 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ladysparks.ttaenggrang.R
-import com.ladysparks.ttaenggrang.data.model.dto.AlarmDto
+import com.ladysparks.ttaenggrang.realm.NotificationModel
 import com.ladysparks.ttaenggrang.util.DataUtil
 
-class AlarmAdapter(
-    private var list: List<AlarmDto>
-) : RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder>() {
+class AlarmAdapter(private var alarmList: List<NotificationModel>) :
+    RecyclerView.Adapter<AlarmAdapter.ViewHolder>() {
 
-    inner class AlarmViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val title = itemView.findViewById<TextView>(R.id.textAlarmTitle)
-        private val content = itemView.findViewById<TextView>(R.id.textAlarmContent)
-        private val publish = itemView.findViewById<TextView>(R.id.textAlarmPublish)
-        private val date = itemView.findViewById<TextView>(R.id.textAlarmDate)
-
-        fun bind(item: AlarmDto) {
-            title.text = item.title
-            content.text = item.content
-            publish.text = item.publisher
-            date.text = DataUtil.formatDate(item.date)
-        }
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val title: TextView = view.findViewById(R.id.textAlarmTitle)
+        val content: TextView = view.findViewById(R.id.textAlarmContent)
+        val sender: TextView = view.findViewById(R.id.textAlarmPublish)
+        val time: TextView = view.findViewById(R.id.textAlarmDate)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_alarm, parent, false)
-        return AlarmViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_alarm, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
-        holder.bind(list[position])
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = alarmList[position]
+        holder.title.text = item.title
+        holder.content.text = item.content
+        holder.sender.text = item.sender
+        holder.time.text = android.text.format.DateFormat.format("yyyy-MM-dd HH:mm", item.time)
     }
 
-    override fun getItemCount(): Int = list.size
+    override fun getItemCount(): Int = alarmList.size
 
-    fun updateData(newList: List<AlarmDto>) {
-        list = newList
+    // 🔹 데이터를 업데이트하는 함수 (Realm에서 새 데이터를 불러올 때 사용)
+    fun updateData(newList: List<NotificationModel>) {
+        alarmList = newList
         notifyDataSetChanged()
     }
+
 }
