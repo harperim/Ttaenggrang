@@ -30,7 +30,6 @@ public interface ItemApiSpecification {
             **[ 설명 ]**
             - 상품명, 상품 가격, 판매 수량은 필수 항목입니다.
             - 상품 이미지 URL은 AWS S3에 이미지를 업로드하고 생성된 URL입니다.
-            - 로그인된 상품
             """)
     ResponseEntity<ApiResponse<ItemDTO>> itemAdd(@RequestBody ItemDTO itemDto);
 

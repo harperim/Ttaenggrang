@@ -37,16 +37,16 @@ public class IncentiveService {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "학생의 계좌 정보가 없습니다.", null);
         }
 
-        // 3. 최근 인센티브 지급 기록 확인
-        Optional<Incentive> recentIncentiveOpt = incentiveRepository.findTopByStudentIdOrderByCreatedAtDesc(student.getId());
-        if (recentIncentiveOpt.isPresent()) {
-            Incentive recentIncentive = recentIncentiveOpt.get();
-            Timestamp oneWeekAgo = new Timestamp(System.currentTimeMillis() - 7L * 24 * 60 * 60 * 1000);  // 7일 전
-
-            if (recentIncentive.getCreatedAt().after(oneWeekAgo)) {
-                return ApiResponse.error((HttpStatus.BAD_REQUEST.value()), "최근 일주일 이내에 이미 인센티브가 지급되었습니다.", null);
-            }
-        }
+        // 3. 최근 인센티브 지급 기록 확인 (시연을 위해 주석 처리)
+//        Optional<Incentive> recentIncentiveOpt = incentiveRepository.findTopByStudentIdOrderByCreatedAtDesc(student.getId());
+//        if (recentIncentiveOpt.isPresent()) {
+//            Incentive recentIncentive = recentIncentiveOpt.get();
+//            Timestamp oneWeekAgo = new Timestamp(System.currentTimeMillis() - 7L * 24 * 60 * 60 * 1000);  // 7일 전
+//
+//            if (recentIncentive.getCreatedAt().after(oneWeekAgo)) {
+//                return ApiResponse.error((HttpStatus.BAD_REQUEST.value()), "최근 일주일 이내에 이미 인센티브가 지급되었습니다.", null);
+//            }
+//        }
 
         // 4. 인센티브 지급
         account.setBalance(account.getBalance() + incentiveDTO.getIncentive());

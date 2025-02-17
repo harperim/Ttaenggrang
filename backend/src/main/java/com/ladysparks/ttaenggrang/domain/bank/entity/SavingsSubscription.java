@@ -2,10 +2,7 @@ package com.ladysparks.ttaenggrang.domain.bank.entity;
 
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
@@ -13,6 +10,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

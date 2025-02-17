@@ -24,13 +24,20 @@ services: # 컨테이너
       - db
     depends_on:
       - db # spring-boot-app
+      - redis                           # Redis를 스케줄러 중복 방지에 사용
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/ttgr?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=ssafy
+      - TZ=Asia/Seoul                    # 타임존 설정 (한국)
     env_file:
       - .env
     restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"                 # 로그 파일 최대 크기
+        max-file: "3"                   # 로그 파일 개수
     networks:
       - app-network
 

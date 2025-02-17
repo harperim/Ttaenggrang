@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,4 +19,7 @@ public class StudentLoginRequestDTO {
 
     @NotEmpty(message = "비밀번호는 필수항목입니다.")
     private String password;
+
+    private Optional<String> fcmToken;
+
 }

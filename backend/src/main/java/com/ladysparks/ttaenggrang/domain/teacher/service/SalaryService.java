@@ -59,17 +59,17 @@ public class SalaryService {
         // 1. 현재 로그인한 교사 ID 가져오기
         Long teacherId = getTeacherIdFromSecurityContext();
 
-        // 2. 최근 급여 지급 기록 확인
-        Optional<SalaryHistory> lastSalaryOpt = salaryHistoryRepository.findTopByTeacherIdOrderByDistributedAtDesc(teacherId);
-        if (lastSalaryOpt.isPresent()) {
-            Timestamp lastDistributedAt = lastSalaryOpt.get().getDistributedAt();
-            LocalDateTime onWeekAgo = LocalDateTime.now().minusWeeks(1);
-
-            // 최급 지급일이 7일 이내라면 지급 불가
-            if (lastDistributedAt.toLocalDateTime().isAfter(onWeekAgo)) {
-                return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "이미 이번 주 주급이 지급되었습니다.", null);
-            }
-        }
+        // 2. 최근 급여 지급 기록 확인 (시연을 위해 주석 처리)
+//        Optional<SalaryHistory> lastSalaryOpt = salaryHistoryRepository.findTopByTeacherIdOrderByDistributedAtDesc(teacherId);
+//        if (lastSalaryOpt.isPresent()) {
+//            Timestamp lastDistributedAt = lastSalaryOpt.get().getDistributedAt();
+//            LocalDateTime onWeekAgo = LocalDateTime.now().minusWeeks(1);
+//
+//            // 최급 지급일이 7일 이내라면 지급 불가
+//            if (lastDistributedAt.toLocalDateTime().isAfter(onWeekAgo)) {
+//                return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "이미 이번 주 주급이 지급되었습니다.", null);
+//            }
+//        }
 
         // 3. 교사 유효성 검증
         Teacher teacher = teacherRepository.findById(teacherId)
