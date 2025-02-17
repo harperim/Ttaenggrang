@@ -20,7 +20,7 @@ public class StockMarketScheduler {
     private static final String MARKET_CLOSE_LOCK = "stockMarket:close";
 
     // ✅ 평일 09:00 자동 개장 (Redis Lock 적용)
-    @Scheduled(cron = "0 0 9 * * MON-SAT", zone = "Asia/Seoul")
+    @Scheduled(cron = "${scheduling.stock-market.open}", zone = "Asia/Seoul")
     public void autoMarketOpen() {
         if (redisLockService.acquireLock(MARKET_OPEN_LOCK)) {
             try {
@@ -33,7 +33,7 @@ public class StockMarketScheduler {
     }
 
     // ✅ 평일 17:00 자동 폐장 (Redis Lock 적용)
-    @Scheduled(cron = "0 0 17 * * MON-SAT", zone = "Asia/Seoul")
+    @Scheduled(cron = "${scheduling.stock-market.close}", zone = "Asia/Seoul")
     public void autoMarketClose() {
         if (redisLockService.acquireLock(MARKET_CLOSE_LOCK)) {
             try {

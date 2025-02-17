@@ -42,7 +42,6 @@ public class StockMarketStatusService {
 
     // 🕔 평일 09:00 자동 개장
     @Transactional
-    @Scheduled(cron = "${scheduling.stock-market.open}")
     public void autoMarketOpen() {
         for (TeacherResponseDTO teacher : teacherService.findAllTeachers()) {
             Long teacherId = teacher.getId();
@@ -64,7 +63,6 @@ public class StockMarketStatusService {
     }
 
     // 🕔 평일 17:00 자동 폐장
-    @Scheduled(cron = "${scheduling.stock-market.close}")
     @Transactional
     public void autoMarketClose() {
         for (TeacherResponseDTO teacher : teacherService.findAllTeachers()) {
