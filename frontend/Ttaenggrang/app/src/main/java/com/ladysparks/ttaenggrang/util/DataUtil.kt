@@ -21,6 +21,7 @@ import java.util.Locale
 object DataUtil {
 
     private const val DATE_FORMAT = "yyyy.MM.dd"
+    private const val DATE_TIME_FORMAT = "yyyy.MM.dd HH:mm:ss"
 
     /***************  서버의 DATETIME 형식을 String 으로 바꾸기 위함
      * 1 단계 : 서버에서 받은 데이터(String) 값을 데이터 타입으로 변환
@@ -57,6 +58,7 @@ object DataUtil {
         val date = formatDateTimeFromServer(dateString)
         return date?.let { formatDate(it) } ?: "Invalid Date"
     }
+
 
     fun convertDateTime(value: Any, forDisplay: Boolean = false): Any? {
         return when (value) {

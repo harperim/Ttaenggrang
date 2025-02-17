@@ -17,7 +17,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -146,16 +148,22 @@ public class StockHistoryService {
     }
 
     // 모든 주식 가격 변동 이력 조회
-    public List<StockHistoryDTO> getAllStockHistory() {
-        List<StockHistory> historyList = stockHistoryRepository.findAll();
-        if (historyList.isEmpty()) {
-            throw new IllegalArgumentException("등록된 주식 가격 변동 이력이 없습니다.");
-        }
+    /**
+     * 📌 특정 교사가 관리하는 주식의 최근 5일치 변동 이력 조회 (가격 변동률 포함)
+     */
+    public Map<Long, List<StockHistoryDTO>> getLast5DaysStockHistory(Long teacherId) {
+        List<Stock> stocks = stockRepository.findByTeacherId(teacherId); // 교사가 관리하는 모든 주식 조회
+        Map<Long, List<StockHistoryDTO>> historyMap = new HashMap<>();
 
-        // StockHistory 엔티티를 StockHistoryDTO로 변환하여 반환
-        return historyList.stream()
-                .map(StockHistoryDTO::fromEntity)
-                .collect(Collectors.toList());
+        LocalDateTime fiveDaysAgo = LocalDate.now().minusDays(5).atStartOfDay();
+        LocalDateTime todayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+
+        for (Stock stock : stocks) {
+            List<StockHistory> histories = stockHistoryRepository.findLast5DaysByStockId(stock.getId(), fiveDaysAgo, todayEnd);
+            List<StockHistoryDTO> historyDTOs = histories.stream().map(StockHistoryDTO::fromEntity).collect(Collectors.toList());
+            historyMap.put(stock.getId(), historyDTOs);
+        }
+        return historyMap;
     }
 
 }

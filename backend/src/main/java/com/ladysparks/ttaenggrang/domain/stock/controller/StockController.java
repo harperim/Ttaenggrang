@@ -57,17 +57,17 @@ public class StockController implements StockApiSpecification {
     }
 
     // 주식 상세 조회
-    @GetMapping("/{stockId}")
-    public ResponseEntity<ApiResponse<StockDTO>> getStock(@PathVariable("stockId") Long stockId) {
-        Optional<StockDTO> result = stockService.findStock(stockId);
-
-        // 값이 없으면 404 Not Found 반환
-        if (result.isPresent()) {
-            return ResponseEntity.ok(ApiResponse.success(result.get())); // 값이 있으면 200 OK와 함께 결과 반환
-        } else {
-            return ResponseEntity.notFound().build(); // 값이 없으면 404 Not Found 반환
-        }
-    }
+//    @GetMapping("/{stockId}")
+//    public ResponseEntity<ApiResponse<StockDTO>> getStock(@PathVariable("stockId") Long stockId) {
+//        Optional<StockDTO> result = stockService.findStock(stockId);
+//
+//        // 값이 없으면 404 Not Found 반환
+//        if (result.isPresent()) {
+//            return ResponseEntity.ok(ApiResponse.success(result.get())); // 값이 있으면 200 OK와 함께 결과 반환
+//        } else {
+//            return ResponseEntity.notFound().build(); // 값이 없으면 404 Not Found 반환
+//        }
+//    }
 
     // 학생 보유 주식 조회
     @GetMapping("/buy")

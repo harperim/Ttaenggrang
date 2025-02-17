@@ -11,6 +11,6 @@ data class StudentMultiCreateResponse(
     val profileImage: Any?,
     val teacher: Teacher,
     val bankAccount: BankAccountResponse?,
-    val job: JobDto?,      // 학생 직업 정보
+    val jobInfo: JobDto?,      // 학생 직업 정보
     val token: String,
 )
