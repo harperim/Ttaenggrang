@@ -37,6 +37,8 @@ class RevenueStudentFragment : BaseFragment<FragmentRevenueStudentBinding>(Fragm
 
         revenueViewModel.fetchTaxStudentAmount()
         revenueViewModel.fetchStudentTaxHistory(null, null, null)
+        revenueViewModel.getStudentBasicInfo()
+
         observeLiveData()
 
         revenueViewModel.fetchNationTaxHistory()
@@ -62,6 +64,10 @@ class RevenueStudentFragment : BaseFragment<FragmentRevenueStudentBinding>(Fragm
     }
 
     private fun observeLiveData() {
+        revenueViewModel.studentBasicInfo.observe(viewLifecycleOwner) { response ->
+            binding.textTaxStudentJobPayment.text = "${response?.jobName}(${formatWithComma(response?.baseSalary?:0)})"
+        }
+
         revenueViewModel.nationTreasury.observe(viewLifecycleOwner) { response ->
             binding.textStudentShowNationTaxAmount.text = formatWithComma(response?.nationalTreasury ?:0)
         }

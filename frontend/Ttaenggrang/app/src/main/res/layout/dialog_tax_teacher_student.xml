@@ -47,13 +47,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="서미지"
-                    style="@style/heading2"/>
+                    style="@style/heading3"/>
                 <TextView
                     android:id="@+id/textTaxHistoryStudentJobPayment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="의사(10,000,000)"
-                    style="@style/heading3"
+                    style="@style/heading4"
                     android:textColor="@color/lightGray"
                     android:layout_marginLeft="10dp"/>
             </LinearLayout>

@@ -10,6 +10,7 @@ import com.ladysparks.ttaenggrang.data.model.request.TaxUseRequest
 import com.ladysparks.ttaenggrang.data.model.response.TaxNationHistoryResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxNationTreasuryResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxStudentHistoryResponse
+import com.ladysparks.ttaenggrang.data.model.response.TaxStudentJobResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxStudentTotalResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxTeacherInfoResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
@@ -25,9 +26,6 @@ class RevenueViewModel: ViewModel() {
     val studentTotalTaxInfo: LiveData<TaxStudentTotalResponse> get() = _studentTotalTaxInfo
 
     fun fetchTaxStudentAmount(studentId: Int? = null) {
-
-        // 학생 아이디가 없으면 요청하지 않음
-
         viewModelScope.launch {
             runCatching {
                 RetrofitUtil.taxService.getStudentTaxAmount(studentId)
@@ -213,10 +211,26 @@ class RevenueViewModel: ViewModel() {
             runCatching {
                 RetrofitUtil.taxService.getNationalTreasury()
             }.onSuccess {
-                Log.d("getNationalTreasury Success", "success ${it}")
+                Log.d("getNationalTreasury Success", "success ${it.data.toString()}")
                 _nationTreasury.value = it.data
             }.onFailure { throwable ->
                 Log.e("getNationalTreasury Failure", "Failure:", throwable)
+            }
+        }
+    }
+
+    private val _studentBasicInfo = MutableLiveData<TaxStudentJobResponse?>()
+    val studentBasicInfo : LiveData<TaxStudentJobResponse?>get() = _studentBasicInfo
+
+    fun getStudentBasicInfo(){
+        viewModelScope.launch {
+            runCatching {
+                RetrofitUtil.taxService.getStudentBasicInfo()
+            }.onSuccess {
+                _studentBasicInfo.value = it.data ?: TaxStudentJobResponse("의사", 100)
+                Log.d("getStudentBasicInfo Success", "${it}")
+            }.onFailure { throwable ->
+                Log.e("getStudentBasicInfo Failure", "Failure:", throwable)
             }
         }
     }

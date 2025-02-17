@@ -6,6 +6,7 @@ import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxNationHistoryResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxNationTreasuryResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxStudentHistoryResponse
+import com.ladysparks.ttaenggrang.data.model.response.TaxStudentJobResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxStudentPaymentAmountResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxStudentTotalResponse
 import com.ladysparks.ttaenggrang.data.model.response.TaxTeacherInfoResponse
@@ -62,6 +63,9 @@ interface TaxService {
 
     @GET("teachers/nations")
     suspend fun getNationalTreasury(): ApiResponse<TaxNationTreasuryResponse>
+
+    @GET("students/job")
+    suspend fun getStudentBasicInfo(): ApiResponse<TaxStudentJobResponse>
 
 
 

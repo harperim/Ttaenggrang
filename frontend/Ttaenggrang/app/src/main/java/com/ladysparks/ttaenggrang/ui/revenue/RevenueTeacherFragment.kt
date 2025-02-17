@@ -66,6 +66,8 @@ class RevenueTeacherFragment : BaseFragment<FragmentRevenueTeacherBinding>(Fragm
             layoutManager = LinearLayoutManager(requireContext())
         }
 
+        revenueViewModel.getNationalTreasury()
+
         observeLiveData()
 
         revenueViewModel.fetchTaxList()
@@ -131,6 +133,10 @@ class RevenueTeacherFragment : BaseFragment<FragmentRevenueTeacherBinding>(Fragm
                 binding.textNullNationTaxHistory.visibility = View.VISIBLE
                 binding.recyclerTeacherNationTaxHistory.visibility = View.GONE
             }
+        }
+
+        revenueViewModel.nationTreasury.observe(viewLifecycleOwner) { response ->
+            binding.textStudentShowNationTaxAmount.text = formatWithComma(response?.nationalTreasury ?:0)
         }
     }
 
