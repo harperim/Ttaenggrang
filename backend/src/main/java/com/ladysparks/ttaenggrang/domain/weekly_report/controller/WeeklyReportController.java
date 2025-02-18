@@ -3,14 +3,16 @@ package com.ladysparks.ttaenggrang.domain.weekly_report.controller;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.weekly_report.dto.StudentFinancialSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.weekly_report.dto.WeeklyFinancialSummaryDTO;
+import com.ladysparks.ttaenggrang.domain.weekly_report.service.FastApiService;
 import com.ladysparks.ttaenggrang.domain.weekly_report.service.WeeklyFinancialSummaryService;
 import com.ladysparks.ttaenggrang.global.docs.weekly.WeeklyReportApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ public class WeeklyReportController implements WeeklyReportApiSpecification {
 
     private final WeeklyFinancialSummaryService weeklyFinancialSummaryService;
     private final StudentService studentService;
+    private final FastApiService fastApiService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<WeeklyFinancialSummaryDTO>> weeklyReportDetails() {
@@ -40,6 +43,19 @@ public class WeeklyReportController implements WeeklyReportApiSpecification {
         Long studentId = studentService.getCurrentStudentId();
         String aiFeedback = weeklyFinancialSummaryService.getLatestAIFeedback(studentId);
         return ResponseEntity.ok(ApiResponse.success(aiFeedback));
+    }
+
+    @PostMapping("/predict")
+    public Mono<ResponseEntity<ApiResponse<Map<String, Object>>>> predict(@RequestBody WeeklyFinancialSummaryDTO studentData) {
+        return fastApiService.predictCluster(
+                studentData.getTotalIncome(),
+                studentData.getTotalExpenses(),
+                studentData.getSavingsAmount(), // ✅ 총 투자 비용 (수정됨)
+                studentData.getInvestmentReturn(),
+                studentData.getTaxAmount(),
+                studentData.getFineAmount(),
+                studentData.getIncentiveAmount()
+        ).map(ApiResponse::success).map(ResponseEntity::ok); // ✅ Mono를 비동기 방식으로 반환
     }
 
 }
