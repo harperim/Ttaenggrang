@@ -53,7 +53,8 @@ public class SecurityConfig {
                                             "/swagger-resources/**",
                                             "/webjars/**",
                                             "/students/login",
-                                            "/students/create"
+                                            "/students/create",
+                                            "/fastapi/**"
                                     ).permitAll()
                                     // 인증 필요 없는 경로
                                     .requestMatchers("/teachers/**").permitAll()
