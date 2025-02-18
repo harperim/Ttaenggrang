@@ -74,7 +74,7 @@ public class StockService {
                 .collect(Collectors.toList()); // 변환된 DTO를 리스트로 반환
     }
 
-    //전체 데이터 조회
+    //요약 조회
     public List<StockSummaryDTO> getStockSummaryList(Long teacherId) {
         // 모든 주식 데이터 조회
         List<Stock> stocks = stockRepository.findAllByTeacher_Id(teacherId);
@@ -125,33 +125,6 @@ public class StockService {
                 .map(StockDTO::fromEntity); // 엔티티를 DTO로 변환
     }
 
-//    // StockTransaction을 TransactionDTO로 변환
-//    private List<StockTransactionResponseDTO> convertToTransactionDTO(List<StockTransaction> transactions) {
-//        List<StockTransactionResponseDTO> transactionDTOList = new ArrayList<>();
-//        for (StockTransaction transaction : transactions) {
-//            StockTransactionResponseDTO transactionDTO = new StockTransactionResponseDTO();
-//
-//            // 학생 ID와 관련된 정보 설정
-//            transactionDTO.setStudentId(transaction.getStudent().getId());
-//
-//            // 주식 관련 정보 설정 (name과 type만 가져오기)
-//            Stock stock = transaction.getStock();
-//            transactionDTO.setStockId(stock.getId());
-//            transactionDTO.setName(stock.getName());  // 주식명
-//            transactionDTO.setType(stock.getType());  // 주식 타입
-//
-//            // 거래 정보 설정
-//            transactionDTO.setTransactionType(transaction.getTransactionType());
-//            transactionDTO.setShareCount(transaction.getShare_count());
-//            transactionDTO.setPurchasePricePerShare(transaction.getPurchase_prc());  // 1주 가격
-//            transactionDTO.setTransactionDate(transaction.getTransactionDate()); // 거래 날짜
-//
-//            // DTO 리스트에 추가
-//            transactionDTOList.add(transactionDTO);
-//        }
-//
-//        return transactionDTOList;
-//    }
 
 
 

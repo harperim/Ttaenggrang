@@ -3,13 +3,13 @@
     android:layout_width="501dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="24dp"
     android:background="@color/white">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:padding="24dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -41,7 +41,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="아이템을 등록하세요"
+            android:text="미납한 세금을 모두 납부 하세요"
             style="@style/body1"
             android:textColor="@color/lightGray"/>
 
@@ -113,3 +113,4 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

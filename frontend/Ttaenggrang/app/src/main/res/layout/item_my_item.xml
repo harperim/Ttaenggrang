@@ -2,14 +2,17 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraintMyItem">
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_my_item_frame"
         android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:clickable="false"
+        android:focusable="false"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,11 +39,13 @@
             android:orientation="vertical"
             android:layout_marginStart="18dp">
             <TextView
+                android:id="@+id/textMyItemPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="50,000"
                 style="@style/heading3"/>
             <TextView
+                android:id="@+id/textMyItemName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="미지미지 교환권"

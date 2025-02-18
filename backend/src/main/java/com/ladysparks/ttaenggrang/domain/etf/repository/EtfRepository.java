@@ -33,7 +33,7 @@ public interface EtfRepository extends JpaRepository<Etf, Long>{
 
     @Query("SELECT COALESCE(SUM(e.price_per * et.owned_qty), 0) FROM Etf e " +
             "JOIN EtfTransaction et ON e.id = et.etf.id " +
-            "WHERE et.student.id = :studentId AND et.trans_date BETWEEN :startDate AND :endDate")
+            "WHERE et.student.id = :studentId AND et.transDate BETWEEN :startDate AND :endDate")
     Optional<Integer> getEtfEvaluationByDate(@Param("studentId") Long studentId,
                                              @Param("startDate") LocalDateTime startDate,
                                              @Param("endDate") LocalDateTime endDate);
