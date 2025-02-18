@@ -97,4 +97,6 @@ dependencies {
     // Realm (Kotlin SDK)
     implementation("io.realm.kotlin:library-base:1.11.0")
 
+    // 헤더고정 라이브러리
+    implementation ("com.github.bwmuller:header-decor:0.5.0")
 }

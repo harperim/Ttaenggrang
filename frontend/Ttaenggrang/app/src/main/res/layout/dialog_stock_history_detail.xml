@@ -54,12 +54,13 @@
         <!--주식 그래프-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintStockGraphArea"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="340dp"
+            android:layout_marginBottom="@dimen/spacing_20"
             android:background="@drawable/bg_rounded_15"
             android:paddingVertical="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/textStockTradingDate"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
 
@@ -70,6 +71,7 @@
                 android:id="@+id/constraintStockGraphHead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/viewLine"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -178,7 +180,7 @@
             <com.ladysparks.ttaenggrang.ui.component.LineChartComponent
                 android:id="@+id/chartStock"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -190,18 +192,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="매수일"
-            android:layout_margin="@dimen/spacing_10"
-            android:layout_marginBottom="@dimen/spacing_10"
-            app:layout_constraintBottom_toBottomOf="@id/textStockTradingDate2"
-            app:layout_constraintStart_toStartOf="parent"
+            style="@style/heading3"
+            android:textColor="@color/foundation_black_400"
+            app:layout_constraintBottom_toTopOf="@id/textStockPerPrice"
+            app:layout_constraintStart_toStartOf="@id/constraintStockGraphArea"
             app:layout_constraintTop_toBottomOf="@id/constraintStockGraphArea" />
 
         <TextView
             android:id="@+id/textStockTradingDate2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2025.01.30"
             android:layout_marginBottom="@dimen/spacing_10"
+            android:text="2025.01.30"
+            style="@style/body3"
+            android:textColor="@color/foundation_black_400"
             app:layout_constraintBottom_toBottomOf="@id/textStockTradingDate"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/textStockTradingDate" />
@@ -210,9 +214,11 @@
             android:id="@+id/textStockPerPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="매수 단가"
             android:layout_marginTop="@dimen/spacing_10"
-            app:layout_constraintBottom_toBottomOf="@id/textStockPerPrice2"
+            android:text="평균 매수 단가"
+            android:textColor="@color/foundation_black_400"
+            style="@style/heading3"
+            app:layout_constraintBottom_toTopOf="@id/textStockQuantityTitle"
             app:layout_constraintStart_toStartOf="@id/textStockTradingDate"
             app:layout_constraintTop_toBottomOf="@id/textStockTradingDate" />
 
@@ -221,6 +227,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="10,000"
+            style="@style/body3"
+            android:textColor="@color/foundation_black_400"
             app:layout_constraintBottom_toBottomOf="@id/textStockPerPrice"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/textStockPerPrice" />
@@ -229,9 +237,11 @@
             android:id="@+id/textStockQuantityTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="보유 주식"
             android:layout_marginTop="@dimen/spacing_10"
-            app:layout_constraintBottom_toBottomOf="@id/textStockQuantityTitle2"
+            android:text="보유 주식"
+            style="@style/heading3"
+            android:textColor="@color/foundation_black_400"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/textStockPerPrice"
             app:layout_constraintTop_toBottomOf="@id/textStockPerPrice" />
 
@@ -240,11 +250,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="10주"
+            style="@style/body3"
+            android:textColor="@color/foundation_black_400"
             app:layout_constraintBottom_toBottomOf="@id/textStockQuantityTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/textStockQuantityTitle" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--다이얼로그 풋-->
@@ -252,6 +262,7 @@
         android:id="@+id/constraintDialogFoot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_20"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -261,15 +272,35 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnClose"
             style="@style/heading4"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_30"
+            android:layout_marginTop="@dimen/spacing_20"
             android:layout_marginEnd="@dimen/spacing_10"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@color/foundation_black_100"
+            android:text="닫기"
+            android:textColor="@color/black300"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnTrade"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--닫기-->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnTrade"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:layout_marginEnd="@dimen/spacing_10"
+            app:layout_constraintHorizontal_weight="1"
             android:background="@drawable/btn_rounded_full"
             android:text="거래하기"
             android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btnClose"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

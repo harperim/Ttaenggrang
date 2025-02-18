@@ -1,16 +1,13 @@
 package com.ladysparks.ttaenggrang.ui.stock
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
 import com.ladysparks.ttaenggrang.databinding.FragmentStockManageTeacherBinding
-import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 
 
 class StockManageTeacherFragment : BaseFragment<FragmentStockManageTeacherBinding>(
@@ -22,13 +19,11 @@ class StockManageTeacherFragment : BaseFragment<FragmentStockManageTeacherBindin
     private lateinit var tableAdapter: BaseTableAdapter
     private val columnWeights = listOf(1f, 1.2f, 1f, 1f, 1.2f, 0.8f, 0.8f)
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         //초기화
         initAdapter()
-
 
         // LiveData 관찰하여 데이터 변경 시 UI 업데이트
         observeViewModel()
@@ -66,11 +61,10 @@ class StockManageTeacherFragment : BaseFragment<FragmentStockManageTeacherBindin
             }
         )
         binding.recyclerStockManageList.adapter = tableAdapter
-
     }
 
     private fun observeViewModel() {
-        viewModel.stockSummaryList.observe(viewLifecycleOwner){rowData ->
+        viewModel.stockSummaryList.observe(viewLifecycleOwner) { rowData ->
             tableAdapter.updateData(rowData) // ✅ 어댑터에 바로 전달
         }
     }

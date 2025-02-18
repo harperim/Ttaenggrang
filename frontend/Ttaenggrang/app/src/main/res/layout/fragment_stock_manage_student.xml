@@ -199,6 +199,8 @@
         android:backgroundTint="@color/white"
         android:paddingVertical="@dimen/spacing_15"
         android:paddingHorizontal="@dimen/spacing_20"
+        android:clipChildren="true"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -210,7 +212,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="내 주식 목록"
+            android:layout_marginBottom="@dimen/spacing_10"
             style="@style/heading2"
+            app:layout_constraintBottom_toTopOf="@id/recyclerStudentStockList"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
@@ -249,15 +253,13 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerStudentStockList"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/spacing_10"
+            android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/textStudentStockListHead"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            android:layout_marginTop="@dimen/spacing_10"
+            app:layout_constraintStart_toStartOf="parent"
 
+            app:layout_constraintTop_toBottomOf="@id/textStudentStockListHead" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
