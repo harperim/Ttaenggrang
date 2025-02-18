@@ -1,11 +1,13 @@
 package com.ladysparks.ttaenggrang.domain.etf.dto;
 
+import com.google.gson.Gson;
 import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;
 import jakarta.persistence.Column;
 import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +24,7 @@ public class EtfDTO {
     private Timestamp updated_at;
     private Integer changeRate; //가격 변동률
     private final String type = "ETF";
+    private String stockDataJson; // 주식 ID + 수량을 JSON 형태로 저장
 
 
 
@@ -47,11 +50,14 @@ public class EtfDTO {
                 .created_at(etfDto.getCreated_at())
                 .updated_at(etfDto.getUpdated_at())
                 .changeRate(etfDto.getChangeRate())
-//                .isMarketActive(etfDto.getIsMarketActive())
+                .stockDataJson(etfDto.getStockDataJson())
+
                 .build();
     }
 
     public static EtfDTO fromEntity(Etf etf) {
+        // JSON을 Map으로 변환
+
         return EtfDTO.builder()
                 .id(etf.getId())
                 .name(etf.getName())
@@ -62,10 +68,9 @@ public class EtfDTO {
                 .created_at(etf.getCreated_at())
                 .updated_at(etf.getUpdated_at())
                 .changeRate(etf.getChangeRate())
-//                .isMarketActive(etf.getIsMarketActive())
+                .stockDataJson(etf.getStockDataJson()) // DTO에서 JSON 대신 Map으로 변환한 데이터를 사용
                 .build();
+
     }
-
-
 
 }

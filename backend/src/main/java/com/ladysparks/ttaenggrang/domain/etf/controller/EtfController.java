@@ -30,17 +30,21 @@ public class EtfController implements EtfApiSpecification {
     private final TeacherService teacherService;
     private final EtfTransactionService etfTransactionService;
 
-//    //ETF 생성
-//    @PostMapping("/create")
-//    public ResponseEntity<ApiResponse<EtfDTO>> addEtf(@RequestParam Long studentId,
-//                                                      @RequestParam List<Long> stockIds) {
-//        // ETF 생성 서비스 호출
-//        EtfDTO createdEtfDTO = etfService.createETF(studentId, stockIds);
-//
-//        // ETF 생성 후 성공적인 응답 반환
-//        return ResponseEntity.status(HttpStatus.CREATED)
-//                .body(ApiResponse.created(createdEtfDTO));
-//    }
+
+// ETF 생성 API
+    @PostMapping("/create") // POST 요청으로 ETF 생성
+    public ResponseEntity<ApiResponse<EtfDTO>> createETF(
+            @RequestParam String name, // ETF 이름
+            @RequestParam String category, // ETF 카테고리
+            @RequestParam List<Long> selectedStockIds) { // ETF에 포함될 주식 ID 목록
+
+        // ETF 생성 서비스 호출
+        EtfDTO createdEtfDTO = etfService.createETF(name, category, selectedStockIds);
+
+        // 성공 응답 생성 및 ResponseEntity로 반환
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.created(createdEtfDTO)); // API 응답을 "Resource created successfully." 메시지와 함께 반환
+}
 
     //Etf  목록 전체 조회
     @GetMapping
