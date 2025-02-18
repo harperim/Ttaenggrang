@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.data.model.response.StoreStudenItemListResponse
+import com.ladysparks.ttaenggrang.util.NumberUtil.formatWithComma
+
 
 class StoreTeacherRegisteredItemAdapter (
     private var itemList: List<StoreStudenItemListResponse>,
@@ -24,7 +26,7 @@ class StoreTeacherRegisteredItemAdapter (
             textItemNumber.text = "${position + 1}"
             textItemName.text = item.name
             textItemDescription.text = item.description
-            textItemPrice.text = "${item.price}원"
+            textItemPrice.text = "${formatWithComma(item.price)}원"
             textItemQuantity.text = "${item.quantity}개"
         }
     }
