@@ -29,6 +29,7 @@ public class EtfDTO {
     private List<Long> stock_id;  // 주식
 
     private Long market_status_id;
+    private Long teacherId;                 // 교사 ID
 
 
 
