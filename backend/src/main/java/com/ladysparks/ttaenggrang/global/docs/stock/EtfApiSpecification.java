@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.global.docs.stock;
 
 import com.ladysparks.ttaenggrang.domain.etf.dto.EtfDTO;
+import com.ladysparks.ttaenggrang.domain.etf.dto.EtfSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.etf.dto.EtfTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -20,9 +21,9 @@ public interface EtfApiSpecification {
     @GetMapping
     public ResponseEntity<ApiResponse<List<EtfDTO>>> getEtfList();
 
-    @Operation(summary = "(교사/학생) ETF 상세 조회", description = "💡 ETF ID로 주식을 조회합니다.")
-    @GetMapping
-    public ResponseEntity<EtfDTO> getEtf(@PathVariable("etfId") Long etfId);
+    @Operation(summary = "(교사/학생) ETF 요약 조회", description = "💡 ETF 요약 조회 합니다.")
+    @GetMapping("/summary")
+    public ResponseEntity<ApiResponse<List<EtfSummaryDTO>>> getEtfSummaryList();
 
     @Operation(summary = "(학생) ETF 매수", description = "💡 ETF ID와 수량으로 주식을 매수합니다.")
     @PostMapping("/{etfId}/buy")
