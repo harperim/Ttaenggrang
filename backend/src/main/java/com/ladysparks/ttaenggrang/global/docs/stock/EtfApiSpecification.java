@@ -9,7 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.List;
@@ -29,6 +30,13 @@ public interface EtfApiSpecification {
             """)
     @GetMapping("/buy")
     public ResponseEntity<ApiResponse<List<StudentEtfTransactionDTO>>> getStudentEtfs() ;
+
+    @Operation(summary = "(교사) ETF 등록", description = "💡 ETF 등록 합니다.")
+    @PostMapping("/create") // POST 요청으로 ETF 생성
+    public ResponseEntity<ApiResponse<EtfDTO>> createETF(
+            @RequestParam String name, // ETF 이름
+            @RequestParam String category, // ETF 카테고리
+            @RequestParam List<Long> selectedStockIds);
 
 
 

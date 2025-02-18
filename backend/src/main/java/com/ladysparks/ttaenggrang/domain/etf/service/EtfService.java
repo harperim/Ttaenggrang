@@ -1,32 +1,24 @@
 package com.ladysparks.ttaenggrang.domain.etf.service;
 
-import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
-import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
-import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
-import com.ladysparks.ttaenggrang.domain.etf.dto.EtfSummaryDTO;
-import com.ladysparks.ttaenggrang.domain.etf.dto.EtfTransactionDTO;
+import com.google.gson.Gson;
+import com.ladysparks.ttaenggrang.domain.etf.dto.EtfSummaryDTO;;
 import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;
 import com.ladysparks.ttaenggrang.domain.etf.dto.EtfDTO;
-import com.ladysparks.ttaenggrang.domain.etf.entity.EtfTransaction;
-import com.ladysparks.ttaenggrang.domain.etf.entity.TransType;
 import com.ladysparks.ttaenggrang.domain.etf.repository.EtfRepository;
 import com.ladysparks.ttaenggrang.domain.etf.repository.EtfTransactionRepository;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StockSummaryDTO;
+import com.ladysparks.ttaenggrang.domain.stock.category.Category;
+import com.ladysparks.ttaenggrang.domain.stock.category.CategoryRepository;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
-import com.ladysparks.ttaenggrang.domain.stock.entity.TransactionType;
-import com.ladysparks.ttaenggrang.domain.stock.repository.StockHistoryRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
-import com.ladysparks.ttaenggrang.domain.stock.repository.StockTransactionRepository;
-import com.ladysparks.ttaenggrang.domain.student.entity.Student;
-import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
@@ -35,77 +27,86 @@ public class EtfService {
 
     private final EtfRepository etfRepository;
     private final EtfTransactionRepository etfTransactionRepository;
-    private final StudentRepository studentRepository;
-    private final StockHistoryRepository stockHistoryRepository;
-    private final BankTransactionService bankTransactionService;
     private final StockRepository stockRepository;
-    private final StockTransactionRepository stockTransactionRepository;
+    private final CategoryRepository categoryRepository;
 
-//    // ETF 생성
-//// 사용자 보유 주식 수량 계산
-//    public EtfDTO createETF(EtfDTO etfDTO) {
-//        List<Stock> selectedStocks = stockRepository.findAllById(etfDTO.getStockIds());
-//
-//        if (selectedStocks.size() < 3) {
-//            throw new IllegalArgumentException("ETF를 만들기 위해서는 최소 3개의 주식을 선택해야 합니다.");
-//        }
-//
-//        // 주식들의 총 가치를 계산하여 ETF의 가격을 설정
-//        double totalValue = 0;
-//        for (Stock stock : selectedStocks) {
-//            totalValue += stock.getPrice_per();  // 주식 가격을 반영하여 총 가치를 계산
-//        }
-//
-//        // ETF 생성
-//        Etf etf = new Etf();
-//        etf.setName(etfDTO.getName());  // ETF 이름
-//        etf.setDescription(etfDTO.getDescription());  // ETF 설명
-//        etf.setPrice_per((int) totalValue);  // ETF 가격
-////        etf.setTotal_qty(etfDTO.getQ());  // 선생님이 설정한 수량
-////        etf.setRemain_qty(etfDTO.getQuantity());  // 초기 남은 수량 (선생님 설정한 값)
-//        etf.setCreated_at(Timestamp.valueOf(LocalDateTime.now()));  // 생성일
-//        etf.setUpdated_at(Timestamp.valueOf(LocalDateTime.now()));  // 수정일
-//
-//        // ETF 저장
-//        Etf savedEtf = etfRepository.save(etf);
-//
-//        // 각 주식에 대한 비율(weight) 설정
-//        for (Stock stock : selectedStocks) {
-//            BigDecimal weight = new BigDecimal(stock.getPrice_per())
-//                    .divide(new BigDecimal(totalValue), 4, RoundingMode.HALF_UP);  // 비율 계산
-//            stock.setWeight(weight);  // 주식의 비율 설정
-//            stockRepository.save(stock);  // 주식 정보 저장
-//        }
-//
-//        // 생성된 ETF DTO 반환
-//        return EtfDTO.fromEntity(savedEtf);
-//    }
-//}
-//
-//    // 사용자 보유 주식 수량 계산
-//    public int getUserOwnedStockQty(Long studentId, Long stockId) {
-//        List<StockTransaction> transactions = stockTransactionRepository.findByStudentIdAndStockId(studentId, stockId);
-//        int ownedQty = 0;
-//
-//        // 거래내역을 순회하면서 구매한 수량만 더합니다
-//        for (StockTransaction transaction : transactions) {
-//            if (transaction.getTransType() == TransType.BUY) {
-//                ownedQty += transaction.getOwned_qty();
-//            }
-//        }
-//
-//        return ownedQty;  // 최종 보유 수량 리턴
-//    }
-    //목록 조회
-//
-//    public  Long saveEtf(EtfDTO etfDto) {
-//        // EtfDTO를 Etf 엔티티로 변환
-//        Etf etf = EtfDTO.toEntity(etfDto);
-//        // 변환된 엔티티를 DB에 저장
-//        etfRepository.save(etf);
-//        // 저장된 엔티티의 ID 반환
-//        return etf.getId();
-//    }
+
+    //ETF 생성
+    @Transactional
+    public EtfDTO createETF(String name, String category, List<Long> selectedStockIds) {
+        if (selectedStockIds.size() != 3) {
+            throw new IllegalArgumentException("ETF는 반드시 3개의 주식을 선택해야 합니다.");
+        }
+
+        // 선택한 주식 목록 가져오기
+        List<Stock> selectedStocks = stockRepository.findAllById(selectedStockIds);
+
+        // 카테고리 정보 가져오기
+        Optional<Category> optionalCategory = categoryRepository.findByName(category); // 주어진 카테고리 이름으로 카테고리 조회
+
+        // Optional에서 값 꺼내기
+        Category etfCategory = optionalCategory.orElseThrow(() -> new IllegalArgumentException("잘못된 카테고리입니다."));
+
+        // 선택한 주식들의 총 가격 계산
+        double totalStockPrice = selectedStocks.stream()
+                .mapToDouble(Stock::getPrice_per)
+                .sum();
+
+        // ETF 초기 가격 설정 (선택한 주식들의 가격 합)
+        int initialPrice = (int) totalStockPrice; // 가격을 int로 변환하여 설정
+
+        // 주식 비율 계산
+        Map<Long, Double> stockRatioMap = new HashMap<>();
+        for (Stock stock : selectedStocks) {
+            double ratio = stock.getPrice_per() / totalStockPrice; // 비율 계산
+            stockRatioMap.put(stock.getId(), ratio); // 비율 저장
+        }
+
+        // 비율을 JSON 형태로 변환
+        String stockDataJson = new Gson().toJson(stockRatioMap); // Map을 JSON으로 변환
+
+        // 각 주식의 총 수량을 평균내어 수량 계산
+        int totalQuantity = selectedStocks.stream()
+                .mapToInt(Stock::getTotal_qty)
+                .sum(); // 선택된 주식들의 전체 수량 합
+
+        // 평균 수량 계산
+        int averageStockQuantity = totalQuantity / selectedStocks.size(); // 평균값 계산
+
+        // 각 주식에 대해 평균 수량을 설정
+        Map<Long, Integer> stockQuantityMap = new HashMap<>();
+        for (Stock stock : selectedStocks) {
+            stockQuantityMap.put(stock.getId(), averageStockQuantity); // 평균 수량으로 설정
+        }
+
+        // ETF 저장
+        Etf etf = new Etf();
+        etf.setName(name);
+        etf.setPrice_per(initialPrice);  // 가격을 int로 설정
+        etf.setCreated_at(Timestamp.valueOf(LocalDateTime.now()));
+        etf.setStockDataJson(stockDataJson); // 비율을 JSON으로 저장
+        etf.setCategory(etfCategory); // ETF에 카테고리 설정
+
+        // ETF의 총 수량과 남은 수량을 설정
+        etf.setTotal_qty(averageStockQuantity * selectedStocks.size()); // 총 수량을 평균 수량 * 선택된 주식 수로 설정
+        etf.setRemain_qty(etf.getTotal_qty()); // 남은 수량 설정
+
+        // ETF 저장
+        etf = etfRepository.save(etf);
+        etfRepository.flush();
+
+        // 각 주식에 대해 수량을 설정
+        for (Stock stock : selectedStocks) {
+            int stockQuantity = stockQuantityMap.get(stock.getId());
+            stock.setTotal_qty(stockQuantity);  // Stock 엔티티에 수량 설정
+            stockRepository.save(stock);  // Stock 저장
+        }
+
+        // EtfDTO로 변환하여 반환
+        return EtfDTO.fromEntity(etf);
+    }
+
+
 
     public List<EtfDTO> findEtfs(Long teacherId) {
         //모든 주식 데이터 조회
