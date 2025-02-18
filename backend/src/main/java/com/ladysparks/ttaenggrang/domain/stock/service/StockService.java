@@ -4,9 +4,7 @@ import com.ladysparks.ttaenggrang.domain.stock.category.Category;
 import com.ladysparks.ttaenggrang.domain.stock.category.CategoryRepository;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockSummaryDTO;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StockTransactionResponseDTO;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
-import com.ladysparks.ttaenggrang.domain.stock.entity.StockTransaction;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockTransactionRepository;
 import jakarta.transaction.Transactional;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,7 +66,7 @@ public class StockService {
     }
 
     public List<StockDTO> findStocks(Long teacherId) {
-        // 모든 주식 데이터 조회
+        // 특정 교사(teacherId)와 관련된 모든 주식 데이터를 조회
         List<Stock> stocks = stockRepository.findAllByTeacher_Id(teacherId);
         // 조회된 Stock 엔티티 리스트를 StockDTO 리스트로 변환
         return stocks.stream()
@@ -77,6 +74,7 @@ public class StockService {
                 .collect(Collectors.toList()); // 변환된 DTO를 리스트로 반환
     }
 
+    //요약 조회
     public List<StockSummaryDTO> getStockSummaryList(Long teacherId) {
         // 모든 주식 데이터 조회
         List<Stock> stocks = stockRepository.findAllByTeacher_Id(teacherId);
@@ -107,93 +105,27 @@ public class StockService {
                 .collect(Collectors.toList());
     }
 
+    // 최근 7일간 특정 주식의 거래량을 조회하는 메서드
     public int findTransactionVolumeForLast7Days(Long stockId) {
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
         return stockTransactionRepository.countByStockIdAndTransactionDateAfter(stockId, Timestamp.valueOf(sevenDaysAgo));
     }
 
+    // 전체 주식의 평균 거래량을 계산하는 메서드
     public int findAverageTransactionVolume() {
         List<Integer> allTransactionVolumes = stockTransactionRepository.findAllTransactionVolumes();
         return allTransactionVolumes.isEmpty() ? 0 :
                 allTransactionVolumes.stream().mapToInt(Integer::intValue).sum() / allTransactionVolumes.size();
     }
 
+    // 특정 주식을 조회하여 StockDTO로 변환 후 반환하는 메서드
     public Optional<StockDTO> findStock(Long stockId) {
         // ID로 주식 조회 후, StockDTO로 변환하여 반환
         return stockRepository.findById(stockId)
                 .map(StockDTO::fromEntity); // 엔티티를 DTO로 변환
     }
 
-    // StockTransaction을 TransactionDTO로 변환
-    private List<StockTransactionResponseDTO> convertToTransactionDTO(List<StockTransaction> transactions) {
-        List<StockTransactionResponseDTO> transactionDTOList = new ArrayList<>();
-        for (StockTransaction transaction : transactions) {
-            StockTransactionResponseDTO transactionDTO = new StockTransactionResponseDTO();
 
-            // 학생 ID와 관련된 정보 설정
-            transactionDTO.setStudentId(transaction.getStudent().getId());
 
-            // 주식 관련 정보 설정 (name과 type만 가져오기)
-            Stock stock = transaction.getStock();
-            transactionDTO.setStockId(stock.getId());
-            transactionDTO.setName(stock.getName());  // 주식명
-            transactionDTO.setType(stock.getType());  // 주식 타입
-
-            // 거래 정보 설정
-            transactionDTO.setTransactionType(transaction.getTransactionType());
-            transactionDTO.setShareCount(transaction.getShare_count());
-            transactionDTO.setPurchasePricePerShare(transaction.getPurchase_prc());  // 1주 가격
-            transactionDTO.setTransactionDate(transaction.getTransactionDate()); // 거래 날짜
-
-            // DTO 리스트에 추가
-            transactionDTOList.add(transactionDTO);
-        }
-
-        return transactionDTOList;
-    }
-
-    // 학생이 보유 하고 있는 주식 조회
-//    public List<StudentStockTransactionDTO> getStudentStocks(Long studentId) {
-//        List<StockTransaction> transactions = stockTransactionRepository.findByStudentId(studentId);
-//
-//        Map<Stock, Integer> stockHoldings = new HashMap<>();
-//        Map<Stock, Integer> stockPurchasePrice = new HashMap<>();
-//        Map<Stock, LocalDateTime> stockPurchaseDate = new HashMap<>();
-//
-//        for (StockTransaction tx : transactions) {
-//            Stock stock = tx.getStock();
-//            int qty = tx.getShare_count();
-//
-//            if (tx.getTransactionType() == TransactionType.BUY) {
-//                stockHoldings.put(stock, stockHoldings.getOrDefault(stock, 0) + qty);
-//
-//                // 최초 구매 가격과 날짜 저장
-//                if (!stockPurchasePrice.containsKey(stock)) {
-//                    stockPurchasePrice.put(stock, tx.getPurchase_prc());
-//                    stockPurchaseDate.put(stock, tx.getTransactionDate().toLocalDateTime());
-//                }
-//            } else if (tx.getTransactionType() == TransactionType.SELL) {
-//                stockHoldings.put(stock, stockHoldings.getOrDefault(stock, 0) - qty);
-//            }
-//        }
-//
-//        List<StudentStockDTO> studentStocks = new ArrayList<>();
-//        for (Map.Entry<Stock, Integer> entry : stockHoldings.entrySet()) {
-//            Stock stock = entry.getKey();
-//            int holdingQty = entry.getValue();
-//
-//            if (holdingQty > 0) { // 보유 수량이 있는 경우만 추가
-//                studentStocks.add(new StudentStockDTO(
-//                        stock.getId(),
-//                        stock.getName(),
-//                        holdingQty,
-//                        stockPurchasePrice.get(stock), // 최초 구매 가격
-//                        stockPurchaseDate.get(stock), // 최초 구매 날짜
-//                        stock.getPrice_per() // 현재 주가
-//                ));
-//            }
-//        }
-//        return studentStocks;
-//    }
 
 }

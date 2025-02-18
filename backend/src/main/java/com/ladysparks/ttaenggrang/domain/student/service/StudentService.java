@@ -23,9 +23,11 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
@@ -555,6 +557,10 @@ public class StudentService {
         return responseDTOs;
     }
 
+    public List<Student> findAllStudentByTeacherId(Long teacherId) {
+        return studentRepository.findAllByTeacherId(teacherId);
+    }
+
     public Long findTeacherIdByStudentId(Long studentId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID를 가진 학생이 존재하지 않습니다."));
@@ -689,4 +695,9 @@ public class StudentService {
         return ApiResponse.success("학생의 직업이 성공적으로 수정되었습니다.", responseDTO);
     }
 
+    // [학생] 자신의 직업 정보 조회
+    public StudentJobResponseDTO getStudentJobSalary(Long studentId) {
+        return studentRepository.findJobAndSalaryByStudentId(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("학생 정보를 찾을 수 없습니다."));
+    }
 }

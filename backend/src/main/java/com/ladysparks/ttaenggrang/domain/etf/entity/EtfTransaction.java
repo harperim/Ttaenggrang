@@ -25,7 +25,7 @@ public class EtfTransaction {
     private int share_count;  // ETF 거래 수량
 
     @Column
-    private Timestamp trans_date;  // 거래 날짜
+    private Timestamp transDate;  // 거래 날짜
 
     @Column
     private int purchase_prc;   // 거래 당시 1주 가격
@@ -36,8 +36,6 @@ public class EtfTransaction {
     @Column
     private int total_amt;  // 총 거래 금액
 
-    @Column
-    private int return_amt;   // 현재 주가
 
     @Column(precision = 5, scale = 2)  // DECIMAL(5, 2) 설정
     private BigDecimal returnRate;  // 손익/손실 금액
@@ -45,7 +43,7 @@ public class EtfTransaction {
     // 거래 유형
     @Enumerated(EnumType.STRING)  // Enum 값을 문자열로 저장
     @Column(name = "trans_type")
-    private TransactionType transactionType;
+    private TransType transType;
 
     // 조인
 

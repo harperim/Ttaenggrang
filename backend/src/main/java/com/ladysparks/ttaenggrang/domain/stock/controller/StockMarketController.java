@@ -25,12 +25,7 @@ public class StockMarketController implements StockMarketApiSpecification {
     private final TeacherService teacherService;
     private final StudentService studentService;
 
-//    @GetMapping("/on-off")
-//    public ResponseEntity<ApiResponse<Boolean>> getTeacherOnOff() {
-//        Long teacherId = teacherService.getCurrentTeacherId();
-//        boolean isMarketActive = stockMarketService.getTeacherOnOff(teacherId);
-//        return ResponseEntity.ok(isMarketActive);
-//    }
+
 
     // 주식 시장 활성화/비활성화 설정 (선생님이 버튼으로 설정)
     @GetMapping

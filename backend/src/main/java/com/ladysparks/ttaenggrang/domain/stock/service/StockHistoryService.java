@@ -10,14 +10,15 @@ import com.ladysparks.ttaenggrang.domain.stock.repository.StockRepository;
 import com.ladysparks.ttaenggrang.domain.stock.repository.StockTransactionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -146,16 +147,24 @@ public class StockHistoryService {
     }
 
     // 모든 주식 가격 변동 이력 조회
-    public List<StockHistoryDTO> getAllStockHistory() {
-        List<StockHistory> historyList = stockHistoryRepository.findAll();
-        if (historyList.isEmpty()) {
-            throw new IllegalArgumentException("등록된 주식 가격 변동 이력이 없습니다.");
-        }
+    /**
+     * 📌 특정 교사가 관리하는 주식의 최근 5개 평일 변동 이력 조회 (오늘 포함, 주말 제외, 오래된 순서)
+     */
+    public Map<Long, List<StockHistoryDTO>> getLast5WeekdaysStockHistory(Long teacherId) {
+        List<Stock> stocks = stockRepository.findByTeacherId(teacherId); // 교사가 관리하는 모든 주식 조회
+        Map<Long, List<StockHistoryDTO>> historyMap = new HashMap<>();
 
-        // StockHistory 엔티티를 StockHistoryDTO로 변환하여 반환
-        return historyList.stream()
-                .map(StockHistoryDTO::fromEntity)
-                .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(0, 5); // 최신 5개만 조회
+
+        for (Stock stock : stocks) {
+            List<StockHistory> histories = stockHistoryRepository.findLast5WeekdaysIncludingToday(stock.getId(), pageable);
+            List<StockHistoryDTO> historyDTOs = histories.stream()
+                    .map(StockHistoryDTO::fromEntity)
+                    .sorted(Comparator.comparing(StockHistoryDTO::getDate)) // 오래된 순서로 정렬
+                    .collect(Collectors.toList());
+            historyMap.put(stock.getId(), historyDTOs);
+        }
+        return historyMap;
     }
 
 }

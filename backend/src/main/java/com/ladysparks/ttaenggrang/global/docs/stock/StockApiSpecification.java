@@ -48,10 +48,10 @@ public interface StockApiSpecification {
             """)
     ResponseEntity<ApiResponse<List<StockDTO>>> getStockList();
 
-    @Operation(summary = "(교사/학생) 주식 상품 [상세 조회]", description = """
-            💡 특정 주식 상품을 상세 조회합니다.
-            """)
-    ResponseEntity<ApiResponse<StockDTO>> getStock(@PathVariable("stockId") Long stockId);
+//    @Operation(summary = "(교사/학생) 주식 상품 [상세 조회]", description = """
+//            💡 특정 주식 상품을 상세 조회합니다.
+//            """)
+//    ResponseEntity<ApiResponse<StockDTO>> getStock(@PathVariable("stockId") Long stockId);
 
     @Operation(summary = "(교사) 주식 상품 [등록]", description = """
             💡 교사가 판매할 주식 상품을 등록합니다.

@@ -98,7 +98,7 @@ public class SwaggerConfig {
     public GroupedOpenApi stockApi() {
         return GroupedOpenApi.builder()
                 .group("7. 주식")
-                .pathsToMatch("/stocks/**", "/etfs/**", "/news/**", "/stock-market/**", "/stock-history/**", "/stock-transactions/**")
+                .pathsToMatch("/stocks/**", "/etfs/**", "/news/**", "/stock-market/**", "/stock-history/**", "/stock-transactions/**", "/etf-transactions/**")
                 .build();
     }
 
@@ -115,6 +115,14 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("9. 주간 통계 보고서")
                 .pathsToMatch("/weekly-report/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi adminApi() {
+        return GroupedOpenApi.builder()
+                .group("0. 관리자")
+                .pathsToMatch("/admin/**")
                 .build();
     }
 

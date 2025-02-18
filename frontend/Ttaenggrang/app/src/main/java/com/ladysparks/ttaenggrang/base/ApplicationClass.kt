@@ -1,6 +1,9 @@
 package com.ladysparks.ttaenggrang.base
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import android.util.Log
 //import com.github.mikephil.charting.BuildConfig
 import com.ladysparks.ttaenggrang.BuildConfig
@@ -30,6 +33,9 @@ class ApplicationClass : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // FCM Channel
+        createNotificationChannel()
 
         // SharedPreferencesUtil
         SharedPreferencesUtil.init(this)
@@ -68,5 +74,21 @@ class ApplicationClass : Application() {
         .setLenient()
         .setPrettyPrinting()  // JSON을 보기 좋게 출력
         .create()
+
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channelId = "ttaenggrang_fcm_default_channel"
+            val channelName = "FCM ttaenggrang"
+            val descriptionText = "Firebase Cloud Messaging Default Channel"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(channelId, channelName, importance).apply {
+                description = descriptionText
+            }
+
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 
 }

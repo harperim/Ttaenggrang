@@ -100,14 +100,15 @@ public class NewsService {
 
         // 2. chatGPT API 요청 준비
         String prompt = String.format(
-                "초등학생이 이해할 수 있는 주식 시장 뉴스를 작성해주세요.\n" +
-                        "주식명: %s\n" +
-                        "조건: 내용은 반드시 **5문장 이상**으로 작성해주세요. 미만 시 재생성.\n" +
-                        "형식:\n" +
-                        "제목: [뉴스 제목]\n" +
-                        "내용: [뉴스 내용 (최소 5문장)]\n" +
-                        "유형: [호재/악재]\n" +
-                        "반드시 위 형식을 정확히 따라야 합니다. **5문장 이상** 작성 필수!",
+                "1. 구독 대상 : 초등학생\n" +
+                "2. 출력 조건 : 내용은 반드시 **5문장 이상**으로 작성해주세요. 미만 시 재생성\n" +
+                "3. 요구사항 : 해당 주식에 대하여 호재 or 악재 와 관련된 공시정보를 생성. 단, 직접적인 주식 상승, 하락이 아니라 연관 정보(ex 주변 산업 동향, 환경변화) 를 간접적으로 제시해야함. 문어체 사용.\n" +
+                "4. 공시정보 대상 주식: %s\n" +
+                "3. 형식:\n" +
+                "제목: [뉴스 제목]\n" +
+                "내용: [뉴스 내용]\n" +
+                "유형: [호재/악재 중 하나]\n" +
+                "반드시 위 형식을 정확히 따라야 합니다. **5문장 이상** 작성 필수!",
                 randomStock.getName()
         );
 
@@ -174,7 +175,7 @@ public class NewsService {
         newsRepository.save(news);
 
         // 학생들에게 FCM 알림 전송
-        notificationService.sendNewsNotificationToStudents(teacherId);
+        notificationService.sendNewsNotificationToStudents(teacherId, newsDTO.getContent());
 
         return newsDTO;
     }

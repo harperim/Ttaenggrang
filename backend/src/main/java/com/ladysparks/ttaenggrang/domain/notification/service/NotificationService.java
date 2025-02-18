@@ -8,6 +8,7 @@ import com.ladysparks.ttaenggrang.domain.notification.entity.Notification.Notifi
 import com.ladysparks.ttaenggrang.domain.notification.mapper.NotificationMapper;
 import com.ladysparks.ttaenggrang.domain.notification.repository.NotificationRepository;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -31,12 +31,11 @@ public class NotificationService {
     private final StudentService studentService;
 
     /**
-     * 뉴스
+     * 뉴스 발행 알림
      */
-    public void sendNewsNotificationToStudents(Long teacherId) throws IOException {
+    public void sendNewsNotificationToStudents(Long teacherId, String content) throws IOException {
         String category = "News";
-        String title = "새로운 뉴스가 발행되었습니다.";
-        String content = "뉴스를 확인하러 가볼까요?";
+        String title = "뉴스 발행";
         long time = System.currentTimeMillis();
         String sender = "System";
         String receiver = "STUDENT";
@@ -50,19 +49,19 @@ public class NotificationService {
                 .receiver(receiver)
                 .build();
 
-        List<String> targetTokens = studentService.findAllByTeacherId(teacherId).stream()
-                .map(StudentResponseDTO::getToken)
+        List<String> targetTokens = studentService.findAllStudentByTeacherId(teacherId).stream()
+                .map(Student::getFcmToken)
                 .toList();
 
         fcmWithDataService.broadCastToAllStudents(targetTokens, notificationDTO);
     }
 
     /**
-     * 주간 리포트
+     * 주간 리포트 알림
      */
     public void sendWeeeklyNotificationToStudents(Long teacherId) throws IOException {
         String category = "Report";
-        String title = "AI가 주간 통계 보고서를 발행했습니다.";
+        String title = "주간 통계 보고서 발행";
         String content = "주간 통계 보고서를 확인하러 가볼까요?";
         long time = System.currentTimeMillis();
         String sender = "System";
@@ -85,12 +84,12 @@ public class NotificationService {
     }
 
     /**
-     * 은행 상품 만기
+     * 은행 상품 만기 알림
      */
     public void sendBankNotificationToStudents(Long studentId, String bankProductName) throws IOException {
         String category = "Bank";
-        String title = bankProductName + " 상품이 만기되었어요!";
-        String content = "만기 금액을 지급 받으러 가볼까요?";
+        String title = "적금 만기 안내";
+        String content = bankProductName + " 적금 만기날 입니다.";
         long time = System.currentTimeMillis();
         String sender = "System";
         String receiver = "STUDENT";
