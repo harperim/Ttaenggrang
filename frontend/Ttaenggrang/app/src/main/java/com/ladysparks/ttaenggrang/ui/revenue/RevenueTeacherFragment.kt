@@ -65,15 +65,15 @@ class RevenueTeacherFragment : BaseFragment<FragmentRevenueTeacherBinding>(Fragm
             adapter = revenueTeacherNationHistoryAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
-
         revenueViewModel.getNationalTreasury()
 
-        observeLiveData()
 
         revenueViewModel.fetchTaxList()
         revenueViewModel.fetchTeacherStudentPaymentsAmount()
         revenueViewModel.fetchStudentTaxHistory(1, "2025-01-01", "2025-03-01")
         revenueViewModel.fetchNationTaxHistory()
+
+        observeLiveData()
 
         // 세금 생성하기 다이얼로그
         binding.btnRegisterTaxInfo.setOnClickListener {
@@ -87,7 +87,6 @@ class RevenueTeacherFragment : BaseFragment<FragmentRevenueTeacherBinding>(Fragm
 
         // 국세 내역 보기
         binding.linearNationTaxHistoryTitle.setOnClickListener{
-            Log.d("NationTaxRecycler", "1")
             showNationTaxDialog()
         }
     }
@@ -336,10 +335,13 @@ class RevenueTeacherFragment : BaseFragment<FragmentRevenueTeacherBinding>(Fragm
                 return@setOnClickListener
             }
 
-            dialog.dismiss()
             revenueViewModel.useTax(name, amount, description, {
+                dialog.dismiss()
                 showToast("국세 사용에 성공했습니다")
+                revenueViewModel.getNationalTreasury()
+                revenueViewModel.fetchNationTaxHistory()
             }, {
+                dialog.dismiss()
                 showToast("국세 사용에 실패했습니다")
             })
 

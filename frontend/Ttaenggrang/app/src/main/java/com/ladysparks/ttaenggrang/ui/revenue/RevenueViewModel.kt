@@ -161,6 +161,7 @@ class RevenueViewModel: ViewModel() {
             }.onSuccess {
                 Log.d("useTax Success", "success ${it}")
                 onSuccess()
+                fetchNationTaxHistory()
             }.onFailure { throwable ->
                 Log.e("useTax Failure", "Failure:", throwable)
                 onFailure()
