@@ -24,6 +24,7 @@
                 android:layout_marginBottom="3dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView
+            android:id="@+id/textItemName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="미지 교환권"
@@ -41,6 +42,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_shop_money"/>
             <TextView
+                android:id="@+id/textItemPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="50,000"

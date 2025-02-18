@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="285dp"
+    android:layout_width="match_parent"
     android:layout_height="47dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -14,15 +14,17 @@
 
         <TextView
             android:id="@+id/textStudentNameTaxHistory"
-            android:layout_width="142.5dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="서미지"
             style="@style/body2"
             android:gravity="center"/>
 
         <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:id="@+id/textStudentAmountTaxHistory"
-            android:layout_width="142.5dp"
             android:layout_height="wrap_content"
             android:text="100,000"
             style="@style/body2"

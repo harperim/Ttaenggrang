@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.tax.controller;
 
+import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.tax.dto.TaxDTO;
 import com.ladysparks.ttaenggrang.domain.tax.service.TaxService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/taxes/")
@@ -19,6 +21,7 @@ public class TaxController implements TaxApiSpecification {
 
     private final TaxService taxService;
     private final TeacherService teacherService;
+    private final StudentService studentService;
 
     // 세금 항목 [등록]
     @PostMapping
@@ -30,9 +33,9 @@ public class TaxController implements TaxApiSpecification {
     // 세금 항목 [전체 조회]
     @GetMapping
     public ResponseEntity<ApiResponse<List<TaxDTO>>> taxList() {
-        Long teacherId = teacherService.getCurrentTeacherId();
+        Optional<Long> studentId = studentService.getOptionalCurrentStudentId();
+        Long teacherId = studentId.isPresent() ? studentService.findTeacherIdByStudentId(studentId.get()) : teacherService.getCurrentTeacherId();
         List<TaxDTO> taxDTOList = taxService.findTaxesByTeacher(teacherId);
-
         ApiResponse<List<TaxDTO>> response = ApiResponse.success(taxDTOList);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }

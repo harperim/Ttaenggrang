@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.stock.category;
 
+import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,4 +30,7 @@ public class Category {
 
     @OneToMany(mappedBy = "category")
     private List<Stock> stocks;
+
+    @OneToMany(mappedBy = "category")
+    private List<Etf> etfs;
 }

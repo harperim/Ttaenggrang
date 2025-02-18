@@ -47,6 +47,7 @@ public class Teacher {
 
     // 주식
     @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"teacher"})
     private List<Etf> etfs; // 선생님이 관리하는 주식 목록
 
     @OneToOne(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -62,6 +63,7 @@ public class Teacher {
     private StockMarketStatus marketStatus;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"teacher"})
     private List<Tax> taxes;
 
 }
