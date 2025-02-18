@@ -1,17 +1,295 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/backgroundGray"
     android:layout_height="match_parent"
-    tools:context=".ui.bank.BankStudentFragment">
+    android:background="@color/backgroundGray"
+    android:orientation="horizontal"
+    android:padding="40dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="은행. 학생" />
+    <!-- 배너 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintBannerArea"
+        android:layout_width="696dp"
+        android:layout_height="126dp"
+        android:background="@drawable/img_banner"
+        app:layout_constraintBottom_toTopOf="@+id/constraintViewArea2"
+        app:layout_constraintEnd_toStartOf="@+id/constraintViewArea"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- 텍스트 추가 -->
+        <TextView
+            android:id="@+id/textBannerHead"
+            style="@style/heading2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_20"
+            android:layout_marginTop="@dimen/spacing_15"
+            android:text="은행"
+            android:textColor="@android:color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textInfo"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_20"
+            android:text="돈을 모으는 가장 좋은 방법!"
+            android:textColor="@color/foundation_black_50"
+            app:layout_constraintBottom_toTopOf="@id/textInfo2"
+            app:layout_constraintStart_toStartOf="@+id/constraintBannerArea"
+            app:layout_constraintTop_toBottomOf="@+id/textBannerHead" />
+
+        <TextView
+            android:id="@+id/textInfo2"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_20"
+            android:layout_marginBottom="@dimen/spacing_20"
+            android:text="저축하고, 계획적으로 금융 생활을 시작해보세요!"
+            android:textColor="@color/foundation_black_50"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintBannerArea"
+            app:layout_constraintStart_toStartOf="@+id/constraintBannerArea"
+            app:layout_constraintTop_toBottomOf="@+id/textInfo" />
 
 
-</FrameLayout>
+        <!-- ImageView를 감쌀 FrameLayout 추가 -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_20"
+            android:clipChildren="true"
+            android:clipToPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- 이미지 추가 (크게 설정해서 배너 바깥으로 넘기기) -->
+            <ImageView
+                android:id="@+id/bannerImage"
+                android:layout_width="126dp"
+                android:layout_height="126dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/fox_coins"
+                android:translationX="20dp"
+                android:translationY="20dp" />
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--예상 이자 수익-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintViewArea"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/spacing_20"
+        android:background="@drawable/img_banner_green"
+        android:padding="@dimen/spacing_20"
+        app:layout_constraintBottom_toBottomOf="@id/constraintBannerArea"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/constraintBannerArea"
+        app:layout_constraintTop_toTopOf="@id/constraintBannerArea">
+
+        <TextView
+            android:id="@+id/textTitle"
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="예상 이자 수익"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@id/textContent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textContent"
+            style="@style/heading2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100,000"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/textTitle"
+            app:layout_constraintTop_toBottomOf="@id/textTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--계좌별 저축 이자 비율-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintViewArea3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:background="@drawable/bg_rounded_15"
+        android:paddingHorizontal="@dimen/spacing_20"
+        android:paddingVertical="@dimen/spacing_15"
+        app:layout_constraintBottom_toTopOf="@id/constraintViewArea4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/constraintViewArea"
+        app:layout_constraintTop_toBottomOf="@id/constraintViewArea"
+        app:layout_constraintVertical_weight="0.4">
+
+        <TextView
+            android:id="@+id/textChartTitle"
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="계좌별 저축 이자 비율 TOP3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/chartBank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textChartTitle" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--내 보유 계좌-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintViewArea4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:background="@drawable/bg_rounded_15"
+        android:paddingHorizontal="@dimen/spacing_20"
+        android:paddingVertical="@dimen/spacing_15"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/constraintViewArea3"
+        app:layout_constraintTop_toBottomOf="@id/constraintViewArea3"
+        app:layout_constraintVertical_weight="0.6">
+
+        <TextView
+            android:id="@+id/textMyAccountTitle"
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="내 보유 계좌"
+            app:layout_constraintBottom_toTopOf="@id/recyclerMyAccount"
+            app:layout_constraintEnd_toStartOf="@id/ic_right"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ic_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="3dp"
+            android:layout_marginStart="5dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_chevron_right"
+            app:layout_constraintBottom_toBottomOf="@id/textMyAccountTitle"
+            app:layout_constraintStart_toEndOf="@id/textMyAccountTitle"
+            app:layout_constraintTop_toTopOf="@id/textMyAccountTitle" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerMyAccount"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/spacing_20"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/textMyAccountTitle"
+            app:layout_constraintTop_toBottomOf="@id/textMyAccountTitle" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--은행 상품 리스트-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintViewArea2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:paddingTop="@dimen/spacing_20"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/constraintBannerArea"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintBannerArea">
+
+        <TextView
+            android:id="@+id/textBankProductTitle"
+            style="@style/heading3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="은행 상품 구매"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--탭-->
+        <TextView
+            android:id="@+id/textTab1"
+            style="@style/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_10"
+            android:background="@drawable/tab"
+            android:backgroundTint="@color/foundation_green_50"
+            android:paddingHorizontal="@dimen/spacing_10"
+            android:paddingVertical="3dp"
+            android:text="전체"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@id/textBankProductTitle"
+            app:layout_constraintEnd_toStartOf="@+id/textTab2"
+            app:layout_constraintTop_toTopOf="@id/textBankProductTitle" />
+
+        <TextView
+            android:id="@+id/textTab2"
+            style="@style/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_10"
+            android:background="@drawable/tab"
+            android:backgroundTint="@color/foundation_green_50"
+            android:paddingHorizontal="@dimen/spacing_10"
+            android:paddingVertical="3dp"
+            android:text="예금"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@id/textTab1"
+            app:layout_constraintStart_toEndOf="@id/textTab1"
+            app:layout_constraintTop_toTopOf="@id/textTab1" />
+
+        <TextView
+            android:id="@+id/textTab3"
+            style="@style/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_10"
+            android:background="@drawable/tab"
+            android:backgroundTint="@color/foundation_green_50"
+            android:paddingHorizontal="@dimen/spacing_10"
+            android:paddingVertical="3dp"
+            android:text="적금"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@id/textTab2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textTab2"
+            app:layout_constraintTop_toTopOf="@id/textTab2" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerBankProduct"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/spacing_20"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textBankProductTitle" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
