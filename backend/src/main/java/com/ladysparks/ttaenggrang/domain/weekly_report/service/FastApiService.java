@@ -16,6 +16,8 @@ public class FastApiService {
         this.webClient = webClientBuilder
                 .baseUrl("https://ttaenggrang.fly.dev") // ✅ FastAPI 엔드포인트
                 .defaultHeader("Content-Type", "application/json")
+                .defaultHeader("User-Agent", "Spring Boot WebClient") // ✅ User-Agent 추가
+                .defaultHeader("Origin", "https://i12d107.p.ssafy.io") // ✅ EC2 도메인 명시
                 .build();
     }
 
