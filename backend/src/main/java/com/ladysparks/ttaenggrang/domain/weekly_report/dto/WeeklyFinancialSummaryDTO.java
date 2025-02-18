@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.weekly_report.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ladysparks.ttaenggrang.domain.weekly_report.entity.WeeklyFinancialSummary;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(value = {"studentId", "reportDate"})
 @Builder
 public class WeeklyFinancialSummaryDTO {
 

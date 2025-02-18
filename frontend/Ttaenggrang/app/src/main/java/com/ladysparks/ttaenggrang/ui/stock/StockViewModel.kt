@@ -5,25 +5,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.GsonBuilder
 import com.ladysparks.ttaenggrang.data.model.dto.NewsDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
+import com.ladysparks.ttaenggrang.data.model.dto.StockHistoryDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockStudentDto
 
-import com.ladysparks.ttaenggrang.data.model.dto.StockSummaryDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockTransactionHistoryDto
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil.Companion.bankService
-import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil.Companion.stockService
 import com.ladysparks.ttaenggrang.data.remote.StockService
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.util.ApiErrorParser
-import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
+import com.ladysparks.ttaenggrang.util.CustomDateUtil
+import com.ladysparks.ttaenggrang.util.NumberUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
 
 class StockViewModel : ViewModel() {
     private val stockService: StockService = RetrofitUtil.stockService
@@ -63,7 +60,6 @@ class StockViewModel : ViewModel() {
     // 예상 결제 금액
     private val _expectedPayment = MutableLiveData<Int>()
     val expectedPayment: LiveData<Int> get() = _expectedPayment
-
 
     // 거래 후 내 보유 현금 계산
     private val _updatedBalance = MutableLiveData<Int>()
@@ -105,7 +101,6 @@ class StockViewModel : ViewModel() {
     private val _latestNewsLiveData = MutableLiveData<NewsDto?>()
     val latestNewsLiveData: LiveData<NewsDto?> get() = _latestNewsLiveData
 
-
     // 로딩확인
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -113,7 +108,6 @@ class StockViewModel : ViewModel() {
     // 교사 주식 목록 조회
     private val _stockSummaryList = MutableLiveData<List<BaseTableRowModel>>()
     val stockSummaryList: LiveData<List<BaseTableRowModel>> get() = _stockSummaryList
-
 
     // 총 수익
     private val _totalProfit = MutableLiveData<Int>()
@@ -123,9 +117,22 @@ class StockViewModel : ViewModel() {
     private val _totalYield = MutableLiveData<Float>()
     val totalYield: LiveData<Float> get() = _totalYield
 
+    // 뉴스 그래프 조회
+    private val _stockHistory = MutableLiveData<List<StockHistoryDto>>()
+    val stockHistory: LiveData<List<StockHistoryDto>> get() = _stockHistory
+
+    // 평균 매입 단가
+    private val _avgPurchasePriceMap = MutableLiveData<Map<Int, Int>>()
+    val avgPurchasePriceMap: LiveData<Map<Int, Int>> get() = _avgPurchasePriceMap
+
+    // 내 주식 상세 다이얼로그에 띄울 데이터
+    private val _selectedStockInfo = MutableLiveData<StockDetailInfo?>()
+    val selectedStockInfo: LiveData<StockDetailInfo?> get() = _selectedStockInfo
+
     init {
         // ✅ 앱 실행 시 자동으로 거래 내역 가져와서 데이터 업데이트
         fetchStudentStockTransactions()
+        fetchStockHistory()
     }
 
 
@@ -142,17 +149,17 @@ class StockViewModel : ViewModel() {
     }
 
     // 학생이 보유한 주식 목록 조회
-//    fun fetchOwnedStocks() = viewModelScope.launch {
-//        runCatching {
-//            stockService.getStocksStudent()
-//        }.onSuccess { response ->
-//            _ownedStocks.postValue(response.data)
-//            Log.d("TAG", "fetchOwnedStocks: 학생 주식 목록 조회성공!!!${response}")
-//        }.onFailure { e ->
-//            Log.e("StockViewModel", "보유 주식 조회 실패", e)
-//            _ownedStocks.postValue(emptyList())
-//        }
-//    }
+    fun fetchOwnedStocks() = viewModelScope.launch {
+        runCatching {
+            stockService.getStocksStudent()
+        }.onSuccess { response ->
+            _ownedStocks.postValue(response.data)
+            Log.d("TAG", "fetchOwnedStocks: 학생 주식 목록 조회성공!!!${response}")
+        }.onFailure { e ->
+            Log.e("StockViewModel", "보유 주식 조회 실패", e)
+            _ownedStocks.postValue(emptyList())
+        }
+    }
 
     // 주식 매도
     fun sellStock(stockId: Int, shareQuantity: Int, studentId: Int) = viewModelScope.launch {
@@ -162,6 +169,7 @@ class StockViewModel : ViewModel() {
             // 데이터 동기화
             _sellTransaction.postValue(response.data)
             fetchBalance()
+            fetchStudentStockTransactions()
         }.onFailure { e ->
             Log.e("StockViewModel", "매도 요청 실패", e)
             _errorMessage.postValue("매도 요청 실패: ${e.message}")
@@ -176,6 +184,7 @@ class StockViewModel : ViewModel() {
             _buyTransaction.postValue(response.data)
             Log.d("StockViewModel", "매수 성공: ${response.data?.shareQuantity}주")
             fetchBalance()
+            fetchStudentStockTransactions()
         }.onFailure { e ->
             Log.e("StockViewModel", "매수 요청 실패", e)
             _errorMessage.postValue("매수 요청 실패: ${e.message}")
@@ -249,7 +258,7 @@ class StockViewModel : ViewModel() {
     }
 
 
-// 학생 주식 거래 기록 조회
+    // 학생 주식 거래 기록 조회
     fun fetchStudentStockTransactions() = viewModelScope.launch {
         runCatching {
             stockService.getStockTransactionHistory()
@@ -277,12 +286,14 @@ class StockViewModel : ViewModel() {
         }
     }
 
-//    // 학생 주식 목록 테이블 계산
+    // 학생 주식 목록 테이블 계산
     fun updateStockTableData() {
         val transactions = stockTransactionHistory.value ?: emptyList()
 
-        var totalInvestment = 0 // ✅ 총 투자액
+        var totalInvestment = 0// ✅ 총 투자액
         var totalValuation = 0 // ✅ 총 평가금액
+
+        val avgPriceMap = mutableMapOf<Int, Int>()
 
         // 🔹 거래 기록을 stockId 기준으로 그룹화
         val groupedTransactions = transactions.groupBy { it.stockId }
@@ -303,8 +314,10 @@ class StockViewModel : ViewModel() {
                 if (it.transactionType == "BUY") it.shareCount else -it.shareCount
             }
 
-            // 🔹 평균 매입 단가 계산 (총 매입 금액 / 총 매입 주식 수)
-            val avgPurchasePrice = if (totalShares > 0) totalCost / totalShares else 0
+            // 🔹 평균 매입 단가 계산 (총 매입 금액 / 총 매입 주식 수) -> 정수형 변환
+            val avgPurchasePrice = if (totalShares > 0) (totalCost / totalShares) else 0
+            avgPriceMap[stockId] = avgPurchasePrice // ✅ 평균 매입 단가 저장
+            _avgPurchasePriceMap.postValue(avgPriceMap)
 
             // 🔹 평가금액 계산 (보유 주식 수 * 현재 주가)
             val valuationAmount = ownedShares * currentPrice
@@ -319,8 +332,8 @@ class StockViewModel : ViewModel() {
             } else 0f
 
             // 🔹 총 투자액과 총 평가금액 업데이트
-            totalInvestment += investmentAmount
-            totalValuation += valuationAmount
+            totalInvestment += investmentAmount.toInt()
+            totalValuation += valuationAmount.toInt()
 
             Log.d(
                 "StockDebug",
@@ -329,15 +342,16 @@ class StockViewModel : ViewModel() {
 
             BaseTableRowModel(
                 listOf(
-                    stockTransactions.firstOrNull()?.transactionDate ?: "", // 매수일 (첫 거래 날짜)
+                    //stockTransactions.firstOrNull()?.transactionDate ?: "",
+                    stockTransactions.firstOrNull()?.transactionDate?.let { CustomDateUtil.formatToDate(it) } ?: "", // 매수일 (첫 거래 날짜)
                     stockName,              // 주식명
                     stockType,              // 주식 유형
-                    ownedShares.toString(), // 보유 주식 수
-                    avgPurchasePrice.toString(), // 평균 매입 단가
-                    currentPrice.toString(), // 현재 주가
-                    valuationAmount.toString(), // 평가금액
+                    "${ownedShares}주", // 보유 주식 수
+                    NumberUtil.formatWithComma(avgPurchasePrice), // 평균 매입 단가
+                    NumberUtil.formatWithComma(currentPrice) , // 현재 주가
+                    NumberUtil.formatWithComma(valuationAmount), // 평가금액
                     "%.2f%%".format(yield), // 수익률
-                    profitLoss.toString() // 손익금액
+                    NumberUtil.formatWithComma(profitLoss) // 손익금액
                 )
             )
         }
@@ -346,7 +360,7 @@ class StockViewModel : ViewModel() {
         val totalYield =
             if (totalInvestment > 0) (totalProfit.toFloat() / totalInvestment) * 100 else 0f
 
-        _totalProfit.postValue(totalProfit) // ✅ 총 수익 LiveData 업데이트
+        _totalProfit.postValue(totalProfit.toInt()) // ✅ 총 수익 LiveData 업데이트
         _totalYield.postValue(totalYield) // ✅ 총 수익률 LiveData 업데이트
 
         Log.d("StockSummary", "총 투자액: $totalInvestment")
@@ -365,7 +379,6 @@ class StockViewModel : ViewModel() {
         )
         _stockTableData.postValue(transactionBasedStocks)
         _totalYield.postValue(totalYield)
-
     }
 
     // 뉴스 생성
@@ -538,7 +551,79 @@ class StockViewModel : ViewModel() {
         }
     }
 
+    // 주식 그래프 조회
+    fun fetchStockHistory() {
+        viewModelScope.launch {
+            runCatching {
+                stockService.getStockHistory() // ✅ API 요청
+            }.onSuccess { response ->
+                if (response.isSuccessful) {
+                    response.body()?.data?.values?.flatten()?.let { stockData ->
+                        val sortedStockData = stockData.sortedBy { it.date }
+                        _stockHistory.postValue(sortedStockData)
+
+                        // ✅ 데이터 로그 확인
+                        Log.d("ViewModel", "StockHistory 업데이트됨: ${sortedStockData.size}")
+                    } ?: Log.d("ViewModel", "StockHistory 응답은 성공했지만 데이터 없음")
+                } else {
+                    Log.d("ViewModel", "StockHistory API 실패: ${response.code()}")
+                }
+            }.onFailure { e ->
+                Log.e("ViewModel", "StockHistory API 호출 오류", e)
+            }
+        }
+    }
+
+    // ✅ 주식 상세 정보 설정 함수
+    fun setSelectedStockInfo(stockId: Int) {
+        val transactions = stockTransactionHistory.value ?: emptyList()
+        val stockData = stockList.value?.find { it.id == stockId }
+        val transactionHistory = transactions.filter { it.stockId == stockId }
+
+        if (stockData == null || transactionHistory.isEmpty()) {
+            _selectedStockInfo.postValue(null)
+            return
+        }
+
+        val stockName = stockData.name
+        val currentPrice = stockData.pricePerShare
+        val changeRate = stockData.changeRate
+
+        // ✅ 가장 최근 거래 날짜 찾기
+        val purchaseDate = transactionHistory.minByOrNull { it.transactionDate }?.transactionDate
+            ?.let { CustomDateUtil.formatToDate(it) } ?: "N/A"
+
+        // ✅ 평균 매입 단가 가져오기
+        val avgPurchasePrice = avgPurchasePriceMap.value?.get(stockId) ?: 0
+
+        // ✅ 보유 주식 수 계산
+        val ownedShares = transactionHistory.sumOf {
+            if (it.transactionType == "BUY") it.shareCount else -it.shareCount
+        }
+
+        // ✅ 데이터 클래스 생성 후 LiveData 업데이트
+        val stockDetailInfo = StockDetailInfo(
+            stockId = stockId,
+            stockName = stockName,
+            currentPrice = currentPrice,
+            changeRate = changeRate,
+            purchaseDate = purchaseDate,
+            avgPurchasePrice = avgPurchasePrice,
+            ownedShares = ownedShares
+        )
+        _selectedStockInfo.postValue(stockDetailInfo)
+    }
 }
+data class StockDetailInfo(
+    val stockId: Int,
+    val stockName: String,
+    val currentPrice: Int,
+    val changeRate: Int,
+    val purchaseDate: String,
+    val avgPurchasePrice: Int,
+    val ownedShares: Int
+)
+
 
 
 

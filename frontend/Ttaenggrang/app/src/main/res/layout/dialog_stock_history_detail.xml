@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_15"
+    android:padding="24dp">
+
+    <!--다이얼로그 헤드-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogHead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/constraintDialogBody"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textDialogTitle"
+            style="@style/heading3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="내 주식 상세"
+            app:layout_constraintEnd_toStartOf="@id/btnCancel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnCancel"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textDialogTitle"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--다이얼로그 바디-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_20"
+        android:layout_marginVertical="@dimen/spacing_20"
+        android:paddingHorizontal="@dimen/spacing_20"
+        app:layout_constraintBottom_toTopOf="@id/constraintDialogFoot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintDialogHead">
+
+        <!--주식 그래프-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintStockGraphArea"
+            android:layout_width="match_parent"
+            android:layout_height="340dp"
+            android:layout_marginBottom="@dimen/spacing_20"
+            android:background="@drawable/bg_rounded_15"
+            android:paddingVertical="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/textStockTradingDate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            >
+
+            <!--주식그래프 헤더-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintStockGraphHead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/viewLine"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageHeadStock"
+                    android:layout_width="39dp"
+                    android:layout_height="39dp"
+                    android:src="@drawable/ic_jyp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textHeadStockName"
+                    style="@style/heading3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_10"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    app:layout_constraintBottom_toBottomOf="@id/imageHeadStock"
+                    app:layout_constraintStart_toEndOf="@id/imageHeadStock"
+                    app:layout_constraintTop_toTopOf="@id/imageHeadStock" />
+
+                <TextView
+                    android:id="@+id/textHeadStockPrice"
+                    style="@style/heading3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    app:layout_constraintBottom_toTopOf="@id/textHeadStockChange"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/imageHeadStock" />
+
+                <TextView
+                    android:id="@+id/textStockInfo"
+                    style="@style/heading4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_10"
+                    android:text="전일대비"
+                    android:textColor="@color/foundation_black_200"
+                    app:layout_constraintBottom_toBottomOf="@id/textHeadStockChange"
+                    app:layout_constraintEnd_toStartOf="@id/textHeadStockChange"
+                    app:layout_constraintTop_toTopOf="@id/textHeadStockChange" />
+
+                <TextView
+                    android:id="@+id/textHeadStockChange"
+                    style="@style/heading4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/foundation_green_600"
+                    app:layout_constraintBottom_toBottomOf="@id/imageHeadStock"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textHeadStockPrice" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!--구분선-->
+            <View
+                android:id="@+id/viewLine"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="5dp"
+                android:background="@color/foundation_black_50"
+                app:layout_constraintBottom_toTopOf="@+id/textTab3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/constraintStockGraphHead" />
+
+            <!--탭-->
+            <TextView
+                android:id="@+id/textTab3"
+                style="@style/caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_10"
+                android:background="@drawable/tab"
+                android:paddingHorizontal="@dimen/spacing_10"
+                android:paddingVertical="3dp"
+                android:text="1주"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toTopOf="@id/chartStock"
+                app:layout_constraintEnd_toStartOf="@+id/textTab4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/viewLine" />
+
+            <TextView
+                android:id="@+id/textTab4"
+                style="@style/caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_10"
+                android:background="@drawable/tab"
+                android:paddingHorizontal="@dimen/spacing_10"
+                android:paddingVertical="3dp"
+                android:text="1달"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@id/textTab3"
+                app:layout_constraintStart_toEndOf="@id/textTab3"
+                app:layout_constraintTop_toTopOf="@id/textTab3" />
+            <!--그래프-->
+            <com.ladysparks.ttaenggrang.ui.component.LineChartComponent
+                android:id="@+id/chartStock"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textTab3" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/textStockTradingDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="매수일"
+            style="@style/heading3"
+            android:textColor="@color/foundation_black_400"
+            app:layout_constraintBottom_toTopOf="@id/textStockPerPrice"
+            app:layout_constraintStart_toStartOf="@id/constraintStockGraphArea"
+            app:layout_constraintTop_toBottomOf="@id/constraintStockGraphArea" />
+
+        <TextView
+            android:id="@+id/textStockTradingDate2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_10"
+            android:text="2025.01.30"
+            style="@style/body3"
+            android:textColor="@color/foundation_black_400"
+            app:layout_constraintBottom_toBottomOf="@id/textStockTradingDate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textStockTradingDate" />
+
+        <TextView
+            android:id="@+id/textStockPerPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_10"
+            android:text="평균 매수 단가"
+            android:textColor="@color/foundation_black_400"
+            style="@style/heading3"
+            app:layout_constraintBottom_toTopOf="@id/textStockQuantityTitle"
+            app:layout_constraintStart_toStartOf="@id/textStockTradingDate"
+            app:layout_constraintTop_toBottomOf="@id/textStockTradingDate" />
+
+        <TextView
+            android:id="@+id/textStockPerPrice2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10,000"
+            style="@style/body3"
+            android:textColor="@color/foundation_black_400"
+            app:layout_constraintBottom_toBottomOf="@id/textStockPerPrice"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textStockPerPrice" />
+
+        <TextView
+            android:id="@+id/textStockQuantityTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_10"
+            android:text="보유 주식"
+            style="@style/heading3"
+            android:textColor="@color/foundation_black_400"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/textStockPerPrice"
+            app:layout_constraintTop_toBottomOf="@id/textStockPerPrice" />
+
+        <TextView
+            android:id="@+id/textStockQuantityTitle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10주"
+            style="@style/body3"
+            android:textColor="@color/foundation_black_400"
+            app:layout_constraintBottom_toBottomOf="@id/textStockQuantityTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textStockQuantityTitle" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--다이얼로그 풋-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogFoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_20"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintDialogBody">
+
+        <!--닫기-->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnClose"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:layout_marginEnd="@dimen/spacing_10"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@color/foundation_black_100"
+            android:text="닫기"
+            android:textColor="@color/black300"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnTrade"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--닫기-->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnTrade"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:layout_marginEnd="@dimen/spacing_10"
+            app:layout_constraintHorizontal_weight="1"
+            android:background="@drawable/btn_rounded_full"
+            android:text="거래하기"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btnClose"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

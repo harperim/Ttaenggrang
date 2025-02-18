@@ -10,6 +10,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -29,6 +32,14 @@ public class SecurityConfig {
         boolean isDevMode = "dev".equals(System.getenv("SPRING_PROFILES_ACTIVE"));
 
         http
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(List.of("https://i12d107.p.ssafy.io")); // ✅ Swagger 요청 허용
+                    config.setAllowedMethods(List.of("GET", "POST", "OPTIONS", "PUT", "DELETE"));
+                    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+                    config.setAllowCredentials(true);
+                    return config;
+                }))
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
                 .authorizeHttpRequests(auth -> {
                         if (isDevMode) {
@@ -42,7 +53,8 @@ public class SecurityConfig {
                                             "/swagger-resources/**",
                                             "/webjars/**",
                                             "/students/login",
-                                            "/students/create"
+                                            "/students/create",
+                                            "/weekly-report/predict"
                                     ).permitAll()
                                     // 인증 필요 없는 경로
                                     .requestMatchers("/teachers/**").permitAll()

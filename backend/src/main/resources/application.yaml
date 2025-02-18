@@ -22,7 +22,7 @@ spring:
         jdbc:
           time_zone: Asia/Seoul
     show-sql:
-        true
+      true
   sql:
     init: 실행 시 init.sql 실행
   springdoc: # Swagger
