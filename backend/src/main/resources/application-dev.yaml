@@ -10,7 +10,9 @@ api:
 
 scheduling:
   stock-market:
-    open: "0 * * * * ?"  # 매분 실행
-    close: "30 * * * * ?" # 매 30초 실행
+    open: "0 0 9 * * MON-FRI"  # 운영 환경에서는 09:00 개장
+    close: "0 0 17 * * MON-FRI" # 운영 환경에서는 17:00 폐장
+#    open: "0 * * * * ?"  # 매분 실행
+#    close: "30 * * * * ?" # 매 30초 실행
   weekly-report:
     generate: "0 0 14 ? * FRI"

@@ -119,10 +119,10 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public GroupedOpenApi presentationApi() {
+    public GroupedOpenApi adminApi() {
         return GroupedOpenApi.builder()
-                .group("0. 시연")
-                .pathsToMatch("/presentation/**")
+                .group("0. 관리자")
+                .pathsToMatch("/admin/**")
                 .build();
     }
 

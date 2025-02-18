@@ -16,7 +16,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin("*")
-@RequestMapping("/presentation")
+@RequestMapping("/admin")
 public class PresentationController {
 
     private final TeacherService teacherService;
