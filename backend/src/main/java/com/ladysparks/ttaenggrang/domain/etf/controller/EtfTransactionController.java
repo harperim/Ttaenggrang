@@ -1,7 +1,9 @@
 package com.ladysparks.ttaenggrang.domain.etf.controller;
 
 import com.ladysparks.ttaenggrang.domain.etf.dto.EtfTransactionDTO;
+import com.ladysparks.ttaenggrang.domain.etf.dto.EtfTransactionResponseDTO;
 import com.ladysparks.ttaenggrang.domain.etf.service.EtfTransactionService;
+import com.ladysparks.ttaenggrang.domain.stock.dto.StockTransactionResponseDTO;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.global.docs.stock.EtfTransactionApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -38,15 +40,15 @@ public class EtfTransactionController implements EtfTransactionApiSpecification 
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(dto));
     }
 
-//    // 학생 거래 내역 조회 (매수 + 매도)
-//    @GetMapping
-//    public ResponseEntity<ApiResponse<List<StockTransactionResponseDTO>>> getStudentTransactions() {
-//        Long studentId = studentService.getCurrentStudentId();
-//
-//        // 학생 ID에 대한 거래 내역을 조회하고 DTO로 변환하여 반환
-//        List<StockTransactionResponseDTO> transactions = stockTransactionService.getStudentTransactions(studentId);
-//
-//        // 거래 내역이 없을 경우 빈 리스트를 반환하면서 200 OK 응답
-//        return ResponseEntity.ok(ApiResponse.success(transactions)); // 200 OK
-//    }
+    // 학생 거래 내역 조회 (매수 + 매도)
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<EtfTransactionResponseDTO>>> getStudentTransactions() {
+        Long studentId = studentService.getCurrentStudentId();
+
+        // 학생 ID에 대한 거래 내역을 조회하고 DTO로 변환하여 반환
+        List<EtfTransactionResponseDTO> transactions = etfTransactionService.getStudentTransactions(studentId);
+
+        // 거래 내역이 없을 경우 빈 리스트를 반환하면서 200 OK 응답
+        return ResponseEntity.ok(ApiResponse.success(transactions)); // 200 OK
+    }
 }

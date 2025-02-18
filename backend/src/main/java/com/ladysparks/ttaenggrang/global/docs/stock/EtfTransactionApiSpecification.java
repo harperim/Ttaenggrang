@@ -1,13 +1,19 @@
 package com.ladysparks.ttaenggrang.global.docs.stock;
 
 import com.ladysparks.ttaenggrang.domain.etf.dto.EtfTransactionDTO;
+import com.ladysparks.ttaenggrang.domain.etf.dto.EtfTransactionResponseDTO;
+import com.ladysparks.ttaenggrang.domain.stock.dto.StockTransactionResponseDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
 @Tag(name = "[학생] ETF 거래", description = "ETF 거래 관련 API")
 public interface EtfTransactionApiSpecification {
     @Operation(summary = "(학생) ETF 매수 [요청]", description = """
@@ -77,4 +83,36 @@ public interface EtfTransactionApiSpecification {
     public ResponseEntity<ApiResponse<EtfTransactionDTO>> sellEtf(@PathVariable("etfId") Long etfId,
                                                                   @RequestParam("share_count") int shareCount,
                                                                   @RequestParam("studentId") Long studentId);
+
+
+    @Operation(summary = "(학생) 주식 거래 내역 [조회]", description = """
+        💡 특정 학생의 주식 거래(매수/매도) 내역을 조회합니다.
+        
+        ---
+        
+        **[ 요청 값 ]**
+        - **studentId** : 조회할 학생 ID
+        - **stockId** : 조회할 주식 ID
+        
+        **[ 응답 필드 ]**
+        - **studentId** : 학생 ID
+        - **stockId** : 거래된 주식 ID
+        - **name** : 주식명
+        - **type** : 주식 타입
+        - **transactionType** : 거래 타입
+            - 매수 → **BUY**
+            - 매도 → **SELL**
+        - **shareCount** : 주식 거래 수량
+        - **currentPrice** : 현재 주식 가격
+        - **transactionDate** : 거래 날짜
+        - **purchasePricePerShare** : 거래 당시 1주 가격
+        
+        ---
+        
+        **[ 설명 ]**
+        - 특정 `studentId`의 주식 거래 내역을 조회합니다.
+        - 거래 유형에는 `매수(BUY)`와 `매도(SELL)`이 포함됩니다.
+        """)
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<EtfTransactionResponseDTO>>> getStudentTransactions();
 }

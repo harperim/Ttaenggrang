@@ -139,7 +139,7 @@ public class EtfService {
                             .name(etf.getName())
                             .type(etf.getType())
 //                            .category(etf.getCategory() != null ? etf.getCategory().getName() : "N/A") // null 체크 추가
-                            .pricePerShare(etf.getPrice_per())
+                            .price_per(etf.getPrice_per())
                             .priceChangeRate(etf.getChangeRate())
                             .transactionFrequency(transactionFrequency)
                             .build();
