@@ -186,6 +186,7 @@ class RevenueTeacherFragment : BaseFragment<FragmentRevenueTeacherBinding>(Fragm
 
         // ✅ 학생의 총 납부 금액과 이름 불러오기
         revenueViewModel.fetchTaxStudentAmount(studentId)
+        revenueViewModel.getTeacherStudentBasicInfo(studentId)
 
         // 어댑터 초기화 (재사용)
         val studentTaxHistoryAdapter = StudentTaxHistoryAdapter(emptyList())
@@ -200,6 +201,10 @@ class RevenueTeacherFragment : BaseFragment<FragmentRevenueTeacherBinding>(Fragm
 
         revenueViewModel.endDate.observe(viewLifecycleOwner) { date ->
             dialogBinding.textTaxHistoryStudentDateEnd.setText(date)
+        }
+
+        revenueViewModel.teacherStudentBasicInfo.observe(viewLifecycleOwner) { response ->
+            dialogBinding.textTaxHistoryStudentJobPayment.text = "${response?.jobName}(${formatWithComma(response?.baseSalary ?: 0)})"
         }
 
         // 기존 옵저버 제거

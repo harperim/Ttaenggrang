@@ -235,4 +235,21 @@ class RevenueViewModel: ViewModel() {
         }
     }
 
+    private val _teacherStudentBasicInfo = MutableLiveData<TaxStudentJobResponse?>()
+    val teacherStudentBasicInfo : LiveData<TaxStudentJobResponse?>get() = _teacherStudentBasicInfo
+
+    fun getTeacherStudentBasicInfo(studentId: Int){
+        viewModelScope.launch {
+            runCatching {
+                RetrofitUtil.taxService.getTeacherStudentBasicInfo(studentId)
+            }.onSuccess {
+                _teacherStudentBasicInfo.value = it.data ?: TaxStudentJobResponse("의사", 100)
+                Log.d("teacherStudentBasicInfo Success", "${it}")
+            }.onFailure { throwable ->
+                Log.e("teacherStudentBasicInfo Failure", "Failure:", throwable)
+            }
+        }
+    }
+
+
 }

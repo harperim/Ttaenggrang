@@ -67,6 +67,9 @@ interface TaxService {
     @GET("students/job")
     suspend fun getStudentBasicInfo(): ApiResponse<TaxStudentJobResponse>
 
+    @GET("teachers/jobs/students/{studentId}")
+    suspend fun getTeacherStudentBasicInfo(@Path ("studentId") studentId: Int): ApiResponse<TaxStudentJobResponse>
+
 
 
 
