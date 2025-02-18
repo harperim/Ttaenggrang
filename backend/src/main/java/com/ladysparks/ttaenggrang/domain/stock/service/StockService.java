@@ -74,7 +74,7 @@ public class StockService {
                 .collect(Collectors.toList()); // 변환된 DTO를 리스트로 반환
     }
 
-    //전체 데이터 조회
+    //요약 조회
     public List<StockSummaryDTO> getStockSummaryList(Long teacherId) {
         // 모든 주식 데이터 조회
         List<Stock> stocks = stockRepository.findAllByTeacher_Id(teacherId);
