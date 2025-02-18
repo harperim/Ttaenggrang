@@ -1,7 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.notification.repository;
 
 import com.ladysparks.ttaenggrang.domain.notification.entity.Notification;
-import com.ladysparks.ttaenggrang.domain.notification.entity.NotificationStatus;
+import com.ladysparks.ttaenggrang.domain.notification.entity.Notification.NotificationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

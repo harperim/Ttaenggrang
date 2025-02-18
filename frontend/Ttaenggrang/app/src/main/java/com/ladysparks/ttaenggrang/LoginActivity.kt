@@ -16,6 +16,7 @@ import com.ladysparks.ttaenggrang.data.model.response.StudentSignInResponse
 import com.ladysparks.ttaenggrang.data.model.response.TeacherSignInResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.databinding.ActivityLoginBinding
+import com.ladysparks.ttaenggrang.util.PermissionChecker
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
@@ -25,10 +26,18 @@ class LoginActivity : BaseActivity() {
 
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     private var isPasswordVisible = false
+    private lateinit var fcmToken: String
+
+    private lateinit var permissionChecker: PermissionChecker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        updateFCMToken()
+
+        permissionChecker = PermissionChecker(this@LoginActivity, this)
+        permissionChecker.requestPermissionsAtStartup()
 
         tempEvent()
         initEvent()
@@ -60,11 +69,10 @@ class LoginActivity : BaseActivity() {
         binding.tempBtnTeacher.setOnClickListener {
             lifecycleScope.launch {
                 runCatching {
-                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "cc@cc.com", password = "1234"))
+                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "hi1@naver.com", password = "ssafy123", fcmToken = fcmToken))
+//                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "aa@aa.com", password = "1234"))
                 }.onSuccess {
                     showToast("교사 로그인 성공")
-
-
 
                     // Token 저장
                     val token = when(val userData = it.data){
@@ -74,16 +82,6 @@ class LoginActivity : BaseActivity() {
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.JWT_TOKEN_KEY, token)
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.IS_TEACHER, true)
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.USER_ACCOUNT, it.data!!.email)
-
-                    // FCM TokenUpdate
-                    updateFCMToken(token)
-
-
-                    // 국가 정보가 없는 경우, 국가 정보 등록 페이지로 먼저 이동해야 한다.
-//                    if(!it.data!!.tempTF){
-//                        startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java))
-//                        return@launch
-//                    }
 
                     // MainActivity 이동
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
@@ -96,7 +94,8 @@ class LoginActivity : BaseActivity() {
         binding.tempBtnStudent.setOnClickListener {
             lifecycleScope.launch {
                 runCatching {
-                    RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "hello1", password = "ssafy123"))
+//                    RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "aa002", password = "1234"))
+                    RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "hello1", password = "ssafy123", fcmToken = fcmToken))
                 }.onSuccess {
                     showToast("학생 로그인 성공")
 
@@ -105,12 +104,14 @@ class LoginActivity : BaseActivity() {
                         is StudentSignInResponse -> userData.token
                         else -> ""
                     }
+                    val userId = when (val userData = it.data) {
+                        is StudentSignInResponse -> userData.id
+                        else -> -1
+                    }
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.JWT_TOKEN_KEY, token)
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.IS_TEACHER, false)
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.USER_ACCOUNT, it.data!!.username)
-
-                    // FCM TokenUpdate
-                    updateFCMToken(token)
+                    SharedPreferencesUtil.putValue(SharedPreferencesUtil.USER_ID, userId)
 
                     // MainActivity 이동
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
@@ -141,16 +142,17 @@ class LoginActivity : BaseActivity() {
             lifecycleScope.launch {
                 runCatching {
                     if (binding.checkBoxAgree.isChecked) {
-                        var user = TeacherSignInRequest(email = binding.editIdLogin.text.toString(), password = binding.editPasswordLogin.text.toString())
+                        var user = TeacherSignInRequest(email = binding.editIdLogin.text.toString(), password = binding.editPasswordLogin.text.toString(), fcmToken = fcmToken)
                         RetrofitUtil.authService.loginTeacher(user)
                     } else {
-                        var user = StudentSignInRequest(username = binding.editIdLogin.text.toString(), password = binding.editPasswordLogin.text.toString())
+                        var user = StudentSignInRequest(username = binding.editIdLogin.text.toString(), password = binding.editPasswordLogin.text.toString(), fcmToken = fcmToken)
                         RetrofitUtil.authService.loginStudent(user)
                     }
                 }.onSuccess {
 //                     Token 저장
                     var token: String = ""
                     var account: String = ""
+                    var hasNation: Boolean = false
 
                     when(val userData = it.data){
                         is StudentSignInResponse -> {
@@ -160,6 +162,7 @@ class LoginActivity : BaseActivity() {
                         is TeacherSignInResponse -> {
                             token = userData.token
                             account = userData.email
+                            hasNation = userData.hasNation
                         }
                         else -> ""
                     }
@@ -168,19 +171,13 @@ class LoginActivity : BaseActivity() {
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.IS_TEACHER, binding.checkBoxAgree.isChecked)
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.USER_ACCOUNT, account)
 
-                    // FCM TokenUpdate
-                    updateFCMToken(token)
-
-                    // 수정 필요 : 교사가 로그인한 경우, 국가 정보가 없다면? 먼저 등록하는 페이지로 이동해야한다.
-//                    if(binding.checkBoxAgree.isChecked && it.data is TeacherSignInResponse){
-//                        if(it.data.tempTF == false){
-//                            startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java))
-//                            return@launch
-//                        }
-//                    }
-
-                    // MainActivity 이동
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    // 등록된 국가정보가 없을 경우, 다른 페이지로 이동
+                    if(!hasNation && it.data is TeacherSignInResponse){
+                        startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java))
+                        return@launch
+                    }else{
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    }
                 }.onFailure { error ->
                     Log.d("TAG", "initEvent: 로그인 패일")
                     showErrorDialog(error)
@@ -190,27 +187,14 @@ class LoginActivity : BaseActivity() {
     }
 
     // FCM Token 정보를 업데이트 합니다.
-    private fun updateFCMToken(jwtToken: String) {
+    private fun updateFCMToken() {
         FirebaseApp.initializeApp(this)
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-
-            if(!task.isSuccessful) {
-                return@OnCompleteListener
-            }
+            if(!task.isSuccessful)  return@OnCompleteListener
             if(task.result != null){
-                lifecycleScope.launch {
-                    runCatching {
-                        RetrofitUtil.notificationService.updateFCMToken(task.result)
-                    }.onSuccess {
-                        Log.d("LoginActivity", "updateFCMToken: Token 저장 성공")
-                    }.onFailure {
-                        Log.d("TAG", "updateFCMToken: 에러 ${it.message}")
-                        showErrorDialog(it)
-                    }
-                }
+                fcmToken = task.result
                 Log.d(" FCM TOKEN !", "getFCMToken: ${task.result}")
             }
         })
-
     }
 }

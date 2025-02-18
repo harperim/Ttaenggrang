@@ -7,10 +7,7 @@ import com.ladysparks.ttaenggrang.domain.bank.service.BankAccountService;
 import com.ladysparks.ttaenggrang.domain.student.dto.*;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.JobInfoDTO;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.MultipleStudentCreateDTO;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.NationDTO;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.SingleStudentCreateDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.*;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.JobRespository;
@@ -26,9 +23,11 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
@@ -196,14 +195,16 @@ public class StudentService {
             BankAccount bankAccount = bankAccountMapper.toUpdatedEntity(bankAccountService.addBankAccount(bankAccountDTO)); // DB에 먼저 저장
 
             // 🔥 파일에서 이름이 있는 경우, 해당 이름 사용
-            String studentName = (i <= namesFromFile.size()) ? namesFromFile.get(i - 1) : null;
+            String studentName = (i <= namesFromFile.size()) ? namesFromFile.get(i - 1) : "학생" + i;
 
             // 4. 기본 직업 "시민"으로 설정
             Job defaultJob = jobRespository.findByJobName("시민")
                     .orElseGet(() -> {
                         Job newJob = Job.builder()
                                 .jobName("시민")
+                                .jobDescription("기본 직업입니다.")
                                 .baseSalary(1000)
+                                .maxPeople(30)
                                 .build();
                         return jobRespository.save(newJob);
                     });
@@ -245,21 +246,44 @@ public class StudentService {
 
     // 단일 학생 계정 생성
     @Transactional
-    public StudentResponseDTO createStudent(Long teacherId, SingleStudentCreateDTO studentCreateDTO) {
+    public ApiResponse<StudentResponseDTO> createStudent(Long teacherId, SingleStudentCreateDTO studentCreateDTO) {
 
         // 1. 교사 확인
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new IllegalArgumentException("교사를 찾을 수 없습니다."));
 
-        String username = studentCreateDTO.getUsername();
-        String password = studentCreateDTO.getPassword();
-
         // 2. 중복 계정 확인
+        String username = studentCreateDTO.getUsername();
         if (studentRepository.findByUsername(username).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 학생 계정입니다: " + username);
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "이미 존재하는 학생 계정입니다.: " + username,  null);
         }
 
-        // 3. 은행 계좌 생성 및 저장
+        // 3. 이름 필수 입력 검사
+        if (studentCreateDTO.getName() == null || studentCreateDTO.getName().isEmpty()) {
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "학생 이름은 필수 입력 항목입니다.", null);
+        }
+
+        // 4. 직업 조회 (ID로 조회)
+        Job selectedJob;
+        if (studentCreateDTO.getJobId() != null) {
+            // 사용자가 선택한 직업이 있는 경우 해당 직업 조회
+            selectedJob = jobRespository.findById(studentCreateDTO.getJobId())
+                    .orElseThrow(() -> new IllegalArgumentException("선택한 직업이 존재하지 않습니다."));
+        } else {
+            // 직업 ID가 없으면 기본 직업 "시민"으로 설정
+            selectedJob = jobRespository.findByJobName("시민")
+                    .orElseGet(() -> {
+                        Job newJob = Job.builder()
+                                .jobName("시민")
+                                .jobDescription("기본 직업입니다.")
+                                .baseSalary(1000)
+                                .maxPeople(30)
+                                .build();
+                        return jobRespository.save(newJob);
+                    });
+        }
+
+        // 5. 은행 계좌 생성 및 저장
         BankAccountDTO bankAccountDTO = BankAccountDTO.builder()
                 .accountNumber(generateAccountNumber())
                 .balance(0)
@@ -267,49 +291,42 @@ public class StudentService {
 
         BankAccount bankAccount = bankAccountMapper.toUpdatedEntity(bankAccountService.addBankAccount(bankAccountDTO));
 
-        // 4. 기본 직업 "시민"으로 설정
-        Job defaultJob = jobRespository.findByJobName("시민")
-                .orElseGet(() -> {
-                    Job newJob = Job.builder()
-                            .jobName("시민")
-                            .baseSalary(1000)
-                            .build();
-                    return jobRespository.save(newJob);
-                });
-
-        // 5. 학생 계정 생성 (은행 계좌 연결)
+        // 6. 학생 계정 생성 (이름과 선택 직업 연결)
         Student student = Student.builder()
                 .username(username)
-                .password(passwordEncoder.encode(password))
+                .password(passwordEncoder.encode(studentCreateDTO.getPassword()))
                 .teacher(teacher)
+                .name(studentCreateDTO.getName())
                 .bankAccount(bankAccount)
-                .job(defaultJob)
+                .job(selectedJob)
                 .build();
 
+
+        // 7. DB 저장
         studentRepository.save(student);
 
-        // 6. 직업 정보 jobinfoDTO로 변환
+        // 8. 직업 정보 DTO 생성
         JobInfoDTO jobInfoDTO = JobInfoDTO.builder()
-                .jobName(defaultJob.getJobName())
-                .baseSalary(defaultJob.getBaseSalary())
+                .jobName(selectedJob.getJobName())
+                .baseSalary(selectedJob.getBaseSalary())
                 .build();
 
-        // 6. 생성된 학생 정보 반환
-        return new StudentResponseDTO(
+        // 9. 생성된 학생 정보 반환
+        StudentResponseDTO responseDTO = new StudentResponseDTO(
                 student.getId(),
                 student.getUsername(),
                 student.getName(),
                 student.getProfileImageUrl(),
                 teacher,
-                bankAccount,
+                student.getBankAccount(),
                 jobInfoDTO,
-                null  // 토큰 값은 로그인 후 부여
+                null
         );
+        return ApiResponse.success("학생 계정이 성공적으로 생성되었습니다.", responseDTO);
     }
 
     // 학생 로그인
     public StudentLoginResponseDTO loginStudent(StudentLoginRequestDTO studentLoginRequestDTO) {
-
         // 1. 학생 ID 확인
         Student student = studentRepository.findByUsername(studentLoginRequestDTO.getUsername())
                 .orElseThrow(() -> new IllegalIdentifierException("아이디를 찾을 수 없습니다."));
@@ -317,6 +334,11 @@ public class StudentService {
         // 2. 비밀번호 검증
         if (!passwordEncoder.matches(studentLoginRequestDTO.getPassword(), student.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // FCM 토큰이 포함된 경우
+        if (studentLoginRequestDTO.getFcmToken() != null) {
+            saveFCMToken(student.getId(), studentLoginRequestDTO.getFcmToken().get());
         }
 
         // 3. JMT 토큰 생성
@@ -358,12 +380,12 @@ public class StudentService {
         return ApiResponse.success("직업을 가진 학생 목록 조회 성공", responseDTOs);
     }
 
-    // ✅ 교사 ID로 우리반 학생 전체 조회
+    // ✅ 교사 ID로 우리 반 학생 전체 조회
     public ApiResponse<List<StudentResponseDTO>> getMyClassStudents(Long teacherId) {
         List<Student> students = studentRepository.findAllByTeacherId(teacherId);
 
         if (students.isEmpty()) {
-            return ApiResponse.error(404, "우리반 학생이 없습니다.", null);
+            return ApiResponse.error(404, "우리 반 학생이 없습니다.", null);
         }
 
         List<StudentResponseDTO> responseDTOs = students.stream()
@@ -394,10 +416,10 @@ public class StudentService {
                 })
                 .collect(Collectors.toList());
 
-        return ApiResponse.success("우리반 학생 목록 조회 성공", responseDTOs);
+        return ApiResponse.success("우리 반 학생 목록 조회 성공", responseDTOs);
     }
 
-    // ✅ 교사 ID와 학생 ID로 우리반 학생 상세 조회
+    // ✅ 교사 ID와 학생 ID로 우리 반 학생 상세 조회
     public ApiResponse<StudentResponseDTO> getStudentById(Long teacherId, Long studentId) {
 
         // 1️⃣ 학생 조회 (해당 교사의 반에 속한 학생인지 확인)
@@ -480,21 +502,29 @@ public class StudentService {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID를 가진 학생이 존재하지 않습니다."));
 
-        return nationService.findNationByTeacherId(student.getTeacher().getId())
+        return nationService.findNationDTOByTeacherId(student.getTeacher().getId())
                 .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."))
                 .getId();
+    }
+
+    public NationDTO getNationById(Long studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID를 가진 학생이 존재하지 않습니다."));
+
+        return nationService.findNationDTOByTeacherId(student.getTeacher().getId())
+                .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
     }
 
     public Long findBankAccountIdById(Long studentId) {
         return studentRepository.findBankAccountIdById(studentId);
     }
 
-    // ✅ 교사 ID로 우리반 학생 전체 조회
+    // ✅ 교사 ID로 우리 반 학생 전체 조회
     public List<StudentResponseDTO> findAllByTeacherId(Long teacherId) {
         List<Student> students = studentRepository.findAllByTeacherId(teacherId);
 
         if (students.isEmpty()) {
-            throw new IllegalArgumentException("우리반 학생이 없습니다.");
+            throw new IllegalArgumentException("우리 반 학생이 없습니다.");
         }
 
         List<StudentResponseDTO> responseDTOs = students.stream()
@@ -525,6 +555,10 @@ public class StudentService {
                 .collect(Collectors.toList());
 
         return responseDTOs;
+    }
+
+    public List<Student> findAllStudentByTeacherId(Long teacherId) {
+        return studentRepository.findAllByTeacherId(teacherId);
     }
 
     public Long findTeacherIdByStudentId(Long studentId) {
@@ -570,7 +604,7 @@ public class StudentService {
 
         // 학생의 국가 정보 조회
         Long teacherId = findTeacherIdByStudentId(studentId);
-        NationDTO nationDTO = nationService.findNationByTeacherId(teacherId)
+        NationDTO nationDTO = nationService.findNationDTOByTeacherId(teacherId)
                 .orElseThrow(() -> new NotFoundException("등록된 국가가 없습니다."));
 
         SavingsAchievementDTO savingsAchievementDTO = SavingsAchievementDTO.builder()
@@ -615,4 +649,55 @@ public class StudentService {
         return studentRepository.findJobIdById(studentId);
     }
 
+    public List<StudentManagementDTO> getStudentManagementListByTeacherId(Long teacherId) {
+        return studentRepository.getStudentManagementListByTeacherId(teacherId);
+    }
+
+    public void saveFCMToken(Long studentId, String fcmToken) {
+        studentRepository.updateFcmToken(studentId, fcmToken);
+    }
+
+    public String findFCMTokenById(Long studendId) {
+        return studentRepository.findFcmTokenById(studendId);
+    }
+
+    // 직업 [수정]
+    public ApiResponse<StudentJobUpdateResponseDTO> updateStudentJob(Long studentId, StudentJobUpdateDTO studentJobUpdateDTO, Long teacherId) {
+        // 1. 학생 조회
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 학생을 찾을 수 없습니다."));
+
+        // 2. 해당 학생이 교사의 반에 속해 있는지 확인
+        if (!student.getTeacher().getId().equals(teacherId)) {
+            return ApiResponse.error(HttpStatus.FORBIDDEN.ordinal(), "해당 학생의 직업을 수정할 권한이 없습니다.", null);
+        }
+
+        // 3. 직업 조회
+        Job job = jobRespository.findById(studentJobUpdateDTO.getJobId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 직업을 찾을 수 없습니다."));
+
+        // 4. 학생 직업 업데이트
+        student.setJob(job);
+        studentRepository.save(student);
+
+        // 5. 응답 DTO 생성 (전체 학생 정보 반환)
+        StudentJobUpdateResponseDTO responseDTO = StudentJobUpdateResponseDTO.builder()
+                .studentId(student.getId())
+                .name(student.getName())
+                .username(student.getUsername())
+                .password(student.getPassword())
+                .jobInfo(JobInfoDTO.builder()
+                        .jobName(job.getJobName())
+                        .baseSalary(job.getBaseSalary())
+                        .build())
+                .build();
+
+        return ApiResponse.success("학생의 직업이 성공적으로 수정되었습니다.", responseDTO);
+    }
+
+    // [학생] 자신의 직업 정보 조회
+    public StudentJobResponseDTO getStudentJobSalary(Long studentId) {
+        return studentRepository.findJobAndSalaryByStudentId(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("학생 정보를 찾을 수 없습니다."));
+    }
 }

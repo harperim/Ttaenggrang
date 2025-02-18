@@ -66,11 +66,25 @@
         <item name="android:lineSpacingExtra">6sp</item>
     </style>
 
+    <style name="body3">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/pretendard_medium_family</item>
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="android:lineSpacingExtra">8sp</item>
+    </style>
+
 <!--     Calendar 스타일-->
     <style name="CustomCalendarStyle">
         <item name="colorAccent">@color/mainOrange</item>
         <item name="android:fontFamily">@font/pretendard_bold_family</item>
     </style>
 
+    <!--스위치 스타일-->
+    <style name="SwitchStyle">
+        <item name="android:thumb">@drawable/switch_thumb_custom</item>
+        <item name="android:track">@drawable/switch_custom</item>
+
+</style>
 
 </resources>

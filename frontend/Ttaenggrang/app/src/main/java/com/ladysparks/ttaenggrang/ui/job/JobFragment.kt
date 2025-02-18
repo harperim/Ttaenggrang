@@ -49,16 +49,22 @@ class JobFragment : BaseFragment<FragmentJobBinding>(FragmentJobBinding::bind, R
 
         jobAdapter = if (isRowClickable){
             BaseTableAdapter(jobTableHeader, emptyList()){ rowIndex, rowData ->
-                showToast("${rowIndex} Click Event !")
+//                showToast("${rowIndex} Click Event !")
             }
         } else{
-            BaseTableAdapter(jobTableHeader, emptyList(), null)
+            BaseTableAdapter(jobTableHeader, emptyList())
         }
         binding.recyclerJob.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerJob.adapter = jobAdapter
     }
 
     private fun initObserver() {
+        jobViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                showErrorDialog(Throwable(it))
+                jobViewModel.clearErrorMessage()
+            }
+        }
         // 1. observer :직업 정보 리스트
         jobViewModel.jobList.observe(viewLifecycleOwner) { jobList ->
 
@@ -110,6 +116,7 @@ class JobFragment : BaseFragment<FragmentJobBinding>(FragmentJobBinding::bind, R
             .setView(dialogBinding.root)
             .create()
 
+        dialogBinding.btnClose.setOnClickListener { registerDialog.dismiss() }
         dialogBinding.btnCancel.setOnClickListener { registerDialog.dismiss() }
         dialogBinding.btnRegister.setOnClickListener {
 

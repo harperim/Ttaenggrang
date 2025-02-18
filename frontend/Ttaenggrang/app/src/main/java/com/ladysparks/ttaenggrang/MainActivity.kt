@@ -31,6 +31,7 @@ import com.ladysparks.ttaenggrang.base.BaseActivity
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.databinding.ActivityMainBinding
 import com.ladysparks.ttaenggrang.util.NavigationManager
+import com.ladysparks.ttaenggrang.util.PermissionChecker
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 import com.ladysparks.ttaenggrang.util.showToast
 import kotlinx.coroutines.launch
@@ -40,6 +41,7 @@ class MainActivity : BaseActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
+    private lateinit var permissionChecker: PermissionChecker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +52,11 @@ class MainActivity : BaseActivity() {
             window.setDecorFitsSystemWindows(false)
             window.insetsController?.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
         }
+
+        // 필수 권한 확인
+        permissionChecker = PermissionChecker(this@MainActivity, this)
+        permissionChecker.requestPermissionsAtStartup()
+
 
         initCategory() // 좌측 카테고리(메뉴) 설정
         initNavigationEvent() // 카테고리 클릭 이벤트 설정

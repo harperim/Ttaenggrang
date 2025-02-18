@@ -38,9 +38,9 @@
         <TextView
             android:id="@+id/textInfo"
             style="@style/body2"
-            android:layout_marginTop="@dimen/spacing_20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_20"
             android:text="여러분이 직접 경제를 운영하는 주인공이에요"
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="@+id/textCountry"
@@ -49,9 +49,9 @@
 
         <!-- ImageView를 감쌀 FrameLayout 추가 -->
         <FrameLayout
-            android:layout_marginEnd="@dimen/spacing_20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_20"
             android:clipChildren="true"
             android:clipToPadding="true"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -62,8 +62,8 @@
                 android:id="@+id/bannerImage"
                 android:layout_width="126dp"
                 android:layout_height="126dp"
-                android:src="@drawable/fox_coins"
                 android:scaleType="centerCrop"
+                android:src="@drawable/fox_coins"
                 android:translationX="20dp"
                 android:translationY="20dp" />
         </FrameLayout>
@@ -267,8 +267,8 @@
             <ImageView
                 android:layout_width="12dp"
                 android:layout_height="12dp"
-                android:backgroundTint="@color/mainGreen"
-                android:background="@drawable/ic_chevron_right" />
+                android:background="@drawable/ic_chevron_right"
+                android:backgroundTint="@color/mainGreen" />
 
 
         </LinearLayout>
@@ -353,42 +353,42 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_20"
-            android:text="학생 관리"
+            android:text="학생 목록"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/btnStudentMore"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginStart="@dimen/spacing_10"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_chevron_right"
-            app:layout_constraintBottom_toBottomOf="@+id/textStudentManage"
-            app:layout_constraintStart_toEndOf="@+id/textStudentManage"
-            app:layout_constraintTop_toTopOf="@+id/textStudentManage" />
+        <!--        <ImageButton-->
+        <!--            android:id="@+id/btnStudentMore"-->
+        <!--            android:layout_width="15dp"-->
+        <!--            android:layout_height="15dp"-->
+        <!--            android:layout_marginStart="@dimen/spacing_10"-->
+        <!--            android:background="@android:color/transparent"-->
+        <!--            android:src="@drawable/ic_chevron_right"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/textStudentManage"-->
+        <!--            app:layout_constraintStart_toEndOf="@+id/textStudentManage"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/textStudentManage" />-->
 
         <TextView
-            android:visibility="visible"
             android:id="@+id/textNullStudent"
+            style="@style/body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="등록된 학생 정보가 없습니다."
+            android:textColor="@color/lightGray"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            style="@style/body2"
-            android:textColor="@color/lightGray"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textStudentManage"/>
+            app:layout_constraintTop_toBottomOf="@+id/textStudentManage" />
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:visibility="gone"
             android:id="@+id/recyclerStudent"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginHorizontal="@dimen/spacing_30"
             android:layout_marginVertical="@dimen/spacing_20"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -412,7 +412,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintAlarmArea"
         android:layout_width="340dp"
-        android:layout_height="359dp"
+        android:layout_height="0dp"
         android:background="@drawable/bg_rounded_15"
         app:layout_constraintBottom_toBottomOf="@+id/constraintLayoutReportArea"
         app:layout_constraintEnd_toEndOf="parent"
@@ -452,29 +452,29 @@
 
 
         <TextView
-            tools:visibility="gone"
-            android:visibility="visible"
             android:id="@+id/textNullAlarm"
             style="@style/body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="등록된 알림 정보가 없습니다"
             android:textColor="@color/lightGray"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textAlarm" />
+            app:layout_constraintTop_toBottomOf="@+id/textAlarm"
+            tools:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerAlarm"
-            tools:visibility="visible"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginHorizontal="@dimen/spacing_20"
             android:layout_marginVertical="@dimen/spacing_10"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textAlarm" />
+            app:layout_constraintTop_toBottomOf="@+id/textAlarm"
+            tools:visibility="visible" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -503,30 +503,30 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:visibility="gone"
-            tools:visibility="visible"
+            android:id="@+id/textChartNull"
             style="@style/body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="표시할 데이터가 없습니다"
             android:textColor="@color/lightGray"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textStudentChart" />
 
         <com.github.mikephil.charting.charts.BarChart
-            android:visibility="visible"
-            tools:visibility="gone"
-            android:layout_marginTop="@dimen/spacing_20"
-            android:layout_marginHorizontal="@dimen/spacing_20"
+            android:layout_marginBottom="5dp"
             android:id="@+id/barChart"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textStudentChart"
             android:layout_width="match_parent"
-            android:layout_height="0dp"/>
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/spacing_20"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textStudentChart" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

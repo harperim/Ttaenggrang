@@ -10,6 +10,8 @@ public interface TaxRepository  extends JpaRepository<Tax, Long> {
 
     Optional<Tax> findByTaxName(String taxName);
 
+    Optional<Tax> findByTaxNameAndTeacherId(String taxName, Long teacherId);
+
     List<Tax> findByTeacherId(Long teacherId);
 
 }

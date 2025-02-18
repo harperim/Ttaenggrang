@@ -22,7 +22,7 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String jobName;
 
     @Column(nullable = false)
@@ -43,9 +43,12 @@ public class Job {
     }
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Student> students = new ArrayList<>();
+    private List<Student> students;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @OneToMany(mappedBy = "job")
+    private List<Student> studentsList;
 }

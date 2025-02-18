@@ -4,6 +4,8 @@ import com.ladysparks.ttaenggrang.domain.bank.entity.BankAccount;
 import com.ladysparks.ttaenggrang.domain.bank.repository.BankAccountRepository;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
+import com.ladysparks.ttaenggrang.domain.tax.entity.Tax;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.SalaryDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.SalaryHistory;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.SalaryHistoryRepository;
@@ -17,11 +19,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -54,22 +56,22 @@ public class SalaryService {
 
     // 주급 부여
     @Transactional
-    public ApiResponse<String> distributeBaseSalary() {
+    public ApiResponse<Map<String, Object>> distributeBaseSalary() {
 
         // 1. 현재 로그인한 교사 ID 가져오기
         Long teacherId = getTeacherIdFromSecurityContext();
 
-        // 2. 최근 급여 지급 기록 확인
-        Optional<SalaryHistory> lastSalaryOpt = salaryHistoryRepository.findTopByTeacherIdOrderByDistributedAtDesc(teacherId);
-        if (lastSalaryOpt.isPresent()) {
-            Timestamp lastDistributedAt = lastSalaryOpt.get().getDistributedAt();
-            LocalDateTime onWeekAgo = LocalDateTime.now().minusWeeks(1);
-
-            // 최급 지급일이 7일 이내라면 지급 불가
-            if (lastDistributedAt.toLocalDateTime().isAfter(onWeekAgo)) {
-                return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "이미 이번 주 주급이 지급되었습니다.", null);
-            }
-        }
+        // 2. 최근 급여 지급 기록 확인 (시연을 위해 주석 처리)
+//        Optional<SalaryHistory> lastSalaryOpt = salaryHistoryRepository.findTopByTeacherIdOrderByDistributedAtDesc(teacherId);
+//        if (lastSalaryOpt.isPresent()) {
+//            Timestamp lastDistributedAt = lastSalaryOpt.get().getDistributedAt();
+//            LocalDateTime onWeekAgo = LocalDateTime.now().minusWeeks(1);
+//
+//            // 최급 지급일이 7일 이내라면 지급 불가
+//            if (lastDistributedAt.toLocalDateTime().isAfter(onWeekAgo)) {
+//                return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "이미 이번 주 주급이 지급되었습니다.", null);
+//            }
+//        }
 
         // 3. 교사 유효성 검증
         Teacher teacher = teacherRepository.findById(teacherId)
@@ -82,15 +84,40 @@ public class SalaryService {
             return ApiResponse.error(HttpStatus.NOT_FOUND.value(), "우리 반 학생이 없습니다.", null);
         }
 
+        List<SalaryDTO> salaryResponses = new ArrayList<>();
+
         // 5. 학생 별로 기본급 지급
         for (Student student : students) {
             if (student.getJob() != null && student.getBankAccount() != null) {
-                int baseSalary = student.getJob().getBaseSalary();
-                BankAccount account = student.getBankAccount();
+                int baseSalary = student.getJob().getBaseSalary();  // 기본 급여
+                int totalTax = 0;
+                Map<String, Integer> taxDetails = new HashMap<>();
 
-                // 계좌 잔액 업데이트
-                account.setBalance(account.getBalance() + baseSalary);
+                // 교사가 설정한 세금 항목 적용
+                for (Tax tax : teacher.getTaxes()) {
+                    BigDecimal taxRate = tax.getTaxRate();
+                    int taxAmount = (int) Math.round(baseSalary * (taxRate.doubleValue() / 100.0));
+                    totalTax += taxAmount;
+                    taxDetails.put(tax.getTaxName(), taxAmount);
+                }
+
+                int netSalary = baseSalary - totalTax;  // 실수령액
+
+                // 계좌 잔액 업데이트 (실수령액만 지급)
+                BankAccount account = student.getBankAccount();
+                account.setBalance(account.getBalance() + netSalary);
                 bankAccountRepository.save(account);
+
+                // 응답 DTO 생성
+                SalaryDTO response = SalaryDTO.builder()
+                        .studentName(student.getName())
+                        .baseSalary(baseSalary)
+                        .totalTax(totalTax)
+                        .netSalary(netSalary)
+                        .taxDetails(taxDetails)
+                        .build();
+
+                salaryResponses.add(response);
             }
         }
 
@@ -101,7 +128,13 @@ public class SalaryService {
                 .build();
         salaryHistoryRepository.save(salaryHistory);
 
-        return ApiResponse.success("주급이 성공적으로 지급되었습니다.");
+        // ✅ 성공 메시지 + 주급 지급 결과 목록을 Map에 담아서 반환
+        Map<String, Object> result = new HashMap<>();
+        result.put("message", "주급이 성공적으로 지급되었습니다.");
+        result.put("salaries", salaryResponses);
+
+        return ApiResponse.success(result);
     }
+
 
 }

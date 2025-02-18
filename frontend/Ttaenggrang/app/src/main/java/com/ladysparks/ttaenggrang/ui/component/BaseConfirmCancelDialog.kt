@@ -12,7 +12,7 @@ import com.ladysparks.ttaenggrang.R
 class BaseTwoButtonDialog(
     context: Context,
     private val title: String,
-    private val message: String,
+    private val message: String? = null,
     private val positiveButtonText: String? = null,
     private val negativeButtonText: String? = null,
     private val statusImageResId: Int? = null,
@@ -52,6 +52,8 @@ class BaseTwoButtonDialog(
         textMessage.text = message
 
         // 버튼 설정 (null 값이면 버튼 숨김)
+        if(message == null) textMessage.visibility = View.GONE
+
         if (positiveButtonText != null) {
             btnPositive.text = positiveButtonText
             btnPositive.setOnClickListener {

@@ -17,7 +17,7 @@ public class SavingsDepositHistoryDTO {
     private int amount;
     private float interestRate;
     private int balance;
-    private LocalDate startDate;
-    private LocalDate maturityDate;
+//    private LocalDate startDate;
+//    private LocalDate maturityDate;
 
 }

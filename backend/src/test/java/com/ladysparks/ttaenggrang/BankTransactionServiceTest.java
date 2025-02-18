@@ -1,6 +1,6 @@
 package com.ladysparks.ttaenggrang;
 
-import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransactionType;
+import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction.BankTransactionType;
 import com.ladysparks.ttaenggrang.domain.bank.repository.BankTransactionRepository;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +53,7 @@ public class BankTransactionServiceTest {
                         BankTransactionType.ITEM_SELL,
                         BankTransactionType.ETF_SELL,
                         BankTransactionType.STOCK_SELL,
-                        BankTransactionType.SAVINGS_INTEREST,
+                        BankTransactionType.SAVINGS_PAYOUT,
                         BankTransactionType.BANK_INTEREST
                 ))
         ).thenReturn(4500);
@@ -79,7 +79,7 @@ public class BankTransactionServiceTest {
                 studentId, startDate, endDate,
                 Arrays.asList(
                         BankTransactionType.SAVINGS_DEPOSIT,
-                        BankTransactionType.SAVINGS_INTEREST,
+                        BankTransactionType.SAVINGS_PAYOUT,
                         BankTransactionType.BANK_INTEREST
                 ))
         ).thenReturn(2000);

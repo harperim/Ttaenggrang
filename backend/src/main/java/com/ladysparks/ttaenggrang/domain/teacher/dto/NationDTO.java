@@ -1,6 +1,9 @@
 package com.ladysparks.ttaenggrang.domain.teacher.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +21,8 @@ import java.sql.Timestamp;
 @JsonIgnoreProperties(value={"id", "teacherId", "establishedDate", "profileImageUrl", "teacher"}, allowGetters=true)
 public class NationDTO {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long teacherId;
@@ -33,7 +38,7 @@ public class NationDTO {
 
     private Integer savingsGoalAmount;
 
-    private Integer nationalTreasury;
+    private Integer nationalTreasury;  //국고
 
     private Timestamp establishedDate;
 

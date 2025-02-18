@@ -45,10 +45,10 @@ class NationSetupActivity : BaseActivity() {
                     RetrofitUtil.authService.nationSetup(data)
                 }.onSuccess {
 
-                    startActivity(Intent(this@NationSetupActivity, MainActivity::class.java))
-
+//                    startActivity(Intent(this@NationSetupActivity, MainActivity::class.java))
                     // 1. 더미데이터 추가 : 직업 데이터
-//                    setBaseJobData()
+                    showToast("기본 직업 정보를 등록중 입니다...")
+                    setBaseJobData()
                 }.onFailure {
                     showErrorDialog(it)
                 }
@@ -71,6 +71,7 @@ class NationSetupActivity : BaseActivity() {
                 }
             }.onSuccess {
                 // 2. 더미데이터 추가 : 세금 데이터
+                showToast("기본 세금 정보를 등록중 입니다...")
                 setBaseTaxData()
             }.onFailure {
                 showErrorDialog(it)
@@ -84,20 +85,6 @@ class NationSetupActivity : BaseActivity() {
                 taxList.forEach { tax -> RetrofitUtil.taxService.registerTax(tax) }
             }.onSuccess {
                 showToast("모든 데이터 생성이 끝났습니다.")
-
-                // 3. (예정) 주식장 운영시간
-                setStockTime()
-            }.onFailure {
-                showErrorDialog(it)
-            }
-        }
-    }
-
-    private fun setStockTime(){
-        lifecycleScope.launch {
-            runCatching {
-                // 주식 시간 설정 API 등록 필요
-            }.onSuccess {
                 startActivity(Intent(this@NationSetupActivity, LoginActivity::class.java))
             }.onFailure {
                 showErrorDialog(it)

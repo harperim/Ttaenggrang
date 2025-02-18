@@ -1,14 +1,20 @@
 package com.ladysparks.ttaenggrang.domain.notification.service;
 
 import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationDTO;
+import com.ladysparks.ttaenggrang.domain.notification.dto.NotificationPersistanceDTO;
 import com.ladysparks.ttaenggrang.domain.notification.entity.Notification;
-import com.ladysparks.ttaenggrang.domain.notification.entity.NotificationStatus;
-import com.ladysparks.ttaenggrang.domain.notification.entity.NotificationType;
+import com.ladysparks.ttaenggrang.domain.notification.entity.Notification.NotificationStatus;
+import com.ladysparks.ttaenggrang.domain.notification.entity.Notification.NotificationType;
 import com.ladysparks.ttaenggrang.domain.notification.mapper.NotificationMapper;
 import com.ladysparks.ttaenggrang.domain.notification.repository.NotificationRepository;
+import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
+import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -21,14 +27,94 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
+    private final FCMWithDataService fcmWithDataService;
+    private final StudentService studentService;
+
+    /**
+     * 뉴스 발행 알림
+     */
+    public void sendNewsNotificationToStudents(Long teacherId, String content) throws IOException {
+        String category = "News";
+        String title = "뉴스 발행";
+        long time = System.currentTimeMillis();
+        String sender = "System";
+        String receiver = "STUDENT";
+
+        NotificationDTO notificationDTO = NotificationDTO.builder()
+                .category(category)
+                .title(title)
+                .content(content)
+                .time(time)
+                .sender(sender)
+                .receiver(receiver)
+                .build();
+
+        List<String> targetTokens = studentService.findAllStudentByTeacherId(teacherId).stream()
+                .map(Student::getFcmToken)
+                .toList();
+
+        fcmWithDataService.broadCastToAllStudents(targetTokens, notificationDTO);
+    }
+
+    /**
+     * 주간 리포트 알림
+     */
+    public void sendWeeeklyNotificationToStudents(Long teacherId) throws IOException {
+        String category = "Report";
+        String title = "주간 통계 보고서 발행";
+        String content = "주간 통계 보고서를 확인하러 가볼까요?";
+        long time = System.currentTimeMillis();
+        String sender = "System";
+        String receiver = "STUDENT";
+
+        NotificationDTO notificationDTO = NotificationDTO.builder()
+                .category(category)
+                .title(title)
+                .content(content)
+                .time(time)
+                .sender(sender)
+                .receiver(receiver)
+                .build();
+
+        List<String> targetTokens = studentService.findAllByTeacherId(teacherId).stream()
+                .map(StudentResponseDTO::getToken)
+                .toList();
+
+        fcmWithDataService.broadCastToAllStudents(targetTokens, notificationDTO);
+    }
+
+    /**
+     * 은행 상품 만기 알림
+     */
+    public void sendBankNotificationToStudents(Long studentId, String bankProductName) throws IOException {
+        String category = "Bank";
+        String title = "적금 만기 안내";
+        String content = bankProductName + " 적금 만기날 입니다.";
+        long time = System.currentTimeMillis();
+        String sender = "System";
+        String receiver = "STUDENT";
+
+        NotificationDTO notificationDTO = NotificationDTO.builder()
+                .category(category)
+                .title(title)
+                .content(content)
+                .time(time)
+                .sender(sender)
+                .receiver(receiver)
+                .build();
+
+        String targetToken = studentService.findFCMTokenById(studentId);
+
+        fcmWithDataService.sendToStudent(targetToken, notificationDTO);
+    }
 
     /**
      * 📌 FCM 알림을 받은 후 DB에 저장하는 메서드
      */
     @Transactional
-    public NotificationDTO saveNotification(NotificationDTO notificationDTO) {
-        validateNotification(notificationDTO);
-        Notification notification = notificationMapper.toEntity(notificationDTO);
+    public NotificationPersistanceDTO saveNotification(NotificationPersistanceDTO notificationPersistanceDTO) {
+        validateNotification(notificationPersistanceDTO);
+        Notification notification = notificationMapper.toEntity(notificationPersistanceDTO);
         return notificationMapper.toDto(notificationRepository.save(notification));
     }
 
@@ -36,7 +122,7 @@ public class NotificationService {
      * 📌 특정 학생의 읽지 않은 알림 조회
      */
     @Transactional(readOnly = true)
-    public List<NotificationDTO> getUnreadNotificationsForStudent(Long studentId) {
+    public List<NotificationPersistanceDTO> getUnreadNotificationsForStudent(Long studentId) {
         return notificationRepository.findByReceiverStudentIdAndStatus(studentId, NotificationStatus.UNREAD)
                 .stream()
                 .map(notificationMapper::toDto)
@@ -47,7 +133,7 @@ public class NotificationService {
      * 📌 특정 교사의 읽지 않은 알림 조회
      */
     @Transactional(readOnly = true)
-    public List<NotificationDTO> getUnreadNotificationsForTeacher(Long teacherId) {
+    public List<NotificationPersistanceDTO> getUnreadNotificationsForTeacher(Long teacherId) {
         return notificationRepository.findByReceiverTeacherIdAndStatus(teacherId, NotificationStatus.UNREAD)
                 .stream()
                 .map(notificationMapper::toDto)
@@ -66,38 +152,38 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
-    private void validateNotification(NotificationDTO notificationDTO) {
+    private void validateNotification(NotificationPersistanceDTO notificationPersistanceDTO) {
         // 발신자(sender)는 반드시 존재해야 함 (Student 또는 Teacher 중 하나)
-        if (notificationDTO.getSenderStudentId() == null && notificationDTO.getSenderTeacherId() == null) {
+        if (notificationPersistanceDTO.getSenderStudentId() == null && notificationPersistanceDTO.getSenderTeacherId() == null) {
             throw new IllegalArgumentException("알림을 보낸 사람(sender_student_id 또는 sender_teacher_id) 중 하나는 반드시 존재해야 합니다.");
         }
 
         // 발신자는 두 개 동시에 설정될 수 없음
-        if (notificationDTO.getSenderStudentId() != null && notificationDTO.getSenderTeacherId() != null) {
+        if (notificationPersistanceDTO.getSenderStudentId() != null && notificationPersistanceDTO.getSenderTeacherId() != null) {
             throw new IllegalArgumentException("알림을 보낸 사람(sender_student_id 또는 sender_teacher_id)은 하나만 존재해야 합니다.");
         }
 
         // 수신자(receiver)는 반드시 존재해야 함 (Student 또는 Teacher 중 하나)
-        if (notificationDTO.getReceiverStudentId() == null && notificationDTO.getReceiverTeacherId() == null) {
+        if (notificationPersistanceDTO.getReceiverStudentId() == null && notificationPersistanceDTO.getReceiverTeacherId() == null) {
             throw new IllegalArgumentException("알림을 받는 사람(receiver_student_id 또는 receiver_teacher_id) 중 하나는 반드시 존재해야 합니다.");
         }
 
         // 수신자는 두 개 동시에 설정될 수 없음
-        if (notificationDTO.getReceiverStudentId() != null && notificationDTO.getReceiverTeacherId() != null) {
+        if (notificationPersistanceDTO.getReceiverStudentId() != null && notificationPersistanceDTO.getReceiverTeacherId() != null) {
             throw new IllegalArgumentException("알림을 받는 사람(receiver_student_id 또는 receiver_teacher_id)은 하나만 존재해야 합니다.");
         }
 
         // 발신자와 수신자가 같을 수 없음 (자기 자신에게 알림 전송 불가)
-        if (Objects.equals(notificationDTO.getSenderStudentId(), notificationDTO.getReceiverStudentId())) {
+        if (Objects.equals(notificationPersistanceDTO.getSenderStudentId(), notificationPersistanceDTO.getReceiverStudentId())) {
             throw new IllegalArgumentException("자기 자신에게 알림을 보낼 수 없습니다. (sender_student_id와 receiver_student_id가 동일함)");
         }
 
-        if (Objects.equals(notificationDTO.getSenderTeacherId(), notificationDTO.getReceiverTeacherId())) {
+        if (Objects.equals(notificationPersistanceDTO.getSenderTeacherId(), notificationPersistanceDTO.getReceiverTeacherId())) {
             throw new IllegalArgumentException("자기 자신에게 알림을 보낼 수 없습니다. (sender_teacher_id와 receiver_teacher_id가 동일함)");
         }
 
         // 특정 알림 타입에 따른 추가 검증 (예시)
-        if (notificationDTO.getNotificationType() == NotificationType.ITEM_SALE_REQUEST && notificationDTO.getReceiverTeacherId() == null) {
+        if (notificationPersistanceDTO.getNotificationType() == NotificationType.ITEM_SALE_REQUEST && notificationPersistanceDTO.getReceiverTeacherId() == null) {
             throw new IllegalArgumentException("ITEM_SALE_REQUEST 알림은 receiver_teacher_id가 필요합니다.");
         }
     }

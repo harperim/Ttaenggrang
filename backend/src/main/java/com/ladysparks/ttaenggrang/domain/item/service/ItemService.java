@@ -64,6 +64,7 @@ public class ItemService {
 
         return itemRepository.findItemsByTeacherId(teacherId)
                 .stream()
+                .filter(item -> item.getQuantity() > 0)
                 .map(itemMapper::toDto)
                 .collect(Collectors.toList());
     }

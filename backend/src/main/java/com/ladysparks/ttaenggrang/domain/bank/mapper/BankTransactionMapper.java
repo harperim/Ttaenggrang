@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.bank.mapper;
 
+import com.ladysparks.ttaenggrang.domain.student.dto.BankTransactionSummaryDTO;
 import com.ladysparks.ttaenggrang.global.config.MapStructConfig;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction;
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
@@ -20,5 +21,13 @@ public interface BankTransactionMapper {
     @Mapping(source = "bankAccountId", target = "bankAccount.id")
     @Mapping(source = "receiverId", target = "receiver.id")
     BankTransaction toEntity(BankTransactionDTO bankTransactionDTO);
+
+    // BankTransaction -> BankTransactionSummaryDTO
+    @Mapping(source = "id", target = "transactionId")
+    @Mapping(source = "createdAt", target = "transactionDate")
+    @Mapping(source = "type", target = "transactionType")
+    @Mapping(source = "amount", target = "amount")
+    @Mapping(source = "balanceAfter", target = "accountBalance")
+    BankTransactionSummaryDTO toSummaryDto(BankTransaction bankTransaction);
 
 }

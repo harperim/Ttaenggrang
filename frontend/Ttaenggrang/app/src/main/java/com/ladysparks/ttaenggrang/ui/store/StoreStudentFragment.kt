@@ -25,7 +25,7 @@ import com.ladysparks.ttaenggrang.util.showToast
 import com.ladysparks.ttaenggrang.data.model.request.StoreBuyingRequest
 import com.ladysparks.ttaenggrang.data.model.response.StoreStudentPurchaseHistoryResponse
 import com.ladysparks.ttaenggrang.databinding.DialogItemMineBinding
-
+import com.ladysparks.ttaenggrang.util.NumberUtil.formatWithComma
 class StoreStudentFragment : BaseFragment<FragmentStoreStudentBinding>(
     FragmentStoreStudentBinding::bind,
     R.layout.fragment_store_student
@@ -42,6 +42,8 @@ class StoreStudentFragment : BaseFragment<FragmentStoreStudentBinding>(
 
         // 뷰모델 연결
         storeViewModel = ViewModelProvider(this).get(StoreViewModel::class.java)
+
+        storeViewModel.getMyAccount()
 
         observeLiveData()
 
@@ -102,6 +104,10 @@ class StoreStudentFragment : BaseFragment<FragmentStoreStudentBinding>(
                 binding.textNullMyItem.visibility = View.VISIBLE
                 binding.recyclerMyItem.visibility = View.GONE
             }
+        }
+
+        storeViewModel.myAccount.observe(viewLifecycleOwner) {response ->
+            binding.textNationAmount.text = "${formatWithComma(response.balance)}"
         }
     }
 

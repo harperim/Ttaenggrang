@@ -1,8 +1,10 @@
 package com.ladysparks.ttaenggrang.domain.tax.controller;
 
+import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.tax.dto.TaxDTO;
 import com.ladysparks.ttaenggrang.domain.tax.service.TaxService;
-import com.ladysparks.ttaenggrang.global.docs.TaxApiSpecification;
+import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
+import com.ladysparks.ttaenggrang.global.docs.tax.TaxApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,18 +20,21 @@ import java.util.Optional;
 public class TaxController implements TaxApiSpecification {
 
     private final TaxService taxService;
+    private final TeacherService teacherService;
+    private final StudentService studentService;
 
     // 세금 항목 [등록]
     @PostMapping
     public ResponseEntity<ApiResponse<TaxDTO>> taxAdd(@RequestBody @Valid TaxDTO taxDTO) {
-        TaxDTO savedTaxDTO = taxService.addTax(taxDTO);
-        ApiResponse<TaxDTO> response = ApiResponse.created(savedTaxDTO);
+        ApiResponse<TaxDTO> response = taxService.addTax(taxDTO);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     // 세금 항목 [전체 조회]
     @GetMapping
-    public ResponseEntity<ApiResponse<List<TaxDTO>>> taxList(@RequestParam Optional<Long> teacherId) {
+    public ResponseEntity<ApiResponse<List<TaxDTO>>> taxList() {
+        Optional<Long> studentId = studentService.getOptionalCurrentStudentId();
+        Long teacherId = studentId.isPresent() ? studentService.findTeacherIdByStudentId(studentId.get()) : teacherService.getCurrentTeacherId();
         List<TaxDTO> taxDTOList = taxService.findTaxesByTeacher(teacherId);
         ApiResponse<List<TaxDTO>> response = ApiResponse.success(taxDTOList);
         return ResponseEntity.status(response.getStatusCode()).body(response);

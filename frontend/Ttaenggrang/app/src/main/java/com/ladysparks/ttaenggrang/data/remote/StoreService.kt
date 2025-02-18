@@ -5,6 +5,7 @@ import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
 import com.ladysparks.ttaenggrang.data.model.response.StoreStudenItemListResponse
 import com.ladysparks.ttaenggrang.data.model.response.StoreStudentPurchaseHistoryResponse
 import com.ladysparks.ttaenggrang.data.model.request.StoreRegisterRequest
+import com.ladysparks.ttaenggrang.data.model.response.StoreMyAccountResponse
 import com.ladysparks.ttaenggrang.data.model.response.StoreRegisterResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -37,4 +38,7 @@ interface StoreService {
     // 아이템 사용 - 실행됨
     @PUT("item-transactions/{itemTransactionId}/use")
     suspend fun useItem(@Path("itemTransactionId")itemTransactionId: Int): ApiResponse<Any>
+
+    @GET("bank-accounts")
+    suspend fun getMyAccount(): ApiResponse<StoreMyAccountResponse>
 }

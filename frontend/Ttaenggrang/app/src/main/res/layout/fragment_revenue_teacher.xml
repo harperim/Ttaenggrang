@@ -28,7 +28,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="19dp"
-                android:layout_marginStart="27dp">
+                android:layout_marginStart="20dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                     android:translationY="20dp" />
             </FrameLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-        
+
         <LinearLayout
             android:layout_width="696dp"
             android:layout_height="575dp"
@@ -96,6 +96,7 @@
                     android:layout_width="96dp"
                     android:layout_height="match_parent">
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRegisterTaxInfo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:backgroundTint="@color/mainGreen"
@@ -130,7 +131,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="3dp"/>
+                        android:layout_marginEnd="3dp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 
@@ -144,19 +145,22 @@
                 android:backgroundTint="@color/lightOrange"
                 android:layout_marginTop="@dimen/spacing_20">
                 <TextView
-                    android:layout_width="155dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="3"
                     android:text="세금명"
                     style="@style/heading4"
                     android:gravity="center"/>
                 <TextView
-                    android:layout_width="349dp"
+                    android:layout_weight="5"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="설명"
                     style="@style/heading4"
                     android:gravity="center"/>
                 <TextView
-                    android:layout_width="114dp"
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="세율"
                     style="@style/heading4"
@@ -214,7 +218,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnShowNationTax"
+                android:id="@+id/btnUseNationTax"
                 android:layout_width="105dp"
                 android:layout_height="30dp"
                 app:cornerRadius="6dp"
@@ -226,11 +230,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="국세 내역 보기"
+                android:text="국세 사용하기"
                 android:textColor="@color/mainGreen"
-                app:layout_constraintStart_toStartOf="@+id/btnShowNationTax"
-                app:layout_constraintTop_toTopOf="@+id/btnShowNationTax"
-                app:layout_constraintBottom_toBottomOf="@+id/btnShowNationTax"
+                app:layout_constraintStart_toStartOf="@+id/btnUseNationTax"
+                app:layout_constraintTop_toTopOf="@+id/btnUseNationTax"
+                app:layout_constraintBottom_toBottomOf="@+id/btnUseNationTax"
                 style="@style/heading5"
                 android:layout_marginStart="15dp"/>
 
@@ -238,9 +242,9 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:background="@drawable/ic_chevron_right"
-                app:layout_constraintEnd_toEndOf="@id/btnShowNationTax"
-                app:layout_constraintTop_toTopOf="@id/btnShowNationTax"
-                app:layout_constraintBottom_toBottomOf="@id/btnShowNationTax"
+                app:layout_constraintEnd_toEndOf="@id/btnUseNationTax"
+                app:layout_constraintTop_toTopOf="@id/btnUseNationTax"
+                app:layout_constraintBottom_toBottomOf="@id/btnUseNationTax"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="@color/mainGreen"/>
 
@@ -290,10 +294,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:orientation="vertical">
                 <LinearLayout
+                    android:id="@+id/linearNationTaxHistoryTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -309,7 +316,7 @@
                 <!--국세 사용 내역 리스트 테이블 -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="188dp"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="26dp">
 
                     <!-- 테이블 헤더-->
@@ -384,6 +391,7 @@
             android:paddingTop="17dp">
             <!--헤더-->
             <LinearLayout
+                android:id="@+id/linearTaxStudentTitle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -399,11 +407,6 @@
                         android:layout_height="wrap_content"
                         android:text="세금 납부 내역"
                         style="@style/heading4"/>
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:background="@drawable/ic_chevron_right"
-                        android:layout_marginStart="15dp"/>
                 </LinearLayout>
 
                 <!--국세 사용 내역 리스트 테이블 -->

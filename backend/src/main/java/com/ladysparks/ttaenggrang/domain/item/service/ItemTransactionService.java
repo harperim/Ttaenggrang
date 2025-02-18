@@ -10,7 +10,6 @@ import com.ladysparks.ttaenggrang.domain.item.entity.SellerType;
 import com.ladysparks.ttaenggrang.domain.item.mapper.ItemTransactionMapper;
 import com.ladysparks.ttaenggrang.domain.item.repository.ItemRepository;
 import com.ladysparks.ttaenggrang.domain.item.repository.ItemTransactionRepository;
-import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import jakarta.persistence.EntityNotFoundException;
@@ -41,12 +40,13 @@ public class ItemTransactionService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 상품을 찾을 수 없습니다. ID: " + itemTransactionDTO.getItemId()));
 
         // 2. 판매자와 구매자 조회
-        Long sellerId = item.getSellerType() == SellerType.STUDENT ? item.getSellerStudent().getId() : item.getSellerTeacher().getId();
+        SellerType sellerType = item.getSellerType();
+        Long sellerId = sellerType == SellerType.STUDENT ? item.getSellerStudent().getId() : item.getSellerTeacher().getId();
 
         Long buyerId = studentService.getCurrentStudentId();
 
-        // 3. 판매자와 구매자가 동일한 경우 거래 불가
-        if (sellerId.equals(buyerId)) {
+        // 3. 판매자가 학생이고 판매자와 구매자가 동일한 경우 거래 불가
+        if (sellerType == SellerType.STUDENT && sellerId.equals(buyerId)) {
             throw new IllegalArgumentException("판매자와 구매자는 동일할 수 없습니다. (사용자 ID: " + buyerId + ")");
         }
 
@@ -79,18 +79,19 @@ public class ItemTransactionService {
         // 7. 은행 계좌 거래
         BankTransactionDTO bankTransactionDTO = BankTransactionDTO.builder()
                 .bankAccountId(buyerId)
-                .type(BankTransactionType.ITEM)
+                .type(sellerType == SellerType.STUDENT ? BankTransactionType.ITEM : BankTransactionType.ITEM_BUY)
                 .amount(itemTransactionDTO.getQuantity() * item.getPrice())
                 .description("[상품 거래] 상품명: " + item.getName())
-                .receiverId(sellerId)
+                .receiverId(sellerType == SellerType.STUDENT ? sellerId : null)
                 .build();
+
         bankTransactionService.addBankTransaction(bankTransactionDTO);
 
         return itemTransactionMapper.toDto(savedItemTransaction);
     }
 
     // 모든 판매 내역 조회
-    public List<ItemTransactionDTO> findItemTransactionsBySeller() {
+    public List<ItemTransactionDTO> findItemTransactionListBySeller() {
         Optional<Long> currentTeacherId = teacherService.getOptionalCurrentTeacherId();
         Optional<Long> currentStudentId = studentService.getOptionalCurrentStudentId();
 

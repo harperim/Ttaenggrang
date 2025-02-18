@@ -4,6 +4,7 @@ import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.JobInfoDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.domain.vote.dto.RankInfoDTO;
 import com.ladysparks.ttaenggrang.domain.vote.dto.VoteCreateDTO;
@@ -43,6 +44,42 @@ public class VoteService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 이메일을 가진 교사를 찾을 수 없습니다."))
                 .getId();
     }
+
+    // ✅ 현재 로그인한 사용자가 교사인지 학생인지 구분하여 teacherId 가져오기
+    private Long getClassTeacherIdFromSecurityContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("인증되지 않은 사용자입니다. 로그인 후 다시 시도하세요.");
+        }
+
+        Object principalObj = authentication.getPrincipal();
+        if (principalObj instanceof UserDetails) {
+            String username = ((UserDetails) principalObj).getUsername();
+
+            // ✅ 먼저 교사인지 확인
+            Optional<Teacher> teacher = teacherRepository.findByEmail(username);
+            if (teacher.isPresent()) {
+                Long teacherId = teacher.get().getId();
+//                System.out.println("✅ 로그인한 사용자가 교사입니다. teacherId: " + teacherId);
+                return teacherId;
+            }
+
+            // ✅ 교사가 아니라면 학생인지 확인
+            Optional<Student> student = studentRepository.findByUsername(username);
+            if (student.isPresent()) {
+                Long classTeacherId = student.get().getTeacher().getId();  // 🔥 학생이 속한 교사의 ID 가져오기
+//                System.out.println("✅ 로그인한 사용자가 학생입니다. 해당 반의 teacherId: " + classTeacherId);
+                return classTeacherId;
+            }
+
+            // ✅ 학생도 교사도 아닐 경우 예외 발생
+            throw new IllegalArgumentException("해당 username을 가진 교사 또는 학생을 찾을 수 없습니다.");
+        }
+
+        throw new IllegalArgumentException("현재 인증된 사용자를 찾을 수 없습니다.");
+    }
+
 
     // 투표 [생성]
     @Transactional
@@ -132,7 +169,10 @@ public class VoteService {
 
     // ✅ 진행 중인 투표 조회 메서드
     public ApiResponse<VoteCreateDTO> getCurrentVote() {
-        Optional<Vote> currentVoteOpt = voteRepository.findByStatus(VoteStatus.IN_PROGRESS);
+        // 현재 로그인한 교사의 반 교사 ID 가져오기 (교사면 본인, 학생이면 반의 교사)
+        Long teacherId = getClassTeacherIdFromSecurityContext();
+
+        Optional<Vote> currentVoteOpt = voteRepository.findByTeacherIdAndStatus(teacherId, VoteStatus.IN_PROGRESS);
 
         // 진행 중인 투표가 없는 경우, 완료된 마지막 투표 결과 조회
         if (currentVoteOpt.isEmpty()) {
@@ -244,7 +284,7 @@ public class VoteService {
     }
 
 
-    // 학생 투표 : 우리반 친구 선택해서 제출하면, 해당 학생의 투표 수 증가
+    // 학생 투표 : 우리 반 친구 선택해서 제출하면, 해당 학생의 투표 수 증가
     @Transactional
     public ApiResponse<String> castStudentVote(Long voteItemId) {
         try {

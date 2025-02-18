@@ -58,13 +58,12 @@ public class BankTransaction {
         ETF_BUY,
         ETF_SELL,
         SAVINGS_DEPOSIT,
-        SAVINGS_INTEREST,
+        SAVINGS_PAYOUT,
         BANK_INTEREST,
         SALARY,
         INCENTIVE,
         TAX,
         FINE,
     }
-
 
 }

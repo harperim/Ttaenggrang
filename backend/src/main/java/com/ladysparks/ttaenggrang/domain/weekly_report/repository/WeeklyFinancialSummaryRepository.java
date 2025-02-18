@@ -25,4 +25,14 @@ public interface WeeklyFinancialSummaryRepository extends JpaRepository<WeeklyFi
     @Query("SELECT w FROM WeeklyFinancialSummary w WHERE w.student.id = :studentId ORDER BY w.reportDate DESC")
     List<WeeklyFinancialSummary> findRecentReportsByStudentId(@Param("studentId") Long studentId, Pageable pageable);
 
+    /**
+     * 📌 특정 학생의 최신 주간 AI 피드백 조회
+     */
+    @Query("""
+        SELECT w.aiFeedback FROM WeeklyFinancialSummary w
+        WHERE w.student.id = :studentId
+        ORDER BY w.reportDate DESC
+    """)
+    List<String> findLatestAIFeedbackByStudentId(@Param("studentId") Long studentId, Pageable pageable);
+
 }

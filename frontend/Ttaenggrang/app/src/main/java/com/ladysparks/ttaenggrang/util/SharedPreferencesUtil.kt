@@ -33,7 +33,8 @@ object SharedPreferencesUtil {
     const val JWT_TOKEN_KEY = "jwt_token"
     const val IS_TEACHER = "is_teacher"
     const val USER_ACCOUNT = "user_email"
-    const val USER_ID_KEY = "user_id" // ✅ 사용자 ID 저장 키 추가
+    const val USER_ID = "user_id" // ✅ 사용자 ID 저장 키 추가
+    const val VOTE_HISTORY_ID = "vote_histor_id" // 최근 참여한 투표 id
 
     private lateinit var preferences: SharedPreferences
 
@@ -84,7 +85,7 @@ object SharedPreferencesUtil {
     }
 
     fun putUserId(userId: Long) {
-        preferences.edit().putLong(USER_ID_KEY, userId).apply()
+        preferences.edit().putLong(USER_ID, userId).apply()
     }
 
 
@@ -112,8 +113,8 @@ object SharedPreferencesUtil {
         return preferences.getLong(key, defaultValue)
     }
 
-    fun getUserId(): Long {
-        return preferences.getLong(USER_ID_KEY, 0L) // 기본값 0L (ID가 없을 경우)
+    fun getUserId(): Int {
+        return preferences.getInt(USER_ID, 0) // 기본값 0L (ID가 없을 경우)
     }
 
     /**

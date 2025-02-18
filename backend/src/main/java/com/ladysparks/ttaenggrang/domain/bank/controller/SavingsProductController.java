@@ -1,6 +1,8 @@
 package com.ladysparks.ttaenggrang.domain.bank.controller;
 
-import com.ladysparks.ttaenggrang.global.docs.SavingsProductApiSpecification;
+import com.ladysparks.ttaenggrang.domain.bank.dto.DepositAndSavingsCountDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
+import com.ladysparks.ttaenggrang.global.docs.bank.SavingsProductApiSpecification;
 import com.ladysparks.ttaenggrang.domain.bank.dto.SavingsProductDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import com.ladysparks.ttaenggrang.domain.bank.service.SavingsProductService;
@@ -17,17 +19,19 @@ import java.util.List;
 public class SavingsProductController implements SavingsProductApiSpecification {
 
     private final SavingsProductService savingsProductService;
+    private final TeacherService teacherService;
 
     @Autowired
-    public SavingsProductController(SavingsProductService savingsProductService) {
+    public SavingsProductController(SavingsProductService savingsProductService, TeacherService teacherService) {
         this.savingsProductService = savingsProductService;
+        this.teacherService = teacherService;
     }
 
-    // 적금 상품 [등록]
+    // (교사) 적금 상품 [등록]
     @PostMapping
     public ResponseEntity<ApiResponse<SavingsProductDTO>> savingsProductAdd(@RequestBody @Valid SavingsProductDTO savingsProductDTO) {
         SavingsProductDTO savedSavingProductDTO = savingsProductService.addSavingsProducts(savingsProductDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(savedSavingProductDTO)); // 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(savedSavingProductDTO));
     }
 
     // 적금 상품 [조회]
@@ -35,6 +39,13 @@ public class SavingsProductController implements SavingsProductApiSpecification 
     public ResponseEntity<ApiResponse<List<SavingsProductDTO>>> savingsProductList() {
         List<SavingsProductDTO> savingsProductDTOList = savingsProductService.findSavingsProducts();
         return ResponseEntity.ok(ApiResponse.success(savingsProductDTOList));
+    }
+
+    @GetMapping("/counts")
+    public ResponseEntity<ApiResponse<DepositAndSavingsCountDTO>> depositAndSavingsCounts() {
+        Long teacherId = teacherService.getCurrentTeacherId();
+        DepositAndSavingsCountDTO result = savingsProductService.getDepositAndSavingsCountsByTeacherId(teacherId);
+        return ResponseEntity.ok(ApiResponse.success(result));
     }
 
 }

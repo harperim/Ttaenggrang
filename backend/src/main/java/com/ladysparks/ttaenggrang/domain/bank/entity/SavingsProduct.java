@@ -27,6 +27,9 @@ public class SavingsProduct {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column
+    private String description;
+
     @Column(nullable = false)
     private float interestRate;
 
@@ -39,11 +42,17 @@ public class SavingsProduct {
     @Column(nullable = false)
     private int amount;
 
+    @Column
+    private int payoutAmount;
+
     @Column(nullable = false)
     private LocalDate saleStartDate;
 
     @Column(nullable = false)
     private LocalDate saleEndDate;
+
+    @Column(nullable = false)
+    private int subscriberCount;
 
     @CreationTimestamp
     private Timestamp createdAt;

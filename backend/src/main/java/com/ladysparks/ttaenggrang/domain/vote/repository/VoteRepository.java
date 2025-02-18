@@ -14,4 +14,6 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
 
     // 마지막 완료된 투표 조회 메서드
     Optional<Vote> findTopByStatusOrderByEndDateDesc(VoteStatus status);
+
+    Optional<Vote> findByTeacherIdAndStatus(Long teacherId, VoteStatus status);
 }

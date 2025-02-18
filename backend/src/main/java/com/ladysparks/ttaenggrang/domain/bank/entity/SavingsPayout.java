@@ -37,6 +37,9 @@ public class SavingsPayout {
     @Column(nullable = false)
     private SavingsPayoutType payoutType;
 
+    @Column
+    private boolean paid;
+
     @CreationTimestamp
     private Timestamp createdAt;
 

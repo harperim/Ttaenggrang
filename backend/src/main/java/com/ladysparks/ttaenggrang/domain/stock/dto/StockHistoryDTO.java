@@ -1,26 +1,38 @@
 package com.ladysparks.ttaenggrang.domain.stock.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
+import lombok.*;
 
 import java.sql.Timestamp;
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+@Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class StockHistoryDTO {
+
     private Long id;
-    private int price;
-    private int buyVolume;
-    private int sellVolume;
-    private Timestamp date;
+    private Long stockId;           // stock_id 외래 키
+    private int price;              // 해당 날짜의 주식 가격
+//    private int buyVolume;        // 매수량
+//    private int sellVolume;       // 매도량
+    private int priceChangeRate;    // 가격 변동률
+    private Timestamp date;         // 기록 날짜
+//    private Long etfId;           // etf_id 외래 키
 
-    //조인
-    // Stock 관련 (stock_id 외래 키를 참조)
-    private int stockId;    // stock_id 외래 키 (Stock 엔티티 참조)
+    public static StockHistoryDTO fromEntity(StockHistory stockHistory) {
+        return StockHistoryDTO.builder()
+                .id(stockHistory.getId())
+                .stockId(stockHistory.getStock() != null ? stockHistory.getStock().getId() : null)
+                .price(stockHistory.getPrice())
+//                .buyVolume(stockHistory.getBuyVolume())
+//                .sellVolume(stockHistory.getSellVolume())
+                .priceChangeRate(stockHistory.getPriceChangeRate())  // 가격 변동률 추가
+                .date(stockHistory.getCreatedAt())
+//                .etfId(stockHistory.getEtf() != null ? stockHistory.getEtf().getId() : null)
+                .build();
+    }
 
-    // Etf 관련 (etf_id 외래 키를 참조)
-    private int etfId;      // etf_id 외래 키 (Etf 엔티티 참조
 }
+

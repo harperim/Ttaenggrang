@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="783dp"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+
+    <TextView
+        android:id="@+id/textView2"
+        style="@style/heading2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="서미지"
+        app:layout_constraintBottom_toTopOf="@+id/layoutInput"
+        app:layout_constraintStart_toStartOf="@+id/layoutInput"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:layout_marginStart="@dimen/spacing_10"
+        style="@style/body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="님의 보유 주식 현황"
+        app:layout_constraintBottom_toBottomOf="@+id/textView2"
+        app:layout_constraintStart_toEndOf="@+id/textView2" />
+
+<!--    <ImageButton-->
+<!--        app:layout_constraintTop_toTopOf="@+id/textView2"-->
+<!--        android:id="@+id/imageButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:src="@drawable/ic_close"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/layoutInput" />-->
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_marginHorizontal="@dimen/spacing_20"
+        android:id="@+id/layoutInput"
+        app:layout_constraintBottom_toTopOf="@+id/layoutBottomBtn"
+        android:layout_width="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="26dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/spacing_10"
+            android:id="@+id/pieChart"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="match_parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:scrollbars="vertical"
+            android:id="@+id/recyclerStockList"
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+    <!-- 총 자산 -->
+    <TextView
+        android:layout_marginTop="@dimen/spacing_10"
+        android:id="@+id/textTotal"
+        style="@style/heading3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="주식 자산 총합"
+        app:layout_constraintStart_toStartOf="@+id/layoutInput"
+        app:layout_constraintTop_toBottomOf="@+id/layoutInput" />
+
+    <TextView
+        android:id="@+id/textTotalSaving"
+        style="@style/heading3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_10"
+        android:text="-"
+        app:layout_constraintEnd_toEndOf="@+id/layoutInput"
+        app:layout_constraintTop_toBottomOf="@+id/layoutInput" />
+
+
+    <!-- 등록, 취소 버튼 영역 -->
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@+id/textTotal"
+        android:layout_marginHorizontal="@dimen/spacing_20"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:id="@+id/layoutBottomBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancel"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="44dp"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/bg_rounded_15"
+            android:text="취소"
+            android:textColor="@color/black"
+            app:cornerRadius="6dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="0.75dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRegister"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="44dp"
+            android:backgroundTint="@color/mainOrange"
+            android:src="@drawable/bg_rounded_15"
+            android:text="등록하기"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/mainOrange"
+            app:cornerRadius="6dp" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ladysparks.ttaenggrang.data.model.request.StoreBuyingRequest
 import com.ladysparks.ttaenggrang.data.model.request.StoreRegisterRequest
+import com.ladysparks.ttaenggrang.data.model.response.StoreMyAccountResponse
 import com.ladysparks.ttaenggrang.data.model.response.StoreStudenItemListResponse
 import com.ladysparks.ttaenggrang.data.model.response.StoreStudentPurchaseHistoryResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
@@ -100,6 +101,23 @@ class StoreViewModel: ViewModel() {
             }
         }
 
+    }
+
+
+    private val _myAccount = MutableLiveData<StoreMyAccountResponse>()
+    val myAccount: LiveData<StoreMyAccountResponse> get() = _myAccount
+
+    fun getMyAccount() {
+        viewModelScope.launch {
+            runCatching {
+                RetrofitUtil.storeService.getMyAccount()
+            }.onSuccess {
+                _myAccount.value = it?.data!!
+                Log.d("getMyAccount Success", "아이템 등록 성공: $it")
+            }.onFailure { throwable ->
+                Log.e("getMyAccount Failure", "아이템 등록 실패", throwable)
+            }
+        }
     }
 
 }

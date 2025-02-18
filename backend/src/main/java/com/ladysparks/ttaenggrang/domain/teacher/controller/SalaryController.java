@@ -1,11 +1,11 @@
 package com.ladysparks.ttaenggrang.domain.teacher.controller;
 
 import com.ladysparks.ttaenggrang.domain.teacher.dto.IncentiveDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.SalaryDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.repository.TeacherRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.service.IncentiveService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.SalaryService;
-import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
-import com.ladysparks.ttaenggrang.global.docs.SalaryApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.nation.SalaryApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/salaries")
@@ -49,8 +52,8 @@ public class SalaryController implements SalaryApiSpecification {
     }
 
     @PostMapping("/distribute-base")
-    public ResponseEntity<ApiResponse<String>> distributeBaseSalary() {
-        ApiResponse<String> response = salaryService.distributeBaseSalary();
+    public ResponseEntity<ApiResponse<Map<String, Object>>> distributeBaseSalary() {
+        ApiResponse<Map<String, Object>> response = salaryService.distributeBaseSalary();
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

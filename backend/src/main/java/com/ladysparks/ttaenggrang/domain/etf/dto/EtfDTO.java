@@ -13,7 +13,6 @@ import java.util.List;
 @Builder
 public class EtfDTO {
     private Long id;
-    private Long teacher_id;
     private String name;
     private int price_per;
     private int total_qty;
@@ -22,8 +21,17 @@ public class EtfDTO {
     private Timestamp created_at;
     private Timestamp updated_at;
     private Integer changeRate; //가격 변동률
+    private final String type = "ETF";
 
+
+
+
+    //조인
     private List<Long> stock_id;  // 주식
+    private Long teacher_id; //선생님
+    private Long market_status_id;
+
+
 
 
 
@@ -39,6 +47,7 @@ public class EtfDTO {
                 .created_at(etfDto.getCreated_at())
                 .updated_at(etfDto.getUpdated_at())
                 .changeRate(etfDto.getChangeRate())
+//                .isMarketActive(etfDto.getIsMarketActive())
                 .build();
     }
 
@@ -53,6 +62,7 @@ public class EtfDTO {
                 .created_at(etf.getCreated_at())
                 .updated_at(etf.getUpdated_at())
                 .changeRate(etf.getChangeRate())
+//                .isMarketActive(etf.getIsMarketActive())
                 .build();
     }
 

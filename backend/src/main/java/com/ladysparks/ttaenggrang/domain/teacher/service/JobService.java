@@ -3,6 +3,7 @@ package com.ladysparks.ttaenggrang.domain.teacher.service;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.JobClassDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.JobCreateDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.JobInfoDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Job;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
@@ -33,7 +34,7 @@ public class JobService {
                 .orElseThrow(() -> new IllegalArgumentException("교사를 찾을 수 없습니다."));
 
         // 1. 직업 중복 체크
-        Optional<Job> existingJob = jobRespository.findByJobName(jobCreateDTO.getJobName());
+        Optional<Job> existingJob = jobRespository.findByJobNameAndTeacherId(jobCreateDTO.getJobName(), teacherId);
         if (existingJob.isPresent()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "직업 이름이 이미 존재합니다.", null);
         }
@@ -112,5 +113,23 @@ public class JobService {
     public int findBaseSalaryByStudentId(Long studentId) {
         Long jobId = studentService.findJobIdByStudentId(studentId);
         return jobRespository.findBaseSalaryById(jobId);
+    }
+
+    // 특정 학생의 직업 정보 조회
+    @Transactional(readOnly = true)
+    public ApiResponse<JobInfoDTO> getStudentJobInfo(Long teacherId, Long studentId) {
+        // 1. 교사의 반에 속한 학생인지 확인
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 학생을 찾을 수 없습니다."));
+
+        if (!student.getTeacher().getId().equals(teacherId)) {
+            return ApiResponse.error(HttpStatus.FORBIDDEN.value(), "해당 학생을 조회할 권한이 없습니다.", null);
+        }
+
+        // 2. 학생의 직업 정보 조회
+        JobInfoDTO jobInfoDTO = jobRespository.findJobInfoByStudentId(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 학생은 직업이 없습니다."));
+
+        return ApiResponse.success("학생의 직업 정보를 성공적으로 조회했습니다.", jobInfoDTO);
     }
 }

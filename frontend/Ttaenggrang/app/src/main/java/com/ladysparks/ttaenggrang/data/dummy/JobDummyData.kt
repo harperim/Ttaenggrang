@@ -4,6 +4,7 @@ import com.ladysparks.ttaenggrang.data.model.dto.JobDto
 
 object JobDummyData {
     val jobList = listOf(
+        JobDto("시민", "무직", 1000, 100),
         JobDto("우체부", "일기 나눠주기", 3000, 2),
         JobDto("환경부", "아침 환기, 미세먼지 알림", 3200, 2),
         JobDto("통계청", "통신문 수거", 3500, 1),

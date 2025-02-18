@@ -8,7 +8,7 @@ import lombok.*;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
-@JsonIgnoreProperties(value = {"id", "teacherId", "createdAt"}, allowGetters = true)
+@JsonIgnoreProperties(value = {"id", "teacherId", "payoutAmount", "subscriberCount", "createdAt"}, allowGetters = true)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,23 +22,29 @@ public class SavingsProductDTO {
     @NotEmpty(message = "상품명(name)은 필수 항목입니다.")
     private String name;
 
+    private String description;
+
     @NotNull(message = "이자율(interestRate)은 필수 항목입니다.")
-    private Float interestRate;
+    private float interestRate;
 
     @NotNull(message = "중도 해지 이자율(earlyInterestRate)은 필수 항목입니다.")
-    private Float earlyInterestRate;
+    private float earlyInterestRate;
 
     @NotNull(message = "가입 기간(durationWeeks)은 필수 항목입니다.")
-    private Integer durationWeeks;
+    private int durationWeeks;
 
     @NotNull(message = "납입 금액(amount)은 필수 항목입니다.")
-    private Integer amount;
+    private int amount;
+
+    private int payoutAmount;
 
     @NotNull(message = "판매 시작일(saleStartDate)은 필수 항목입니다.")
     private LocalDate saleStartDate;
 
     @NotNull(message = "판매 종료일(saleEndDate)은 필수 항목입니다.")
     private LocalDate saleEndDate;
+
+    private int subscriberCount;
 
     private Timestamp createdAt;
 

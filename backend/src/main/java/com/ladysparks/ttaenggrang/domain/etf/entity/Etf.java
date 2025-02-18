@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.etf.entity;
 
 import com.ladysparks.ttaenggrang.domain.news.entity.News;
+import com.ladysparks.ttaenggrang.domain.stock.entity.StockMarketStatus;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
 import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
 import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
@@ -52,6 +53,10 @@ public class Etf {
     private Integer changeRate; //가격 변동률
 
 
+    @Column(nullable = false, updatable = false)
+    private final String type = "ETF";
+
+
     // 조인
 
     //선생님
@@ -77,6 +82,11 @@ public class Etf {
     @OneToMany(targetEntity = Stock.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "newa_id")
     private List<News> news;
+
+
+    @ManyToOne
+    @JoinColumn(name = "market_status_id")
+    private StockMarketStatus stockMarketStatus; // MarketStatus와 연
 
 
 }

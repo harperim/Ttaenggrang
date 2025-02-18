@@ -2,7 +2,7 @@ package com.ladysparks.ttaenggrang.domain.item.controller;
 
 import com.ladysparks.ttaenggrang.domain.item.dto.ItemDTO;
 import com.ladysparks.ttaenggrang.domain.item.service.ItemService;
-import com.ladysparks.ttaenggrang.global.docs.ItemApiSpecification;
+import com.ladysparks.ttaenggrang.global.docs.item.ItemApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

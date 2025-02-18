@@ -26,12 +26,12 @@ public class Tax {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String taxName;
 
     @DecimalMin(value = "0.00", inclusive = false, message = "세율은 0보다 커야 합니다.")
-    @DecimalMax(value = "1.00", inclusive = false, message = "세율은 1보다 작아야 합니다.")
-    @Column(precision = 10, scale = 2, nullable = false) // 🔥 BigDecimal을 사용할 경우 precision 지정
+    @DecimalMax(value = "100.00", inclusive = false, message = "세율은 100보다 작아야 합니다.")
+    @Column(precision = 10, scale = 2, nullable = false) // BigDecimal을 사용할 경우 precision 지정
     private BigDecimal taxRate;
 
     @Column(nullable = false, length = 500)

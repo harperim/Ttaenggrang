@@ -88,7 +88,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_finance"
+                        android:src="@drawable/ic_vote_border"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -106,15 +106,15 @@
                     app:layout_constraintStart_toEndOf="@+id/clVoteIc"
                     app:layout_constraintTop_toTopOf="@+id/clVoteIc" />
 
-<!--                <ImageButton-->
-<!--                    android:id="@+id/btnClassVote"-->
-<!--                    android:layout_width="20dp"-->
-<!--                    android:layout_height="20dp"-->
-<!--                    android:src="@drawable/ic_setting"-->
-<!--                    app:layout_constraintBottom_toBottomOf="@+id/clVoteIc"-->
-<!--                    app:layout_constraintStart_toEndOf="@id/textVoteTitle"-->
-<!--                    app:layout_constraintTop_toTopOf="@+id/clVoteIc"-->
-<!--                    app:tint="@color/lightGray" />-->
+                <!--                <ImageButton-->
+                <!--                    android:id="@+id/btnClassVote"-->
+                <!--                    android:layout_width="20dp"-->
+                <!--                    android:layout_height="20dp"-->
+                <!--                    android:src="@drawable/ic_setting"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="@+id/clVoteIc"-->
+                <!--                    app:layout_constraintStart_toEndOf="@id/textVoteTitle"-->
+                <!--                    app:layout_constraintTop_toTopOf="@+id/clVoteIc"-->
+                <!--                    app:tint="@color/lightGray" />-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -126,14 +126,16 @@
                     app:layout_constraintTop_toBottomOf="@id/clVoteIc">
 
                     <TextView
+                        android:id="@+id/textVoteDate"
                         style="@style/body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="2025.01.03 ~ 2025.01.15"
                         android:text="-"
-                        android:textColor="@color/lightGray" />
+                        android:textColor="@color/lightGray"
+                        tools:text="2025.01.03 ~ 2025.01.15" />
 
                     <TextView
+                        android:id="@+id/textVoteTitleInfo"
                         style="@style/heading2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -141,23 +143,23 @@
 
                     <TextView
                         android:id="@+id/textVoteNow"
-                        android:visibility="gone"
                         style="@style/heading3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="80dp"
                         android:text="투표하러 가기"
-                        android:textColor="@color/mainGreen" />
+                        android:textColor="@color/mainGreen"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/textVoteStatus"
-                        android:visibility="visible"
                         style="@style/heading3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="80dp"
                         android:text="투표 생성/관리"
-                        android:textColor="@color/mainGreen" />
+                        android:textColor="@color/mainGreen"
+                        android:visibility="visible" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -191,7 +193,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_finance"
+                        android:src="@drawable/ic_info_border"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -209,15 +211,15 @@
                     app:layout_constraintStart_toEndOf="@+id/clFinanceIc"
                     app:layout_constraintTop_toTopOf="@+id/clFinanceIc" />
 
-                <ImageButton
-                    android:id="@+id/btnNationInfo"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_setting"
-                    app:layout_constraintBottom_toBottomOf="@+id/clFinanceIc"
-                    app:layout_constraintStart_toEndOf="@id/textInfo"
-                    app:layout_constraintTop_toTopOf="@+id/clFinanceIc"
-                    app:tint="@color/lightGray" />
+                <!--                <ImageButton-->
+                <!--                    android:id="@+id/btnNationInfo"-->
+                <!--                    android:layout_width="20dp"-->
+                <!--                    android:layout_height="20dp"-->
+                <!--                    android:src="@drawable/ic_setting"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="@+id/clFinanceIc"-->
+                <!--                    app:layout_constraintStart_toEndOf="@id/textInfo"-->
+                <!--                    app:layout_constraintTop_toTopOf="@+id/clFinanceIc"-->
+                <!--                    app:tint="@color/lightGray" />-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -236,6 +238,7 @@
                         android:textColor="@color/lightGray" />
 
                     <TextView
+                        android:id="@+id/textNationCreated"
                         style="@style/heading3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -250,6 +253,7 @@
                         android:textColor="@color/lightGray" />
 
                     <TextView
+                        android:id="@+id/textNationCurrency"
                         style="@style/heading3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -264,6 +268,7 @@
                         android:textColor="@color/lightGray" />
 
                     <TextView
+                        android:id="@+id/textNationPopulation"
                         style="@style/heading3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -300,7 +305,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_finance"
+                        android:src="@drawable/ic_goal_border"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -308,25 +313,25 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
-                    android:id="@+id/textGoal"
+                    android:id="@+id/titleGoal"
                     style="@style/heading3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/spacing_10"
-                    android:text="목표 자산 현황"
+                    android:text="목표 자산"
                     app:layout_constraintBottom_toBottomOf="@id/clDollarIc"
                     app:layout_constraintStart_toEndOf="@+id/clDollarIc"
                     app:layout_constraintTop_toTopOf="@+id/clDollarIc" />
 
-                <ImageButton
-                    android:id="@+id/btnGoalSavings"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_setting"
-                    app:layout_constraintBottom_toBottomOf="@+id/clDollarIc"
-                    app:layout_constraintStart_toEndOf="@id/textGoal"
-                    app:layout_constraintTop_toTopOf="@+id/clDollarIc"
-                    app:tint="@color/lightGray" />
+                <!--                <ImageButton-->
+                <!--                    android:id="@+id/btnGoalSavings"-->
+                <!--                    android:layout_width="20dp"-->
+                <!--                    android:layout_height="20dp"-->
+                <!--                    android:src="@drawable/ic_setting"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="@+id/clDollarIc"-->
+                <!--                    app:layout_constraintStart_toEndOf="@id/titleGoal"-->
+                <!--                    app:layout_constraintTop_toTopOf="@+id/clDollarIc"-->
+                <!--                    app:tint="@color/lightGray" />-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -345,73 +350,74 @@
                         android:textColor="@color/lightGray" />
 
                     <TextView
+                        android:id="@+id/textGoal"
                         style="@style/heading3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="-" />
 
-                    <TextView
-                        style="@style/body2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_30"
-                        android:layout_marginBottom="5dp"
-                        android:text="자산 순위"
-                        android:textColor="@color/lightGray" />
+                    <!--                    <TextView-->
+                    <!--                        style="@style/body2"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="@dimen/spacing_30"-->
+                    <!--                        android:layout_marginBottom="5dp"-->
+                    <!--                        android:text="자산 순위"-->
+                    <!--                        android:textColor="@color/lightGray" />-->
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                    <!--                    <LinearLayout-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:gravity="center_vertical"-->
+                    <!--                        android:orientation="horizontal">-->
 
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/ic_score1" />
+                    <!--                        <ImageView-->
+                    <!--                            android:layout_width="30dp"-->
+                    <!--                            android:layout_height="30dp"-->
+                    <!--                            android:src="@drawable/ic_score1" />-->
 
-                        <TextView
-                            style="@style/body1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="-" />
-                    </LinearLayout>
+                    <!--                        <TextView-->
+                    <!--                            style="@style/body1"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:text="-" />-->
+                    <!--                    </LinearLayout>-->
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                    <!--                    <LinearLayout-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:gravity="center_vertical"-->
+                    <!--                        android:orientation="horizontal">-->
 
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/ic_score1" />
+                    <!--                        <ImageView-->
+                    <!--                            android:layout_width="30dp"-->
+                    <!--                            android:layout_height="30dp"-->
+                    <!--                            android:src="@drawable/ic_score1" />-->
 
-                        <TextView
-                            style="@style/body1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="-" />
-                    </LinearLayout>
+                    <!--                        <TextView-->
+                    <!--                            style="@style/body1"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:text="-" />-->
+                    <!--                    </LinearLayout>-->
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                    <!--                    <LinearLayout-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:gravity="center_vertical"-->
+                    <!--                        android:orientation="horizontal">-->
 
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/ic_score1" />
+                    <!--                        <ImageView-->
+                    <!--                            android:layout_width="30dp"-->
+                    <!--                            android:layout_height="30dp"-->
+                    <!--                            android:src="@drawable/ic_score1" />-->
 
-                        <TextView
-                            style="@style/body1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="-" />
-                    </LinearLayout>
+                    <!--                        <TextView-->
+                    <!--                            style="@style/body1"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:text="-" />-->
+                    <!--                    </LinearLayout>-->
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
