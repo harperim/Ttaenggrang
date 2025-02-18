@@ -14,10 +14,9 @@ public class FastApiService {
 
     public FastApiService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder
-                .baseUrl("https://ttaenggrang.fly.dev") // ✅ FastAPI 엔드포인트
+                .baseUrl("https://i12d107.p.ssafy.io/fastapi/")  // ✅ Fly.io 대신 Nginx를 경유
                 .defaultHeader("Content-Type", "application/json")
                 .defaultHeader("User-Agent", "Spring Boot WebClient") // ✅ User-Agent 추가
-                .defaultHeader("Origin", "https://i12d107.p.ssafy.io")
                 .build();
     }
 
