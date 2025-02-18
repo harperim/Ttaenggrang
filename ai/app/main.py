@@ -10,10 +10,10 @@ app = FastAPI()
 # 🔹 CORS 설정 추가
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 모든 도메인에서 요청 허용
+    allow_origins=["https://i12d107.p.ssafy.io"],  # ✅ 특정 도메인만 허용
     allow_credentials=True,
-    allow_methods=["*"],  # 모든 HTTP 메서드 허용 (POST, GET 등)
-    allow_headers=["*"],  # 모든 헤더 허용
+    allow_methods=["GET", "POST", "OPTIONS"],  # ✅ 필요한 메서드만 허용
+    allow_headers=["Content-Type", "Authorization"],  # ✅ 필요한 헤더만 허용
 )
 
 # 🔹 모델 파일 로드 경로 (절대 경로 수정)
