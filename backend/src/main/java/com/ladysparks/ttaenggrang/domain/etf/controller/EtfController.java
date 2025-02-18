@@ -4,9 +4,12 @@ import com.ladysparks.ttaenggrang.domain.etf.dto.EtfDTO;
 import com.ladysparks.ttaenggrang.domain.etf.dto.EtfSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.etf.dto.EtfTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.etf.service.EtfService;
+import com.ladysparks.ttaenggrang.domain.etf.service.EtfTransactionService;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentEtfTransactionDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentStockTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.global.docs.stock.EtfApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
@@ -25,6 +28,7 @@ public class EtfController implements EtfApiSpecification {
     private final EtfService etfService; // StockService 주입
     private final StudentService studentService;
     private final TeacherService teacherService;
+    private final EtfTransactionService etfTransactionService;
 
 //    //ETF 생성
 //    @PostMapping("/create")
@@ -54,6 +58,14 @@ public class EtfController implements EtfApiSpecification {
         Long teacherId = studentId.isPresent() ? studentService.findTeacherIdByStudentId(studentId.get()) : teacherService.getCurrentTeacherId();
         List<EtfSummaryDTO> result = etfService.getEtfSummaryList(teacherId); // 모든 주식 정보를 반환
         return ResponseEntity.ok(ApiResponse.success(result)); // HTTP 200 OK와 함께 결과 반환
+    }
+
+    // 학생 보유 주식 조회
+    @GetMapping("/buy")
+    public ResponseEntity<ApiResponse<List<StudentEtfTransactionDTO>>> getStudentEtfs() {
+        Long studentId = studentService.getCurrentStudentId();  //학생 아이디 알아서 조회 해줌
+        List<StudentEtfTransactionDTO> stockList = etfTransactionService.findStudentEtfTransactionsByStudentId(studentId);
+        return ResponseEntity.ok(ApiResponse.success(stockList));
     }
 
 

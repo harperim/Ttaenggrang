@@ -11,15 +11,9 @@ import com.ladysparks.ttaenggrang.domain.etf.entity.EtfTransaction;
 import com.ladysparks.ttaenggrang.domain.etf.entity.TransType;
 import com.ladysparks.ttaenggrang.domain.etf.repository.EtfRepository;
 import com.ladysparks.ttaenggrang.domain.etf.repository.EtfTransactionRepository;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
-import com.ladysparks.ttaenggrang.domain.stock.dto.StockTransactionResponseDTO;
-import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
-import com.ladysparks.ttaenggrang.domain.stock.entity.StockTransaction;
-import com.ladysparks.ttaenggrang.domain.stock.entity.TransactionType;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentEtfTransactionDTO;
-import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentStockTransactionDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -223,7 +217,7 @@ public class EtfTransactionService {
         return convertToTransactionDTO(transactions);  // DTO로 변환하여 반환
     }
 
-    // StockTransaction을 TransactionDTO로 변환
+    // EtfTransaction을 TransactionDTO로 변환
     private List<EtfTransactionResponseDTO> convertToTransactionDTO(List<EtfTransaction> transactions) {
         List<EtfTransactionResponseDTO> transactionDTOList = new ArrayList<>();
         for (EtfTransaction transaction : transactions) {
@@ -251,6 +245,8 @@ public class EtfTransactionService {
 
         return transactionDTOList;
     }
+
+    //학생 보유 ETF 조회
 
     public List<StudentEtfTransactionDTO> findStudentEtfTransactionsByStudentId(Long studentId) {
         List<EtfTransactionResponseDTO> etfTransactionResponseDTOList = getStudentTransactions(studentId);
