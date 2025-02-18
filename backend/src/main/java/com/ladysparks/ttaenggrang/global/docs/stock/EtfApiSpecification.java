@@ -25,17 +25,17 @@ public interface EtfApiSpecification {
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<List<EtfSummaryDTO>>> getEtfSummaryList();
 
-    @Operation(summary = "(학생) ETF 매수", description = "💡 ETF ID와 수량으로 주식을 매수합니다.")
-    @PostMapping("/{etfId}/buy")
-    public ResponseEntity<ApiResponse<EtfTransactionDTO>> buyEtf(@PathVariable("etfId") Long etfId,
-                                                                   @RequestParam("share_count") int shareCount,
-                                                                   @RequestParam("studentId") Long studentId);
+//    @Operation(summary = "(학생) ETF 매수", description = "💡 ETF ID와 수량으로 주식을 매수합니다.")
+//    @PostMapping("/buy/{etfId}")
+//    public ResponseEntity<ApiResponse<EtfTransactionDTO>> buyEtf(@PathVariable("etfId") Long etfId,
+//                                                                 @RequestParam("share_count") int shareCount,
+//                                                                 @RequestParam("studentId") Long studentId) ;
 
-    @Operation(summary = "(학생) ETF 매도", description = "💡 ETF ID와 수량으로 주식을 매도합니다.")
-    @PostMapping("/{etfId}/sell")
-    public ResponseEntity<ApiResponse<EtfTransactionDTO>> sellEtf(@PathVariable("etfId") Long etfId,
-                                                                      @RequestParam("share_count") int shareCount,
-                                                                      @RequestParam("studentId") Long studentId);
+//    @Operation(summary = "(학생) ETF 매도", description = "💡 ETF ID와 수량으로 주식을 매도합니다.")
+//    @PostMapping("/sell/{etfId}")
+//    public ResponseEntity<ApiResponse<EtfTransactionDTO>> sellEtf(@PathVariable("etfId") Long etfId,
+//                                                                  @RequestParam("share_count") int shareCount,
+//                                                                  @RequestParam("studentId") Long studentId);
 
     @Operation(summary = "(교사/학생) 변동률", description = "💡 주식 변동률 조회")
     public ResponseEntity<ApiResponse<EtfDTO>> updateEtfPrice(
