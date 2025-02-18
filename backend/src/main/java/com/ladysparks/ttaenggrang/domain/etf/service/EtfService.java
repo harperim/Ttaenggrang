@@ -101,13 +101,13 @@ public class EtfService {
         return etf.getId();
     }
 
-    public List<EtfDTO> findEtfs() {
+    public List<EtfDTO> findEtfs(Long teacherId) {
         //모든 주식 데이터 조회
-        List<Etf> etfs = etfRepository.findAll();
+        List<Etf> etfs = etfRepository.findAllByTeacher_Id(teacherId);
         // 조회된 ETF 엔티티 리스트를 ETFDTO 리스트로 변환
         return etfs.stream()
                 .map(EtfDTO::fromEntity) // 엔티티를 DTO로 변환
-                .collect(Collectors.toList()); // 변환된 DTO를 리스트로 반환
+                .collect(           Collectors.toList()); // 변환된 DTO를 리스트로 반환
     }
 
     public Optional<EtfDTO> findEtf(Long etfId) {
