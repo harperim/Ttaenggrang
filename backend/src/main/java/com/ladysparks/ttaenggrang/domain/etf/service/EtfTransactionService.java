@@ -3,7 +3,9 @@ package com.ladysparks.ttaenggrang.domain.etf.service;
 import com.ladysparks.ttaenggrang.domain.bank.dto.BankTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.bank.entity.BankTransaction;
 import com.ladysparks.ttaenggrang.domain.bank.service.BankTransactionService;
+import com.ladysparks.ttaenggrang.domain.etf.dto.EtfDTO;
 import com.ladysparks.ttaenggrang.domain.etf.dto.EtfTransactionDTO;
+import com.ladysparks.ttaenggrang.domain.etf.dto.EtfTransactionResponseDTO;
 import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;
 import com.ladysparks.ttaenggrang.domain.etf.entity.EtfTransaction;
 import com.ladysparks.ttaenggrang.domain.etf.entity.TransType;
@@ -16,6 +18,7 @@ import com.ladysparks.ttaenggrang.domain.stock.entity.StockTransaction;
 import com.ladysparks.ttaenggrang.domain.stock.entity.TransactionType;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentEtfTransactionDTO;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentStockTransactionDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,7 @@ public class EtfTransactionService {
     private final EtfTransactionRepository etfTransactionRepository;
     private final StudentRepository studentRepository;
     private final BankTransactionService bankTransactionService;
+    private final EtfService etfService;
 
     // ETF 매수 로직
     @Transactional
@@ -210,106 +214,110 @@ public class EtfTransactionService {
         // DTO 변환 후 반환
         return EtfTransactionDTO.fromEntity(transaction, updatedOwnedQty);
     }
-//
-//    // 학생의 거래 내역 조회 (매수 + 매도)
-//    public List<EtfTransactionDTO> getStudentTransactions(Long studentId) {
-//        // 학생 ID를 기준으로 모든 거래 내역을 조회
-//        List<EtfTransaction> transactions = etfTransactionRepository.findByStudentId(studentId);
-//        return convertToTransactionDTO(transactions);  // DTO로 변환하여 반환
-//    }
-//
-//    // StockTransaction을 TransactionDTO로 변환
-//    private List<EtfTransactionDTO> convertToTransactionDTO(List<EtfTransaction> transactions) {
-//        List<EtfTransactionDTO> transactionDTOList = new ArrayList<>();
-//        for (EtfTransaction transaction : transactions) {
-//            EtfTransactionDTO transactionDTO = new EtfTransactionDTO();
-//
-//            // 학생 ID와 관련된 정보 설정
-//            transactionDTO.setStudentId(transaction.getStudent().getId());
-//
-//            // 주식 관련 정보 설정 (name과 type만 가져오기)
-//            Etf etf = transaction.getEtf();
-//            transactionDTO.setEtfId(etf.getId());
-//            transactionDTO.setName(etf.getName());  // 주식명
-//            transactionDTO.setType(etf.getType());  // 주식 타입
-//            transactionDTO.setCurrentPrice(etf.getPrice_per()); // 현재 가격
-//
-//            // 거래 정보 설정
-//            transactionDTO.setTransType(transaction.getTransType());
-//            transactionDTO.setShare_count(transaction.getShare_count());
-//            transactionDTO.setPurchase_prc(transaction.getPurchase_prc());  // 1주 가격
-//            transactionDTO.setTransDate(transaction.getTransDate()); // 거래 날짜
-//
-//            // DTO 리스트에 추가
-//            transactionDTOList.add(transactionDTO);
-//        }
-//
-//        return transactionDTOList;
-//    }
-//
-//    public List<StudentEtfTransactionDTO> findStudentEtfTransactionsByStudentId(Long studentId) {
-//        List<EtfTransactionDTO> etfTransactionResponseDTOList = getStudentTransactions(studentId);
-//        Map<Long, StudentEtfTransactionDTO> stockSummaryMap = new HashMap<>();
-//
-//        for (StockTransactionResponseDTO transaction : stockTransactionResponseDTOList) {
-//            StockDTO stockDTO = stockService.findStock(transaction.getStockId()).orElseGet(StockDTO::new);
-//            Long stockId = transaction.getStockId();
-//
-//            StudentStockTransactionDTO stockSummary = stockSummaryMap.getOrDefault(stockId,
-//                    StudentStockTransactionDTO.builder()
-//                            .stockId(stockId)
-//                            .stockName(stockDTO.getName())
-//                            .quantity(0)
-//                            .currentTotalPrice(0)
-//                            .purchasePrice(0)
-//                            .priceChangeRate(0)
-//                            .build()
-//            );
-//
-//            int prevQuantity = stockSummary.getQuantity();
-//            int prevTotalPurchasePrice = stockSummary.getPurchasePrice() * prevQuantity;
-//
-//            // 매수 (BUY) 처리
-//            if (transaction.getTransactionType() == TransactionType.BUY) {
-//                int newQuantity = prevQuantity + transaction.getShareCount();
-//                int totalPurchasePrice = prevTotalPurchasePrice + (transaction.getPurchasePricePerShare() * transaction.getShareCount());
-//                int newAveragePurchasePrice = (newQuantity > 0) ? totalPurchasePrice / newQuantity : 0;
-//
-//                stockSummary.setPurchasePrice(newAveragePurchasePrice);
-//                stockSummary.setQuantity(newQuantity);
-//            }
-//
-//            // 매도 (SELL) 처리
-//            else if (transaction.getTransactionType() == TransactionType.SELL) {
-//                int newQuantity = prevQuantity - transaction.getShareCount();
-//                stockSummary.setQuantity(Math.max(newQuantity, 0)); // 음수가 되지 않도록 조정
-//            }
-//
-//            // 현재 총 평가 금액 = 현재 주가 * 보유 수량
-//            int currentPrice = stockDTO.getPricePerShare();
-//            stockSummary.setCurrentTotalPrice(stockSummary.getQuantity() > 0 ? currentPrice * stockSummary.getQuantity() : 0);
-//
-//            // 변동률 계산
-//            if (stockSummary.getPurchasePrice() == 0 || stockSummary.getQuantity() == 0) {
-//                stockSummary.setPriceChangeRate(0);
-//            } else {
-//                int priceChangeRate = Math.round(((float) (currentPrice - stockSummary.getPurchasePrice()) / stockSummary.getPurchasePrice()) * 100);
-//                stockSummary.setPriceChangeRate(priceChangeRate);
-//            }
-//
-//            stockSummaryMap.put(stockId, stockSummary);
-//        }
-//
-//        return new ArrayList<>(stockSummaryMap.values());
-//    }
-//
-//    public int getTotalBuyVolume(Long stockId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
-//        return stockTransactionRepository.getTotalBuyVolume(stockId, startOfDay, endOfDay);
-//    }
-//
-//    public int getTotalSellVolume(Long id, LocalDateTime startOfDay, LocalDateTime endOfDay) {
-//        return stockTransactionRepository.getTotalSellVolume(id, startOfDay, endOfDay);
-//    }
+
+
+    // 학생의 거래 내역 조회 (매수 + 매도)
+    public List<EtfTransactionResponseDTO> getStudentTransactions(Long studentId) {
+        // 학생 ID를 기준으로 모든 거래 내역을 조회
+        List<EtfTransaction> transactions = etfTransactionRepository.findByStudentId(studentId);
+        return convertToTransactionDTO(transactions);  // DTO로 변환하여 반환
+    }
+
+    // StockTransaction을 TransactionDTO로 변환
+    private List<EtfTransactionResponseDTO> convertToTransactionDTO(List<EtfTransaction> transactions) {
+        List<EtfTransactionResponseDTO> transactionDTOList = new ArrayList<>();
+        for (EtfTransaction transaction : transactions) {
+            EtfTransactionResponseDTO transactionDTO = new EtfTransactionResponseDTO();
+
+            // 학생 ID와 관련된 정보 설정
+            transactionDTO.setStudentId(transaction.getStudent().getId());
+
+            // 주식 관련 정보 설정 (name과 type만 가져오기)
+            Etf etf = transaction.getEtf();
+            transactionDTO.setEtfId(etf.getId());
+            transactionDTO.setName(etf.getName());  // 주식명
+            transactionDTO.setType(etf.getType());  // 주식 타입
+            transactionDTO.setCurrentPrice(etf.getPrice_per()); // 현재 가격
+
+            // 거래 정보 설정
+            transactionDTO.setTransType(transaction.getTransType());
+            transactionDTO.setShare_count(transaction.getShare_count());
+            transactionDTO.setPurchase_prc(transaction.getPurchase_prc());  // 1주 가격
+            transactionDTO.setTransDate(transaction.getTransDate()); // 거래 날짜
+
+            // DTO 리스트에 추가
+            transactionDTOList.add(transactionDTO);
+        }
+
+        return transactionDTOList;
+    }
+
+    public List<StudentEtfTransactionDTO> findStudentEtfTransactionsByStudentId(Long studentId) {
+        List<EtfTransactionResponseDTO> etfTransactionResponseDTOList = getStudentTransactions(studentId);
+        Map<Long, StudentEtfTransactionDTO> etfSummaryMap = new HashMap<>();
+
+        for (EtfTransactionResponseDTO transaction : etfTransactionResponseDTOList) {
+            EtfDTO etfDTO = etfService.findEtf(transaction.getEtfId()).orElseGet(EtfDTO::new);
+            Long etfId = transaction.getEtfId();
+
+            StudentEtfTransactionDTO etfSummary = etfSummaryMap.getOrDefault(etfId,
+                    StudentEtfTransactionDTO.builder()
+                            .etfId(etfId)
+                            .etfName(etfDTO.getName())
+                            .quantity(0)
+                            .currentTotalPrice(0)
+                            .purchasePrice(0)
+                            .priceChangeRate(0)
+                            .build()
+            );
+
+            int prevQuantity = etfSummary.getQuantity();
+            int prevTotalPurchasePrice = etfSummary.getPurchasePrice() * prevQuantity;
+
+            // 매수 (BUY) 처리
+            if (transaction.getTransType() == TransType.BUY) {
+                int newQuantity = prevQuantity + transaction.getShare_count();
+                int totalPurchasePrice = prevTotalPurchasePrice + (transaction.getPurchase_prc() * transaction.getShare_count());
+                int newAveragePurchasePrice = (newQuantity > 0) ? totalPurchasePrice / newQuantity : 0;
+
+                etfSummary.setPurchasePrice(newAveragePurchasePrice);
+                etfSummary.setQuantity(newQuantity);
+            }
+
+            // 매도 (SELL) 처리
+            else if (transaction.getTransType() == TransType.SELL) {
+                int newQuantity = prevQuantity - transaction.getShare_count();
+                etfSummary.setQuantity(Math.max(newQuantity, 0)); // 음수가 되지 않도록 조정
+            }
+
+            // 현재 총 평가 금액 = 현재 주가 * 보유 수량
+            int currentPrice = etfDTO.getPrice_per();
+            etfSummary.setCurrentTotalPrice(etfSummary.getQuantity() > 0 ? currentPrice * etfSummary.getQuantity() : 0);
+
+            // 변동률 계산
+            if (etfSummary.getPurchasePrice() == 0 || etfSummary.getQuantity() == 0) {
+                etfSummary.setPriceChangeRate(0);
+            } else {
+                int priceChangeRate = Math.round(((float) (currentPrice - etfSummary.getPurchasePrice()) / etfSummary.getPurchasePrice()) * 100);
+                etfSummary.setPriceChangeRate(priceChangeRate);
+            }
+
+            etfSummaryMap.put(etfId, etfSummary);
+        }
+
+        return new ArrayList<>(etfSummaryMap.values());
+    }
+
+    public int getTotalBuyVolume(Long etfId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        return etfTransactionRepository.getTotalBuyVolume(etfId, startOfDay, endOfDay);
+    }
+
+    public int getTotalSellVolume(Long etfId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        return etfTransactionRepository.getTotalSellVolume(etfId, startOfDay, endOfDay);
+    }
+
+
+
 
 
 }

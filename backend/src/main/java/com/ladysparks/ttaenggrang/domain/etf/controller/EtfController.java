@@ -8,6 +8,7 @@ import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockSummaryDTO;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
 import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
+import com.ladysparks.ttaenggrang.global.docs.stock.EtfApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/etfs")
-public class EtfController  {
+public class EtfController implements EtfApiSpecification {
     private final EtfService etfService; // StockService 주입
     private final StudentService studentService;
     private final TeacherService teacherService;
