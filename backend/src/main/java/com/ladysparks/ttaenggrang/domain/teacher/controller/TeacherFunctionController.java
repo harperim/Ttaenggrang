@@ -178,4 +178,12 @@ public class TeacherFunctionController implements TeacherFunctionApiSpecificatio
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+    // 특정 학생의 직업 정보 조회
+    @GetMapping("/jobs/students/{studentId}")
+    public ResponseEntity<ApiResponse<JobInfoDTO>> getStudentJobInfo(@PathVariable Long studentId) {
+        long teacherId = getTeacherIdFromSecurityContext();
+        ApiResponse<JobInfoDTO> response = jobService.getStudentJobInfo(teacherId, studentId);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
 }
