@@ -24,8 +24,8 @@ public interface EtfApiSpecification {
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<List<EtfSummaryDTO>>> getEtfSummaryList();
 
-    @Operation(summary = "(학생) 보유 주식 [전체 조회]", description = """
-            💡 학생이 보유한 주식 목록을 조회합니다.
+    @Operation(summary = "(학생) 보유 ETF [전체 조회]", description = """
+            💡 학생이 보유한 ETF 목록을 조회합니다.
             """)
     @GetMapping("/buy")
     public ResponseEntity<ApiResponse<List<StudentEtfTransactionDTO>>> getStudentEtfs() ;
