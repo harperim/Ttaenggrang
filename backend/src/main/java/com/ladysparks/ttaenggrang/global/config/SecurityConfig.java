@@ -54,7 +54,7 @@ public class SecurityConfig {
                                             "/webjars/**",
                                             "/students/login",
                                             "/students/create",
-                                            "/fastapi/**"
+                                            "/weekly-report/predict"
                                     ).permitAll()
                                     // 인증 필요 없는 경로
                                     .requestMatchers("/teachers/**").permitAll()
