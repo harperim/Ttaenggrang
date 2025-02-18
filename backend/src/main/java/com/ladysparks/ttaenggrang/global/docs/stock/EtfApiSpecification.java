@@ -2,6 +2,7 @@ package com.ladysparks.ttaenggrang.global.docs.stock;
 
 import com.ladysparks.ttaenggrang.domain.etf.dto.EtfDTO;
 import com.ladysparks.ttaenggrang.domain.etf.dto.EtfTransactionDTO;
+import com.ladysparks.ttaenggrang.domain.teacher.service.TeacherService;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +18,7 @@ public interface EtfApiSpecification {
 
     @Operation(summary = "(교사/학생) ETF 전체 조회", description = "💡 전체 ETF을 조회합니다.")
     @GetMapping
-    public ResponseEntity<List<EtfDTO>> getEtfs();
+    public ResponseEntity<ApiResponse<List<EtfDTO>>> getEtfList();
 
     @Operation(summary = "(교사/학생) ETF 상세 조회", description = "💡 ETF ID로 주식을 조회합니다.")
     @GetMapping
