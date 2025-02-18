@@ -16,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "https://i12d107.p.ssafy.io")
 @RequestMapping("/weekly-report")
 public class WeeklyReportController implements WeeklyReportApiSpecification {
 
