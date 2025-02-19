@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="516dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:padding="24dp">
+    android:padding="@dimen/spacing_20">
 
     <!--다이얼로그 헤드-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintDialogHead"
-        android:layout_width="516dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/constraintDialogBody"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,6 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/spacing_20"
+        app:layout_constraintBottom_toTopOf="@+id/btnYes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/constraintDialogHead">
@@ -54,6 +56,7 @@
             android:id="@+id/recyclerIncomeList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/textSalary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -66,7 +69,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_20"
-            android:layout_marginBottom="@dimen/spacing_10"
             android:text="급여"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerIncomeList" />
@@ -88,12 +90,14 @@
             style="@style/body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_10"
             android:text="예상 실수령액"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textContentTitle1" />
+            app:layout_constraintTop_toBottomOf="@id/textContentTitle1"
+            app:layout_constraintBottom_toTopOf="@+id/btnYes"
+            tools:ignore="NotSibling" />
 
         <TextView
+            android:textAlignment="textEnd"
             android:id="@+id/textExpectedSalary"
             style="@style/body1"
             android:layout_width="wrap_content"
@@ -102,37 +106,21 @@
             android:text=""
             android:textColor="@color/mainOrange"
             app:layout_constraintBottom_toBottomOf="@id/textContentTitle2"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textSalary"
             app:layout_constraintTop_toTopOf="@id/textContentTitle2" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!--다이얼로그 풋-->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintDialogFoot"
-        android:layout_width="match_parent"
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnYes"
+        style="@style/heading4"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/btn_rounded_full"
+        android:text="확인"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintDialogBody">
-
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnYes"
-            style="@style/heading4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_30"
-            android:background="@drawable/btn_rounded_full"
-            android:text="확인"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

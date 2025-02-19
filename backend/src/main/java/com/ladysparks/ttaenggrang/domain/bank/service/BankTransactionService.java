@@ -85,7 +85,7 @@ public class BankTransactionService {
 
         // 3. 입금/출금 처리
         switch (bankTransactionDTO.getType()) {
-            case DEPOSIT, STOCK_SELL, ETF_SELL, SAVINGS_PAYOUT, BANK_INTEREST, SALARY, INCENTIVE:
+            case DEPOSIT, STOCK_SELL, ETF_SELL, SAVINGS_INTEREST, BANK_INTEREST, SALARY, INCENTIVE:
                 balanceAfter += transactionAmount; // 입금
                 break;
 
@@ -205,7 +205,7 @@ public class BankTransactionService {
                         || t.getType() == BankTransactionType.ITEM_SELL
                         || t.getType() == BankTransactionType.ETF_SELL
                         || t.getType() == BankTransactionType.STOCK_SELL
-                        || t.getType() == BankTransactionType.SAVINGS_PAYOUT
+                        || t.getType() == BankTransactionType.SAVINGS_INTEREST
                         || t.getType() == BankTransactionType.BANK_INTEREST
                         || t.getType() == BankTransactionType.INCENTIVE)
                 .mapToInt(BankTransaction::getAmount)
@@ -343,7 +343,7 @@ public class BankTransactionService {
                         BankTransactionType.ITEM_SELL,
                         BankTransactionType.ETF_SELL,
                         BankTransactionType.STOCK_SELL,
-                        BankTransactionType.SAVINGS_PAYOUT,
+                        BankTransactionType.SAVINGS_INTEREST,
                         BankTransactionType.BANK_INTEREST
                 ));
     }
@@ -357,7 +357,7 @@ public class BankTransactionService {
         return bankTransactionRepository.getTotalAmountByType(studentId, startDate, endDate,
                 Arrays.asList(
                         BankTransactionType.SAVINGS_DEPOSIT,
-                        BankTransactionType.SAVINGS_PAYOUT,
+                        BankTransactionType.SAVINGS_INTEREST,
                         BankTransactionType.BANK_INTEREST
                 ));
     }

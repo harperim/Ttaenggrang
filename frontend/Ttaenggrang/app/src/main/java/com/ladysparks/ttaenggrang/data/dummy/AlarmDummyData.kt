@@ -11,29 +11,30 @@ class AlarmDummyData {
         realm.writeBlocking {
             val sampleNotifications = listOf(
                 NotificationModel().apply {
-                    title = "긴급 공지"
-                    content = "내일 등교 시간이 변경되었습니다."
-                    category = "Report"
-                    sender = "학교 관리자"
-                    receiver = "STUDENT"
-                    time = System.currentTimeMillis()
-                },
-                NotificationModel().apply {
-                    title = "새로운 과제"
-                    content = "국어 숙제를 확인하세요."
-                    category = "OTHER"
-                    sender = "국어 선생님"
-                    receiver = "STUDENT"
-                    time = System.currentTimeMillis()
-                },
-                NotificationModel().apply {
-                    title = "학급 회의"
-                    content = "오늘 오후 3시 학급 회의가 있습니다."
-                    category = "Report"
-                    sender = "반장"
+                    title = "만기 알림"
+                    content = "만기 예정 적금이 존재합니다."
+                    category = "BANK"
+                    sender = "SYSTEM"
                     receiver = "TEACHER"
-                    time = System.currentTimeMillis()
+                    sendTime = System.currentTimeMillis().toString()
+                },
+                NotificationModel().apply {
+                    title = "주간 보고서 발행"
+                    content = "이번주 주간 보고서가 발행되었습니다."
+                    category = "REPORT"
+                    sender = "SYSTEM"
+                    receiver = "TEACHER"
+                    sendTime = System.currentTimeMillis().toString()
+                },
+                NotificationModel().apply {
+                    title = "오늘의 뉴스"
+                    content = "뉴스 정보를 확인하고 주식 투자를 진행하세요"
+                    category = "NEWS"
+                    sender = "SYSTEM"
+                    receiver = "TEACHER"
+                    sendTime = System.currentTimeMillis().toString()
                 }
+
             )
 
             sampleNotifications.forEach { copyToRealm(it) }

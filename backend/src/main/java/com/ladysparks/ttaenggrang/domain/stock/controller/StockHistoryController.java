@@ -1,5 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.stock.controller;
 
+import com.ladysparks.ttaenggrang.domain.etf.dto.EtfHistoryDTO;
+import com.ladysparks.ttaenggrang.domain.etf.service.EtfHistroryService;
 import com.ladysparks.ttaenggrang.domain.stock.dto.ChangeResponseDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockHistoryDTO;
 import com.ladysparks.ttaenggrang.domain.stock.service.StockHistoryService;
@@ -26,6 +28,7 @@ public class StockHistoryController implements StockHistoryApiSpecification {
     private final StockHistoryService stockHistoryService;
     private final TeacherService teacherService;
     private final StudentService studentService;
+    private final EtfHistroryService etfHistroryService;
 
     // 모든 주식 가격 변동 이력 조회
     @GetMapping("/stocks")
@@ -34,6 +37,21 @@ public class StockHistoryController implements StockHistoryApiSpecification {
         Long teacherId = studentId.isPresent() ? studentService.findTeacherIdByStudentId(studentId.get()) : teacherService.getCurrentTeacherId();
         Map<Long, List<StockHistoryDTO>> historyMap = stockHistoryService.getLast5WeekdaysStockHistory(teacherId);
         return ResponseEntity.ok(ApiResponse.success(historyMap));
+    }
+
+    // 2) ETF 가격 변동 이력 조회
+    @GetMapping("/etfs")
+    public ResponseEntity<ApiResponse<Map<Long, List<EtfHistoryDTO>>>> getLast5DaysEtfHistory() {
+        Optional<Long> studentId = studentService.getOptionalCurrentStudentId();
+        Long teacherId = studentId.isPresent()
+                ? studentService.findTeacherIdByStudentId(studentId.get())
+                : teacherService.getCurrentTeacherId();
+
+        // ETF 전용 로직 (EtfHistoryService를 통해 조회)
+        Map<Long, List<EtfHistoryDTO>> etfHistoryMap =
+                etfHistroryService.getLast5WeekdaysEtfHistory(teacherId);
+
+        return ResponseEntity.ok(ApiResponse.success(etfHistoryMap));
     }
 
 }

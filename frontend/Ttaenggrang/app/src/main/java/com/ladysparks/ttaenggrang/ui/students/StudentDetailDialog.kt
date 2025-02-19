@@ -33,7 +33,7 @@ class StudentDetailDialog : DialogFragment() {
         val name = arguments?.getString("name") ?: ""
         val job = arguments?.getString("job") ?: ""
         val id = arguments?.getString("id") ?: ""
-        val password = arguments?.getString("password") ?: ""
+       // val password = arguments?.getString("password") ?: ""
 
         val jobList = arguments?.getStringArrayList("jobList") ?: arrayListOf() // MainFragment에서 전달한 jobList
         val jobIdList = arguments?.getStringArrayList("jobId")?.map { it.toInt() } ?: emptyList()
@@ -51,10 +51,13 @@ class StudentDetailDialog : DialogFragment() {
             setText(id)
             isEnabled = false
         }
-        binding.editPassword.apply {
-            setText(password)
-            isEnabled = false
-        }
+
+        binding.titlePassword.visibility = View.GONE
+        binding.formPassword.visibility = View.GONE
+//        binding.editPassword.apply {
+//            setText(password)
+//            isEnabled = false
+//        }
 
         binding.editJob.apply {
             setPadding(0, 20, 0, 20)
@@ -95,7 +98,7 @@ class StudentDetailDialog : DialogFragment() {
                 putString("name", rowData[1])
                 putString("job", rowData[2])
                 putString("id", rowData[3])
-                putString("password", rowData[4])
+               // putString("password", rowData[4])
 
                 // jobList를 String 리스트로 변환하여 전달
                 val jobNameList = ArrayList(jobList.map { it.jobName })

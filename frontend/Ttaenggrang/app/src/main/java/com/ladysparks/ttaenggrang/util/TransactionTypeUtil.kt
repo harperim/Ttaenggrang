@@ -6,7 +6,7 @@ object TransactionTypeUtil {
             "DEPOSIT" -> "입금"
             "WITHDRAW" -> "출금"
             "TRANSFER" -> "송금"
-            "ITEM" -> "아이템 구매/판매"
+            "ITEM_BUY" -> "아이템 구매"
             "STOCK_BUY" -> "주식 매수"
             "STOCK_SELL" -> "주식 매도"
             "ETF_BUY" -> "ETF 매수"

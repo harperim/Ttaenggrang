@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="1025dp"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="@dimen/spacing_20">
 
     <!--다이얼로그 헤드-->
@@ -14,6 +15,7 @@
         app:layout_constraintBottom_toTopOf="@+id/line"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <TextView
             android:id="@+id/textDialogTitle"
             style="@style/heading3"
@@ -44,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginVertical="@dimen/spacing_10"
-        android:background="@color/lightGray"
+        android:background="@color/foundation_black_100"
         app:layout_constraintBottom_toTopOf="@+id/linearSummary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,312 +54,330 @@
 
     <!-- 이번주 금융 성적표 -->
     <LinearLayout
-        android:id="@+id/linearSummary"
-        android:layout_width="wrap_content"
-        android:layout_height="334dp"
-        android:layout_marginEnd="@dimen/spacing_30"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/linearAiAdvice"
-        app:layout_constraintEnd_toStartOf="@+id/linearSummary2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/line">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <!-- Bar Chart -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:id="@+id/linearSummary"
+            android:layout_width="0dp"
+            android:layout_height="334dp"
+            android:layout_marginEnd="@dimen/spacing_30"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/linearAiAdvice"
+            app:layout_constraintEnd_toStartOf="@+id/linearSummary2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line">
 
-            <TextView
-                style="@style/heading4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/spacing_20"
-                android:text="이번 주 내 금융 성적표" />
-
-            <TextView
-                style="@style/caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="반 평균과 비교해보세요!"
-                android:textColor="@color/foundation_black_200" />
-        </LinearLayout>
-
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/barChart"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-
-    <!-- 이번주 금융활동 요약-->
-    <LinearLayout
-        android:id="@+id/linearSummary2"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/spacing_20"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/linearSummary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/linearSummary"
-        app:layout_constraintTop_toTopOf="@+id/linearSummary">
-
-        <!-- PieChart + 종합정보 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="horizontal">
-
+            <!-- Bar Chart -->
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/spacing_10"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
                     style="@style/heading4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_20"
                     android:text="이번 주 내 금융 성적표" />
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:layout_width="match_parent"
+                <TextView
+                    style="@style/caption"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
+                    android:text="반 평균과 비교해보세요!"
+                    android:textColor="@color/foundation_black_200" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_20">
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chartBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_10">
-
-                    <TextView
-                        style="@style/heading4"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="이번주 총 수입" />
-
-                    <TextView
-                        style="@style/body1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="100,000"
-                        android:textColor="@color/foundation_black_300" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_10">
-
-                    <TextView
-                        style="@style/heading4"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="이번주 급여액" />
-
-                    <TextView
-                        style="@style/body1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="100,000"
-                        android:textColor="@color/foundation_black_300" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_10">
-
-                    <TextView
-                        style="@style/heading4"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="이번주 저축액" />
-
-                    <TextView
-                        style="@style/body1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="100,000"
-                        android:textColor="@color/foundation_black_300" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_10">
-
-                    <TextView
-                        style="@style/heading4"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="이번주 투자 수익" />
-
-                    <TextView
-                        style="@style/body1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="100,000"
-                        android:textColor="@color/foundation_black_300" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_10">
-
-                    <TextView
-                        style="@style/heading4"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="이번주 인센티브" />
-
-                    <TextView
-                        style="@style/body1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="100,000"
-                        android:textColor="@color/foundation_black_300" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        style="@style/heading4"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="이번주 소비액" />
-
-                    <TextView
-                        style="@style/body1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="100,000"
-                        android:textColor="@color/foundation_black_300" />
-                </LinearLayout>
-
-
-            </LinearLayout>
         </LinearLayout>
 
-        <!-- ProgressBar + Rank -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <!-- 이번주 금융활동 요약-->
+        <LinearLayout
+            android:id="@+id/linearSummary2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/spacing_20"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@+id/linearSummary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/linearSummary"
+            app:layout_constraintTop_toTopOf="@+id/linearSummary">
 
-            <TextView
-                android:id="@+id/titleGoal"
-                style="@style/heading4"
-                android:layout_width="wrap_content"
+            <!-- PieChart + 종합정보 -->
+            <LinearLayout
+                android:layout_marginVertical="@dimen/spacing_10"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_10"
-                android:text="목표 저축 달성률"
-                app:layout_constraintBottom_toTopOf="@+id/progressbar"
-                app:layout_constraintStart_toStartOf="@+id/progressbar"
-                app:layout_constraintTop_toTopOf="@+id/textView5" />
+                android:background="@color/white"
+                android:orientation="horizontal">
 
-            <ProgressBar
-                android:id="@+id/progressbar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/textProgressbar"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/titleGoal" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.6"
+                    android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textProgressbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_30"
-                android:text="65%"
-                app:layout_constraintBottom_toBottomOf="@+id/progressbar"
-                app:layout_constraintEnd_toStartOf="@+id/view2"
-                app:layout_constraintStart_toEndOf="@+id/progressbar"
-                app:layout_constraintTop_toTopOf="@+id/progressbar" />
+                    <TextView
+                        style="@style/heading4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="이번 주 내 금융 활동 요약" />
 
-            <View
-                android:id="@+id/view2"
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="@dimen/spacing_20"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/textView4"
-                app:layout_constraintStart_toEndOf="@+id/textProgressbar"
-                tools:layout_editor_absoluteY="20dp" />
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/chartPie"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"/>
+                </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView5"
-                style="@style/heading4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_10"
-                android:text="내 자산 순위"
-                app:layout_constraintBottom_toTopOf="@+id/textView4"
-                app:layout_constraintEnd_toEndOf="@+id/imageView"
-                app:layout_constraintStart_toStartOf="@+id/textView4" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.4"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_20">
 
-            <TextView
-                android:id="@+id/textView4"
-                style="@style/heading4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:text="1위"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/textView3" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_10">
 
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/spacing_10"
-                android:text="(+ 1)"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageView"
-                app:layout_constraintTop_toTopOf="@+id/textView4" />
+                        <TextView
+                            style="@style/heading4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="이번주 총 수입" />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_chevron_up"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textView4" />
+                        <TextView
+                            android:id="@+id/textTotalIncome"
+                            style="@style/body1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100,000"
+                            android:textColor="@color/foundation_black_300" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_10">
+
+                        <TextView
+                            style="@style/heading4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="이번주 급여액" />
+
+                        <TextView
+                            android:id="@+id/textSalaryAmount"
+                            style="@style/body1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100,000"
+                            android:textColor="@color/foundation_black_300" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_10">
+
+                        <TextView
+                            style="@style/heading4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="이번주 저축액" />
+
+                        <TextView
+                            android:id="@+id/textSavingsAmount"
+                            style="@style/body1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100,000"
+                            android:textColor="@color/foundation_black_300" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_10">
+
+                        <TextView
+                            style="@style/heading4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="이번주 투자 수익" />
+
+                        <TextView
+                            android:id="@+id/textInvestmentProfit"
+                            style="@style/body1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100,000"
+                            android:textColor="@color/foundation_black_300" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_10">
+
+                        <TextView
+                            style="@style/heading4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="이번주 인센티브" />
+
+                        <TextView
+                            android:id="@+id/textIncentiveAmount"
+                            style="@style/body1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100,000"
+                            android:textColor="@color/foundation_black_300" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/heading4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="이번주 소비액" />
+
+                        <TextView
+                            android:id="@+id/textExpenseAmount"
+                            style="@style/body1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100,000"
+                            android:textColor="@color/foundation_black_300" />
+                    </LinearLayout>
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ProgressBar + Rank -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/titleGoal"
+                    style="@style/heading4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_10"
+                    android:text="목표 저축 달성률"
+                    app:layout_constraintBottom_toTopOf="@+id/progressbar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textView5" />
+
+                <com.beardedhen.androidbootstrap.BootstrapProgressBar
+                    android:id="@+id/progressbar"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    app:animated="false"
+                    app:bootstrapBrand="warning"
+                    app:striped="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/titleGoal"
+                    />
+
+<!--                <ProgressBar-->
+<!--                    android:id="@+id/progressbar"-->
+<!--                    style="?android:attr/progressBarStyleHorizontal"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="20dp"-->
+<!--                    android:progress="60"-->
+<!--                    android:indeterminate="false"-->
+<!--                    android:max="100"-->
+<!--                    android:progressDrawable="@drawable/custom_progress"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toStartOf="@+id/textProgressbar"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/titleGoal" />-->
+
+                <TextView
+                    android:id="@+id/textProgressbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_30"
+                    android:text="65%"
+                    app:layout_constraintBottom_toBottomOf="@+id/progressbar"
+                    app:layout_constraintStart_toEndOf="@+id/progressbar"
+                    app:layout_constraintTop_toTopOf="@+id/progressbar" />
+
+                <View
+
+                    android:id="@+id/view2"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/spacing_20"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/textRank"
+                    app:layout_constraintStart_toEndOf="@+id/textProgressbar"
+                    tools:layout_editor_absoluteY="20dp" />
+
+                <TextView
+                    app:layout_constraintStart_toEndOf="@+id/view2"
+                    android:id="@+id/textView5"
+                    style="@style/heading4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_10"
+                    android:text="내 자산 순위"
+                    app:layout_constraintBottom_toTopOf="@+id/textRank"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <TextView
+                    android:id="@+id/textRank"
+                    style="@style/heading3"
+                    android:textColor="@color/mainOrange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1위"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/textView5"
+                    app:layout_constraintStart_toStartOf="@+id/textView5" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
+
 
     <!-- AI 조언 -->
     <LinearLayout
         android:id="@+id/linearAiAdvice"
         android:layout_width="match_parent"
-        android:layout_height="104dp"
+        android:layout_height="100dp"
+        android:layout_marginVertical="@dimen/spacing_20"
         android:background="@drawable/btn_rounded_full"
         android:backgroundTint="@color/backgroundGray"
         android:gravity="center"
@@ -367,12 +387,13 @@
         app:layout_constraintTop_toBottomOf="@+id/linearSummary2">
 
         <TextView
-            android:lines="2"
+            android:id="@+id/textAiFeedback"
             style="@style/body1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
             android:gravity="center_vertical"
+            android:lines="2"
             android:padding="@dimen/spacing_20"
             android:text="@string/dummyText" />
 
@@ -382,8 +403,10 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/imgFox"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
             android:layout_marginVertical="5dp"
             android:src="@drawable/fox_coins" />
 
@@ -394,7 +417,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnStudentRegistration"
         style="@style/heading3"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_rounded_full"
         android:text="확인"
@@ -405,4 +428,4 @@
         app:layout_constraintTop_toBottomOf="@+id/linearAiAdvice" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

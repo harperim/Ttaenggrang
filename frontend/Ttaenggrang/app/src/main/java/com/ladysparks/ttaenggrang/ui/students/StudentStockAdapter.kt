@@ -27,7 +27,7 @@ class StudentStockAdapter(private var stockList: List<StockResponse>) :
 
         with(holder.binding) {
             val currentPrice = if (stock.quantity > 0) {
-                stock.currentTotalPrice / stock.quantity // ✅ 정상 계산
+                stock.currentTotalPrice / stock.quantity // 정상 계산
             } else {
                 0
             }
