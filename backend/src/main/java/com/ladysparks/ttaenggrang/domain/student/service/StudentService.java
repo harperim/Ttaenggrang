@@ -23,9 +23,11 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
@@ -632,8 +634,8 @@ public class StudentService {
         return savingsAchievementDTO;
     }
 
-    public String findNameById(Long teacherId) {
-        return studentRepository.findById(teacherId)
+    public String findNameById(Long studentId) {
+        return studentRepository.findById(studentId)
                 .map(Student::getName)
                 .orElseThrow(() -> new NotFoundException("등록된 학생이 없습니다."));
     }
@@ -655,8 +657,8 @@ public class StudentService {
         studentRepository.updateFcmToken(studentId, fcmToken);
     }
 
-    public String findFCMTokenById(Long studendId) {
-        return studentRepository.findFcmTokenById(studendId);
+    public String findFCMTokenById(Long studentId) {
+        return studentRepository.findFcmTokenById(studentId).getFcmToken();
     }
 
     // 직업 [수정]
@@ -693,4 +695,9 @@ public class StudentService {
         return ApiResponse.success("학생의 직업이 성공적으로 수정되었습니다.", responseDTO);
     }
 
+    // [학생] 자신의 직업 정보 조회
+    public StudentJobResponseDTO getStudentJobSalary(Long studentId) {
+        return studentRepository.findJobAndSalaryByStudentId(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("학생 정보를 찾을 수 없습니다."));
+    }
 }

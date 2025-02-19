@@ -5,4 +5,7 @@
     <dimen name="spacing_20">20dp</dimen>
     <dimen name="spacing_30">30dp</dimen>
     <dimen name="spacing_40">40dp</dimen>
+
+    <dimen name="sticky_header_height">56dp</dimen>
+
 </resources>

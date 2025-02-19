@@ -78,8 +78,17 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-cache' // 캐시 사용
 
-	//AI
+	// AI
 	implementation 'org.json:json:20210307'
+
+	// WebClient를 사용하기 위한 Spring WebFlux 추가
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// (선택) RestTemplate과 함께 사용하려면 Spring Web 추가
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// JSON 파싱을 위한 Jackson 라이브러리 추가
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 }
 
 tasks.named('test') {

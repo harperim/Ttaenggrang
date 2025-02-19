@@ -114,4 +114,8 @@ public interface TeacherFunctionApiSpecification {
             """)
     ResponseEntity<ApiResponse<List<JobClassDTO>>> getClassJobs();
 
+    @Operation(summary = "(교사)학생 직업 정보 [상세 조회]", description = """
+            💡 교사가 특정 학생의 직업 정보를 조회합니다.
+            """)
+    ResponseEntity<ApiResponse<JobInfoDTO>> getStudentJobInfo(@PathVariable Long studentId);
 }

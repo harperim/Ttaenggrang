@@ -57,6 +57,7 @@ public class StockDTO {
         // builder로 DTO 객체 생성
         StockDTO.StockDTOBuilder dtoBuilder = StockDTO.builder()
                 .id(stock.getId())
+                .teacherId(stock.getTeacher().getId())
                 .name(stock.getName())
                 .pricePerShare(stock.getPrice_per())
                 .totalQuantity(stock.getTotal_qty())

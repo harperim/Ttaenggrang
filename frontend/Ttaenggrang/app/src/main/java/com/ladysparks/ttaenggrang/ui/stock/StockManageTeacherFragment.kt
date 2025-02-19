@@ -1,16 +1,13 @@
 package com.ladysparks.ttaenggrang.ui.stock
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
 import com.ladysparks.ttaenggrang.databinding.FragmentStockManageTeacherBinding
-import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 
 
 class StockManageTeacherFragment : BaseFragment<FragmentStockManageTeacherBinding>(
@@ -21,7 +18,6 @@ class StockManageTeacherFragment : BaseFragment<FragmentStockManageTeacherBindin
     private val viewModel: StockViewModel by viewModels()
     private lateinit var tableAdapter: BaseTableAdapter
     private val columnWeights = listOf(1f, 1.2f, 1f, 1f, 1.2f, 0.8f, 0.8f)
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,6 +31,11 @@ class StockManageTeacherFragment : BaseFragment<FragmentStockManageTeacherBindin
         // 서버에서 주식 데이터 가져오기
         viewModel.fetchAllStocks()
         viewModel.fetchStockList()
+
+        //뒤로가기
+        binding.btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
 
 
@@ -52,18 +53,14 @@ class StockManageTeacherFragment : BaseFragment<FragmentStockManageTeacherBindin
             data = emptyList(), // ✅ 초기 데이터 없음
             columnWeights = columnWeights,
             onRowClickListener = { rowIndex, rowData ->
-                Toast.makeText(
-                    requireContext(),
-                    "클릭한 행: ${rowData.joinToString()}",
-                    Toast.LENGTH_SHORT
-                ).show()
+
             }
         )
         binding.recyclerStockManageList.adapter = tableAdapter
     }
 
     private fun observeViewModel() {
-        viewModel.stockSummaryList.observe(viewLifecycleOwner){rowData ->
+        viewModel.stockSummaryList.observe(viewLifecycleOwner) { rowData ->
             tableAdapter.updateData(rowData) // ✅ 어댑터에 바로 전달
         }
     }

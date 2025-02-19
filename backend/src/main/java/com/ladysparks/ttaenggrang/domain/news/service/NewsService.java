@@ -104,7 +104,7 @@ public class NewsService {
                 "2. 출력 조건 : 내용은 반드시 **5문장 이상**으로 작성해주세요. 미만 시 재생성\n" +
                 "3. 요구사항 : 해당 주식에 대하여 호재 or 악재 와 관련된 공시정보를 생성. 단, 직접적인 주식 상승, 하락이 아니라 연관 정보(ex 주변 산업 동향, 환경변화) 를 간접적으로 제시해야함. 문어체 사용.\n" +
                 "4. 공시정보 대상 주식: %s\n" +
-                "3. 형식:\n" +
+                "5. 형식:\n" +
                 "제목: [뉴스 제목]\n" +
                 "내용: [뉴스 내용]\n" +
                 "유형: [호재/악재 중 하나]\n" +
@@ -175,7 +175,7 @@ public class NewsService {
         newsRepository.save(news);
 
         // 학생들에게 FCM 알림 전송
-        notificationService.sendNewsNotificationToStudents(teacherId, newsDTO.getContent());
+        notificationService.sendNewsNotificationToStudents(teacherId);
 
         return newsDTO;
     }

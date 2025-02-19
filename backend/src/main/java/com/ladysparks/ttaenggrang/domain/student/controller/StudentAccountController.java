@@ -3,7 +3,10 @@ package com.ladysparks.ttaenggrang.domain.student.controller;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentLoginRequestDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentLoginResponseDTO;
 import com.ladysparks.ttaenggrang.domain.student.dto.StudentResponseDTO;
+import com.ladysparks.ttaenggrang.domain.student.entity.Student;
+import com.ladysparks.ttaenggrang.domain.student.repository.StudentRepository;
 import com.ladysparks.ttaenggrang.domain.student.service.StudentService;
+import com.ladysparks.ttaenggrang.domain.teacher.dto.JobInfoDTO;
 import com.ladysparks.ttaenggrang.global.docs.student.StudentAccountApiSpecification;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import com.ladysparks.ttaenggrang.global.utill.SecurityUtil;
@@ -11,9 +14,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/students")
@@ -22,6 +29,7 @@ public class StudentAccountController implements StudentAccountApiSpecification 
 
     private final StudentService studentService;
     private final SecurityUtil securityUtil;
+    private final StudentRepository studentRepository;
 
     // 학생 로그인
     @PostMapping("/login")

@@ -3,156 +3,244 @@
     android:layout_width="516dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white">
-    <ImageButton
-        android:id="@+id/btnClose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="26dp"
-        android:layout_marginEnd="26dp"
-        android:src="@drawable/ic_close"
-        android:background="@android:color/transparent"/>
+    android:background="@color/white"
+    android:padding="24dp">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <!--다이얼로그 헤드-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogHead"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/constraintDialogBody"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="26dp"
-        android:layout_marginStart="26dp">
+        app:layout_constraintTop_toTopOf="parent">
+
         <TextView
+            android:id="@+id/textDialogTitle"
+            style="@style/heading3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="상품 등록"
-            style="@style/heading3"/>
+            android:text="상품 등록하기"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="아이템을 등록하세요"
+            android:id="@+id/textDialogContent"
             style="@style/body1"
-            android:textColor="@color/lightGray"
-            android:layout_marginTop="4dp"/>
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="상품명"
-            style="@style/heading4"
-            android:layout_marginTop="20dp"/>
+            android:text="학생들이 거래할 상품을 등록하세요."
+            android:textColor="@color/black200"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textDialogTitle"
+            app:layout_constraintTop_toBottomOf="@id/textDialogTitle" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="468dp"
-            android:layout_height="44dp"
-            android:background="@drawable/bg_rounded_20"
-            app:boxStrokeWidth="1dp"
-            app:boxStrokeColor="@color/lightGray"
-            android:textColorHint="@color/lightGray"
-            android:layout_marginTop="6dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editNameRegisterItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="미지 교환권"
-                android:paddingStart="14dp"
-                style="@style/body1"
-                android:textColor="@color/lightGray"/>
-        </com.google.android.material.textfield.TextInputLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="한 줄 설명"
-            style="@style/heading4"
-            android:layout_marginTop="16dp"/>
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="468dp"
-            android:layout_height="85dp"
-            android:background="@drawable/bg_rounded_20"
-            app:boxStrokeWidth="1dp"
-            app:boxStrokeColor="@color/lightGray"
-            android:textColorHint="@color/lightGray"
-            app:boxBackgroundMode="outline"
-            android:layout_marginTop="6dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editDescriptionRegisterItem"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="미지미지 교환권"
-                android:paddingStart="14dp"
-                android:paddingTop="11dp"
-                style="@style/body1"
-                android:textColor="@color/lightGray"
-                android:gravity="top|start" />
-        </com.google.android.material.textfield.TextInputLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="상품 금액"
-            style="@style/heading4"
-            android:layout_marginTop="16dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="468dp"
-            android:layout_height="44dp"
-            android:background="@drawable/bg_rounded_20"
-            app:boxStrokeWidth="1dp"
-            app:boxStrokeColor="@color/lightGray"
-            android:textColorHint="@color/lightGray"
-            android:layout_marginTop="6dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editPriceRegisterItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="10,000"
-                android:paddingStart="14dp"
-                style="@style/body1"
-                android:textColor="@color/lightGray"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-
-
-
-
-</LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <!--다이얼로그 바디-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogBody"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginVertical="@dimen/spacing_20"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="24dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintDialogHead">
 
-        <com.google.android.material.button.MaterialButton
+        <TextView
+            android:id="@+id/textTitle1"
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_15"
+            android:text="상품명"
+            app:layout_constraintStart_toStartOf="@id/textLayoutContent1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textLayoutContent1"
+            style="@style/body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bg_rounded_20"
+            android:textColorHint="@color/lightGray"
+            app:boxStrokeColor="@color/lightGray"
+            app:boxStrokeWidth="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textTitle1">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="등록할 상품의 이름을 작성하세요"
+                android:paddingStart="14dp"
+                android:textColor="@color/lightGray"
+                maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <TextView
+            android:id="@+id/textTitle2"
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_15"
+            android:text="설명"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textLayoutContent1"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textLayoutContent2"
+            style="@style/body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bg_rounded_20"
+            android:textColorHint="@color/lightGray"
+            app:boxStrokeColor="@color/lightGray"
+            app:boxStrokeWidth="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textTitle2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:hint="등록할 상품의 설명을 작성하세요"
+                android:inputType="textMultiLine"
+                android:maxLines="2"
+                android:minLines="2"
+                android:paddingStart="14dp"
+                android:textColor="@color/lightGray" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/textTitle3"
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_15"
+            android:text="금액"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textLayoutContent2" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textLayoutContent3"
+            style="@style/body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bg_rounded_20"
+            android:textColorHint="@color/lightGray"
+            app:boxStrokeColor="@color/lightGray"
+            app:boxStrokeWidth="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textTitle3">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="등록할 상품의 금액을 작성하세요"
+                android:paddingStart="14dp"
+                android:textColor="@color/lightGray"
+                maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/textTitle4"
+            style="@style/heading4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_15"
+            android:text="수량"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textLayoutContent3" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textLayoutContent4"
+            style="@style/body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bg_rounded_20"
+            android:textColorHint="@color/lightGray"
+            app:boxStrokeColor="@color/lightGray"
+            app:boxStrokeWidth="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textTitle4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="등록할 상품의 수량을 작성하세요"
+                android:paddingStart="14dp"
+                android:textColor="@color/lightGray"
+                maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--다이얼로그 풋-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogFoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintDialogBody">
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCancel"
             style="@style/heading4"
-            android:layout_width="228dp"
-            android:layout_height="44dp"
-            android:backgroundTint="@color/white"
-            android:src="@drawable/bg_rounded_15"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_30"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@color/lightGray"
             android:text="취소"
             android:textColor="@color/black"
-            app:cornerRadius="6dp"
-            app:strokeColor="@color/black"
-            app:strokeWidth="0.75dp" />
+            android:layout_marginEnd="@dimen/spacing_10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnRegister"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-        <com.google.android.material.button.MaterialButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnRegister"
-            android:layout_width="228dp"
-            android:layout_height="44dp"
-            android:src="@drawable/bg_rounded_15"
-            android:backgroundTint="@color/mainOrange"
-            app:cornerRadius="6dp"
-            android:text="등록하기"
-            app:backgroundTint="@color/mainOrange"
-            android:textColor="@color/white"
             style="@style/heading4"
-            android:layout_marginStart="11dp"/>
-    </LinearLayout>
-
-
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_30"
+            android:background="@drawable/btn_rounded_full"
+            android:backgroundTint="@color/mainOrange"
+            android:text="등록하기"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/btnCancel"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

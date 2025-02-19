@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.domain.etf.entity;
 
 import com.ladysparks.ttaenggrang.domain.news.entity.News;
+import com.ladysparks.ttaenggrang.domain.stock.category.Category;
 import com.ladysparks.ttaenggrang.domain.stock.entity.StockMarketStatus;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
 import com.ladysparks.ttaenggrang.domain.stock.entity.StockHistory;
@@ -51,12 +52,13 @@ public class Etf {
 
     @Column
     private Integer changeRate; //가격 변동률
-//
-//    @Column(nullable = false)
-//    private Boolean isMarketActive;  //주식장 활성화
+
 
     @Column(nullable = false, updatable = false)
     private final String type = "ETF";
+
+    @Column(columnDefinition = "TEXT")
+    private String stockDataJson; // 주식 ID + 수량을 JSON 형태로 저장
 
 
     // 조인
@@ -85,6 +87,10 @@ public class Etf {
     @JoinColumn(name = "newa_id")
     private List<News> news;
 
+
+    @ManyToOne(targetEntity = Category.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @ManyToOne
     @JoinColumn(name = "market_status_id")

@@ -185,7 +185,7 @@
             android:background="@drawable/tab"
             android:paddingHorizontal="@dimen/spacing_10"
             android:paddingVertical="3dp"
-            android:text="1주"
+            android:text="이번주"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@id/chartStock"
             app:layout_constraintEnd_toStartOf="@+id/textTab4"
@@ -201,7 +201,7 @@
             android:background="@drawable/tab"
             android:paddingHorizontal="@dimen/spacing_10"
             android:paddingVertical="3dp"
-            android:text="1달"
+            android:text="지난주"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@id/textTab3"
             app:layout_constraintStart_toEndOf="@id/textTab3"
@@ -310,13 +310,12 @@
         <LinearLayout
             android:id="@+id/btnNewsHistory"
             android:layout_width="wrap_content"
-            android:layout_height="24dp"
+            android:layout_height="0dp"
             android:background="@drawable/btn_rounded_full"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:paddingHorizontal="@dimen/spacing_10"
-            app:layout_constraintBottom_toBottomOf="@id/textNewsDate"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textNewsDate">
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 style="@style/heading5"
@@ -432,19 +431,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
+
                 android:text="내 주식 목록"
                  />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_10"
-                android:layout_gravity="center_vertical"
-                android:adjustViewBounds="true"
-                android:src="@drawable/arrow_right"
-                android:scaleType="fitCenter"
-                android:layout_marginVertical="2dp"
-                app:tint="@color/foundation_black_500" />
+
         </LinearLayout>
 
         <!--거래 버튼-->
@@ -498,7 +489,7 @@
             android:padding="0dp"
             android:src="@drawable/ic_search"
             app:layout_constraintBottom_toBottomOf="@id/textStockListHead"
-            app:layout_constraintStart_toEndOf="@id/textStockListHead"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/textStockListHead" />
 
 

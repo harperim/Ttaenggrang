@@ -29,6 +29,9 @@ public class SavingsDeposit {
     @Column(nullable = false)
     private int amount;
 
+    @Column
+    private int balance;
+
     @Column(nullable = false)
     private LocalDate scheduledDate; // 예정된 납입 날짜
 

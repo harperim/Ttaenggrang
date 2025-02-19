@@ -25,7 +25,7 @@ public interface TaxApiSpecification {
             """)
     ResponseEntity<ApiResponse<TaxDTO>> taxAdd(@RequestBody @Valid TaxDTO taxDTO);
 
-    @Operation(summary = "(교사) 세금 [전체 조회]", description = """
+    @Operation(summary = "(교사/학생) 세금 [전체 조회]", description = """
             💡 교사가 설정한 국가의 직접 추가한 세금 정보를 조회합니다.
             
             ---

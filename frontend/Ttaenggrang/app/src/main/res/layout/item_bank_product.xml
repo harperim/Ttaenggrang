@@ -1,0 +1,122 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_15"
+    android:padding="@dimen/spacing_10">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintBanner"
+        android:layout_width="186dp"
+        android:layout_height="87dp"
+        android:background="@drawable/banner_bank"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/icSvaing"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="3dp"
+            android:src="@drawable/img_saving2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintItemContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintBanner">
+
+        <TextView
+            android:id="@+id/textItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:text="미지 사랑 적금"
+            style="@style/heading4"
+            app:layout_constraintStart_toStartOf="@id/linearLayout1"
+            app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:id="@+id/linearLayout1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintEnd_toStartOf="@id/linearLayout2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textItemTitle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/ic_calander2"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caption"
+                android:text="가입기간"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
+            app:layout_constraintTop_toTopOf="@id/linearLayout1"
+            app:layout_constraintBottom_toBottomOf="@id/linearLayout1"
+            app:layout_constraintStart_toEndOf="@id/linearLayout1"
+            >
+            <ImageView
+                android:layout_marginEnd="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_coin"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caption"
+                android:text="이자율"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/linearLayout2"
+            app:layout_constraintBottom_toBottomOf="@id/linearLayout2"
+            app:layout_constraintStart_toEndOf="@id/linearLayout2"
+            >
+            <ImageView
+                android:layout_marginEnd="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_shop_money"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caption"
+                android:text="납입금액"/>
+        </LinearLayout>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

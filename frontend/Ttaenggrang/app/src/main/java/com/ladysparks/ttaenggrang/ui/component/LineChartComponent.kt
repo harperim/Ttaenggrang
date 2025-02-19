@@ -2,7 +2,6 @@ package com.ladysparks.ttaenggrang.ui.component
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.LineChart
@@ -13,7 +12,6 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import com.github.mikephil.charting.utils.Utils
 import com.ladysparks.ttaenggrang.R
 
 class LineChartComponent @JvmOverloads constructor(
@@ -30,24 +28,33 @@ class LineChartComponent @JvmOverloads constructor(
         this.description.isEnabled = true // 설명 활성화
         this.setTouchEnabled(true) // 터치 가능
         this.isDragEnabled = true // 드래그 가능
-        this.setScaleEnabled(false) // 줌 가능
+        this.setScaleEnabled(true) // 줌 가능
         this.setPinchZoom(true) // 핀치 줌 활성화
 
         // X축 설정
         val xAxis = this.xAxis
-        xAxis.enableGridDashedLine(10f, 10f, 0f)
+        xAxis.enableGridDashedLine(5f, 5f, 0f)
+        xAxis.gridColor = ContextCompat.getColor(context, R.color.foundation_black_200) // 배경 그리드 색
+        xAxis.gridLineWidth = 0.5f // ✅ 얇게 설정
         xAxis.position = XAxis.XAxisPosition.BOTTOM
 
         // Y축 설정
         val yAxis = this.axisLeft
         this.axisRight.isEnabled = false // 오른쪽 Y축 비활성화
-        yAxis.enableGridDashedLine(10f, 10f, 0f)
+        yAxis.enableGridDashedLine(5f, 5f, 0f) // ✅ 점선 길이 및 간격 조정
+        yAxis.gridColor = ContextCompat.getColor(context, R.color.foundation_black_200) // 배경 그리드 색
+        yAxis.gridLineWidth = 0.5f // ✅ 얇게 설정
         yAxis.axisMaximum = 10000f //y축 최대값
         yAxis.axisMinimum = 0f //y축 최소값
     }
 
     //차트 데이터
-    fun setChartData(stockHistory: List<Pair<Float, Float>>, dateLabels: List<String>, chartColor: Int) {
+    fun setChartData(
+        stockHistory: List<Pair<Float, Float>>,
+        dateLabels: List<String>,
+        chartColor: Int,
+        avgPurchasePrice: Int? = null
+    ) {
         val values = stockHistory.map { (x, y) -> Entry(x, y) }  // ✅ 서버 데이터 변환
 
         // ✅ 주식 가격 최대값 & 최소값 계산
@@ -80,14 +87,6 @@ class LineChartComponent @JvmOverloads constructor(
             set1.setDrawCircleHole(false) // 값에 흰색표시
             set1.setDrawValues(true) // 값 표시
 
-//            // ✅ 그라데이션 효과 추가
-//            if (Utils.getSDKInt() >= 18) {
-//                val drawable = ContextCompat.getDrawable(context, R.drawable.btn_rounded_full)
-//                set1.fillDrawable = drawable
-//            } else {
-//                set1.fillColor = ContextCompat.getColor(context, chartColor)
-//            }
-
             // ✅ 부드러운 곡선 적용
             set1.mode = LineDataSet.Mode.CUBIC_BEZIER
             set1.cubicIntensity = 0.14f // 부드러운 정도 (낮을수록 직선에 가까움)
@@ -106,11 +105,18 @@ class LineChartComponent @JvmOverloads constructor(
                 //labelRotationAngle = -45f // X축 날짜가 겹치지 않도록 기울임
                 textColor = Color.BLACK // X축 글자 색상
                 textSize = 12f // X축 글자 크기
-                axisMinimum = -0.3f // ✅ 첫 번째 값이 살짝 오른쪽으로 이동
+                axisMinimum = -0.1f // ✅ 첫 번째 값이 살짝 오른쪽으로 이동
                 //setAvoidFirstLastClipping(true) // ✅ 첫 번째 값이 Y축과 겹치지 않도록 조정
+                setVisibleXRangeMaximum(5f)
             }
 
         }
+
+        // ✅ 평균 매입 단가가 있으면 가로선 추가
+        avgPurchasePrice?.let {
+            addAveragePriceLine(it)
+        }
+        
         // ✅ 차트 여백 추가
         this.setExtraOffsets(0f, 0f, 0f, 10f) // ✅ 왼쪽 여백 추가
 
@@ -131,6 +137,15 @@ class LineChartComponent @JvmOverloads constructor(
         }
 
         this.invalidate()
+    }
+
+    private fun addAveragePriceLine(avgPurchasePrice: Int) {
+        val limitLine = com.github.mikephil.charting.components.LimitLine(avgPurchasePrice.toFloat(), "평균 매입 단가")
+        limitLine.lineWidth = 2f
+        limitLine.lineColor = ContextCompat.getColor(context, R.color.foundation_orange_500)
+        limitLine.textSize = 12f
+        this.axisLeft.removeAllLimitLines()
+        this.axisLeft.addLimitLine(limitLine)
     }
 
 
@@ -174,7 +189,8 @@ class LineChartComponent @JvmOverloads constructor(
         val yesterdayPrice = values[values.size - 2].y // 어제 가격
         val todayPrice = values.last().y // 오늘 가격
 
-        val color = if (todayPrice > yesterdayPrice) Color.parseColor("#4CAF50") else Color.parseColor("#E53935") // 상승하면 초록색, 하락하면 빨간색
+        val color =
+            if (todayPrice > yesterdayPrice) ContextCompat.getColor(context, R.color.negative_red) else ContextCompat.getColor(context, R.color.negative_blue) // 상승하면 초록색, 하락하면 빨간색
 
 
         val set1 = LineDataSet(values, "").apply {

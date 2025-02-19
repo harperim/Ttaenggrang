@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_15"
+    android:padding="24dp">
+
+    <!--다이얼로그 헤드-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogHead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/constraintDialogBody"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textDialogTitle"
+            style="@style/heading3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="미지사랑적금"
+            app:layout_constraintBottom_toTopOf="@id/textDialogContent"
+            app:layout_constraintEnd_toStartOf="@id/btnCancel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textDialogContent"
+            style="@style/body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="선생님이 강력 추천하는 적금"
+            android:textColor="@color/black200"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textDialogTitle"
+            app:layout_constraintTop_toBottomOf="@id/textDialogTitle" />
+
+
+        <ImageButton
+            android:id="@+id/btnCancel"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textDialogTitle"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--다이얼로그 바디-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_20"
+        android:layout_marginVertical="@dimen/spacing_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintDialogHead">
+
+        <!--가입기간-->
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/spacing_40"
+            android:layout_marginStart="80dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/textContent"
+            app:layout_constraintEnd_toStartOf="@id/linearLayout2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_10"
+                android:src="@drawable/ic_calander" />
+
+            <TextView
+                style="@style/heading4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="가입기간" />
+
+            <TextView
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4주" />
+        </LinearLayout>
+
+        <!--이자율-->
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/spacing_40"
+            android:gravity="center"
+            android:orientation="vertical"
+
+            app:layout_constraintBottom_toBottomOf="@id/linearLayout1"
+            app:layout_constraintEnd_toStartOf="@id/linearLayout3"
+            app:layout_constraintStart_toEndOf="@id/linearLayout1"
+            app:layout_constraintTop_toTopOf="@id/linearLayout1"
+
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_10"
+                android:src="@drawable/ic_money" />
+
+            <TextView
+                style="@style/heading4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이자율" />
+
+            <TextView
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10%" />
+        </LinearLayout>
+
+        <!--납입금액-->
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/spacing_40"
+            android:layout_marginEnd="80dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/linearLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.6"
+            app:layout_constraintStart_toEndOf="@id/linearLayout2"
+            app:layout_constraintTop_toTopOf="@id/linearLayout2"
+
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_10"
+                android:src="@drawable/ic_money2" />
+
+            <TextView
+                style="@style/heading4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="납입금액" />
+
+            <TextView
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="50,000" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textContent"
+            style="@style/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="중도해지 이자율 5%"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout1" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--다이얼로그 풋-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintDialogFoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintDialogBody">
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnNo"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_30"
+            android:layout_marginEnd="@dimen/spacing_10"
+            android:background="@drawable/btn_rounded_border"
+            android:text="닫기"
+            android:backgroundTint="@color/black200"
+            android:textColor="@color/black300"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintEnd_toStartOf="@id/btnYes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <!--가입-->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnYes"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_30"
+            android:layout_marginEnd="@dimen/spacing_10"
+            android:background="@drawable/btn_rounded_full"
+            android:text="가입"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toEndOf="@id/btnNo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

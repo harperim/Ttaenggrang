@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/bg_rounded_15"
     android:padding="24dp">
 
     <!--다이얼로그 헤드-->
@@ -297,7 +297,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_30"
             android:background="@drawable/btn_rounded_full"
-            android:backgroundTint="@color/foundation_green_500"
+            android:backgroundTint="@color/negative_blue"
             android:text="매수"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundGray"
+    android:orientation="horizontal"
+    android:padding="40dp">
+
+    <!-- 배너 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintBannerArea"
+        android:layout_width="696dp"
+        android:layout_height="126dp"
+        android:background="@drawable/img_banner"
+        app:layout_constraintBottom_toTopOf="@+id/constraintStockManageArea"
+        app:layout_constraintEnd_toStartOf="@id/constraintTradeArea"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- 텍스트 추가 -->
+        <TextView
+            android:id="@+id/textBannerHead"
+            style="@style/heading2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_20"
+            android:layout_marginTop="@dimen/spacing_15"
+            android:text="보유 상품"
+            android:textColor="@android:color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textInfo"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_20"
+            android:text="돈을 모으는 가장 좋은 방법!"
+            android:textColor="@color/foundation_black_50"
+            app:layout_constraintBottom_toTopOf="@id/textInfo2"
+            app:layout_constraintStart_toStartOf="@+id/constraintBannerArea"
+            app:layout_constraintTop_toBottomOf="@+id/textBannerHead" />
+
+        <TextView
+            android:id="@+id/textInfo2"
+            style="@style/body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_20"
+            android:layout_marginBottom="@dimen/spacing_20"
+            android:text="저축하고, 계획적으로 금융 생활을 시작해보세요!"
+            android:textColor="@color/foundation_black_50"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintBannerArea"
+            app:layout_constraintStart_toStartOf="@+id/constraintBannerArea"
+            app:layout_constraintTop_toBottomOf="@+id/textInfo" />
+
+
+        <!-- ImageView를 감쌀 FrameLayout 추가 -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_20"
+            android:clipChildren="true"
+            android:clipToPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- 이미지 추가 (크게 설정해서 배너 바깥으로 넘기기) -->
+            <ImageView
+                android:id="@+id/bannerImage"
+                android:layout_width="126dp"
+                android:layout_height="126dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/fox_coins"
+                android:translationX="20dp"
+                android:translationY="20dp" />
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--은행 상품 목록-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintStockManageArea"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:background="@drawable/bg_rounded_15"
+        android:paddingHorizontal="@dimen/spacing_20"
+        android:paddingVertical="@dimen/spacing_15"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintBannerArea">
+
+
+        <TextView
+            android:id="@+id/textBankManageTitle"
+            style="@style/heading2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="은행 상품 목록"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--뒤로가기 버튼-->
+        <LinearLayout
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:background="@drawable/btn_rounded_border"
+            android:backgroundTint="@color/black200"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/spacing_10"
+            app:layout_constraintBottom_toBottomOf="@+id/textBankManageTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textBankManageTitle"
+
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="3dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_left"
+                app:tint="@color/black200" />
+
+            <TextView
+                style="@style/heading5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:text="뒤로가기"
+                android:textColor="@color/black200" />
+        </LinearLayout>
+
+        <!--탭-->
+        <TextView
+            android:id="@+id/textTab1"
+            style="@style/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_10"
+            android:background="@drawable/tab"
+            android:paddingHorizontal="@dimen/spacing_10"
+            android:paddingVertical="3dp"
+            android:text="전체"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toStartOf="@+id/textTab2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textBankManageTitle" />
+
+        <TextView
+            android:id="@+id/textTab2"
+            style="@style/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_10"
+            android:background="@drawable/tab"
+            android:paddingHorizontal="@dimen/spacing_10"
+            android:paddingVertical="3dp"
+            android:text="예금"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@id/textTab1"
+            app:layout_constraintStart_toEndOf="@id/textTab1"
+            app:layout_constraintTop_toTopOf="@id/textTab1" />
+
+        <TextView
+            android:id="@+id/textTab3"
+            style="@style/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_10"
+            android:background="@drawable/tab"
+            android:paddingHorizontal="@dimen/spacing_10"
+            android:paddingVertical="3dp"
+            android:text="적금"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@id/textTab2"
+            app:layout_constraintStart_toEndOf="@id/textTab2"
+            app:layout_constraintTop_toTopOf="@id/textTab2" />
+
+        <!--은행 상품 리스트-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerBankManageList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:layout_marginBottom="@dimen/spacing_10"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/viewLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textTab1">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <!--구분선-->
+        <View
+            android:id="@+id/viewLine"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="@dimen/spacing_20"
+            android:background="@color/foundation_black_50"
+            app:layout_constraintBottom_toTopOf="@+id/textPayoutAmount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recyclerBankManageList" />
+
+        <TextView
+            android:id="@+id/textPayoutAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="총 예상 지급 금액"
+            style="@style/heading3"
+
+            app:layout_constraintBottom_toBottomOf="@id/textPayoutAmount2"
+            app:layout_constraintTop_toTopOf="@id/textPayoutAmount2"
+            app:layout_constraintEnd_toStartOf="@id/textPayoutAmount2"
+
+            />
+
+        <TextView
+            android:id="@+id/textPayoutAmount2"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="100,00000000000"
+            android:layout_marginStart="100dp"
+            style="@style/heading3"
+            android:gravity="end"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewLine" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--은행 상품 구매 뷰-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintTradeArea"
+        android:layout_width="0dp"
+        android:layout_height="126dp"
+        android:layout_marginStart="@dimen/spacing_20"
+        android:background="@drawable/bg_rounded_15"
+        android:paddingHorizontal="@dimen/spacing_20"
+        android:paddingVertical="@dimen/spacing_15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/constraintBannerArea"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--일반 주식 뷰-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintStockArea"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/btnDepositBuy"
+            app:layout_constraintEnd_toStartOf="@+id/constraintEtfArea"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ic_bank1"
+                android:layout_width="37dp"
+                android:layout_height="37dp"
+                android:src="@drawable/ic_bank1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textDeposit"
+                style="@style/heading5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_10"
+                android:text="예금 상품"
+                android:textColor="@color/black200"
+                app:layout_constraintBottom_toTopOf="@id/textStockCnt"
+                app:layout_constraintStart_toEndOf="@id/ic_bank1"
+                app:layout_constraintTop_toTopOf="@id/ic_bank1" />
+
+            <TextView
+                android:id="@+id/textStockCnt"
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3 개"
+                app:layout_constraintBottom_toBottomOf="@id/ic_bank1"
+                app:layout_constraintStart_toStartOf="@id/textDeposit"
+                app:layout_constraintTop_toBottomOf="@id/textDeposit" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--적금 뷰-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintEtfArea"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_10"
+            app:layout_constraintBottom_toBottomOf="@id/constraintStockArea"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/constraintStockArea"
+            app:layout_constraintTop_toTopOf="@id/constraintStockArea">
+
+            <ImageView
+                android:id="@+id/ic_bank2"
+                android:layout_width="37dp"
+                android:layout_height="37dp"
+                android:src="@drawable/ic_bank2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textDeposit2"
+                style="@style/heading5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_10"
+                android:text="적금 상품"
+                android:textColor="@color/black200"
+                app:layout_constraintBottom_toTopOf="@id/textDeposit2Cnt"
+                app:layout_constraintStart_toEndOf="@id/ic_bank2"
+                app:layout_constraintTop_toTopOf="@id/ic_bank2" />
+
+            <TextView
+                android:id="@+id/textDeposit2Cnt"
+                style="@style/heading3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4 개"
+                app:layout_constraintBottom_toBottomOf="@id/ic_bank2"
+                app:layout_constraintStart_toStartOf="@id/textDeposit2"
+                app:layout_constraintTop_toBottomOf="@id/textDeposit2" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!--은행상품 구매 버튼-->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDepositBuy"
+            style="@style/heading4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/spacing_10"
+            android:background="@drawable/btn_rounded_full"
+            android:text="은행상품 구매하기"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintStockArea" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

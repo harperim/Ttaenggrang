@@ -37,6 +37,10 @@ class NewsHistoryStudentFragment : BaseFragment<FragmentNewsHistoryStudentBindin
 
         // 서버에서 데이터 가져오기
         viewModel.fetchNewsList()
+
+        binding.btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
 
 

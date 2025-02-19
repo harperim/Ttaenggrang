@@ -37,7 +37,14 @@ object DatePickerDialogHelper {
         // Dialog 크기 설정
         dialog.setOnShowListener {
             val window = dialog.window
-            window?.setLayout(800, ViewGroup.LayoutParams.WRAP_CONTENT) // ✅ 500dp 고정
+            //  원래 코드
+//            window?.setLayout(800, ViewGroup.LayoutParams.WRAP_CONTENT) // ✅ 500dp 고정
+
+            // 원래 코드가 픽셀 단위라고 해서 dp로 변환한 코드
+            val scale = context.resources.displayMetrics.density
+            val widthInPx = (550 * scale + 0.5f).toInt() // 300dp → px 변환
+            window?.setLayout(widthInPx, ViewGroup.LayoutParams.WRAP_CONTENT)
+
         }
 
         btnConfirm.setOnClickListener {

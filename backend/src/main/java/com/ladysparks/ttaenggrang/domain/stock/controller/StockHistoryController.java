@@ -27,20 +27,6 @@ public class StockHistoryController implements StockHistoryApiSpecification {
     private final TeacherService teacherService;
     private final StudentService studentService;
 
-    // 현재 주식 가격 및 변동률 계산
-//    @GetMapping("/current")
-//    public ResponseEntity<ApiResponse<List<ChangeResponseDTO>>> getStockPrices() {
-//        List<ChangeResponseDTO> stockPrices = stockHistoryService.updateStockPricesForMarketOpening();
-//        return ResponseEntity.ok(ApiResponse.success(stockPrices));
-//    }
-
-    // 특정 주식의 가격 변동 이력 조회
-//    @GetMapping("/stocks/{stockId}")
-//    public ResponseEntity<ApiResponse<List<StockHistoryDTO>>> getStockHistory(@PathVariable Long stockId) {
-//        List<StockHistoryDTO> historyList = stockHistoryService.getStockHistoryByStockId(stockId);
-//        return ResponseEntity.ok(ApiResponse.success(historyList));
-//    }
-
     // 모든 주식 가격 변동 이력 조회
     @GetMapping("/stocks")
     public ResponseEntity<ApiResponse<Map<Long, List<StockHistoryDTO>>>> getLast5DaysStockHistory() {

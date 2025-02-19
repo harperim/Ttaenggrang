@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/textNum"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="1"
+            style="@style/heading4"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/textName"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="미지미지"
+            style="@style/heading4"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/textType"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="예금"
+            style="@style/heading4"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/textPeriod"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="4주"
+            style="@style/heading4"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/textRate"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="10%"
+            style="@style/heading4"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/textAmount"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="50,000"
+            style="@style/heading4"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/textExposurePeriod"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="2025. 01. 30
+~2025.02.30"
+            style="@style/heading4"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/textPeople"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="5명"
+            style="@style/heading4"
+            android:gravity="center"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/lightGray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

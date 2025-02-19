@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.domain.student.repository;
 
+import com.ladysparks.ttaenggrang.domain.student.dto.StudentJobResponseDTO;
 import com.ladysparks.ttaenggrang.domain.student.entity.Student;
 import com.ladysparks.ttaenggrang.domain.teacher.dto.StudentManagementDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,6 +34,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     // 교사ID 와 직업ID로 학생 목록 조회 (특정 직업을 가진 학생 목록 조회)
     List<Student> findByTeacherIdAndJobId(Long teacherId, Long jobId);
 
+    Optional<Student> findByJob_Id(Long jobId);
+
     Optional<Student> findNationIdById(Long studentId);;
 
     int countByTeacherId(long teacherId);
@@ -49,11 +52,15 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
             "WHERE s.teacher.id = :teacherId")
     List<StudentManagementDTO> getStudentManagementListByTeacherId(@Param("teacherId") Long teacherId);
 
+    @Query("SELECT new com.ladysparks.ttaenggrang.domain.student.dto.StudentJobResponseDTO(s.job.jobName, s.job.baseSalary) " +
+            "FROM Student s WHERE s.id = :studentId")
+    Optional<StudentJobResponseDTO> findJobAndSalaryByStudentId(@Param("studentId") Long studentId);
+
     @Modifying
     @Transactional
     @Query("UPDATE Student s SET s.fcmToken = :fcmToken WHERE s.id = :studentId")
     int updateFcmToken(@Param("studentId") Long studentId, @Param("fcmToken") String fcmToken);
 
-    String findFcmTokenById(Long studendId);
+    Student findFcmTokenById(Long studentId);
 
 }
