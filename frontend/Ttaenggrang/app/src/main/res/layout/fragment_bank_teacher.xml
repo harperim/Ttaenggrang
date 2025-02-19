@@ -94,7 +94,7 @@
                     <ImageView
                         android:layout_width="37dp"
                         android:layout_height="37dp"
-                        android:src="@drawable/img_deposit"/>
+                        android:src="@drawable/ic_bank1"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -118,7 +118,7 @@
                         android:layout_marginStart="40dp"
                         android:layout_width="37dp"
                         android:layout_height="37dp"
-                        android:src="@drawable/img_saving"/>
+                        android:src="@drawable/ic_bank2"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
