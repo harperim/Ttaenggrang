@@ -37,7 +37,7 @@ public class SavingsPayoutService {
      * 만기 지금 받기
      */
     @Transactional
-    public SavingsPayoutDTO receiveMaturityPayout(Long stuedentId, Long savingsSubscriptionId, String savingProductName) {
+    public SavingsPayoutDTO receiveMaturityPayout(Long studentId, Long savingsSubscriptionId, String savingProductName) {
         // 1. 지급 내역 조회
         SavingsPayout savingsPayout = savingsPayoutRepository.findBySavingsSubscriptionId(savingsSubscriptionId);
 
@@ -51,7 +51,7 @@ public class SavingsPayoutService {
         SavingsPayout savedSavingsPayout = savingsPayoutRepository.save(savingsPayout);
 
         // 4. 지급 금액 입금
-        Long bankAccountId = studentService.findBankAccountIdById(stuedentId);
+        Long bankAccountId = studentService.findBankAccountIdById(studentId);
         BankTransactionDTO bankTransactionDTO = BankTransactionDTO.builder()
                 .bankAccountId(bankAccountId)
                 .type(BankTransactionType.SAVINGS_PAYOUT)

@@ -44,7 +44,7 @@ public class SavingsPayout {
     private Timestamp createdAt;
 
     public enum SavingsPayoutType {
-        MATURITY, EARLY_WITHDRAWAL
+        NONE, MATURITY, EARLY_WITHDRAWAL
     }
 
 }
