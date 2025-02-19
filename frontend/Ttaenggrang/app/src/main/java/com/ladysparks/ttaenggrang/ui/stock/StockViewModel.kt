@@ -494,6 +494,10 @@ class StockViewModel : ViewModel() {
         }
     }
 
+    fun clearNewsDetail() {
+        _newsDetailLiveData.value = null // ✅ LiveData 초기화
+    }
+
     // 선택 뉴스 상세 조회
     fun fetchNewsDetail(newsId: Int) {
         viewModelScope.launch {

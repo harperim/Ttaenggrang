@@ -16,6 +16,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -71,7 +73,12 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
 
         //뒤로가기
         binding.btnBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
+//            parentFragmentManager.beginTransaction()
+//                .replace(R.id.fragment_container, StockStudentFragment())
+//                .addToBackStack(null)
+//                .commit()
+            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            Log.d("DialogStack", "뒤로 가기 후 백스택 개수: ${parentFragmentManager.backStackEntryCount}")
         }
     }
 
@@ -379,8 +386,6 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
         confirmDialog.show()
     }
 
-
-
     private fun observeViewModel() {
         viewModel.stockTransactionHistory.observe(viewLifecycleOwner) { transactions ->
             Log.d("StockFragment", "stockTransaction 업데이트됨: $transactions")
@@ -401,7 +406,6 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
         viewModel.stockSummary.observe(viewLifecycleOwner) { summary ->
             binding.textContent1.text = NumberUtil.formatWithComma((summary["totalInvestment"] as? Number)?.toLong() ?: 0L)
             binding.textContent2.text = NumberUtil.formatWithComma((summary["totalValuation"] as? Number)?.toLong() ?: 0L)
-
         }
 
         viewModel.totalProfit.observe(viewLifecycleOwner) { totalProfit ->
