@@ -31,7 +31,7 @@ public class PresentationController {
     public ResponseEntity<ApiResponse<Boolean>> newsFCM() throws IOException {
         Long teacherId = teacherService.getCurrentTeacherId();
         // 학생들에게 FCM 알림 전송
-        notificationService.sendNewsNotificationToStudents(teacherId, "");
+        notificationService.sendNewsNotificationToStudents(teacherId);
         return ResponseEntity.ok(ApiResponse.success(true));
     }
 

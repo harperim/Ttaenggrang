@@ -20,7 +20,7 @@ public class FastApiService {
                 .build();
     }
 
-    public Mono<Map<String, Object>> predictCluster(int totalIncome, int totalExpense, int totalInvestment,
+    public Mono<String> predictCluster(int totalIncome, int totalExpense, int totalInvestment,
                                                     int investmentReturn, int taxPaid, int finePaid, int incentive) {
         return webClient.post()
                 .uri("/predict-cluster")
@@ -35,7 +35,7 @@ public class FastApiService {
                         "incentive", incentive
                 ))
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})  // ✅ 제네릭 명확히 지정
+                .bodyToMono(String.class)  // ✅ 제네릭 명확히 지정
                 .doOnError(error -> System.out.println("🔴 FastAPI 호출 실패: " + error.getMessage()));
     }
 

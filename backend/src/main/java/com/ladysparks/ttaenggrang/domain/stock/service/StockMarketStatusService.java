@@ -109,6 +109,7 @@ public class StockMarketStatusService {
                 int newPrice = latestHistory.getPrice();
 
                 // stock 엔티티 업데이트
+                stockDTO.setTeacherId(teacherId);
                 stockDTO.setPricePerShare(newPrice);
                 stockDTO.setChangeRate(latestHistory.getPriceChangeRate());
                 stockDTO.setPriceChangeTime(LocalDateTime.now());
