@@ -1,14 +1,13 @@
 package com.ladysparks.ttaenggrang.data.remote
 
 
-import com.ladysparks.ttaenggrang.data.model.dto.BankTransactionDto
+import com.ladysparks.ttaenggrang.data.model.dto.BankHistoryDto
+import com.ladysparks.ttaenggrang.data.model.dto.BankManageDto
 import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
+import com.ladysparks.ttaenggrang.data.model.response.BankAccountCountResponse
 import com.ladysparks.ttaenggrang.data.model.response.BankAccountResponse
-import com.ladysparks.ttaenggrang.data.model.response.BankTransactionResponse
 import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface BankService {
@@ -16,10 +15,19 @@ interface BankService {
     @GET("bank-accounts")
     suspend fun getBankAccount(): Response<ApiResponse<BankAccountResponse>>
 
-    // ✅ 주식 거래 내역을 서버에 전송하고 응답 받기
-    @POST("bank-transactions")
-//    suspend fun sendBankTransaction(@Body transaction: BankTransactionDto): Response<BankTransactionResponse>
-    suspend fun sendBankTransaction(@Body transaction: BankTransactionDto): Response<ApiResponse<BankTransactionDto>>
+    // 학생 적금 가입 내역
+    @GET("savings-subscriptions")
+    suspend fun getUserSavings(): Response<ApiResponse<List<BankManageDto>>> // ✅ `List<BankManageDto>`로 변경
+
+    // 학생 적금 개수
+    @GET("savings-subscriptions/savings-count")
+    suspend fun getUserSavingCount(): Response<ApiResponse<BankAccountCountResponse>>
+
+    //특정 적금 내역 조회
+    @GET("savings-subscriptions/{savingsSubscriptionId}")
+    suspend fun getBankHistory(
+        @Path("savingsSubscriptionId") savingsSubscriptionId: Int
+    ): Response<ApiResponse<BankHistoryDto>>
 }
 
 

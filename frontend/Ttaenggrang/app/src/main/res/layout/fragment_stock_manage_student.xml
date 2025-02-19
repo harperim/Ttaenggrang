@@ -87,7 +87,7 @@
                 style="@style/heading2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="100,000"
                 app:layout_constraintBottom_toBottomOf="@+id/textContent1"
                 app:layout_constraintStart_toStartOf="@+id/textTitle2"
                 app:layout_constraintTop_toBottomOf="@+id/textTitle2" />
@@ -110,7 +110,7 @@
                 style="@style/heading2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="100,000000"
                 app:layout_constraintBottom_toBottomOf="@+id/textContent2"
                 app:layout_constraintStart_toStartOf="@+id/textTitle3"
                 app:layout_constraintTop_toBottomOf="@+id/textTitle3" />
@@ -133,7 +133,7 @@
                 style="@style/heading2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="+400%"
                 android:textColor="@color/foundation_green_500"
                 app:layout_constraintBottom_toBottomOf="@+id/textContent3"
                 app:layout_constraintStart_toStartOf="@+id/textTitle4"
@@ -199,8 +199,6 @@
         android:backgroundTint="@color/white"
         android:paddingVertical="@dimen/spacing_15"
         android:paddingHorizontal="@dimen/spacing_20"
-        android:clipChildren="true"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -253,13 +251,13 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerStudentStockList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/spacing_10"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/textStudentStockListHead"
             app:layout_constraintStart_toStartOf="parent"
-
-            app:layout_constraintTop_toBottomOf="@id/textStudentStockListHead" />
+            app:layout_constraintEnd_toEndOf="parent"
+          />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
