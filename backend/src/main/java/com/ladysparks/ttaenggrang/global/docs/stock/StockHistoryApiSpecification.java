@@ -1,11 +1,13 @@
 package com.ladysparks.ttaenggrang.global.docs.stock;
 
+import com.ladysparks.ttaenggrang.domain.etf.dto.EtfHistoryDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.ChangeResponseDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockHistoryDTO;
 import com.ladysparks.ttaenggrang.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
@@ -53,5 +55,35 @@ public interface StockHistoryApiSpecification {
         - 오늘이 평일이면 오늘을 포함하여 5개, 오늘이 주말이면 가장 최근 평일부터 5개 반환합니다.
         """)
     ResponseEntity<ApiResponse<Map<Long, List<StockHistoryDTO>>>> getLast5DaysStockHistory();
+
+
+    /**
+     * 📌 (교사) 각 ETF의 최근 5개 평일 변동 이력 조회 (오늘 포함, 주말 제외, 오래된 순서)
+     */
+    @Operation(summary = "(교사/학생) 최근 5개 평일 ETF 변동 이력 조회", description = """
+    💡 학급 내 각 ETF의 최근 5개 평일(월~금) 변동 이력을 조회합니다.
+    
+    ---
+    
+    **[ 응답 필드 ]**
+    
+    - **etfId** : ETF ID
+    - **historyList** : 최근 5개 평일 변동 이력 리스트
+    
+    **[ historyList 내 개별 항목 필드 ]**
+    
+    - **id** : 변동 이력 ID
+    - **price** : 해당 날짜의 ETF 가격
+    - **priceChangeRate** : 가격 변동률 (%)
+    - **date** : 변동 날짜
+    
+    ---
+    
+    **[ 설명 ]**
+    - 주말(토요일, 일요일) 데이터를 제외하고 최근 5개의 평일(월~금) 데이터를 반환합니다.
+    - 오늘이 평일이면 오늘을 포함하여 5개, 오늘이 주말이면 가장 최근 평일부터 5개 반환합니다.
+""")
+    @GetMapping("/etfs")
+    public ResponseEntity<ApiResponse<Map<Long, List<EtfHistoryDTO>>>> getLast5DaysEtfHistory();
 
 }

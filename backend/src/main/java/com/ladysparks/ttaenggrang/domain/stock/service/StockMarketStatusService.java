@@ -1,5 +1,8 @@
 package com.ladysparks.ttaenggrang.domain.stock.service;
 
+import com.ladysparks.ttaenggrang.domain.etf.entity.Etf;
+import com.ladysparks.ttaenggrang.domain.etf.repository.EtfRepository;
+import com.ladysparks.ttaenggrang.domain.etf.service.EtfMarketStatusService;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockDTO;
 import com.ladysparks.ttaenggrang.domain.stock.dto.StockMarketStatusDTO;
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
@@ -39,6 +42,8 @@ public class StockMarketStatusService {
     private final StockTransactionService stockTransactionService;
     private final StockHistoryRepository stockHistoryRepository;
     private final StockRepository stockRepository;
+    private final EtfRepository etfRepository;
+    private final EtfMarketStatusService etfMarketStatusService;
 
     // 🕔 평일 09:00 자동 개장
     @Transactional
@@ -49,6 +54,13 @@ public class StockMarketStatusService {
             // 주가 변동 반영
             recordStockHistory(teacherId); // 어제의 거래량으로 가격 변동률 계산하고 STOCK_HISTORY 저장
             updateStockPrices(teacherId); // STOCK_HISTORY 기반으로 현재 주가 갱신
+
+
+            // ETF 관련 로직 (EtfMarketStatusService에 정의되어 있는 메서드 호출)
+            etfMarketStatusService.recordEtfHistory(teacherId); // 어제의 거래량 기반 ETF 히스토리 기록
+            etfMarketStatusService.updateEtfPrices(teacherId);  // ETF 가격 갱신
+
+
 
             StockMarketStatusDTO stockMarketStatusDTO = getStockMarketStatusByTeacherId(teacherId);
 
@@ -117,6 +129,7 @@ public class StockMarketStatusService {
             }
         }
     }
+
 
     /**
      * 매일 17시 (주식 시장 폐장)

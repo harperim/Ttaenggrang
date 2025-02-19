@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 @AllArgsConstructor //모든 필드를 매개변수로 받는 생성자를 자동으로 생성
 @NoArgsConstructor //기본 생성자(매개변수가 없는 생성자)를 자동으로 생성 , Entity 사용 하면 사용 해줘야함!
@@ -53,12 +54,18 @@ public class Etf {
     @Column
     private Integer changeRate; //가격 변동률
 
+    @Column
+    private LocalDateTime priceChangeTime;  // 가격 변동 시간
+
 
     @Column(nullable = false, updatable = false)
     private final String type = "ETF";
 
     @Column(columnDefinition = "TEXT")
     private String stockDataJson; // 주식 ID + 수량을 JSON 형태로 저장
+
+    @Column
+    private String trackedIndex; // 추적하는 지수
 
 
     // 조인
