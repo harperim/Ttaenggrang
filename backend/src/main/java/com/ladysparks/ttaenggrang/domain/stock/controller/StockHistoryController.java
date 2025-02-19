@@ -27,7 +27,6 @@ public class StockHistoryController implements StockHistoryApiSpecification {
     private final TeacherService teacherService;
     private final StudentService studentService;
 
-
     // 모든 주식 가격 변동 이력 조회
     @GetMapping("/stocks")
     public ResponseEntity<ApiResponse<Map<Long, List<StockHistoryDTO>>>> getLast5DaysStockHistory() {

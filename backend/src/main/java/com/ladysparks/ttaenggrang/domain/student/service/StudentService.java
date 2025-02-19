@@ -634,8 +634,8 @@ public class StudentService {
         return savingsAchievementDTO;
     }
 
-    public String findNameById(Long teacherId) {
-        return studentRepository.findById(teacherId)
+    public String findNameById(Long studentId) {
+        return studentRepository.findById(studentId)
                 .map(Student::getName)
                 .orElseThrow(() -> new NotFoundException("등록된 학생이 없습니다."));
     }

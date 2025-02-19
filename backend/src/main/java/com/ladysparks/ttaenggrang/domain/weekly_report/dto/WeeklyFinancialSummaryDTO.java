@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(value = {"studentId", "reportDate"})
+@JsonIgnoreProperties(value = {"reportDate"})
 @Builder
 public class WeeklyFinancialSummaryDTO {
 
