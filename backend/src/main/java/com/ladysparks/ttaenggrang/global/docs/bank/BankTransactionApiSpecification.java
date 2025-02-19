@@ -22,7 +22,7 @@ public interface BankTransactionApiSpecification {
                 - 입금 → **DEPOSIT**
                 - 출금 → **WITHDRAW**
                 - 송금 → **TRANSFER**
-                - 아이템 구매/판매 → **ITEM**
+                - 아이템 구매 → **ITEM_BUY**
                 - 주식 매수 → **STOCK_BUY**
                 - 주식 매도 → **STOCK_SELL**
                 - ETF 매수 → **ETF_BUY**
