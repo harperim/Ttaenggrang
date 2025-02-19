@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 
 import androidx.recyclerview.widget.RecyclerView
 import com.ladysparks.ttaenggrang.R
@@ -14,6 +15,7 @@ import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockHistoryDto
 import com.ladysparks.ttaenggrang.ui.component.LineChartComponent
+import com.ladysparks.ttaenggrang.util.NumberUtil
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -33,8 +35,23 @@ class StockAdapter(
 
         fun bind(item: StockDto, isSelected: Boolean, stockHistory: List<StockHistoryDto>?) {
             title.text = item.name.substringBefore(" ")
-            price.text = item.pricePerShare.toString()
-            changeRate.text = "${item.changeRate}%"
+            price.text = NumberUtil.formatWithComma(item.pricePerShare.toString())
+            changeRate.apply {
+                text = if (item.changeRate >= 0) {
+                    "+${item.changeRate}%"
+                } else {
+                    "${item.changeRate}%"
+                }
+
+                setTextColor(
+                    when {
+                        item.changeRate > 0 -> ContextCompat.getColor(context, R.color.negative_red) // ✅ 상승: 빨간색
+                        item.changeRate < 0 -> ContextCompat.getColor(context, R.color.negative_blue) // ✅ 하락: 파란색
+                        else -> ContextCompat.getColor(context, R.color.black200) // ✅ 변동 없음: 회색
+                    }
+                )
+
+            }
 
             // ✅ 미니 차트 데이터 설정
             if (!stockHistory.isNullOrEmpty()) {

@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="+1.0%"
-        android:textColor="@color/foundation_green_600"
+        android:textColor="@color/foundation_black_200"
         app:layout_constraintBottom_toBottomOf="@id/stockMiniChart"
         app:layout_constraintEnd_toEndOf="@id/textStockPrice"
         app:layout_constraintTop_toBottomOf="@id/textStockPrice" />

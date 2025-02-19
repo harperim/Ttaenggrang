@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -25,6 +26,7 @@ import com.ladysparks.ttaenggrang.databinding.FragmentStockTeacherBinding
 import com.ladysparks.ttaenggrang.ui.component.LineChartComponent
 import com.ladysparks.ttaenggrang.util.CustomDateUtil
 import com.ladysparks.ttaenggrang.util.DataUtil
+import com.ladysparks.ttaenggrang.util.NumberUtil
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -91,6 +93,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         val dialogNewsCreateBinding = DialogNewsCreateBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext())
         dialog.setContentView(dialogNewsCreateBinding.root)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         // 다이얼로그 ui잘리는 현상.
         dialog.window?.setLayout(
@@ -207,9 +210,8 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                         // ✅ 날짜 변환 (YYYY-MM-DD → MM-DD)
                         val dateFormatter = DateTimeFormatter.ofPattern("MM-dd")
                         val dateLabels = last5DaysStockData.map {
-                            CustomDateUtil.formatToDate(it.date) // ✅ 기존 OffsetDateTime 대신 사용 가능
+                            CustomDateUtil.formatToMonthDay(it.date) // ✅ 기존 OffsetDateTime 대신 사용 가능
                         }
-
 
                         // x축을 0~6으로 변환하여 그래프에 적용
                         val stockHistory = last5DaysStockData.mapIndexed { index, data ->
@@ -222,7 +224,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                         }
 
                         // 그래프에 데이터 적용
-                        lineChartComponent.setChartData(stockHistory, dateLabels, R.color.chartBlue)
+                        lineChartComponent.setChartData(stockHistory, dateLabels, R.color.black)
                     } else {
                         Log.d("StockChart", "선택한 주식($stock.id)의 주식 데이터 없음")
                     }
@@ -277,8 +279,22 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         viewModel.selectedStock.observe(viewLifecycleOwner) { stock ->
             stock?.let {
                 binding.textHeadStockName.text = it.name.substringBefore(" ")
-                binding.textHeadStockPrice.text = it.pricePerShare.toString()
-                binding.textHeadStockChange.text = "${it.changeRate}%"
+                binding.textHeadStockPrice.text = NumberUtil.formatWithComma(it.pricePerShare.toString())
+                binding.textHeadStockChange.apply {
+                    text = if (it.changeRate >= 0) {
+                        "+${it.changeRate}%"
+                    } else {
+                        "${it.changeRate}%"
+                    }
+
+                    setTextColor(
+                        if (it.changeRate >= 0) {
+                            ContextCompat.getColor(context, R.color.negative_red) // ✅ 양수: 빨간색
+                        } else {
+                            ContextCompat.getColor(context, R.color.negative_blue) // ✅ 음수: 파란색
+                        }
+                    )
+                }
             }
         }
 
@@ -304,6 +320,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         viewModel.newsDetailLiveData.observe(viewLifecycleOwner) { newsDetail ->
             newsDetail?.let {
                 showNewsDetailDialog(it) // ✅ 다이얼로그 띄우기
+                viewModel.clearNewsDetail()
             }
         }
 

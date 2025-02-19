@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="black">#19181d</color>
     <color name="white">#FFFFFFFF</color>
 
     <!-- Material -->
@@ -60,9 +60,10 @@
     <color name="foundation_black_200">#8a8a8a</color>
     <color name="foundation_black_300">#545454</color>
     <color name="foundation_black_400">#333333</color>
-    <color name="foundation_black_500">#000000</color>
+    <color name="foundation_black_500">#19181d</color>
 
     <!--주식 상승 하락-->
     <color name="positive_green">#1B781B</color>
-    <color name="negative_red">#93221F</color>
+    <color name="negative_red">#C62622</color>
+    <color name="negative_blue">#2152F2</color>
 </resources>
