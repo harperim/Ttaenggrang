@@ -53,7 +53,7 @@ public class BankTransactionServiceTest {
                         BankTransactionType.ITEM_SELL,
                         BankTransactionType.ETF_SELL,
                         BankTransactionType.STOCK_SELL,
-                        BankTransactionType.SAVINGS_PAYOUT,
+                        BankTransactionType.SAVINGS_INTEREST,
                         BankTransactionType.BANK_INTEREST
                 ))
         ).thenReturn(4500);
@@ -79,7 +79,7 @@ public class BankTransactionServiceTest {
                 studentId, startDate, endDate,
                 Arrays.asList(
                         BankTransactionType.SAVINGS_DEPOSIT,
-                        BankTransactionType.SAVINGS_PAYOUT,
+                        BankTransactionType.SAVINGS_INTEREST,
                         BankTransactionType.BANK_INTEREST
                 ))
         ).thenReturn(2000);

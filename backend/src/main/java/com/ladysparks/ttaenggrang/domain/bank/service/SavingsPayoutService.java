@@ -54,7 +54,7 @@ public class SavingsPayoutService {
         Long bankAccountId = studentService.findBankAccountIdById(studentId);
         BankTransactionDTO bankTransactionDTO = BankTransactionDTO.builder()
                 .bankAccountId(bankAccountId)
-                .type(BankTransactionType.SAVINGS_PAYOUT)
+                .type(BankTransactionType.SAVINGS_INTEREST)
                 .amount(savingsPayout.getPayoutAmount())
                 .description("[적금 만기] 상품명: " + savingProductName)
                 .receiverId(null)
