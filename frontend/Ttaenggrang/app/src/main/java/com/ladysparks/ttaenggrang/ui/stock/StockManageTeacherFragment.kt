@@ -53,11 +53,7 @@ class StockManageTeacherFragment : BaseFragment<FragmentStockManageTeacherBindin
             data = emptyList(), // ✅ 초기 데이터 없음
             columnWeights = columnWeights,
             onRowClickListener = { rowIndex, rowData ->
-                Toast.makeText(
-                    requireContext(),
-                    "클릭한 행: ${rowData.joinToString()}",
-                    Toast.LENGTH_SHORT
-                ).show()
+
             }
         )
         binding.recyclerStockManageList.adapter = tableAdapter
