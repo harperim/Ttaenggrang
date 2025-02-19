@@ -45,8 +45,7 @@ class HomeViewModel : ViewModel(){
                 _studentList.value = it.data ?: emptyList()
             }.onFailure {
                 Log.e("Error", "fetchStudentList: ${it.message}")
-//                _studentList.value = emptyList()
-                _errorMessage.value = ApiErrorParser.extractErrorMessage(it)
+                //_errorMessage.value = ApiErrorParser.extractErrorMessage(it)
 
             }
         }

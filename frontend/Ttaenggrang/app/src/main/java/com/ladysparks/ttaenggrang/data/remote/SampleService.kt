@@ -2,8 +2,6 @@ package com.ladysparks.ttaenggrang.data.remote
 
 //import com.ssafy.final_pjt_customer.data.model.response.OrderResponse
 //import com.ssafy.final_pjt_customer.data.model.dto.Order
-import com.ladysparks.ttaenggrang.data.model.dto.SampleDTO
-import com.ladysparks.ttaenggrang.data.model.response.SampleResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

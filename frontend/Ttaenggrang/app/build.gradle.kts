@@ -97,4 +97,17 @@ dependencies {
     // Realm (Kotlin SDK)
     implementation("io.realm.kotlin:library-base:1.11.0")
 
+    // Coil
+    implementation("io.coil-kt:coil:2.4.0")
+    implementation("io.coil-kt:coil-gif:2.4.0")
+
+    // Lotie
+    implementation ("com.airbnb.android:lottie:6.0.0")
+
+
+    // Progress Bar
+    implementation("com.beardedhen:androidbootstrap:2.3.2") {
+        exclude(group = "com.android.support")
+    }
+
 }
