@@ -32,14 +32,6 @@ public class SecurityConfig {
         boolean isDevMode = "dev".equals(System.getenv("SPRING_PROFILES_ACTIVE"));
 
         http
-                .cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("https://i12d107.p.ssafy.io")); // ✅ Swagger 요청 허용
-                    config.setAllowedMethods(List.of("GET", "POST", "OPTIONS", "PUT", "DELETE"));
-                    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-                    config.setAllowCredentials(true);
-                    return config;
-                }))
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
                 .authorizeHttpRequests(auth -> {
                         if (isDevMode) {
