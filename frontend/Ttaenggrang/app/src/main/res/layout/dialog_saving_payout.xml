@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/btn_rounded_full"
+    android:backgroundTint="@color/white"
+    android:gravity="center"
+    android:padding="@dimen/spacing_20">
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottieAnimation"
+                    android:layout_width="400dp"
+                    android:layout_height="300dp"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="false"
+                    android:scaleType="fitCenter"
+                    app:lottie_rawRes="@raw/confetti" />
+    </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/imgDialogStatus"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/spacing_20"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_congratulation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textDialogTitle"
+        style="@style/heading2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/spacing_20"
+        android:text="축하합니다!"
+        app:layout_constraintBottom_toTopOf="@+id/textDialogTitle2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgDialogStatus" />
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/textDialogContentTitle1"-->
+    <!--        style="@style/body1"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:textColor="@color/black300"-->
+    <!--        app:layout_constraintBottom_toTopOf="@id/textDialogTitle2"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/textDialogTitle"-->
+    <!--        tools:text="총 납입금액" />-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/textDialogContent1"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="10,000"-->
+    <!--        style="@style/body1"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/textDialogContentTitle1"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="@id/textDialogContentTitle1" />-->
+
+    <TextView
+        android:id="@+id/textDialogTitle2"
+        style="@style/body3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="지급금액"
+        android:layout_marginVertical="@dimen/spacing_20"
+        app:layout_constraintEnd_toStartOf="@id/textDialogContent2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textDialogTitle"
+        app:layout_constraintBottom_toTopOf="@id/btnDialogConfirm"/>
+
+    <TextView
+        android:id="@+id/textDialogContent2"
+        style="@style/body3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="10,000"
+        app:layout_constraintStart_toEndOf="@id/textDialogTitle2"
+        app:layout_constraintTop_toTopOf="@id/textDialogTitle2"
+        app:layout_constraintEnd_toEndOf="parent"
+         />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnDialogConfirm"
+        style="@style/heading4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="@dimen/spacing_20"
+        app:layout_constraintTop_toBottomOf="@id/textDialogTitle2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textDialogTitle2"
+        app:layout_constraintEnd_toEndOf="@+id/textDialogContent2"
+        android:background="@drawable/btn_rounded_full"
+        android:text="확인"
+        android:textColor="@color/white" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.app.TimePickerDialog
 import android.os.Build
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -114,7 +115,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         // 서버 응답을 받은 후 다이얼로그 UI를 업데이트
         viewModel.newsLiveData.observe(viewLifecycleOwner) { news ->
             news?.let {
-                dialogNewsCreateBinding.textDialogNewsCreateDate.setText(it.createdAt)
+                dialogNewsCreateBinding.textDialogNewsCreateDate.setText(CustomDateUtil.formatToDate(it.createdAt))
                 dialogNewsCreateBinding.textDialogStockName.setText(it.stockName)
                 dialogNewsCreateBinding.textDialogNewsTitle.setText(it.title)
                 dialogNewsCreateBinding.textDialogNewsContent.setText(it.content)

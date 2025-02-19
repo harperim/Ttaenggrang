@@ -112,13 +112,13 @@ class BaseTableStyleAdapter(
                     if (index == 4) {
                         when (text) {
                             "호재" -> {
-                                setBackgroundResource(R.drawable.bg_positive) // 초록색 둥근 배경
-                                setTextColor(ContextCompat.getColor(context, R.color.positive_green))
+                                setBackgroundResource(R.drawable.bg_negative) // 초록색 둥근 배경
+                                setTextColor(ContextCompat.getColor(context, R.color.negative_red))
                                 setTypeface(null, Typeface.BOLD)
                             }
                             "악재" -> {
-                                setBackgroundResource(R.drawable.bg_negative) // 빨간색 둥근 배경
-                                setTextColor(ContextCompat.getColor(context, R.color.negative_red))
+                                setBackgroundResource(R.drawable.bg_blue) // 빨간색 둥근 배경
+                                setTextColor(ContextCompat.getColor(context, R.color.negative_blue))
                                 setTypeface(null, Typeface.BOLD)
                             }
                             else -> {

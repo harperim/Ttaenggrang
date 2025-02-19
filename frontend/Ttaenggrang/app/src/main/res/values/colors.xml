@@ -64,6 +64,6 @@
 
     <!--주식 상승 하락-->
     <color name="positive_green">#1B781B</color>
-    <color name="negative_red">#C62622</color>
-    <color name="negative_blue">#2152F2</color>
+    <color name="negative_red">#E74C3C</color>
+    <color name="negative_blue">#2980B9</color>
 </resources>

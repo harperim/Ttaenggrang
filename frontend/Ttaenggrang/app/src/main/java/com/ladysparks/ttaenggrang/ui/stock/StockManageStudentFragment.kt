@@ -78,8 +78,9 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
 //                .replace(R.id.fragment_container, StockStudentFragment())
 //                .addToBackStack(null)
 //                .commit()
-            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            Log.d("DialogStack", "뒤로 가기 후 백스택 개수: ${parentFragmentManager.backStackEntryCount}")
+            parentFragmentManager.popBackStack()
+//            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+//            Log.d("DialogStack", "뒤로 가기 후 백스택 개수: ${parentFragmentManager.backStackEntryCount}")
         }
     }
 
