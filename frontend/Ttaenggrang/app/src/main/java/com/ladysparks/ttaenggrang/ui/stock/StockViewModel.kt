@@ -531,7 +531,7 @@ class StockViewModel : ViewModel() {
                                 stock.name,        // 종목명
                                 stock.type,        // 주식 종류
                                 stock.category,    // 카테고리
-                                stock.pricePerShare.toString(), // 현재 가격
+                                NumberUtil.formatWithComma(stock.pricePerShare.toString()), // 현재 가격
                                 "${stock.priceChangeRate}%",  // 변동률
                                 getTransactionEmoji(stock.transactionFrequency)  // 거래 활성도
                             )

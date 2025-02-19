@@ -16,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
@@ -149,6 +150,7 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
         val dialogBinding = DialogStockHistoryDetailBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext())
         dialog.setContentView(dialogBinding.root)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         // ✅ 다이얼로그 크기 설정
         dialog.window?.setLayout(
@@ -165,10 +167,25 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
         viewModel.selectedStockInfo.observe(viewLifecycleOwner) { stockInfo ->
             if (stockInfo != null) {
                 dialogBinding.textHeadStockName.text = stockInfo.stockName
-                dialogBinding.textHeadStockPrice.text = "${stockInfo.currentPrice}"
-                dialogBinding.textHeadStockChange.text = "${stockInfo.changeRate}%"
+                dialogBinding.textHeadStockPrice.text = NumberUtil.formatWithComma("${stockInfo.currentPrice}")
+                dialogBinding.textHeadStockChange.apply {
+                    text = if (stockInfo.changeRate >= 0) {
+                        "+${stockInfo.changeRate}%"
+                    } else {
+                        "${stockInfo.changeRate}%"
+                    }
+
+                    setTextColor(
+                        if (stockInfo.changeRate > 0) {
+                            ContextCompat.getColor(context, R.color.negative_red) // ✅ 상승(양수) → 빨강
+                        } else {
+                            ContextCompat.getColor(context, R.color.negative_blue) // ✅ 하락(음수) → 파랑
+                        }
+                    )
+                }
+
                 dialogBinding.textStockTradingDate2.text = stockInfo.purchaseDate
-                dialogBinding.textStockPerPrice2.text = "${stockInfo.avgPurchasePrice}"
+                dialogBinding.textStockPerPrice2.text = NumberUtil.formatWithComma("${stockInfo.avgPurchasePrice}")
                 dialogBinding.textStockQuantityTitle2.text = "${stockInfo.ownedShares}주"
 
                 // 차트 설정
@@ -216,7 +233,7 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
 
             // ✅ 날짜 변환 (YYYY-MM-DD → MM-DD)
             val dateLabels = last7DaysStockData.map {
-                CustomDateUtil.formatToDate(it.date)
+                CustomDateUtil.formatToMonthDay(it.date)
             }
 
             // ✅ MPAndroidChart Entry 리스트 생성
@@ -229,7 +246,7 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
             lineChartComponent.setChartData(
                 stockHistory,
                 dateLabels,
-                R.color.chartBlue,
+                R.color.black,
                 avgPurchasePrice
             )
         } else {
@@ -242,6 +259,7 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
         val dialogBinding = DialogStockTradingBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext())
         dialog.setContentView(dialogBinding.root)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         // ✅ 다이얼로그 UI 크기 조정
         dialog.window?.setLayout(
@@ -338,6 +356,8 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
         val confirmDialogBinding = DialogStockConfirmBinding.inflate(layoutInflater)
         val confirmDialog = Dialog(requireContext())
         confirmDialog.setContentView(confirmDialogBinding.root)
+        confirmDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
 
         // 다이얼로그 크기 조정
         confirmDialog.window?.setLayout(
@@ -413,7 +433,22 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
         }
 
         viewModel.totalYield.observe(viewLifecycleOwner) { totalYield ->
-            binding.textContent4.text = "%.2f%%".format(totalYield)
+            binding.textContent4.apply {
+                text = when {
+                    totalYield > 0 -> "+%.2f%%".format(totalYield) // ✅ 양수일 때 `+` 기호 추가
+                    totalYield < 0 -> "%.2f%%".format(totalYield)  // ✅ 음수일 때 자동 `-` 포함
+                    else -> "0.00%" // ✅ 변동 없음
+                }
+
+                setTextColor(
+                    when {
+                        totalYield > 0 -> ContextCompat.getColor(context, R.color.negative_red) // ✅ 이익(양수) → 빨강
+                        totalYield < 0 -> ContextCompat.getColor(context, R.color.negative_blue) // ✅ 손실(음수) → 파랑
+                        else -> ContextCompat.getColor(context, R.color.black200) // ✅ 변동 없음(0%) → 회색
+                    }
+                )
+            }
+
         }
 
         viewModel.selectedStockInfo.observe(viewLifecycleOwner) { stockInfo ->

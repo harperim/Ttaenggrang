@@ -28,7 +28,7 @@ class LineChartComponent @JvmOverloads constructor(
         this.description.isEnabled = true // 설명 활성화
         this.setTouchEnabled(true) // 터치 가능
         this.isDragEnabled = true // 드래그 가능
-        this.setScaleEnabled(false) // 줌 가능
+        this.setScaleEnabled(true) // 줌 가능
         this.setPinchZoom(true) // 핀치 줌 활성화
 
         // X축 설정
@@ -107,6 +107,7 @@ class LineChartComponent @JvmOverloads constructor(
                 textSize = 12f // X축 글자 크기
                 axisMinimum = -0.1f // ✅ 첫 번째 값이 살짝 오른쪽으로 이동
                 //setAvoidFirstLastClipping(true) // ✅ 첫 번째 값이 Y축과 겹치지 않도록 조정
+                setVisibleXRangeMaximum(5f)
             }
 
         }
@@ -189,7 +190,7 @@ class LineChartComponent @JvmOverloads constructor(
         val todayPrice = values.last().y // 오늘 가격
 
         val color =
-            if (todayPrice > yesterdayPrice) Color.parseColor("#4CAF50") else Color.parseColor("#E53935") // 상승하면 초록색, 하락하면 빨간색
+            if (todayPrice > yesterdayPrice) ContextCompat.getColor(context, R.color.negative_red) else ContextCompat.getColor(context, R.color.negative_blue) // 상승하면 초록색, 하락하면 빨간색
 
 
         val set1 = LineDataSet(values, "").apply {

@@ -310,13 +310,12 @@
         <LinearLayout
             android:id="@+id/btnNewsHistory"
             android:layout_width="wrap_content"
-            android:layout_height="24dp"
+            android:layout_height="0dp"
             android:background="@drawable/btn_rounded_full"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:paddingHorizontal="@dimen/spacing_10"
-            app:layout_constraintBottom_toBottomOf="@id/textNewsDate"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textNewsDate">
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 style="@style/heading5"
