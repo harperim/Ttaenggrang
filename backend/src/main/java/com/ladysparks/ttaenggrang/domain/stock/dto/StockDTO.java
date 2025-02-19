@@ -35,7 +35,7 @@ public class StockDTO {
     private Long categoryId;
     private String categoryName;
 
-//    private Long marketStatusId;
+
 
     public static Stock toEntity(StockDTO stockDto) {
         return Stock.builder()

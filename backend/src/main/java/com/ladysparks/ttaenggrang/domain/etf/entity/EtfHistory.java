@@ -2,6 +2,7 @@ package com.ladysparks.ttaenggrang.domain.etf.entity;
 
 import com.ladysparks.ttaenggrang.domain.stock.entity.Stock;
 import com.ladysparks.ttaenggrang.domain.stock.entity.StockTransaction;
+import com.ladysparks.ttaenggrang.domain.teacher.entity.Teacher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,11 +40,15 @@ public class EtfHistory {
     // Etf
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "etf_id")
-    private Etf Etf;
+    private Etf etf; // 'Etf' 필드명 소문자 수정
 
     // 주식 거래 내역 (학생의 매수/매도 기록)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "etf_transaction_id")
     private EtfTransaction etfTransaction; // 주식 거래 내역
+
+    @ManyToOne // Teacher 엔티티와 연결
+    @JoinColumn(name = "teacher_id") // 외래키 명 확인
+    private Teacher teacher;
 
 }

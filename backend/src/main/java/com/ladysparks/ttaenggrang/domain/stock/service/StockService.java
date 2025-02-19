@@ -125,6 +125,15 @@ public class StockService {
                 .map(StockDTO::fromEntity); // 엔티티를 DTO로 변환
     }
 
+    //ETF에 포함된 주식 목록 조회
+    public List<StockDTO> findStocksByEtfId(Long etfId) {
+        List<Stock> stocks = stockRepository.findAllByEtf_Id(etfId);
+        return stocks.stream()
+                .map(StockDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+
 
 
 

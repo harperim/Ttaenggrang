@@ -22,6 +22,7 @@ public class EtfHistoryDTO {
     // 조인
     // Etf 관련 (etf_id 외래 키를 참조)
     private Long etfId;      // etf_id 외래 키
+    private Long teacherId;
 
 
     public static com.ladysparks.ttaenggrang.domain.etf.dto.EtfHistoryDTO fromEntity(EtfHistory etfHistory) {

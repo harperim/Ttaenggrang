@@ -45,5 +45,6 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     List<Stock> findAllByTeacher_Id(Long teacherId);
 
     List<Stock> findByTeacherId(Long teacherId);
+    List<Stock> findAllByEtf_Id(Long etfId); // ETF에 포함된 목록 조회
 
 }
