@@ -61,6 +61,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("UPDATE Student s SET s.fcmToken = :fcmToken WHERE s.id = :studentId")
     int updateFcmToken(@Param("studentId") Long studentId, @Param("fcmToken") String fcmToken);
 
-    String findFcmTokenById(Long studendId);
+    Student findFcmTokenById(Long studentId);
 
 }

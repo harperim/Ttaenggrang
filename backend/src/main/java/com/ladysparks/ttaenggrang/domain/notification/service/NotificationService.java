@@ -34,10 +34,10 @@ public class NotificationService {
      * 뉴스 발행 알림
      */
     public void sendNewsNotificationToStudents(Long teacherId, String content) throws IOException {
-        String category = "News";
+        String category = "NEWS";
         String title = "뉴스 발행";
         long time = System.currentTimeMillis();
-        String sender = "System";
+        String sender = "SYSTEM";
         String receiver = "STUDENT";
 
         NotificationDTO notificationDTO = NotificationDTO.builder()
@@ -59,12 +59,12 @@ public class NotificationService {
     /**
      * 주간 리포트 알림
      */
-    public void sendWeeeklyNotificationToStudents(Long teacherId) throws IOException {
-        String category = "Report";
+    public void sendWeeeklyNotificationToStudents(Long studentId) throws IOException {
+        String category = "REPORT";
         String title = "주간 통계 보고서 발행";
         String content = "주간 통계 보고서를 확인하러 가볼까요?";
         long time = System.currentTimeMillis();
-        String sender = "System";
+        String sender = "SYSTEM";
         String receiver = "STUDENT";
 
         NotificationDTO notificationDTO = NotificationDTO.builder()
@@ -76,22 +76,20 @@ public class NotificationService {
                 .receiver(receiver)
                 .build();
 
-        List<String> targetTokens = studentService.findAllByTeacherId(teacherId).stream()
-                .map(StudentResponseDTO::getToken)
-                .toList();
+        String targetToken = studentService.findFCMTokenById(studentId);
 
-        fcmWithDataService.broadCastToAllStudents(targetTokens, notificationDTO);
+        fcmWithDataService.sendToStudent(targetToken, notificationDTO);
     }
 
     /**
      * 은행 상품 만기 알림
      */
     public void sendBankNotificationToStudents(Long studentId, String bankProductName) throws IOException {
-        String category = "Bank";
+        String category = "BANK";
         String title = "적금 만기 안내";
         String content = bankProductName + " 적금 만기날 입니다.";
         long time = System.currentTimeMillis();
-        String sender = "System";
+        String sender = "SYSTEM";
         String receiver = "STUDENT";
 
         NotificationDTO notificationDTO = NotificationDTO.builder()

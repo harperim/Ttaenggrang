@@ -657,8 +657,8 @@ public class StudentService {
         studentRepository.updateFcmToken(studentId, fcmToken);
     }
 
-    public String findFCMTokenById(Long studendId) {
-        return studentRepository.findFcmTokenById(studendId);
+    public String findFCMTokenById(Long studentId) {
+        return studentRepository.findFcmTokenById(studentId).getFcmToken();
     }
 
     // 직업 [수정]

@@ -40,10 +40,10 @@ public class PresentationController {
      */
     @Operation(summary = "적금 만기 FCM 알림")
     @GetMapping("/savings-maturity")
-    public ResponseEntity<ApiResponse<Boolean>> bankFCM() throws IOException {
-        Long teacherId = teacherService.getCurrentTeacherId();
+    public ResponseEntity<ApiResponse<Boolean>> bankFCM(@RequestParam Long studentId) throws IOException {
+//        Long teacherId = teacherService.getCurrentTeacherId();
         // 학생들에게 FCM 알림 전송
-        notificationService.sendBankNotificationToStudents(teacherId, "");
+        notificationService.sendBankNotificationToStudents(studentId, "어떤 적금");
         return ResponseEntity.ok(ApiResponse.success(true));
     }
 
@@ -54,7 +54,7 @@ public class PresentationController {
     @GetMapping("/weekly-report")
     public ResponseEntity<ApiResponse<Boolean>> weeklyReportFCM(@RequestParam Long studentId) throws IOException {
         // 주간 리포트 생성
-        weeklyFinancialSummaryService.generateWeeklyReports(studentId);
+//        weeklyFinancialSummaryService.generateWeeklyReports(studentId);
 
         // 학생에게 FCM 알림 전송
         notificationService.sendWeeeklyNotificationToStudents(studentId);
