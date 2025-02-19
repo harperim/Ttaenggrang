@@ -7,36 +7,41 @@ import io.realm.kotlin.ext.query
 import io.realm.kotlin.query.RealmResults
 
 object NotificationRepository {
-    /** ✅ Realm에서 모든 알림 가져오기 */
+    /**  Realm에서 모든 알림 가져오기 */
     fun getAllNotifications(): List<NotificationModel> {
         val realm = ApplicationClass.realm
-        return realm.query<NotificationModel>().find() // ✅ 모든 알림 데이터 가져오기
+        return realm.query<NotificationModel>()
+            .sort("receivedTime", io.realm.kotlin.query.Sort.DESCENDING)
+            .find()
     }
-
-    /** ✅ "TEACHER" 수신자만 필터링하여 알림 가져오기 */
+    /** "TEACHER" 수신자만 필터링하여 알림 가져오기 (최신순 정렬) */
     fun getTeacherNotifications(): List<NotificationModel> {
         val realm = ApplicationClass.realm
-        return realm.query<NotificationModel>("receiver == $0", "TEACHER").find()
+        return realm.query<NotificationModel>("receiver == $0", "TEACHER")
+            .sort("receivedTime", io.realm.kotlin.query.Sort.DESCENDING)
+            .find()
     }
 
-    /** ✅ "TEACHER" 수신자만 필터링하여 알림 가져오기 */
+    /** "STUDENT" 수신자만 필터링하여 알림 가져오기 (최신순 정렬) */
     fun getStudentNotifications(): List<NotificationModel> {
         val realm = ApplicationClass.realm
-        return realm.query<NotificationModel>("receiver == $0", "STUDENT").find()
+        return realm.query<NotificationModel>("receiver == $0", "STUDENT")
+            .sort("receivedTime", io.realm.kotlin.query.Sort.DESCENDING)
+            .find()
     }
 
-
-    /** ✅ 새로운 알림 추가 */
+    /** 새로운 알림 추가 */
     fun addNotification(notification: NotificationModel) {
         val realm = ApplicationClass.realm
         realm.writeBlocking {
-            // ✅ 기존 데이터가 있으면 업데이트, 없으면 추가
+            // receivedTime을 현재 시간으로 설정 후 저장
+            notification.receivedTime = System.currentTimeMillis()
             copyToRealm(notification, updatePolicy = io.realm.kotlin.UpdatePolicy.ALL)
         }
     }
 
 
-    /** ✅ 특정 알림 삭제 */
+    /** 특정 알림 삭제 */
     fun deleteNotification(notificationId: String) {
         val realm = ApplicationClass.realm
         realm.writeBlocking {

@@ -67,7 +67,7 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
 
     private fun initAdapter() {
         // Tap: 학생정보
-        val studentHeader = listOf("고유번호", "이름", "직업 (월급)", "아이디", "비밀번호")
+        val studentHeader = listOf("고유번호", "이름", "직업 (월급)", "아이디") // 비밀번호
         studentAdapter = BaseTableAdapter(studentHeader, emptyList()) { rowIndex, rowData ->
             showStudentInfoDialog(rowData)
         }
@@ -111,17 +111,13 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
 
         // 학생 리스트
         studentsViewModel.studentList.observe(viewLifecycleOwner) { studentList ->
-            updateRecyclerView(studentList)
-        }
-
-        // Other Response
-        studentsViewModel.studentList.observe(viewLifecycleOwner) { studentList ->
             studentListCache = studentList!!
+            updateRecyclerView(studentList)
         }
 
         // 직업리스트
         studentsViewModel.jobList.observe(viewLifecycleOwner) { jobList ->
-            jobListCache = jobList // ✅ LiveData 변경 시 전역 변수 업데이트
+            jobListCache = jobList // LiveData 변경 시 전역 변수 업데이트
         }
 
         studentsViewModel.weeklyPaymentStatus.observe(viewLifecycleOwner) { response ->
@@ -155,8 +151,7 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
                         student.id.toString(),
                         student.name ?: "N/A",
                         "${student.jobInfo?.jobName ?: "시민"} (${NumberUtil.formatWithComma(student.jobInfo?.baseSalary ?: 0)})",
-                        student.username,
-                        student.teacher.password
+                        student.username
                     )
                 )
             }
@@ -253,8 +248,6 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
                     showSingleStudentAddDialog()
                 }
             )
-
-            // 다이얼로그 표시
             dialog.show()
         }
 
@@ -268,7 +261,6 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
         dialog.setOnConfirmListener { studentId, price ->
             studentsViewModel.processStudentBonus(studentId, price) // ✅ API 호출
         }
-
         dialog.show(parentFragmentManager, "IncentiveDialog")
     }
 
@@ -322,8 +314,6 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
 
         dialog.show()
     }
-
-    //    recyclerStudents
 
 
     // 은행 가입 상품 조회 팝업

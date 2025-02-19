@@ -84,6 +84,7 @@ class StudentsViewModel : ViewModel(){
         }
     }
 
+
     private fun createMultipartFile(context: Context, uri: Uri): MultipartBody.Part {
         val file = FileUtils.getFileFromUri(context, uri)
         val requestFile = file.asRequestBody("application/octet-stream".toMediaTypeOrNull()) // ✅ Content-Type 수정

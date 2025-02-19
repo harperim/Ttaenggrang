@@ -1,9 +1,13 @@
 package com.ladysparks.ttaenggrang
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
@@ -21,6 +25,8 @@ import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
 import kotlinx.coroutines.launch
+import android.provider.Settings
+
 
 class LoginActivity : BaseActivity() {
 
@@ -34,37 +40,23 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        // 0. 인터넷 연결상태 확인
+        if (!isInternetAvailable(this)) {
+            showInternetDialog(this)
+        }
+
+        // 1. FCM Token 발급
         updateFCMToken()
 
+        // 2. 필요 권한 요청
         permissionChecker = PermissionChecker(this@LoginActivity, this)
         permissionChecker.requestPermissionsAtStartup()
 
+        // 3. 이벤트 정의
         tempEvent()
         initEvent()
-
-        // 비밀번호 표시.숨김 토글
-        binding.btnInvisiblePassword.setOnClickListener {
-            isPasswordVisible = !isPasswordVisible
-
-            if (isPasswordVisible) {
-                binding.editPasswordLogin.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                binding.btnInvisiblePassword.setImageResource(R.drawable.ic_visible)
-            } else {
-                binding.editPasswordLogin.inputType =
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                binding.btnInvisiblePassword.setImageResource(R.drawable.ic_invisible)
-            }
-            //커서 위치 유지
-            binding.editPasswordLogin.setSelection(binding.editPasswordLogin.text.length)
-        }
     }
 
-    /**
-     * 로그인안될 경우
-     * - 인터넷 확인
-     * - aa@aa.com 이라는 이멜을 스웨거에서 로그인 테스트
-     * - DB 초기화되었는지 체크
-     */
     private fun tempEvent() {
         binding.tempBtnTeacher.setOnClickListener {
             lifecycleScope.launch {
@@ -84,7 +76,10 @@ class LoginActivity : BaseActivity() {
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.USER_ACCOUNT, it.data!!.email)
 
                     // MainActivity 이동
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java)).apply {
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        finish()
+                    }
                 }.onFailure { error ->
                     showErrorDialog(error)
                 }
@@ -114,16 +109,16 @@ class LoginActivity : BaseActivity() {
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.USER_ID, userId)
 
                     // MainActivity 이동
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java)).apply {
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        finish()
+                    }
                 }.onFailure { error ->
                     showErrorDialog(error)
                 }
             }
         }
     }
-
-
-
 
     private fun initEvent() {
         // 회원 가입 페이지 이동
@@ -173,16 +168,38 @@ class LoginActivity : BaseActivity() {
 
                     // 등록된 국가정보가 없을 경우, 다른 페이지로 이동
                     if(!hasNation && it.data is TeacherSignInResponse){
-                        startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java))
+                        startActivity(Intent(this@LoginActivity, NationSetupActivity::class.java)).apply {
+                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            finish()
+                        }
                         return@launch
                     }else{
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java)).apply {
+                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            finish()
+                        }
                     }
                 }.onFailure { error ->
                     Log.d("TAG", "initEvent: 로그인 패일")
                     showErrorDialog(error)
                 }
             }
+        }
+
+        // 로그인 할 때 : 비밀번호 표시.숨김 토글
+        binding.btnInvisiblePassword.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+
+            if (isPasswordVisible) {
+                binding.editPasswordLogin.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                binding.btnInvisiblePassword.setImageResource(R.drawable.ic_visible)
+            } else {
+                binding.editPasswordLogin.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                binding.btnInvisiblePassword.setImageResource(R.drawable.ic_invisible)
+            }
+            //커서 위치 유지
+            binding.editPasswordLogin.setSelection(binding.editPasswordLogin.text.length)
         }
     }
 
@@ -196,5 +213,27 @@ class LoginActivity : BaseActivity() {
                 Log.d(" FCM TOKEN !", "getFCMToken: ${task.result}")
             }
         })
+    }
+
+    // 인터넷 연결 확인 함수
+    private fun isInternetAvailable(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return activeNetwork.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    private fun showInternetDialog(context: Context) {
+        AlertDialog.Builder(context)
+            .setTitle("인터넷 연결 필요")
+            .setMessage("인터넷이 연결되지 않았어요. Wi-Fi나 데이터를 켜주세요!")
+            .setPositiveButton("설정으로 이동") { _, _ ->
+                context.startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+            }
+            .setNegativeButton("닫기") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setCancelable(false) // 뒤로 가기 버튼 방지
+            .show()
     }
 }

@@ -1,6 +1,7 @@
 package com.ladysparks.ttaenggrang.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -12,14 +13,18 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.ladysparks.ttaenggrang.R
+import com.ladysparks.ttaenggrang.base.ApplicationClass
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
+import com.ladysparks.ttaenggrang.data.dummy.AlarmDummyData
 import com.ladysparks.ttaenggrang.data.model.response.StudentMultiCreateResponse
 import com.ladysparks.ttaenggrang.ui.component.BaseTableRowModel
 import com.ladysparks.ttaenggrang.databinding.FragmentHomeTeacherBinding
+import com.ladysparks.ttaenggrang.realm.NotificationModel
 import com.ladysparks.ttaenggrang.realm.NotificationRepository
 import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
 import com.ladysparks.ttaenggrang.ui.component.IncentiveDialogFragment
+import com.ladysparks.ttaenggrang.util.NavigationManager
 import com.ladysparks.ttaenggrang.util.NumberUtil
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
@@ -51,10 +56,7 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
 
         initAdapter()
         observeLiveData()
-
-        // 샘플 데이터
-        sampleDataAlarmList()
-
+        loadAlarmList()
         initEvent()
 
         // 데이터 요청
@@ -63,6 +65,16 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
         homeViewModel.fetchWeekAvgSummary()
     }
 
+    private fun initAdapter() {
+        alarmAdapter = AlarmAdapter(arrayListOf(), requireContext())
+        binding.recyclerAlarm.adapter = alarmAdapter
+
+        // 학생 정보 리스트
+        val studentHeader = listOf("이름", "아이디", "직업", "월급", "계좌 잔고")
+        studentAdapter = BaseTableAdapter(studentHeader, emptyList())
+        binding.recyclerStudent.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerStudent.adapter = studentAdapter
+    }
 
     private fun observeLiveData() {
         homeViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
@@ -121,18 +133,18 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
 //                    binding.barChart.visibility == View.VISIBLE
                 }
 
-                val latestData = response.takeLast(5) // ✅ 최신 5개 유지
+                val latestData = response.takeLast(5) // 최신 5개 유지
                 months.clear()
                 incomeData.clear()
                 expenseData.clear()
 
                 latestData.forEach { entry ->
-                    months.add(entry.date.substring(5)) // ✅ "YYYY-MM-DD" 중 "MM-DD" 부분만 표시
+                    months.add(entry.date.substring(5)) // "YYYY-MM-DD" 중 "MM-DD" 부분만 표시
                     incomeData.add(entry.averageIncome.toFloat())
                     expenseData.add(entry.averageExpense.toFloat())
                 }
 
-                updateChart() // ✅ 데이터 갱신 후 차트 다시 그리기
+                updateChart() // 데이터 갱신 후 차트 다시 그리기
             }
 
         }
@@ -147,15 +159,42 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
         }
     }
 
+    private fun initEvent() {
+        binding.btnSalary.setOnClickListener {
+            val dialog = BaseTwoButtonDialog(
+                context = requireContext(),
+                title = "급여 지급",
+                message = "지급 방식을 선택하세요",
+                negativeButtonText = "인센티브",
+                onNegativeClick = {
+                    showToast("인센티브지급")
+                    val studentMap = studentListCache.associateBy({ it.name ?: "이름 없음" }, { it.id ?: -1 }) // 학생 데이터
+                    val dialog = IncentiveDialogFragment.newInstance(studentMap)
+                    dialog.setOnConfirmListener { studentId, price ->
+                        homeViewModel.processStudentBonus(studentId, price) // ✅ API 호출
+                    }
+
+                    dialog.show(parentFragmentManager, "IncentiveDialog")
+                },
+                positiveButtonText = "주급",
+                onPositiveClick = {
+                    homeViewModel.processStudentWeeklySalary()
+                }
+            )
+            dialog.show()
+        }
+
+        binding.btnAlarmMore.setOnClickListener {
+            showToast("알람 내역 더보기")
+        }
+    }
+
+    // 학생 평균 수입/지출 현황 : 세로 막대 차트
     private fun updateChart() {
         // 기존 차트 삭제 후 새로 그리기
         binding.barChart.clear()
         binding.textChartNull.visibility = View.GONE
         binding.barChart.visibility = View.VISIBLE
-
-//        val months = listOf("Mar", "Apr", "May", "June", "July")
-//        val incomeData = listOf(5f, 7f, 9f, 10f, 9f)  // 수입 데이터
-//        val expenseData = listOf(10f, 9f, 8f, 12f, 11f)  // 지출 데이터
 
         val incomeEntries = ArrayList<BarEntry>()
         val expenseEntries = ArrayList<BarEntry>()
@@ -219,7 +258,7 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
         binding.barChart.xAxis.axisMaximum = 0f + months.size
         binding.barChart.xAxis.axisMaximum = months.size.toFloat()
 //        binding.barChart.groupBars(binding.barChart.xAxis.axisMinimum, groupSpace, barSpace)
-        binding.barChart.groupBars(0.5f, groupSpace, barSpace)  // ✅ X축 레이블과 막대 위치 맞춤
+        binding.barChart.groupBars(0.5f, groupSpace, barSpace)  // X축 레이블과 막대 위치 맞춤
 
 
         binding.barChart.xAxis.axisMinimum = 0f
@@ -235,7 +274,7 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
         incomeSet.setDrawValues(false) // 값 숨기기
         expenseSet.setDrawValues(false) // 값 숨기기
 
-        // ✅ MarkerView 설정
+        // MarkerView 설정
         val markerView = ChartMarkerView(requireContext())
         binding.barChart.marker = markerView
 
@@ -251,78 +290,19 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
         legend.setDrawInside(false)
     }
 
-
-
-
-    private fun sampleDataAlarmList() {
-        // insertSampleNotifications()
-        //  Realm에서 저장된 알림 목록 가져오기
-        //  val alarmList = NotificationRepository.getAllNotifications()
+    private fun loadAlarmList() {
         val alarmList = NotificationRepository.getTeacherNotifications()
 
-        if(alarmList.isNullOrEmpty()){
+        if (alarmList.isNullOrEmpty()) {
             binding.recyclerAlarm.visibility = View.GONE
             binding.textNullAlarm.visibility = View.VISIBLE
-        }else{
+        } else {
             binding.recyclerAlarm.visibility = View.VISIBLE
             binding.textNullAlarm.visibility = View.GONE
 
-            alarmAdapter = AlarmAdapter(alarmList)
+            alarmAdapter = AlarmAdapter(alarmList, requireContext())
             binding.recyclerAlarm.adapter = alarmAdapter
             binding.recyclerAlarm.layoutManager = LinearLayoutManager(requireContext())
         }
     }
-
-
-
-    private fun initAdapter() {
-        alarmAdapter = AlarmAdapter(arrayListOf())
-        binding.recyclerAlarm.adapter = alarmAdapter
-
-        // 학생 정보 리스트
-        val studentHeader = listOf("이름", "아이디", "직업", "월급", "계좌 잔고")
-        studentAdapter = BaseTableAdapter(studentHeader, emptyList())
-        binding.recyclerStudent.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerStudent.adapter = studentAdapter
-    }
-
-
-    private fun initEvent() {
-        binding.btnSalary.setOnClickListener {
-            val dialog = BaseTwoButtonDialog(
-                context = requireContext(),
-                title = "급여 지급",
-                message = "지급 방식을 선택하세요",
-                negativeButtonText = "인센티브",
-                onNegativeClick = {
-                    showToast("인센티브지급")
-                    val studentMap = studentListCache.associateBy({ it.name ?: "이름 없음" }, { it.id ?: -1 }) // 학생 데이터
-                    val dialog = IncentiveDialogFragment.newInstance(studentMap)
-                    dialog.setOnConfirmListener { studentId, price ->
-                        homeViewModel.processStudentBonus(studentId, price) // ✅ API 호출
-                    }
-
-                    dialog.show(parentFragmentManager, "IncentiveDialog")
-                },
-                positiveButtonText = "주급",
-                onPositiveClick = {
-                    homeViewModel.processStudentWeeklySalary()
-                }
-
-
-            )
-
-            dialog.show()
-        }
-
-        binding.btnAlarmMore.setOnClickListener {
-            showToast("알람 내역 더보기")
-        }
-
-//        binding.btnStudentMore.setOnClickListener {
-//            NavigationManager.moveFragment(FRAGMENT_STUDENT_MANAGEMENT)
-//        }
-    }
-
-
 }

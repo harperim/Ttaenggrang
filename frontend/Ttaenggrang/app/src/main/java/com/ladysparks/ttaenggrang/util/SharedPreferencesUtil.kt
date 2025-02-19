@@ -35,6 +35,9 @@ object SharedPreferencesUtil {
     const val USER_ACCOUNT = "user_email"
     const val USER_ID = "user_id" // ✅ 사용자 ID 저장 키 추가
     const val VOTE_HISTORY_ID = "vote_histor_id" // 최근 참여한 투표 id
+    const val IS_EVENT_SHOW = "is_event_show" // 적금만기 알람을 받았는지
+    const val MY_RANK = "my_rank" // 내 자산 순위
+    const val MY_ACHIEVEMENT_RATE = "achievement_rate" // 목표달성률
 
     private lateinit var preferences: SharedPreferences
 

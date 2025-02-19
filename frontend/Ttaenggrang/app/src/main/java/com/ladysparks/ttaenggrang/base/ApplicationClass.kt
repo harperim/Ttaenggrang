@@ -42,7 +42,7 @@ class ApplicationClass : Application() {
 
         // Realm 초기화 추가
         val config = RealmConfiguration.Builder(schema = setOf(NotificationModel::class))
-            .schemaVersion(1) // 스키마 버전 설정
+            .schemaVersion(3) // 스키마 버전 설정
             .build()
         realm = Realm.open(config) // Realm 전역 인스턴스 생성
 
@@ -60,14 +60,11 @@ class ApplicationClass : Application() {
             .build()
 
         // 앱이 처음 생성되는 순간, retrofit 인스턴스를 생성
-        Log.d("TAG", "onCreate: 서버 주소 ${SERVER_URL}")
         retrofit = Retrofit.Builder()
             .baseUrl(SERVER_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
             .build()
-
-        Log.d("TAG: Retrofit !", "onCreate: Retrofit 초기화 완료")
     }
 
     val gson : Gson = GsonBuilder()

@@ -40,7 +40,6 @@ import com.ladysparks.ttaenggrang.util.DataUtil
 import com.ladysparks.ttaenggrang.util.DataUtil.convertDateTime
 import com.ladysparks.ttaenggrang.util.ImageUtils
 import com.ladysparks.ttaenggrang.util.NumberUtil
-import com.ladysparks.ttaenggrang.util.PermissionUtil
 import com.ladysparks.ttaenggrang.util.SharedPreferencesUtil
 import com.ladysparks.ttaenggrang.util.showErrorDialog
 import com.ladysparks.ttaenggrang.util.showToast
@@ -51,7 +50,6 @@ import java.util.Date
 class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding::bind, R.layout.fragment_nation) {
 
     private lateinit var nationViewModel: NationViewModel
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -409,7 +407,7 @@ class NationFragment : BaseFragment<FragmentNationBinding>(FragmentNationBinding
                 return@setOnClickListener
             }
 
-            // 수정 : 목표 금액 설정 API 추가
+            // 목표 설정
 
             dialog.dismiss()  // 다이얼로그 닫기
         }

@@ -163,7 +163,7 @@ class RevenueTeacherFragment : BaseFragment<FragmentRevenueTeacherBinding>(Fragm
                 return@setOnClickListener
             }
 
-            revenueViewModel.registerTax(TaxDto(taxName, taxRate, taxDescription), {
+            revenueViewModel.registerTax(TaxDto(taxName= taxName, taxRate = taxRate, taxDescription = taxDescription), {
                 dialog.dismiss()
                 showToast("세금이 성공적으로 등록되었습니다")
                 revenueViewModel.fetchTaxList()
