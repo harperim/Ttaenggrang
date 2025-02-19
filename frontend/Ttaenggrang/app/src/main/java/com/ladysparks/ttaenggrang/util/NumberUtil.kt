@@ -31,6 +31,11 @@ object NumberUtil {
         }
     }
 
+    fun formatWithComma(value: Long): String { // ✅ Long 타입 지원 추가
+        val formatter = DecimalFormat("#,###")
+        return formatter.format(value)
+    }
+
 
 
 }

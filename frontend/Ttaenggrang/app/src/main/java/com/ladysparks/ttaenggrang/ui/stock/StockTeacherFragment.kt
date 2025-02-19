@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.ui.stock
 
+
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.app.TimePickerDialog
@@ -15,7 +16,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
-import com.ladysparks.ttaenggrang.data.dummy.StockDummyData
 import com.ladysparks.ttaenggrang.data.model.dto.NewsDto
 import com.ladysparks.ttaenggrang.data.model.dto.StockDto
 import com.ladysparks.ttaenggrang.databinding.DialogNewsCreateBinding
@@ -23,6 +23,7 @@ import com.ladysparks.ttaenggrang.databinding.DialogNewsDetailBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStockManageTeacherBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentStockTeacherBinding
 import com.ladysparks.ttaenggrang.ui.component.LineChartComponent
+import com.ladysparks.ttaenggrang.util.CustomDateUtil
 import com.ladysparks.ttaenggrang.util.DataUtil
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -54,6 +55,7 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         // 서버에서 주식 데이터 가져오기
         viewModel.fetchAllStocks()
         viewModel.fetchNewsList()
+        viewModel.fetchStockHistory()
 
         //주식장 오픈
         binding.btnStockOpen.setOnCheckedChangeListener { _, isChecked ->
@@ -183,51 +185,53 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         viewModel.selectedStock.observe(viewLifecycleOwner) { selectedStock ->
             selectedStock?.let { stock ->
                 Log.d("StockChart", "선택된 주식: ${stock.name}, ID: ${stock.id}")
-                // stockId를 기반으로 더미 데이터 중 해당 주식 데이터 찾기
-                val dummyStockData = StockDummyData.generateStockSampleData(stock.name, stock.id)
 
-                //더미데이터 로그찍기
-                dummyStockData.forEach { data ->
-                    Log.d(
-                        "TAG",
-                        "setUpStockChart: 더미!!!!{${data.date}, ${data.price}"
-                    )
+                viewModel.stockHistory.observe(viewLifecycleOwner) { stockHistoryList ->
+                    val filteredStockData = stockHistoryList.filter { history -> history.stockId == stock.id }
+
+                    if (filteredStockData.isNotEmpty()) {
+                        Log.d("StockChart", "불러온 주식 데이터 개수: ${filteredStockData.size}")
+                        Log.d("StockChart", "전체 주식 히스토리 개수: ${stockHistoryList.size}")
+
+                        // 최근 5일치 데이터만 가져오기
+                        val last5DaysStockData = filteredStockData.takeLast(5)
+
+                        // ✅ 최근 5일치 데이터 로그 출력
+                        last5DaysStockData.forEach { data ->
+                            Log.d("StockChart", "최근 5일 데이터: ${data.date}, ${data.price}")
+                        }
+
+                        // ✅ 날짜 리스트 생성 (X축 레이블로 사용)
+                        //val dateLabels = last7DaysStockData.map { it.date }
+
+                        // ✅ 날짜 변환 (YYYY-MM-DD → MM-DD)
+                        val dateFormatter = DateTimeFormatter.ofPattern("MM-dd")
+                        val dateLabels = last5DaysStockData.map {
+                            CustomDateUtil.formatToDate(it.date) // ✅ 기존 OffsetDateTime 대신 사용 가능
+                        }
+
+
+                        // x축을 0~6으로 변환하여 그래프에 적용
+                        val stockHistory = last5DaysStockData.mapIndexed { index, data ->
+                            Pair(index.toFloat(), data.price)
+                        }
+
+                        // ✅ 차트에 적용될 데이터 확인
+                        stockHistory.forEach { (x, y) ->
+                            Log.d("StockChart", "차트 데이터: X=$x, Y=$y")
+                        }
+
+                        // 그래프에 데이터 적용
+                        lineChartComponent.setChartData(stockHistory, dateLabels, R.color.chartBlue)
+                    } else {
+                        Log.d("StockChart", "선택한 주식($stock.id)의 주식 데이터 없음")
+                    }
                 }
-
-                // 최근 7일치 데이터만 가져오기
-                val last7DaysStockData = dummyStockData.takeLast(7)
-
-                // ✅ 최근 7일치 데이터 로그 출력
-                last7DaysStockData.forEach { data ->
-                    Log.d("StockChart", "최근 7일 데이터: ${data.date}, ${data.price}")
-                }
-
-                // ✅ 날짜 리스트 생성 (X축 레이블로 사용)
-                //val dateLabels = last7DaysStockData.map { it.date }
-
-                // ✅ 날짜 변환 (YYYY-MM-DD → MM-DD)
-                val dateFormatter = DateTimeFormatter.ofPattern("MM-dd")
-                val dateLabels = last7DaysStockData.map {
-                    LocalDate.parse(it.date).format(dateFormatter)
-                }
-
-                // x축을 0~6으로 변환하여 그래프에 적용
-                val stockHistory = last7DaysStockData.mapIndexed { index, data ->
-                    Pair(index.toFloat(), data.price)
-                }
-
-                // ✅ 차트에 적용될 데이터 확인
-                stockHistory.forEach { (x, y) ->
-                    Log.d("StockChart", "차트 데이터: X=$x, Y=$y")
-                }
-
-                // 그래프에 데이터 적용
-                lineChartComponent.setChartData(stockHistory, dateLabels, R.color.chartBlue)
             }
         }
     }
 
-    /// 뉴스 상세
+    // 뉴스 상세
     private fun showNewsDetailDialog(news: NewsDto) {
         val dialogBinding = DialogNewsDetailBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext())
@@ -253,10 +257,18 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
         dialog.show()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun observeViewModel() {
+//        // 어댑터 데이터 업데이트
+//        viewModel.stockList.observe(viewLifecycleOwner, Observer { stockList ->
+//            stockList?.takeIf { it.isNotEmpty() }?.let {
+//                stockAdapter.updateData(it)
+//            }
+//        })
+
         // 어댑터 데이터 업데이트
         viewModel.stockList.observe(viewLifecycleOwner, Observer { stockList ->
-            stockList?.takeIf { it.isNotEmpty() }?.let {
+            stockList?.let {
                 stockAdapter.updateData(it)
             }
         })
@@ -294,14 +306,27 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                 showNewsDetailDialog(it) // ✅ 다이얼로그 띄우기
             }
         }
+
+        // 주식 그래프 조회
+        viewModel.stockHistory.observe(viewLifecycleOwner) { stockHistory ->
+            setUpStockChart()
+        }
+
+        // ✅ 주식 히스토리 데이터를 Adapter에 적용 (미니 차트 갱신)
+        viewModel.stockHistory.observe(viewLifecycleOwner) { stockHistory ->
+            Log.d("Fragment", "stockHistory LiveData 크기: ${stockHistory.size}")
+            stockAdapter.updateStockHistoryData(stockHistory)  // 미니 차트 갱신
+        }
+
     }
 
     // 아이템 클릭 이벤트 처리
     override fun onStockClick(stock: StockDto) {
         Toast.makeText(requireContext(), "선택한 주식: ${stock.name}", Toast.LENGTH_SHORT).show()
-        binding.textHeadStockName.text = stock.name.substringBefore(" ")
-        binding.textHeadStockPrice.text = stock.pricePerShare.toString()
-        binding.textHeadStockChange.text = "${stock.changeRate}%"
+//        binding.textHeadStockName.text = stock.name.substringBefore(" ")
+//        binding.textHeadStockPrice.text = stock.pricePerShare.toString()
+//        binding.textHeadStockChange.text = "${stock.changeRate}%"
+        viewModel.selectStock(stock)
     }
 
 }
