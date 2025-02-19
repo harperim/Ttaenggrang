@@ -105,4 +105,7 @@ class BaseTableAdapter(
         columnWeights = newColumnWeights ?: columnWeights
         notifyDataSetChanged() // RecyclerView 새로고침
     }
+
+
+
 }

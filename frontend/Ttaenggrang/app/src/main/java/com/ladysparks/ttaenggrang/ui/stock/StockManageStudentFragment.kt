@@ -379,6 +379,8 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
         confirmDialog.show()
     }
 
+
+
     private fun observeViewModel() {
         viewModel.stockTransactionHistory.observe(viewLifecycleOwner) { transactions ->
             Log.d("StockFragment", "stockTransaction 업데이트됨: $transactions")

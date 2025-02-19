@@ -37,6 +37,17 @@
             app:layout_constraintStart_toEndOf="@id/textDialogTitle"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/textDialogHeadContent"
+            style="@style/body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/black200"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textDialogTitle"
+            app:layout_constraintTop_toBottomOf="@id/textDialogTitle" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--다이얼로그 바디-->
@@ -45,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spacing_20"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="@dimen/spacing_10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/constraintDialogHead">
@@ -53,9 +64,10 @@
         <TextView
             android:id="@+id/textDialogContent"
             style="@style/body1"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="가입일"
+            android:layout_marginEnd="@dimen/spacing_20"
             android:textColor="@color/black200"
             app:layout_constraintBottom_toTopOf="@id/recyclerAccountHistory"
             app:layout_constraintEnd_toStartOf="@id/textDialogContent2"
@@ -67,45 +79,24 @@
             style="@style/body1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_10"
             android:text="2025.01.30"
             android:textColor="@color/black200"
+            android:layout_marginStart="@dimen/spacing_20"
             app:layout_constraintBottom_toBottomOf="@id/textDialogContent"
             app:layout_constraintStart_toEndOf="@id/textDialogContent"
             app:layout_constraintTop_toTopOf="@id/textDialogContent" />
 
-        <TextView
-            android:id="@+id/textDialogContent3"
-            style="@style/body1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_30"
-            android:text="만기일"
-            android:textColor="@color/black200"
-            app:layout_constraintBottom_toBottomOf="@id/textDialogContent2"
-            app:layout_constraintStart_toEndOf="@id/textDialogContent2"
-            app:layout_constraintTop_toTopOf="@id/textDialogContent2" />
-
-        <TextView
-            android:id="@+id/textDialogContent4"
-            style="@style/body1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_20"
-            android:text="2025.02.28"
-            android:textColor="@color/black200"
-            app:layout_constraintBottom_toBottomOf="@id/textDialogContent3"
-            app:layout_constraintStart_toEndOf="@id/textDialogContent3"
-            app:layout_constraintTop_toTopOf="@id/textDialogContent3" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerAccountHistory"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
+
+            android:layout_marginTop="@dimen/spacing_10"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/viewLine"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@id/textDialogContent">
 
         </androidx.recyclerview.widget.RecyclerView>
@@ -116,30 +107,32 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginVertical="5dp"
+            android:layout_marginTop="@dimen/spacing_10"
             android:background="@color/foundation_black_50"
+            app:layout_constraintBottom_toTopOf="@id/textPayoutAmount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="@dimen/spacing_10"
-            app:layout_constraintBottom_toTopOf="@id/textPayoutAmount"
             app:layout_constraintTop_toBottomOf="@id/recyclerAccountHistory" />
 
         <TextView
             android:id="@+id/textPayoutAmount"
+            style="@style/heading3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="만기 예상 금액"
-            style="@style/heading3"
-            app:layout_constraintTop_toBottomOf="@id/viewLine"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/viewLine" />
+
         <TextView
             android:id="@+id/textPayoutAmount2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="100,000"
+            android:text=""
+            style="@style/body3"
+            app:layout_constraintBottom_toBottomOf="@id/textPayoutAmount"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textPayoutAmount"
-            app:layout_constraintBottom_toBottomOf="@id/textPayoutAmount"/>
+            app:layout_constraintTop_toTopOf="@id/textPayoutAmount" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
