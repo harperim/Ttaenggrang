@@ -24,9 +24,9 @@ public interface SavingsDepositMapper {
 //    @Mapping(source = "savingsSubscription.startDate", target = "startDate")
 //    @Mapping(source = "savingsSubscription.endDate", target = "maturityDate")
     @Mapping(source = "savingsSubscription.savingsProduct.interestRate", target = "interestRate")
-    @Mapping(source = "createdAt", target = "transactionDate")
+    @Mapping(source = "scheduledDate", target = "transactionDate")
     @Mapping(target = "transactionType", expression = "java(savingsDeposit.getStatus().name())")
-    @Mapping(target = "balance", expression = "java(calculateBalance(savingsDeposit))")
+//    @Mapping(target = "balance", expression = "java(calculateBalance(savingsDeposit))")
     SavingsDepositHistoryDTO toHistoryDto(SavingsDeposit savingsDeposit);
 
     default int calculateBalance(SavingsDeposit savingsDeposit) {
