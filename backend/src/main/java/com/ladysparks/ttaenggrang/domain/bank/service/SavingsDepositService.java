@@ -159,7 +159,7 @@ public class SavingsDepositService {
         String savingsName = savingsSubscription.getSavingsProduct().getName();
         LocalDate startDate = savingsSubscription.getStartDate();
         LocalDate endDate = savingsSubscription.getEndDate();
-        int payoutAmount =savingsSubscription.getSavingsProduct().getPayoutAmount();
+        int payoutAmount = savingsSubscription.getSavingsProduct().getPayoutAmount();
 
         return SavingsSubscriptionDetailDTO.builder()
                 .savingsName(savingsName)

@@ -53,7 +53,7 @@ public class WeeklyReportController implements WeeklyReportApiSpecification {
         return fastApiService.predictCluster(
                 studentData.getTotalIncome(),
                 studentData.getTotalExpenses(),
-                studentData.getSavingsAmount(), // 총 투자 비용 (수정됨)
+                studentData.getSavingsAmount(),
                 studentData.getInvestmentReturn(),
                 studentData.getTaxAmount(),
                 studentData.getFineAmount(),
