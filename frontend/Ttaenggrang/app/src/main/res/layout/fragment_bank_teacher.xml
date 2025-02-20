@@ -68,12 +68,12 @@
                     <!-- 이미지 추가 (크게 설정해서 배너 바깥으로 넘기기) -->
                     <ImageView
                         android:id="@+id/bannerImage"
-                        android:layout_width="126dp"
-                        android:layout_height="126dp"
+                        android:layout_width="160dp"
+                        android:layout_height="130dp"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/fox_coins"
-                        android:scaleType="centerCrop"
                         android:translationX="20dp"
-                        android:translationY="20dp" />
+                        android:translationY="15dp" />
                 </FrameLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
             <!--배너 2-->

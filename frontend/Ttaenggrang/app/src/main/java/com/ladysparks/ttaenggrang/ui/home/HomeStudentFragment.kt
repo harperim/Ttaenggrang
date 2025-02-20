@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
+import coil.size.ViewSizeResolver
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
@@ -65,6 +67,15 @@ class HomeStudentFragment : BaseFragment<FragmentHomeStudentBinding>(FragmentHom
         homeStudentViewModel.fetchWeeklyReportSummary()
         homeStudentViewModel.fetchWeeklyGrowth()
         homeStudentViewModel.fetchWeeklyAiFeedback()
+
+        binding.bannerImage.load(R.drawable.logo9){
+            size(ViewSizeResolver(binding.bannerImage))
+            crossfade(true)
+        }
+        binding.imgAiFox2.load(R.drawable.logo1){
+            size(ViewSizeResolver(binding.imgAiFox2))
+            crossfade(true)
+        }
     }
 
     private fun initAdapter() {
@@ -172,6 +183,8 @@ class HomeStudentFragment : BaseFragment<FragmentHomeStudentBinding>(FragmentHom
             val displayMetrics = resources.displayMetrics
             val screenWidth = displayMetrics.widthPixels // 화면 전체 너비(px)
             dialog.window?.setLayout((screenWidth * 0.8).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+
+
             dialog.show()
        }
     }

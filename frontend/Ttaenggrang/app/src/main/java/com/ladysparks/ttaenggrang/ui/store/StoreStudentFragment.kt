@@ -19,6 +19,8 @@ import kotlinx.coroutines.launch
 import com.ladysparks.ttaenggrang.ui.component.BaseTwoButtonDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.VERTICAL
+import coil.load
+import coil.size.ViewSizeResolver
 import com.ladysparks.ttaenggrang.data.model.response.StoreStudenItemListResponse
 import com.ladysparks.ttaenggrang.databinding.DialogItemBuyBinding
 import com.ladysparks.ttaenggrang.util.showToast
@@ -53,6 +55,11 @@ class StoreStudentFragment : BaseFragment<FragmentStoreStudentBinding>(
         // 데이터 요청
         storeViewModel.fetchStoreItemList()
         storeViewModel.fetchMyItemList()
+
+        binding.bannerImage.load(R.drawable.logo9) {
+            size(ViewSizeResolver(binding.bannerImage))
+            crossfade(true)
+        }
 
     }
 

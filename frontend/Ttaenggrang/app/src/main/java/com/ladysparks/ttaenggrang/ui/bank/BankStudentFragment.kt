@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import coil.load
+import coil.size.ViewSizeResolver
 import com.example.app.viewmodel.BankViewModel
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
@@ -56,6 +58,11 @@ class BankStudentFragment : BaseFragment<FragmentBankStudentBinding>(
                 .replace(R.id.fragment_container, BankManageStudentFragment())
                 .addToBackStack(null)
                 .commit()
+        }
+
+        binding.bannerImage.load(R.drawable.logo9){
+            size(ViewSizeResolver(binding.bannerImage))
+            crossfade(true)
         }
     }
 

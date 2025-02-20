@@ -17,6 +17,8 @@ import android.app.Dialog
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
+import coil.size.ViewSizeResolver
 import com.ladysparks.ttaenggrang.databinding.DialogItemTeacherRegisterBinding
 import com.ladysparks.ttaenggrang.util.showToast
 import com.ladysparks.ttaenggrang.data.model.request.StoreRegisterRequest
@@ -43,6 +45,11 @@ class StoreTeacherFragment : BaseFragment<FragmentStoreTeacherBinding>(FragmentS
         storeTeacherRegisteredItemAdapter = StoreTeacherRegisteredItemAdapter(emptyList())
         binding.recyclerRegistedItem.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerRegistedItem.adapter = storeTeacherRegisteredItemAdapter
+
+        binding.bannerImage.load(R.drawable.logo9) {
+            size(ViewSizeResolver(binding.bannerImage))
+            crossfade(true)
+        }
     }
 
 
