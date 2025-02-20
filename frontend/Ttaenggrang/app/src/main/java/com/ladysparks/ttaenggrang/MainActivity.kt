@@ -13,6 +13,7 @@ import android.view.WindowInsets
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
@@ -283,10 +284,24 @@ class MainActivity : BaseActivity() {
                         Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     })
                 }.onFailure {
-                    showToast("로그아웃 실패")
+                    showTokenExpiredDialog()
                 }
             }
         }
+    }
+
+    private fun showTokenExpiredDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("토큰 만료")
+            .setMessage("토큰이 만료되었습니다. 동시에 다른 사용자가 접속한 것은 아닌지 확인해주세요.")
+            .setCancelable(false) // 다이얼로그 닫기 방지
+            .setPositiveButton("확인") { _, _ ->
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
+            }
+            .show()
     }
 
     companion object {

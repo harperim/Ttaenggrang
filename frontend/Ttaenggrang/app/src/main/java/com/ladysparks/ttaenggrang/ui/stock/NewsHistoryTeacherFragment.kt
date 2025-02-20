@@ -93,7 +93,6 @@ class NewsHistoryTeacherFragment : BaseFragment<FragmentNewsHistoryTeacherBindin
     private fun showNewsDetailDialog(news: NewsDto) {
         val dialogBinding = DialogNewsDetailBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext())
-
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         dialog.setContentView(dialogBinding.root)

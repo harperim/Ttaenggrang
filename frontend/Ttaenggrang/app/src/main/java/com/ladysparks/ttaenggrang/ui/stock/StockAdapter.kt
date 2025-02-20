@@ -2,9 +2,11 @@ package com.ladysparks.ttaenggrang.ui.stock
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -32,9 +34,12 @@ class StockAdapter(
         private val price = itemView.findViewById<TextView>(R.id.textStockPrice)
         private val changeRate = itemView.findViewById<TextView>(R.id.textStockChangeRate)
         val miniChart: LineChartComponent = itemView.findViewById(R.id.stockMiniChart)
+        private val stockImage: ImageView = itemView.findViewById<ImageView>(R.id.imageStock)
 
         fun bind(item: StockDto, isSelected: Boolean, stockHistory: List<StockHistoryDto>?) {
-            title.text = item.name.substringBefore(" ")
+            //title.text = item.name.substringBefore(" ")
+            title.text = item.name
+            Log.d("TAG", "bind: $item")
             price.text = NumberUtil.formatWithComma(item.pricePerShare.toString())
             changeRate.apply {
                 text = if (item.changeRate >= 0) {
@@ -45,13 +50,21 @@ class StockAdapter(
 
                 setTextColor(
                     when {
-                        item.changeRate > 0 -> ContextCompat.getColor(context, R.color.negative_red) // ✅ 상승: 빨간색
-                        item.changeRate < 0 -> ContextCompat.getColor(context, R.color.negative_blue) // ✅ 하락: 파란색
+                        item.changeRate > 0 -> ContextCompat.getColor(
+                            context,
+                            R.color.negative_red
+                        ) // ✅ 상승: 빨간색
+                        item.changeRate < 0 -> ContextCompat.getColor(
+                            context,
+                            R.color.negative_blue
+                        ) // ✅ 하락: 파란색
                         else -> ContextCompat.getColor(context, R.color.black200) // ✅ 변동 없음: 회색
                     }
                 )
-
             }
+
+            val stockImageRes = stockImageMap[item.name] ?: R.drawable.ic_stock
+            stockImage.setImageResource(stockImageRes)
 
             // ✅ 미니 차트 데이터 설정
             if (!stockHistory.isNullOrEmpty()) {
@@ -75,7 +88,10 @@ class StockAdapter(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onBindViewHolder(holder: StockViewHolder, @SuppressLint("RecyclerView") position: Int) {
+    override fun onBindViewHolder(
+        holder: StockViewHolder,
+        @SuppressLint("RecyclerView") position: Int
+    ) {
         val stock = list[position]
         val stockHistory = stockHistoryMap[stock.id] // ✅ stockId 기준으로 히스토리 가져오기
 
@@ -107,3 +123,20 @@ class StockAdapter(
 interface OnStockClickListener {
     fun onStockClick(stock: StockDto)
 }
+
+// ✅ 주식명과 이미지 리소스를 매핑
+private val stockImageMap = mapOf(
+    "NEXON" to R.drawable.ic_stock_nexon,
+    "Nintendo" to R.drawable.ic_stock_nintendo,
+    "ROBLOX" to R.drawable.ic_stock_roblox,
+    "SM 엔터" to R.drawable.ic_stock_sm,
+    "JYP 엔터" to R.drawable.ic_stock_jyp,
+    "YG 엔터" to R.drawable.ic_stock_yg,
+    "음식 ETF" to R.drawable.ic_etf_food,
+    "게임 ETF" to R.drawable.ic_etf_game,
+    "엔터 ETF" to R.drawable.ic_etf_entertain,
+    "피자" to R.drawable.ic_stock_pizza,
+    "케이크" to R.drawable.ic_stock_cake,
+    "아이스크림" to R.drawable.ic_stock_icecream,
+)
+

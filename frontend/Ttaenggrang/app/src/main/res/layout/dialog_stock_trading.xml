@@ -279,7 +279,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_30"
             android:background="@drawable/btn_rounded_full"
-            android:backgroundTint="#e53935"
+            android:backgroundTint="@color/negative_red"
             android:text="매도"
             android:textColor="@color/white"
             android:layout_marginEnd="@dimen/spacing_10"

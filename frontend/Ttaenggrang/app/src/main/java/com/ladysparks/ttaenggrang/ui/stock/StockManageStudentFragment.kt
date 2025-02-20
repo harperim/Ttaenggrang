@@ -78,8 +78,9 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
 //                .replace(R.id.fragment_container, StockStudentFragment())
 //                .addToBackStack(null)
 //                .commit()
-            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            Log.d("DialogStack", "뒤로 가기 후 백스택 개수: ${parentFragmentManager.backStackEntryCount}")
+            parentFragmentManager.popBackStack()
+//            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+//            Log.d("DialogStack", "뒤로 가기 후 백스택 개수: ${parentFragmentManager.backStackEntryCount}")
         }
     }
 
@@ -100,11 +101,11 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
             ), // ✅ 헤더 컬럼 설정
             data = emptyList(), // ✅ 초기 데이터 없음
             onRowClickListener = { rowIndex, rowData ->
-                Toast.makeText(
-                    requireContext(),
-                    "클릭한 행: ${rowData.joinToString()}",
-                    Toast.LENGTH_SHORT
-                ).show()
+//                Toast.makeText(
+//                    requireContext(),
+//                    "클릭한 행: ${rowData.joinToString()}",
+//                    Toast.LENGTH_SHORT
+//                ).show()
 
                 val stockName = rowData[1] // 주식명 가져오기
                 val stockId = viewModel.stockList.value?.find { it.name == stockName }?.id

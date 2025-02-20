@@ -61,6 +61,7 @@ class LoginActivity : BaseActivity() {
         binding.tempBtnTeacher.setOnClickListener {
             lifecycleScope.launch {
                 runCatching {
+                   // RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "abc@abc.com", password = "1234", fcmToken = fcmToken))
                     RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "hi1@naver.com", password = "ssafy123", fcmToken = fcmToken))
 //                    RetrofitUtil.authService.loginTeacher(TeacherSignInRequest(email = "aa@aa.com", password = "1234"))
                 }.onSuccess {
@@ -91,6 +92,7 @@ class LoginActivity : BaseActivity() {
                 runCatching {
 //                    RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "aa002", password = "1234"))
                     RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "hello1", password = "ssafy123", fcmToken = fcmToken))
+                   // RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "abc22", password = "1234", fcmToken = fcmToken))
                 }.onSuccess {
                     showToast("학생 로그인 성공")
 

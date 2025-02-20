@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:padding="@dimen/spacing_20">
@@ -79,8 +79,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="학생 급여"
+            android:textAlignment="textEnd"
             android:textColor="@color/mainOrange"
-            app:layout_constraintBottom_toBottomOf="@id/textContentTitle1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/textContentTitle1" />
 
@@ -91,25 +91,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="예상 실수령액"
+            app:layout_constraintBottom_toTopOf="@+id/btnYes"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textContentTitle1"
-            app:layout_constraintBottom_toTopOf="@+id/btnYes"
             tools:ignore="NotSibling" />
 
         <TextView
-            android:textAlignment="textEnd"
             android:id="@+id/textExpectedSalary"
             style="@style/body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="예상 실수령액"
-            android:text=""
+            android:hint="예상 실수령액 값"
+            android:text="-"
+            android:textAlignment="textEnd"
             android:textColor="@color/mainOrange"
             app:layout_constraintBottom_toBottomOf="@id/textContentTitle2"
-            app:layout_constraintEnd_toEndOf="@+id/textSalary"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/textContentTitle2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
     <androidx.appcompat.widget.AppCompatButton
