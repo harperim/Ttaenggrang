@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_20"
             android:layout_marginTop="20dp"
-            android:text="대한민국"
+            android:text="환영 합니다!"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -360,9 +360,19 @@
             style="@style/caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="주간 보고서를 확인하고, "
+            android:text="주간 보고서를 확인하고, 내 소비습관을 점검해요!"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textAiTitle" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/spacing_10"
+            android:paddingVertical="@dimen/spacing_20"
+            app:layout_constraintBottom_toBottomOf="@+id/imgAiFox"
+            app:layout_constraintEnd_toStartOf="@+id/imgAiFox"
+            app:layout_constraintTop_toBottomOf="@+id/textAiReport">  <!-- 터치 영역 확장 -->
+
 
         <LinearLayout
             android:id="@+id/btnWeekReport"
@@ -390,7 +400,7 @@
 
 
         </LinearLayout>
-
+        </FrameLayout>
 
         <ImageView
             android:id="@+id/imgAiFox"
