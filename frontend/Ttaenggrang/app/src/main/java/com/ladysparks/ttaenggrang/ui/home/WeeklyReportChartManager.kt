@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -11,6 +12,7 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.data.model.response.WeekReportStudentGrowth
+import kotlin.math.abs
 
 class WeeklyReportChartManager(val context: Context, private val barChart: BarChart) {
 
@@ -35,15 +37,14 @@ class WeeklyReportChartManager(val context: Context, private val barChart: BarCh
             BarEntry(2.6f, weekGrowth.classAverageSummary.expenseGrowthRate.toFloat()) // 지출 증가율
         )
 
-
         val dataSetLastWeek = BarDataSet(entriesLastWeek, "지난주 내 통계").apply {
             color = ContextCompat.getColor(context, R.color.chartBlue)
         }
         val dataSetThisWeek = BarDataSet(entriesThisWeek, "이번주 내 통계").apply {
-            color =  ContextCompat.getColor(context, R.color.chartGreen)
+            color = ContextCompat.getColor(context, R.color.chartGreen)
         }
         val dataSetMidThisWeek = BarDataSet(entriesMidThisWeek, "이번주 반 통계").apply {
-            color =  ContextCompat.getColor(context, R.color.chartOrange)
+            color = ContextCompat.getColor(context, R.color.chartOrange)
         }
 
         val barData = BarData(dataSetLastWeek, dataSetThisWeek, dataSetMidThisWeek)
@@ -55,7 +56,7 @@ class WeeklyReportChartManager(val context: Context, private val barChart: BarCh
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(true)  // X축 점선 활성화
         xAxis.gridColor = ContextCompat.getColor(context, R.color.foundation_black_100)  // X축 점선 색상 설정
-        xAxis.enableGridDashedLine(5f, 10f, 0f)  // 점선 간격 (10px 선, 10px 공백)
+        xAxis.enableGridDashedLine(5f, 10f, 0f)  // 점선 간격 (5px 선, 10px 공백)
         xAxis.granularity = 0.5f
         xAxis.setCenterAxisLabels(true)
         xAxis.yOffset = 10f  // 기본값보다 여백을 더 추가
@@ -65,20 +66,57 @@ class WeeklyReportChartManager(val context: Context, private val barChart: BarCh
         xAxis.axisMinimum = -0.2f // 0번째 데이터가 잘리지 않도록 설정
         xAxis.axisMaximum = labels.size.toFloat() // 마지막 인덱스까지 표시
 
-        // Y축 설정
-        barChart.axisLeft.axisMinimum = 0f
+        // Y축 설정 (음수 값 포함하도록 설정)
+        val minY = minOf(
+            weekGrowth.lastWeekSummary.savingsGrowthRate,
+            weekGrowth.lastWeekSummary.investmentReturnRate,
+            weekGrowth.lastWeekSummary.expenseGrowthRate,
+            weekGrowth.thisWeekSummary.savingsGrowthRate,
+            weekGrowth.thisWeekSummary.investmentReturnRate,
+            weekGrowth.thisWeekSummary.expenseGrowthRate,
+            weekGrowth.classAverageSummary.savingsGrowthRate,
+            weekGrowth.classAverageSummary.investmentReturnRate,
+            weekGrowth.classAverageSummary.expenseGrowthRate
+        ).toFloat()
+
+        val maxY = maxOf(
+            weekGrowth.lastWeekSummary.savingsGrowthRate,
+            weekGrowth.lastWeekSummary.investmentReturnRate,
+            weekGrowth.lastWeekSummary.expenseGrowthRate,
+            weekGrowth.thisWeekSummary.savingsGrowthRate,
+            weekGrowth.thisWeekSummary.investmentReturnRate,
+            weekGrowth.thisWeekSummary.expenseGrowthRate,
+            weekGrowth.classAverageSummary.savingsGrowthRate,
+            weekGrowth.classAverageSummary.investmentReturnRate,
+            weekGrowth.classAverageSummary.expenseGrowthRate
+        ).toFloat()
+
+        val absMax = maxOf(abs(minY), abs(maxY)) // 양수와 음수 중 가장 큰 값
+
+        barChart.axisLeft.axisMinimum = -absMax // 최소값을 음수 최대값으로 설정
+        barChart.axisLeft.axisMaximum = absMax // 최대값을 양수 최대값으로 설정
+
+        // Y축의 0을 강조하는 선 추가
+        val limitLine = LimitLine(0f, "").apply {
+            lineWidth = 1.5f
+            enableDashedLine(10f, 5f, 0f) // 점선 스타일
+            lineColor = ContextCompat.getColor(context, R.color.black) // 선 색상
+            textColor = ContextCompat.getColor(context, R.color.black) // 텍스트 색상
+            textSize = 12f
+        }
+
+        barChart.axisLeft.addLimitLine(limitLine) // 기준선 추가
+
         barChart.axisRight.isEnabled = false
         barChart.axisLeft.setDrawGridLines(true)  // Y축 점선 활성화
-        barChart.axisLeft.gridColor = ContextCompat.getColor(context, R.color.foundation_black_100)  // 축 점선 색상 설정
-        barChart.axisLeft.enableGridDashedLine(5f, 10f, 0f)  // 점선 간격 (10px 선, 10px 공백)
-
+        barChart.axisLeft.gridColor = ContextCompat.getColor(context, R.color.foundation_black_100)  // Y축 점선 색상 설정
+        barChart.axisLeft.enableGridDashedLine(5f, 10f, 0f)  // 점선 간격 (5px 선, 10px 공백)
 
         // 범례 설정
         val legend = barChart.legend
         legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
         legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
         legend.setDrawInside(false)
-
 
         // 차트에 데이터 적용
         barChart.data = barData
@@ -90,4 +128,5 @@ class WeeklyReportChartManager(val context: Context, private val barChart: BarCh
         barChart.notifyDataSetChanged()
         barChart.invalidate() // 다시 그리기
     }
+
 }

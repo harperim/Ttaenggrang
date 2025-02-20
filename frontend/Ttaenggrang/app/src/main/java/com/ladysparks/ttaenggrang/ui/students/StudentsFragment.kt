@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -273,19 +274,32 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
             .create()
 
         // job 설정
+        var selectedJobId: Int? = null
         val jobList = jobListCache.map { it.jobName }
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, jobList)
         dialogBinding.editJob.adapter = adapter
+
+        // Spinner에서 선택된 값 가져오기
+        dialogBinding.editJob.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // 선택된 직업의 jobId 찾기
+                selectedJobId = jobListCache[position].id
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                selectedJobId = null
+            }
+        }
 
         dialogBinding.btnCancel.setOnClickListener { dialog.dismiss() }
         dialogBinding.btnClose.setOnClickListener { dialog.dismiss() }
 
         dialogBinding.btnStudentRegistration.setOnClickListener {
             // 유효성 검사
-            val name = dialogBinding.editAddName.text
-            val id = dialogBinding.editId.text
-            val password = dialogBinding.editPassword.text
+            val name = dialogBinding.editAddName.text.toString()
+            val id = dialogBinding.editId.text.toString()
+            val password = dialogBinding.editPassword.text.toString()
             if (name.isNullOrEmpty() || id.isNullOrEmpty() || password.isNullOrEmpty()) {
                 showToast("모든 항목을 빠짐없이 입력해주세요")
                 return@setOnClickListener
@@ -293,10 +307,10 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
 
             // 단순 데이터 추가
             val user = StudentSingleCreateRequest(
-                username = id.toString(),
-                name = name.toString(),
-                password = password.toString(),
-                profileImage = ""
+                username = id,
+                name = name,
+                password = password,
+                jobId = selectedJobId ?: 1
             )
             lifecycleScope.launch {
                 runCatching {
