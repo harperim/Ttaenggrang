@@ -139,6 +139,10 @@ class StudentsFragment : BaseFragment<FragmentStudentsBinding>(
             selectStudentSavingSum = response.sumOf { it.currentTotalPrice.toDouble() }
 
         }
+
+        studentsViewModel.multiResult.observe(viewLifecycleOwner) { response ->
+            studentsViewModel.fetchStudentList()
+        }
     }
 
     private fun updateRecyclerView(studentList: List<StudentMultiCreateResponse>?) {
