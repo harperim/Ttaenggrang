@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.ladysparks.ttaenggrang.data.model.dto.BankHistoryDto
 import com.ladysparks.ttaenggrang.data.model.dto.BankItemDto
 import com.ladysparks.ttaenggrang.data.model.dto.BankManageDto
+import com.ladysparks.ttaenggrang.data.model.dto.ProductItemDto
 import com.ladysparks.ttaenggrang.data.model.dto.SavingSubscriptionDto
 import com.ladysparks.ttaenggrang.data.model.request.SavingSubscriptionsRequest
 import com.ladysparks.ttaenggrang.data.model.response.BankAccountCountResponse
@@ -35,8 +36,8 @@ class BankViewModel : ViewModel() {
     val bankHistory: LiveData<BankHistoryDto?> get() = _bankHistory
 
     // 은행 상품 리스트
-    private val _bankItemList = MutableLiveData<List<BankItemDto?>?>()
-    val bankItemList: MutableLiveData<List<BankItemDto?>?> get() = _bankItemList
+    private val _bankItemList = MutableLiveData<List<ProductItemDto?>?>()
+    val bankItemList: MutableLiveData<List<ProductItemDto?>?> get() = _bankItemList
 
     // 메인화면에서 사용할 내 계좌 리스트
     private val _bankAccountList = MutableLiveData<List<Pair<BankManageDto, BankHistoryDto?>>>()
@@ -201,34 +202,21 @@ class BankViewModel : ViewModel() {
     }
 
     // 적금 가입
-//    fun subscribeToSavings(savingsProductId: Int, depositDayOfWeek: String) {
-//        viewModelScope.launch {
-//            runCatching {
-//                val request = SavingSubscriptionDto(depositDayOfWeek, savingsProductId)
-//                bankService.subscribeSavings(request)
-//            }.onSuccess { response ->
-//                _subscriptionResult.postValue(response.data)
-//                println("✅ 적금 가입 성공: $response")
-//            }.onFailure { error ->
-//                _errorMessage.postValue("적금 가입 실패: ${error.message}")
-//                println("❌ 적금 가입 실패: ${error.message}")
-//            }
-//        }
-//    }
-    fun subscribeToSavings(name: String) {
+    fun subscribeToSavings(savingsProductId: Int, depositDayOfWeek: String) {
         viewModelScope.launch {
             runCatching {
-                val requestBody = SavingSubscriptionsRequest(name) // ✅ 상품명만 전송
-                bankService.subscribeToSavings(requestBody)
+                val request = SavingSubscriptionDto(depositDayOfWeek, savingsProductId)
+                bankService.subscribeSavings(request)
             }.onSuccess { response ->
                 _subscriptionResult.postValue(response.data)
-                Log.d("BankViewModel", "적금 가입 성공: ${response.data}")
+                println("✅ 적금 가입 성공: $response")
             }.onFailure { error ->
                 _errorMessage.postValue("적금 가입 실패: ${error.message}")
-                Log.e("BankViewModel", "적금 가입 실패", error)
+                println("❌ 적금 가입 실패: ${error.message}")
             }
         }
     }
+
 
     // ✅ "ACTIVE" 상태의 depositAmount 합산
     fun calculateActiveDepositTotal() {
