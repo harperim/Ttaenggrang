@@ -12,7 +12,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 모델 파일 추가 (FastAPI 컨테이너에 모델 포함)
-COPY model/scaler.pkl model/model.pkl model/label_encoder.pkl /app/model/
+COPY model/cluster_mapping.pkl model/cluster_model.pkl model/label_encoder.pkl model/rf_model.pkl model/scaler.pkl /app/model/
 
 # 애플리케이션 코드 복사
 # 컨테이너 내부 /app 경로에 FastAPI 코드가 복사

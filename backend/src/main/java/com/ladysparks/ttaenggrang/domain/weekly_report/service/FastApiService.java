@@ -20,19 +20,16 @@ public class FastApiService {
                 .build();
     }
 
-    public Mono<String> predictCluster(int totalIncome, int totalExpense, int totalInvestment,
-                                                    int investmentReturn, int taxPaid, int finePaid, int incentive) {
+    public Mono<String> predictCluster(int totalIncome, int totalExpense, int total_savings, int totalInvestment) {
         return webClient.post()
                 .uri("/predict-cluster")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(Map.of(
+                        "student_id", 0,
                         "total_income", totalIncome,
                         "total_expense", totalExpense,
-                        "total_investment", totalInvestment,
-                        "investment_return", investmentReturn,
-                        "tax_paid", taxPaid,
-                        "fine_paid", finePaid,
-                        "incentive", incentive
+                        "total_savings", total_savings,
+                        "total_investment", totalInvestment
                 ))
                 .retrieve()
                 .bodyToMono(String.class)  // ✅ 제네릭 명확히 지정

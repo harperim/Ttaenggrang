@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 # 🔹 모델 파일 로드 경로 (절대 경로 수정)
-MODEL_DIR = os.path.join(os.path.dirname(__file__), "../model/")
+MODEL_DIR = os.path.join(os.path.dirname(__file__), "model/")
 
 # 🔹 모델 로드 (예외 처리 추가)
 try:
@@ -70,10 +70,10 @@ def predict_cluster(data: StudentData):
         print(f"✅ 예측 결과: {predicted_cluster_label}")
 
         return {
-            "student_id": int(data.student_id),
-            "savings_ratio": round(float(savings_ratio), 2),
-            "spending_ratio": round(float(spending_ratio), 2),
-            "investment_ratio": round(float(investment_ratio), 2),
+            # "student_id": int(data.student_id),
+            # "savings_ratio": round(float(savings_ratio), 2),
+            # "spending_ratio": round(float(spending_ratio), 2),
+            # "investment_ratio": round(float(investment_ratio), 2),
             "predicted_cluster": predicted_cluster_label
         }
     except Exception as e:

@@ -78,6 +78,7 @@ public class WeeklyFinancialSummaryService {
         int taxAmount = bankTransactionService.getTaxAmount(studentId, startDate, endDate);
         int fineAmount = bankTransactionService.getFineAmount(studentId, startDate, endDate);
         int totalSellAmount = bankTransactionService.getInvestmentSellAmount(studentId, startDate, endDate);
+        int totalStockBuyAmount = bankTransactionService.getStockBuyAmount(studentId, startDate, endDate);
 
         // 투자 수익 계산 (금요일 기준)
         int currentTotalEvaluation = investmentService.getInvestmentValueByWeeksAgo(studentId, 0);
@@ -106,11 +107,8 @@ public class WeeklyFinancialSummaryService {
         String feedback = fastApiService.predictCluster(
                 totalIncome,
                 totalExpenses,
-                investmentReturn,
-                investmentReturn,
-                taxAmount,
-                fineAmount,
-                incentiveAmount
+                savingsAmount,
+                totalStockBuyAmount
         ).block();
 
         if (existingReport.isPresent()) {

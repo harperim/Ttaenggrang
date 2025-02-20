@@ -395,6 +395,14 @@ public class BankTransactionService {
                 ));
     }
 
+    public int getStockBuyAmount(Long studentId, LocalDateTime startDate, LocalDateTime endDate) {
+        return bankTransactionRepository.getTotalAmountByType(studentId, startDate, endDate,
+                Arrays.asList(
+                        BankTransactionType.STOCK_BUY,
+                        BankTransactionType.ETF_BUY
+                ));
+    }
+
     public int getBankTransactionsByType(Long studentId, List<BankTransactionType> typeList) {
         return bankTransactionRepository.getTotalAmountByType(studentId, typeList);
     }

@@ -54,10 +54,7 @@ public class WeeklyReportController implements WeeklyReportApiSpecification {
                 studentData.getTotalIncome(),
                 studentData.getTotalExpenses(),
                 studentData.getSavingsAmount(),
-                studentData.getInvestmentReturn(),
-                studentData.getTaxAmount(),
-                studentData.getFineAmount(),
-                studentData.getIncentiveAmount()
+                studentData.getInvestmentReturn()
         )
                 .map((cluster) -> aiFeedbackService.generateWeeklyFeedback(studentData, cluster))
                 .map((feedback) -> ResponseEntity.ok(ApiResponse.success(Map.of("report", feedback)))); // Mono를 비동기 방식으로 반환
