@@ -198,7 +198,7 @@ public class StudentService {
             String studentName = (i <= namesFromFile.size()) ? namesFromFile.get(i - 1) : "학생" + i;
 
             // 4. 기본 직업 "시민"으로 설정
-            Job defaultJob = jobRespository.findByJobName("시민")
+            Job defaultJob = jobRespository.findByJobNameAndTeacherId("시민", teacherId)
                     .orElseGet(() -> {
                         Job newJob = Job.builder()
                                 .jobName("시민")

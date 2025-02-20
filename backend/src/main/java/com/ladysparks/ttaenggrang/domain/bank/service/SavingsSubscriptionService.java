@@ -219,4 +219,12 @@ public class SavingsSubscriptionService {
         return savingsSubscriptionRepository.findSavingsProductNameBySubscriptionId(savingsSubscriptionId);
     }
 
+    public List<SavingsSubscription> findAllByMaturityDateAndStatus(LocalDate now, SavingsSubscriptionStatus savingsSubscriptionStatus) {
+        return savingsSubscriptionRepository.findAllByEndDateAndStatus(now, savingsSubscriptionStatus);
+    }
+
+    public List<SavingsSubscription> findAllByStatus(SavingsSubscriptionStatus savingsSubscriptionStatus) {
+        return savingsSubscriptionRepository.findAllByStatus(savingsSubscriptionStatus);
+    }
+
 }

@@ -54,6 +54,10 @@ public class SavingsDeposit {
         this.updatedAt = new Timestamp(System.currentTimeMillis());
     }
 
+    public void updateBalance(int newBalance) {
+        this.balance = newBalance;
+    }
+
     public enum SavingsDepositStatus {
         PENDING,     // 예정됨 (예정일 전)
         COMPLETED,   // 납입 완료

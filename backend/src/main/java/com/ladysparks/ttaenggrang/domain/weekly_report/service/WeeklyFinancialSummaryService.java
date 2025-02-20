@@ -40,16 +40,6 @@ public class WeeklyFinancialSummaryService {
     private final StudentService studentService;
 
     /**
-     * 🕑 매주 금요일 오전 2시에 자동 실행
-     */
-    @Scheduled(cron = "${scheduling.weekly-report.generate}", zone = "Asia/Seoul")
-    public void scheduleWeeklyReportGeneration() {
-        log.info("📢 [주간 금융 리포트 생성 시작] - 실행 시간: {}", LocalDateTime.now());
-        Map<Long, List<WeeklyFinancialSummaryDTO>> reports = generateWeeklyReportsForAllTeachers();
-        log.info("✅ [주간 금융 리포트 생성 완료] - 총 {}명의 교사 데이터 생성됨", reports.size());
-    }
-
-    /**
      * 모든 교사의 학급 학생들의 주간 금융 리포트 생성
      */
     public Map<Long, List<WeeklyFinancialSummaryDTO>> generateWeeklyReportsForAllTeachers() {
