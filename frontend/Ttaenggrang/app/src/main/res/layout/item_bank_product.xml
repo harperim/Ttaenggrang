@@ -62,6 +62,7 @@
                 android:layout_marginEnd="5dp"
                 android:src="@drawable/ic_calander2"/>
             <TextView
+                android:id="@+id/textDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/caption"
@@ -85,6 +86,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_coin"/>
             <TextView
+                android:id="@+id/textinterestRate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/caption"
@@ -108,6 +110,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_shop_money"/>
             <TextView
+                android:id="@+id/textAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/caption"

@@ -7,9 +7,9 @@
     <!--주식아이콘-->
     <ImageView
         android:id="@+id/imageStock"
-        android:layout_width="31dp"
-        android:layout_height="31dp"
-        android:src="@drawable/ic_jyp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_stock_jyp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <!--주식이름-->

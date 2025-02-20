@@ -95,10 +95,10 @@
 
         <TextView
             android:id="@+id/textTitle"
-            style="@style/heading4"
+            style="@style/heading3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="예상 이자 수익"
+            android:text="총 저축 금액"
             android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@id/textContent"
             app:layout_constraintStart_toStartOf="parent"
@@ -109,7 +109,7 @@
             style="@style/heading2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="100,000"
+            android:text=""
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/textTitle"
@@ -135,7 +135,7 @@
 
         <TextView
             android:id="@+id/textChartTitle"
-            style="@style/heading4"
+            style="@style/heading3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="계좌별 저축 이자 비율 TOP3"
@@ -170,27 +170,44 @@
 
         <TextView
             android:id="@+id/textMyAccountTitle"
-            style="@style/heading4"
+            style="@style/heading3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="내 보유 계좌"
             app:layout_constraintBottom_toTopOf="@id/recyclerMyAccount"
-            app:layout_constraintEnd_toStartOf="@id/ic_right"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/ic_right"
+        <LinearLayout
+            android:id="@+id/btnAccountManage"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="3dp"
-            android:layout_marginStart="5dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_chevron_right"
+            android:layout_height="24dp"
+            android:background="@drawable/btn_rounded_border"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/spacing_10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textMyAccountTitle"
             app:layout_constraintBottom_toBottomOf="@id/textMyAccountTitle"
-            app:layout_constraintStart_toEndOf="@id/textMyAccountTitle"
-            app:layout_constraintTop_toTopOf="@id/textMyAccountTitle" />
+            >
+
+            <TextView
+                style="@style/heading5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내 계좌 관리"
+                android:textColor="@color/mainGreen" />
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:background="@drawable/ic_chevron_right"
+                android:backgroundTint="@color/mainGreen" />
+
+
+        </LinearLayout>
+
+
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerMyAccount"
@@ -200,6 +217,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/textMyAccountTitle"
             app:layout_constraintTop_toBottomOf="@id/textMyAccountTitle" />
 
@@ -282,6 +300,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/spacing_20"
+            app:spanCount="3"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

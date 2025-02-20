@@ -104,39 +104,39 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!--뒤로가기 버튼-->
-        <LinearLayout
-            android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:background="@drawable/btn_rounded_border"
-            android:backgroundTint="@color/black200"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/spacing_10"
-            app:layout_constraintBottom_toBottomOf="@+id/textBankManageTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textBankManageTitle"
+<!--        &lt;!&ndash;뒤로가기 버튼&ndash;&gt;-->
+<!--        <LinearLayout-->
+<!--            android:id="@+id/btnBack"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="24dp"-->
+<!--            android:background="@drawable/btn_rounded_border"-->
+<!--            android:backgroundTint="@color/black200"-->
+<!--            android:gravity="center"-->
+<!--            android:paddingHorizontal="@dimen/spacing_10"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/textBankManageTitle"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/textBankManageTitle"-->
 
-            >
+<!--            >-->
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="3dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_left"
-                app:tint="@color/black200" />
+<!--            <ImageView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginVertical="3dp"-->
+<!--                android:adjustViewBounds="true"-->
+<!--                android:scaleType="fitCenter"-->
+<!--                android:src="@drawable/ic_left"-->
+<!--                app:tint="@color/black200" />-->
 
-            <TextView
-                style="@style/heading5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
-                android:text="뒤로가기"
-                android:textColor="@color/black200" />
-        </LinearLayout>
+<!--            <TextView-->
+<!--                style="@style/heading5"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:text="뒤로가기"-->
+<!--                android:textColor="@color/black200" />-->
+<!--        </LinearLayout>-->
 
         <!--탭-->
         <TextView
@@ -228,7 +228,7 @@
             android:id="@+id/textPayoutAmount2"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="100,00000000000"
+            android:text=""
             android:layout_marginStart="100dp"
             style="@style/heading3"
             android:gravity="end"
@@ -290,7 +290,7 @@
                 style="@style/heading3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3 개"
+                android:text=""
                 app:layout_constraintBottom_toBottomOf="@id/ic_bank1"
                 app:layout_constraintStart_toStartOf="@id/textDeposit"
                 app:layout_constraintTop_toBottomOf="@id/textDeposit" />
@@ -335,7 +335,7 @@
                 style="@style/heading3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="4 개"
+                android:text=""
                 app:layout_constraintBottom_toBottomOf="@id/ic_bank2"
                 app:layout_constraintStart_toStartOf="@id/textDeposit2"
                 app:layout_constraintTop_toBottomOf="@id/textDeposit2" />
@@ -344,7 +344,7 @@
 
         <!--은행상품 구매 버튼-->
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnDepositBuy"
+            android:id="@+id/btnBack"
             style="@style/heading4"
             android:layout_width="0dp"
             android:layout_height="0dp"

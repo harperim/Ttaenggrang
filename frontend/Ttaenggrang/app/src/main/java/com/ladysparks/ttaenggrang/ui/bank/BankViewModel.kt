@@ -6,9 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ladysparks.ttaenggrang.data.model.dto.BankHistoryDto
+import com.ladysparks.ttaenggrang.data.model.dto.BankItemDto
 import com.ladysparks.ttaenggrang.data.model.dto.BankManageDto
+import com.ladysparks.ttaenggrang.data.model.dto.SavingSubscriptionDto
+import com.ladysparks.ttaenggrang.data.model.request.SavingSubscriptionsRequest
 import com.ladysparks.ttaenggrang.data.model.response.BankAccountCountResponse
+import com.ladysparks.ttaenggrang.data.model.response.SavingPayoutResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
+import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil.Companion.bankService
 import kotlinx.coroutines.launch
 
 class BankViewModel : ViewModel() {
@@ -29,7 +34,27 @@ class BankViewModel : ViewModel() {
     private val _bankHistory = MutableLiveData<BankHistoryDto?>()
     val bankHistory: LiveData<BankHistoryDto?> get() = _bankHistory
 
-  // 가입 적금 전체 조회
+    // 은행 상품 리스트
+    private val _bankItemList = MutableLiveData<List<BankItemDto?>?>()
+    val bankItemList: MutableLiveData<List<BankItemDto?>?> get() = _bankItemList
+
+    // 메인화면에서 사용할 내 계좌 리스트
+    private val _bankAccountList = MutableLiveData<List<Pair<BankManageDto, BankHistoryDto?>>>()
+    val bankAccountList: LiveData<List<Pair<BankManageDto, BankHistoryDto?>>> get() = _bankAccountList
+
+    // 적금 만기 지급 요청
+    private val _payoutResult = MutableLiveData<SavingPayoutResponse?>()
+    val payoutResult: LiveData<SavingPayoutResponse?> get() = _payoutResult
+
+    // 은행 상품 가입
+    private val _subscriptionResult = MutableLiveData<SavingSubscriptionDto?>()
+    val subscriptionResult: LiveData<SavingSubscriptionDto?> get() = _subscriptionResult
+
+    // active 상태 계좌의 총 납입금액을 합산(메인에 표시)
+    private val _activeDepositTotal = MutableLiveData<Int>()
+    val activeDepositTotal: LiveData<Int> get() = _activeDepositTotal
+
+    // 가입 적금 전체 조회
     fun fetchUserSavings() {
         viewModelScope.launch {
             runCatching {
@@ -103,6 +128,115 @@ class BankViewModel : ViewModel() {
                 Log.e("BankHistoryViewModel", "네트워크 오류: ${e.message}")
             }
         }
+    }
+
+    // 전체 은행 상품 조회
+    fun fetchBankItems() {
+        viewModelScope.launch {
+            runCatching {
+                RetrofitUtil.bankService.getBankItemAll() // ✅ API 호출
+            }.onSuccess { response ->
+                if (response.isSuccessful) {
+                    _bankItemList.postValue(response.body()?.data) // ✅ 성공 시 데이터 업데이트
+                    Log.d("BankViewModel", "은행 상품 조회 성공: ${response.body()?.data?.size}건")
+                } else {
+                    _errorMessage.postValue("은행 상품을 불러오는데 실패했습니다.")
+                    Log.e("BankViewModel", "은행 상품 조회 실패: ${response.body()?.message}")
+                }
+            }.onFailure { error ->
+                _errorMessage.postValue("네트워크 오류: ${error.message}")
+                Log.e("BankViewModel", "은행 상품 조회 실패", error)
+            }
+        }
+    }
+
+    // ✅ 내가 보유한 모든 적금 계좌 조회 (상품명, 총 납입 금액)
+    fun fetchAllBankAccounts() {
+        viewModelScope.launch {
+            runCatching {
+                RetrofitUtil.bankService.getUserSavings() // ✅ 내 보유 적금 목록 가져오기 (BankManageDto 리스트)
+            }.onSuccess { response ->
+                val bankManageList = response.body()?.data ?: emptyList()
+
+                // ✅ 개별 상품의 savingName 가져오기
+                val bankHistoryMap = mutableMapOf<Int, BankHistoryDto?>()
+
+                bankManageList.forEach { bankManage ->
+                    val historyResponse = runCatching {
+                        RetrofitUtil.bankService.getBankHistory(bankManage.id) // ✅ 개별 적금의 상세 정보 가져오기
+                    }.getOrNull()
+
+                    bankHistoryMap[bankManage.id] = historyResponse?.body()?.data
+                }
+
+                // ✅ BankManageDto와 BankHistoryDto를 Pair로 묶어서 저장
+                val pairedList = bankManageList.map { it to bankHistoryMap[it.id] }
+                _bankAccountList.postValue(pairedList)
+
+            }.onFailure { error ->
+                _errorMessage.postValue("네트워크 오류: ${error.message}")
+            }
+        }
+    }
+
+    // 적금 만기 지급 요청
+    fun requestPayout(savingsSubscriptionId: Int) {
+        val existingPayout = _payoutResult.value
+        if (existingPayout?.isPaid == true) {
+            _errorMessage.postValue("이미 지급된 적금입니다.")
+            return
+        }
+
+        viewModelScope.launch {
+            runCatching {
+                bankService.payoutSavings(savingsSubscriptionId) // ✅ Query Parameter 사용
+            }.onSuccess { response ->
+                _payoutResult.postValue(response.data) // ✅ 성공 시 LiveData 업데이트
+                Log.d("BankViewModel", "적금 만기 지급 성공: ${response.data}")
+            }.onFailure { error ->
+                _errorMessage.postValue("지급 요청 실패: ${error.message}")
+                Log.e("BankViewModel", "적금 만기 지급 실패", error)
+            }
+        }
+    }
+
+    // 적금 가입
+//    fun subscribeToSavings(savingsProductId: Int, depositDayOfWeek: String) {
+//        viewModelScope.launch {
+//            runCatching {
+//                val request = SavingSubscriptionDto(depositDayOfWeek, savingsProductId)
+//                bankService.subscribeSavings(request)
+//            }.onSuccess { response ->
+//                _subscriptionResult.postValue(response.data)
+//                println("✅ 적금 가입 성공: $response")
+//            }.onFailure { error ->
+//                _errorMessage.postValue("적금 가입 실패: ${error.message}")
+//                println("❌ 적금 가입 실패: ${error.message}")
+//            }
+//        }
+//    }
+    fun subscribeToSavings(name: String) {
+        viewModelScope.launch {
+            runCatching {
+                val requestBody = SavingSubscriptionsRequest(name) // ✅ 상품명만 전송
+                bankService.subscribeToSavings(requestBody)
+            }.onSuccess { response ->
+                _subscriptionResult.postValue(response.data)
+                Log.d("BankViewModel", "적금 가입 성공: ${response.data}")
+            }.onFailure { error ->
+                _errorMessage.postValue("적금 가입 실패: ${error.message}")
+                Log.e("BankViewModel", "적금 가입 실패", error)
+            }
+        }
+    }
+
+    // ✅ "ACTIVE" 상태의 depositAmount 합산
+    fun calculateActiveDepositTotal() {
+        val activeTotal = savingsList.value
+            ?.filter { it.status == "ACTIVE" }  // 🔹 "ACTIVE" 상태 필터링
+            ?.sumOf { it.depositAmount } ?: 0   // 🔹 depositAmount 합산 (없으면 0)
+
+        _activeDepositTotal.postValue(activeTotal) // 🔹 LiveData 업데이트
     }
 
 
