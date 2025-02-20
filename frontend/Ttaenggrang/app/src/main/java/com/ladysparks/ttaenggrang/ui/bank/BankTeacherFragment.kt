@@ -2,6 +2,8 @@ package com.ladysparks.ttaenggrang.ui.bank
 
 import android.os.Bundle
 import android.view.View
+import coil.load
+import coil.size.ViewSizeResolver
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.databinding.FragmentBankTeacherBinding
@@ -12,6 +14,11 @@ class BankTeacherFragment : BaseFragment<FragmentBankTeacherBinding>(FragmentBan
         super.onViewCreated(view, savedInstanceState)
 
         initData()
+
+        binding.bannerImage.load(R.drawable.logo9){
+            size(ViewSizeResolver(binding.bannerImage))
+            crossfade(true)
+        }
     }
 
     private fun initData() {

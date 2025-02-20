@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
+import coil.size.ViewSizeResolver
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.databinding.FragmentRevenueStudentBinding
@@ -60,6 +62,11 @@ class RevenueStudentFragment : BaseFragment<FragmentRevenueStudentBinding>(Fragm
         }
 
         revenueViewModel.studentTaxHistory.observe(viewLifecycleOwner) {
+        }
+
+        binding.bannerImage.load(R.drawable.logo9) {
+            size(ViewSizeResolver(binding.bannerImage))
+            crossfade(true)
         }
     }
 

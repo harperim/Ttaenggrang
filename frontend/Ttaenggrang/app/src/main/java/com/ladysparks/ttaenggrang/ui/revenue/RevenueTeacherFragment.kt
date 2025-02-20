@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Visibility
+import coil.load
+import coil.size.ViewSizeResolver
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.data.model.dto.TaxDto
@@ -88,6 +90,11 @@ class RevenueTeacherFragment : BaseFragment<FragmentRevenueTeacherBinding>(Fragm
         // 국세 내역 보기
         binding.linearNationTaxHistoryTitle.setOnClickListener{
             showNationTaxDialog()
+        }
+
+        binding.bannerImage.load(R.drawable.logo9) {
+            size(ViewSizeResolver(binding.bannerImage))
+            crossfade(true)
         }
     }
 

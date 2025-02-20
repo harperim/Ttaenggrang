@@ -6,6 +6,8 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
+import coil.size.ViewSizeResolver
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -63,6 +65,15 @@ class HomeTeacherFragment : BaseFragment<FragmentHomeTeacherBinding>(FragmentHom
         homeViewModel.fetchEconomySummary()
         homeViewModel.fetchStudentList()
         homeViewModel.fetchWeekAvgSummary()
+
+        binding.bannerImage.load(R.drawable.logo9){
+            size(ViewSizeResolver(binding.bannerImage))
+            crossfade(true)
+        }
+        binding.imgAiFox2.load(R.drawable.logo1){
+            size(ViewSizeResolver(binding.imgAiFox2))
+            crossfade(true)
+        }
     }
 
     private fun initAdapter() {

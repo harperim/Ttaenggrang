@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import androidx.core.content.ContextCompat
 import coil.load
+import coil.size.ViewSizeResolver
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -66,6 +67,11 @@ class WeeklyReportDialog(
         // button Event
         binding.btnStudentRegistration.setOnClickListener {
             dismiss()
+        }
+
+        binding.imgFox.load(R.drawable.logo3){
+            crossfade(true)
+            size(ViewSizeResolver(binding.imgFox))
         }
     }
 

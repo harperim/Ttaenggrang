@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import coil.load
+import coil.size.ViewSizeResolver
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.base.BaseTableAdapter
@@ -35,6 +37,11 @@ class StockManageTeacherFragment : BaseFragment<FragmentStockManageTeacherBindin
         //뒤로가기
         binding.btnBack.setOnClickListener {
             parentFragmentManager.popBackStack()
+        }
+
+        binding.bannerImage.load(R.drawable.logo9) {
+            size(ViewSizeResolver(binding.bannerImage))
+            crossfade(true)
         }
     }
 

@@ -16,6 +16,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import coil.load
+import coil.size.ViewSizeResolver
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.data.model.dto.NewsDto
@@ -83,6 +85,15 @@ class StockTeacherFragment : BaseFragment<FragmentStockTeacherBinding>(
                 .replace(R.id.fragment_container, StockManageTeacherFragment())
                 .addToBackStack(null)
                 .commit()
+        }
+
+        binding.bannerImage.load(R.drawable.logo9) {
+            size(ViewSizeResolver(binding.bannerImage))
+            crossfade(true)
+        }
+        binding.newsImage.load(R.drawable.logo4){
+            size(ViewSizeResolver(binding.bannerImage))
+            crossfade(true)
         }
 
         initData()

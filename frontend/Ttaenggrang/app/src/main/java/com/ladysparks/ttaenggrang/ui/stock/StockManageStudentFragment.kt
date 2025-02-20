@@ -14,6 +14,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
+import coil.load
+import coil.size.ViewSizeResolver
 import com.github.mikephil.charting.charts.LineChart
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.base.BaseFragment
@@ -67,6 +69,11 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
             parentFragmentManager.popBackStack()
 //            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 //            Log.d("DialogStack", "뒤로 가기 후 백스택 개수: ${parentFragmentManager.backStackEntryCount}")
+        }
+
+        binding.bannerImage.load(R.drawable.logo2){
+            size(ViewSizeResolver(binding.bannerImage))
+            crossfade(true)
         }
     }
 
