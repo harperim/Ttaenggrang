@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -38,6 +39,7 @@ public class WeeklyFinancialSummaryService {
     private final InvestmentService investmentService;
     private final TeacherService teacherService;
     private final StudentService studentService;
+    private final FastApiService fastApiService;
 
     /**
      * 모든 교사의 학급 학생들의 주간 금융 리포트 생성
@@ -100,12 +102,25 @@ public class WeeklyFinancialSummaryService {
 
         WeeklyFinancialSummary reportEntity;
 
+        // AI 피드백
+        String feedback = fastApiService.predictCluster(
+                totalIncome,
+                totalExpenses,
+                investmentReturn,
+                investmentReturn,
+                taxAmount,
+                fineAmount,
+                incentiveAmount
+        ).block();
+
         if (existingReport.isPresent()) {
             reportEntity = existingReport.get();
             weeklyFinancialSummaryMapper.updateFromDto(reportDTO, reportEntity);  // 업데이트 수행
         } else {
             reportEntity = weeklyFinancialSummaryMapper.toEntity(reportDTO); // 새 엔티티 생성
         }
+
+        reportEntity.setAiFeedback(feedback);
 
         // 저장
         WeeklyFinancialSummary savedReport = weeklyFinancialSummaryRepository.save(reportEntity);

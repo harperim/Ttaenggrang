@@ -180,7 +180,7 @@ public class SavingsSubscriptionService {
      * 2. savingsPayout 생성
      */
     @Transactional
-    public SavingsPayoutDTO processMaturity(Long subscriptionId) {
+    public void processMaturity(Long subscriptionId) {
         // 1. 적금 구독 정보 가져오기
         SavingsSubscription subscription = savingsSubscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new IllegalArgumentException("적금 가입 정보를 찾을 수 없습니다."));
@@ -193,26 +193,6 @@ public class SavingsSubscriptionService {
         // 3. 적금의 상태를 MATURED로 변경
         subscription.setStatus(SavingsSubscription.SavingsSubscriptionStatus.MATURED);
         savingsSubscriptionRepository.save(subscription);
-
-        // 4. 이자 계산 (이자율 적용)
-        int principal = subscription.getDepositAmount();
-        float interestRate = subscription.getSavingsProduct().getInterestRate();
-        int interestAmount = Math.round(principal * interestRate);
-
-        // 5. 지급 총액 계산
-        int payoutAmount = principal + interestAmount;
-
-        // 6. 지급 내역 생성
-        SavingsPayoutDTO savingsPayout = SavingsPayoutDTO.builder()
-                .savingsSubscriptionId(subscription.getId())
-                .payoutAmount(payoutAmount)
-                .interestAmount(interestAmount)
-                .payoutDate(LocalDate.now()) // 오늘 날짜 지급
-                .payoutType(SavingsPayout.SavingsPayoutType.MATURITY)
-                .build();
-
-        // 7. 지급 내역 저장
-        return savingsPayoutService.createPayout(savingsPayout);
     }
 
     public String getSavingsProductName(Long savingsSubscriptionId) {
