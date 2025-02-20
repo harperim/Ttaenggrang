@@ -7,6 +7,7 @@ import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsDeposit.SavingsDepos
 import com.ladysparks.ttaenggrang.domain.bank.entity.SavingsSubscription;
 import com.ladysparks.ttaenggrang.domain.bank.mapper.SavingsDepositMapper;
 import com.ladysparks.ttaenggrang.domain.bank.repository.SavingsDepositRepository;
+import com.ladysparks.ttaenggrang.domain.bank.repository.SavingsSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class SavingsDepositService {
 
     private final SavingsDepositRepository savingsDepositRepository;
+    private final SavingsSubscriptionRepository savingsSubscriptionRepository;
     private final SavingsDepositMapper savingsDepositMapper;
     private final BankAccountService bankAccountService;
     private final BankTransactionService bankTransactionService;
@@ -34,45 +36,51 @@ public class SavingsDepositService {
     }
 
     /**
-     * 적금 납입 (자동 납입)
-     * 해당 날짜에 자동으로 호출
+     * 적금 납입 처리 (자동 납입)
      */
     @Transactional
     public SavingsDepositDTO updateSavingsDeposit(SavingsSubscription savingsSubscription, LocalDate depositDate, Long bankAccountId) {
-        // 적금 가입 ID로 적금 가입 정보 불러오기
-//        SavingsSubscription savingsSubscription = savingsSubscriptionService.findSavingsSubscriptionById(savingsSubscriptionId); // TODO: DTO로 수정
         Long savingsSubscriptionId = savingsSubscription.getId();
 
-        // 적금 납입 내역 불러와서 depositDate에 해당하는 적금 납입 내역(List<SavingsDepositDTO>) 가져오기
+        // 1. 해당 날짜에 납입해야 하는 적금 내역 조회
         SavingsDepositDTO savingsDepositDTO = findSavingsDeposits(savingsSubscriptionId).stream()
-                .filter(dto -> dto.getScheduledDate() == depositDate)
+                .filter(dto -> dto.getScheduledDate().equals(depositDate))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 날짜에 납입해야 하는 내역이 없습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("❌ 해당 날짜에 납입해야 하는 내역이 없습니다."));
 
-        // 그 날짜의 납입해야 하는 금액 가져옴
+        // 2. 납입 금액 가져오기
         int amount = savingsDepositDTO.getAmount();
 
-        // 적금 납입 처리
+        // 3. 은행 계좌 조회 및 잔액 확인
         BankAccountDTO bankAccountDTO = bankAccountService.findBankAccount(bankAccountId);
         if (bankAccountDTO.getBalance() < amount) {
-            throw new IllegalArgumentException("현재 은행 계좌 잔액이 부족합니다. (현재 잔액: " + bankAccountDTO.getBalance() + ")");
+            throw new IllegalArgumentException("⚠️ 현재 은행 계좌 잔액이 부족합니다. (현재 잔액: " + bankAccountDTO.getBalance() + ")");
         }
 
+        // 4. 은행 거래 내역 추가 (적금 납입)
         BankTransactionDTO bankTransactionDTO = BankTransactionDTO.builder()
                 .bankAccountId(bankAccountDTO.getId())
                 .type(BankTransactionType.SAVINGS_DEPOSIT)
                 .amount(amount)
                 .description("[적금 납입] 적금 상품: " + savingsSubscription.getSavingsProduct().getName())
                 .build();
+
         bankTransactionService.addBankTransaction(bankTransactionDTO);
 
+        // 6. 적금 잔액 업데이트 (이자율 적용)
+        float interestRate = savingsSubscription.getSavingsProduct().getInterestRate();
+        int newBalance = savingsSubscription.getDepositAmount() + amount;
+        newBalance += (int) Math.round(newBalance * (interestRate * 0.01)); // 이자율 적용 (복리 계산)
+
+        savingsSubscription.setDepositAmount(newBalance);
+        savingsSubscriptionRepository.save(savingsSubscription);
+
+        // 5. 적금 납입 상태 업데이트
         SavingsDeposit savingsDeposit = savingsDepositMapper.toEntity(savingsDepositDTO);
-        savingsDeposit.updateAmount(amount);
+        savingsDeposit.updateBalance(newBalance);
         savingsDeposit.updateStatus(SavingsDepositStatus.COMPLETED);
 
         SavingsDeposit savedSavingsDeposit = savingsDepositRepository.save(savingsDeposit);
-
-        // TODO: SavingsSubscription의 balance 업데이트
 
         return savingsDepositMapper.toDto(savedSavingsDeposit);
     }

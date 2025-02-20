@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface SavingsSubscriptionRepository extends JpaRepository<SavingsSubscription, Long> {
@@ -22,5 +23,9 @@ public interface SavingsSubscriptionRepository extends JpaRepository<SavingsSubs
 
     @Query("SELECT s.savingsProduct.name FROM SavingsSubscription s WHERE s.id = :savingsSubscriptionId")
     String findSavingsProductNameBySubscriptionId(@Param("savingsSubscriptionId") Long savingsSubscriptionId);
+
+    List<SavingsSubscription> findAllByEndDateAndStatus(LocalDate now, SavingsSubscription.SavingsSubscriptionStatus savingsSubscriptionStatus);
+
+    List<SavingsSubscription> findAllByStatus(SavingsSubscription.SavingsSubscriptionStatus savingsSubscriptionStatus);
 
 }

@@ -15,4 +15,6 @@ scheduling:
     open: "0 0 9 * * MON-FRI"  # 운영 환경에서는 09:00 개장
     close: "0 0 17 * * MON-FRI" # 운영 환경에서는 17:00 폐장
   weekly-report:
-    generate: "0 0 14 ? * FRI"
+    generate: "0 0 17 ? * FRI"
+  savings:
+    auto-deposit: "0 0 0 * * *"  # 매일 자정(00:00)에 실행

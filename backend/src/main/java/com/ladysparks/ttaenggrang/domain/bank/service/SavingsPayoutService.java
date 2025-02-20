@@ -48,6 +48,7 @@ public class SavingsPayoutService {
 
         // 3. 지급 상태 변경
         savingsPayout.setPaid(true);
+        savingsPayout.setPayoutType(SavingsPayout.SavingsPayoutType.MATURITY);
         SavingsPayout savedSavingsPayout = savingsPayoutRepository.save(savingsPayout);
 
         // 4. 지급 금액 입금
