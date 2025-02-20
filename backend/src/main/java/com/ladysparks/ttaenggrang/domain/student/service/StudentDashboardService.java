@@ -91,7 +91,7 @@ public class StudentDashboardService {
         int bankAccountBalance = bankAccountService.findBankAccount(studentId).getBalance();
 
         // 총 자산 계산
-        int totalAssets = bankAccountBalance + totalSavings + totalInvestmentProfit;
+        int totalAssets = totalSavings + totalInvestmentProfit;
 
         return StudentAssetDTO.builder()
                 .studentId(studentId)
