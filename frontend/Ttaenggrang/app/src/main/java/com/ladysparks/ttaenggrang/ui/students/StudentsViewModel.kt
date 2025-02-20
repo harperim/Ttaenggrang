@@ -56,6 +56,9 @@ class StudentsViewModel : ViewModel(){
     val uploadedFileName = MutableLiveData<String>() // 파일명을 저장할 LiveData
     val uploadedFileRequestBody = MutableLiveData<RequestBody?>()
 
+    private val _multiResult = MutableLiveData<Boolean>()
+    val multiResult: LiveData<Boolean> get() = _multiResult
+
     fun sendStudentDataToServer(context: Context) {
         val count = studentCount.value ?: 0
         val prefix = studentPrefix.value.orEmpty()
@@ -77,6 +80,7 @@ class StudentsViewModel : ViewModel(){
                 )
             }.onSuccess {
                 Log.d("StudentViewModel", "학생 정보 및 파일 전송 성공")
+                _multiResult.value = true
             }.onFailure {
                 _errorMessage.value = "학생 정보 및 파일 전송 실패: ${it.message}"
                 Log.e("TAG", "sendStudentDataToServer: ${it.message}")

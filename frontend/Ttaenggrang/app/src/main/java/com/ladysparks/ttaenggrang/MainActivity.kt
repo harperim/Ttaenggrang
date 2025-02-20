@@ -205,7 +205,6 @@ class MainActivity : BaseActivity() {
         }
     }
 
-
     // 좌측 Navigation(== Category 설정)
     private fun initCategory() {
         // 1. 카테고리 등록

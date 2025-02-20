@@ -61,7 +61,7 @@ class WeeklyReportDialog(
 
         // AI 피드백
         binding.textAiFeedback.text = weekReportAiFeedback
-        binding.imgFox.load(File("/path/to/image.jpg"))
+        binding.imgFox.load(File("/storage/emulated/0/Download/logo4.jpg"))
 
         // button Event
         binding.btnStudentRegistration.setOnClickListener {

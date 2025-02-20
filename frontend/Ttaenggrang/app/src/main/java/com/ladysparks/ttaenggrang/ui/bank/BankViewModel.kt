@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.ladysparks.ttaenggrang.data.model.dto.BankHistoryDto
 import com.ladysparks.ttaenggrang.data.model.dto.BankItemDto
 import com.ladysparks.ttaenggrang.data.model.dto.BankManageDto
+import com.ladysparks.ttaenggrang.data.model.dto.ProductItemDto
 import com.ladysparks.ttaenggrang.data.model.dto.SavingSubscriptionDto
 import com.ladysparks.ttaenggrang.data.model.request.SavingSubscriptionsRequest
 import com.ladysparks.ttaenggrang.data.model.response.BankAccountCountResponse
@@ -35,8 +36,8 @@ class BankViewModel : ViewModel() {
     val bankHistory: LiveData<BankHistoryDto?> get() = _bankHistory
 
     // 은행 상품 리스트
-    private val _bankItemList = MutableLiveData<List<BankItemDto?>?>()
-    val bankItemList: MutableLiveData<List<BankItemDto?>?> get() = _bankItemList
+    private val _bankItemList = MutableLiveData<List<ProductItemDto?>?>()
+    val bankItemList: MutableLiveData<List<ProductItemDto?>?> get() = _bankItemList
 
     // 메인화면에서 사용할 내 계좌 리스트
     private val _bankAccountList = MutableLiveData<List<Pair<BankManageDto, BankHistoryDto?>>>()
@@ -183,7 +184,7 @@ class BankViewModel : ViewModel() {
     fun requestPayout(savingsSubscriptionId: Int) {
         val existingPayout = _payoutResult.value
         if (existingPayout?.isPaid == true) {
-            _errorMessage.postValue("이미 지급된 적금입니다.")
+            //_errorMessage.postValue("이미 지급된 적금입니다.")
             return
         }
 
@@ -201,34 +202,21 @@ class BankViewModel : ViewModel() {
     }
 
     // 적금 가입
-//    fun subscribeToSavings(savingsProductId: Int, depositDayOfWeek: String) {
-//        viewModelScope.launch {
-//            runCatching {
-//                val request = SavingSubscriptionDto(depositDayOfWeek, savingsProductId)
-//                bankService.subscribeSavings(request)
-//            }.onSuccess { response ->
-//                _subscriptionResult.postValue(response.data)
-//                println("✅ 적금 가입 성공: $response")
-//            }.onFailure { error ->
-//                _errorMessage.postValue("적금 가입 실패: ${error.message}")
-//                println("❌ 적금 가입 실패: ${error.message}")
-//            }
-//        }
-//    }
-    fun subscribeToSavings(name: String) {
+    fun subscribeToSavings(savingsProductId: Int, depositDayOfWeek: String) {
         viewModelScope.launch {
             runCatching {
-                val requestBody = SavingSubscriptionsRequest(name) // ✅ 상품명만 전송
-                bankService.subscribeToSavings(requestBody)
+                val request = SavingSubscriptionDto(depositDayOfWeek, savingsProductId)
+                bankService.subscribeSavings(request)
             }.onSuccess { response ->
                 _subscriptionResult.postValue(response.data)
-                Log.d("BankViewModel", "적금 가입 성공: ${response.data}")
+                println("✅ 적금 가입 성공: $response")
             }.onFailure { error ->
                 _errorMessage.postValue("적금 가입 실패: ${error.message}")
-                Log.e("BankViewModel", "적금 가입 실패", error)
+                println("❌ 적금 가입 실패: ${error.message}")
             }
         }
     }
+
 
     // ✅ "ACTIVE" 상태의 depositAmount 합산
     fun calculateActiveDepositTotal() {
@@ -238,6 +226,64 @@ class BankViewModel : ViewModel() {
 
         _activeDepositTotal.postValue(activeTotal) // 🔹 LiveData 업데이트
     }
+
+    // 은행 차트 데이터
+//    fun getTopSavingsForChart(bankAccounts: List<BankManageDto>): List<Pair<Float, String>> {
+//        // ✅ 총 저축 금액 계산 (모든 계좌의 총 납입액 합)
+//        val totalSavings = bankAccounts.sumOf { it.depositAmount }
+//
+//        if (totalSavings == 0) return emptyList() // ✅ 데이터 없으면 빈 리스트 반환
+//
+//        // ✅ 계좌별 총 납입액을 내림차순 정렬
+//        val sortedAccounts = bankAccounts.sortedByDescending { it.depositAmount }
+//
+//        // ✅ 상위 2개 + 나머지를 '기타'로 그룹화
+//        val topAccounts = sortedAccounts.take(2)
+//        val otherTotal = sortedAccounts.drop(2).sumOf { it.depositAmount }
+//
+//        // ✅ PieChart에 표시할 데이터 변환 (Float 값으로 변환)
+//        val chartData = topAccounts.map { account ->
+//            Pair(account.depositAmount.toFloat(), "상품 ${account.savingsProductId}")
+//        }.toMutableList()
+//
+//        if (otherTotal > 0) {
+//            chartData.add(Pair(otherTotal.toFloat(), "기타")) // ✅ 나머지 계좌 합산
+//        }
+//
+//        return chartData
+//    }
+
+    fun getTopSavingsForChart(bankManageList: List<BankManageDto>): List<Pair<Float, String>> {
+        if (bankManageList.isEmpty()) {
+            Log.e("PieChartDebug", "🚨 계좌 리스트가 비어 있음!")
+            return emptyList()
+        }
+
+        // ✅ 총 저축 금액 계산
+        val totalDepositAmount = bankManageList.sumOf { it.depositAmount}
+        Log.d("PieChartDebug", "✅ 총 저축 금액: $totalDepositAmount")
+
+        // ✅ 계좌별 총 납입액 내림차순 정렬 후 상위 2개 선택
+        val sortedAccounts = bankManageList.sortedByDescending { it.depositAmount }
+        val topAccounts = sortedAccounts.take(2)
+        Log.d("PieChartDebug", "✅ 상위 2개 계좌: $topAccounts")
+
+        // ✅ 기타 계좌(나머지 합산) 계산
+        val otherAmount = totalDepositAmount - topAccounts.sumOf { it.depositAmount}
+        Log.d("PieChartDebug", "✅ 기타 계좌 금액: $otherAmount")
+
+        // ✅ 데이터 변환하여 반환 (상위 2개 + 기타 계좌)
+        val chartData = topAccounts.map { Pair(it.depositAmount.toFloat(), it.savingsProductId.toString()) }.toMutableList()
+        if (otherAmount > 0) {
+            chartData.add(Pair(otherAmount.toFloat(), "기타"))
+            Log.d("PieChartDebug", "✅ 기타 계좌 추가됨")
+        }
+
+        Log.d("PieChartDebug", "✅ 최종 변환된 차트 데이터: $chartData")
+        return chartData
+    }
+
+
 
 
 

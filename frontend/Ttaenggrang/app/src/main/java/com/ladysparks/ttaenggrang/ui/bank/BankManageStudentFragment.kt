@@ -27,7 +27,7 @@ class BankManageStudentFragment : BaseFragment<FragmentBankManageStudentBinding>
 
     private val viewModel: BankViewModel by viewModels()
     private lateinit var tableAdapter: BaseTableAdapter
-    private val columnWeights = listOf(0.5f, 1f, 0.7f, 0.7f, 0.7f, 1f, 1.2f,1.2f,1.2f)
+    private val columnWeights = listOf(0.5f, 1f, 0.7f, 0.9f, 0.9f, 0.7f, 0.7f, 1f, 1f)
     private var savingsList: List<Pair<BankManageDto, BankHistoryDto?>> = emptyList()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,12 +52,12 @@ class BankManageStudentFragment : BaseFragment<FragmentBankManageStudentBinding>
             header = listOf(
                 "No.",
                 "상품명",
-                "상품 유형",
-                "가입 기간",
-                "이자율",
-                "납입금액",
+                "상품 상태",
                 "가입일",
                 "만기일",
+                "가입 기간",
+                "이자율",
+                "총 납입금액",
                 "예상 지급액"
             ), // ✅ 헤더 컬럼 설정
             data = emptyList(), // ✅ 초기 데이터 없음
@@ -66,7 +66,6 @@ class BankManageStudentFragment : BaseFragment<FragmentBankManageStudentBinding>
                 val selectedItem = savingsList[rowIndex].first
                 val savingsId = selectedItem.savingsProductId
                 val status = selectedItem.status // ✅ 상품 상태 가져오기
-
                 showBankHistoryDialog(savingsId, status) // ✅ 상태값 전달
             }
         )
@@ -100,14 +99,14 @@ class BankManageStudentFragment : BaseFragment<FragmentBankManageStudentBinding>
                 dialogBinding.textPayoutAmount2.text = "예상 지급액:   ${NumberUtil.formatWithComma(it.payoutAmount)}"
 
 
-              //  if (status == "MATURITY") {
+                if (status == "MATURED") {
                     dialogBinding.btnYes.visibility = View.VISIBLE
                     dialogBinding.btnYes.setOnClickListener {
                         viewModel.requestPayout(savingsSubscriptionId) // 만기 지급 요청 실행
                         showAlertDialog()
                         dialog.dismiss() // ✅ 다이얼로그 닫기
                     }
-               // }
+                }
 
                 // ✅ 테이블 데이터 변환
                 val tableData = it.depositHistory.map { history ->
@@ -134,6 +133,8 @@ class BankManageStudentFragment : BaseFragment<FragmentBankManageStudentBinding>
 
     // 만기 적금 축하 다이얼로그
     private fun showAlertDialog() {
+        //viewModel.fetchBankHistory(savingsSubscriptionId)
+
         val dialogBinding = DialogSavingPayoutBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext())
         dialog.setContentView(dialogBinding.root)
@@ -144,6 +145,12 @@ class BankManageStudentFragment : BaseFragment<FragmentBankManageStudentBinding>
         )
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
+        viewModel.bankHistory.observe(viewLifecycleOwner) { bankHistory ->
+            bankHistory?.let {
+                dialogBinding.textDialogContent2.text = NumberUtil.formatWithComma(it.payoutAmount)
+
+            }
+        }
         dialogBinding.btnDialogConfirm.setOnClickListener { dialog.dismiss() }
 
         dialog.show()
@@ -185,17 +192,22 @@ class BankManageStudentFragment : BaseFragment<FragmentBankManageStudentBinding>
         val tableData = savingsList.mapIndexed { index, item ->
             val bankManage = item.first
             val bankHistory = item.second
+            val statusText = when (bankManage.status) {
+                "MATURED" -> "만기"
+                "ACTIVE" -> "진행 중" // ✅ 또는 "적립 중", "운용 중"으로 변경 가능
+                else -> "알 수 없음" // ✅ 예외 처리
+            }
 
             BaseTableRowModel(
                 listOf(
                     (index + 1).toString(),  // No.
                     bankHistory?.savingsName ?: "알 수 없음", // ✅ 상품명 (savingsName)
-                    bankManage.status, // 상품 유형 (status 활용)
+                    statusText, // 상품 유형 (status 활용)
+                    bankManage.startDate, // 가입일
+                    bankManage.endDate, // 만기일
                     "${bankManage.durationWeeks}주", // 가입 기간
                     "${bankManage.interestRate.toInt()}%", // 이자율
                     NumberUtil.formatWithComma(bankManage.depositAmount), // 납입금액
-                    bankManage.startDate, // 가입일
-                    bankManage.endDate, // 만기일
                     NumberUtil.formatWithComma(bankManage.payoutAmount) // 예상 지급액
                 )
             )
