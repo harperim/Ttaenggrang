@@ -108,7 +108,7 @@ public class ItemService {
     // 특정 교사의 학급 내 판매 중인 상품 리스트 조회
     public List<ItemDTO> findActiveItemListByTeacher() {
         Long teacherId = teacherService.getCurrentTeacherId();
-        return itemRepository.findActiveItemsByTeacherId(teacherId)
+        return itemRepository.findBySellerTeacher_Id(teacherId)
                 .stream()
                 .map(itemMapper::toDto)
                 .collect(Collectors.toList());
