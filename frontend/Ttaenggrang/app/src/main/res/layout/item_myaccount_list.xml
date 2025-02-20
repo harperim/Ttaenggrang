@@ -3,19 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/spacing_10"
     android:layout_marginEnd="@dimen/spacing_10"
-    >
+    android:layout_marginBottom="@dimen/spacing_10"
+    android:paddingHorizontal="@dimen/spacing_10">
 
     <ImageView
         android:id="@+id/imgAccount"
         android:layout_width="45dp"
         android:layout_height="45dp"
+
         android:src="@drawable/ic_bank2"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/textAccountName"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,10 +23,12 @@
         style="@style/body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_20"
         android:text="미지미지 적금"
+        android:layout_marginStart="@dimen/spacing_10"
         app:layout_constraintBottom_toBottomOf="@id/imgAccount"
         app:layout_constraintEnd_toStartOf="@+id/textAccountMoney"
-        app:layout_constraintStart_toEndOf="@+id/imgAccount"
+        app:layout_constraintStart_toEndOf="@id/imgAccount"
         app:layout_constraintTop_toTopOf="@id/imgAccount" />
 
     <TextView

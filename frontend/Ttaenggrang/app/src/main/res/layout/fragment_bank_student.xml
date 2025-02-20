@@ -138,14 +138,14 @@
             style="@style/heading3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="계좌별 저축 이자 비율 TOP3"
+            android:text="내 저축 비율"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/chartBank"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/spacing_10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -301,6 +301,8 @@
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/spacing_20"
             app:spanCount="3"
+            android:paddingStart="@dimen/spacing_20"
+
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
