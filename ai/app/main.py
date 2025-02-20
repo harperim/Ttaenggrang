@@ -17,14 +17,18 @@ app.add_middleware(
 )
 
 # 🔹 모델 파일 로드 경로 (절대 경로 수정)
-MODEL_DIR = os.path.join(os.path.dirname(__file__), "model/")
+MODEL_DIR = os.path.join(os.path.dirname(__file__), "../model/")
 
 # 🔹 모델 로드 (예외 처리 추가)
 try:
     print(f"📌 모델 로드 경로: {MODEL_DIR}")
+
+    # 🔹 지도 학습 모델 사용
+    rf_model = joblib.load(os.path.join(MODEL_DIR, "rf_model.pkl"))  # ✅ 지도 학습 모델 사용
+    cluster_mapping = joblib.load(os.path.join(MODEL_DIR, "cluster_mapping.pkl"))
     scaler = joblib.load(os.path.join(MODEL_DIR, "scaler.pkl"))
-    model = joblib.load(os.path.join(MODEL_DIR, "model.pkl"))
-    label_encoder = joblib.load(os.path.join(MODEL_DIR, "label_encoder.pkl"))
+    label_encoder = joblib.load(os.path.join(MODEL_DIR, "label_encoder.pkl"))  # ✅ 라벨 인코더 추가
+
     print("✅ 모델 로드 성공!")
 except Exception as e:
     print(f"🚨 모델 파일을 로드하는 중 오류 발생: {e}")
@@ -32,44 +36,46 @@ except Exception as e:
 
 # 🔹 입력 데이터 구조 정의
 class StudentData(BaseModel):
+    student_id: int
     total_income: int
     total_expense: int
+    total_savings: int
     total_investment: int
-    investment_return: int
-    tax_paid: int
-    fine_paid: int
-    incentive: int
 
-# 🔹 학생 금융 데이터 예측 API
+# 🔹 학생 금융 데이터 예측 API (지도 학습 적용)
 @app.post("/predict-cluster")
 def predict_cluster(data: StudentData):
     try:
-        print(f"📌 요청 데이터: {data.dict()}")
+        print(f"📌 요청 데이터 (학생 ID {data.student_id}): {data.dict()}")
 
-        # 데이터 전처리
-        new_data = np.array([
-            (data.total_income - data.total_expense - data.total_investment) / data.total_income,  # 저축률
-            data.total_expense / data.total_income,  # 소비 비율
-            data.total_investment / data.total_income,  # 투자 비율
-            data.investment_return / (data.total_investment + 1),  # 투자 수익률
-            data.total_income - data.total_expense,  # 순자산 변화
-            data.total_investment / data.total_income,  # 수입 대비 투자 비율
-            data.tax_paid / data.total_income,  # 세금 비율
-            data.fine_paid / data.total_income,  # 벌금 비율
-            data.investment_return / (data.total_investment + 1),  # 투자 손익 비율
-            (data.total_income - data.total_expense) / (data.total_expense + 1)  # 소비 대비 저축 비율
-        ]).reshape(1, -1)
+        if data.total_income == 0:
+            raise HTTPException(status_code=400, detail="총 수입(total_income)은 0보다 커야 합니다.")
 
-        print(f"✅ 전처리된 데이터: {new_data}")
+        # 🔹 비율 계산
+        savings_ratio = data.total_savings / data.total_income
+        spending_ratio = data.total_expense / data.total_income
+        investment_ratio = data.total_investment / data.total_income
 
-        # 데이터 변환 및 예측
+        print(f"✅ 계산된 비율: 저축률={savings_ratio:.2f}, 소비 비율={spending_ratio:.2f}, 투자 비율={investment_ratio:.2f}")
+
+        new_data = np.array([[savings_ratio, spending_ratio, investment_ratio]])
         new_data_scaled = scaler.transform(new_data)
-        predicted_cluster_num = model.predict(new_data_scaled)[0]
-        predicted_cluster = label_encoder.inverse_transform([predicted_cluster_num])[0]
 
-        print(f"✅ 예측 결과: {predicted_cluster}")
-        return {"predicted_cluster": predicted_cluster}
+        # 🔹 지도 학습 모델(Random Forest)로 예측
+        predicted_cluster_num = rf_model.predict(new_data_scaled)[0]
 
+        # 🔹 라벨 인코더를 사용해 클러스터 이름 변환
+        predicted_cluster_label = cluster_mapping.get(predicted_cluster_num, "알 수 없음")
+
+        print(f"✅ 예측 결과: {predicted_cluster_label}")
+
+        return {
+            "student_id": int(data.student_id),
+            "savings_ratio": round(float(savings_ratio), 2),
+            "spending_ratio": round(float(spending_ratio), 2),
+            "investment_ratio": round(float(investment_ratio), 2),
+            "predicted_cluster": predicted_cluster_label
+        }
     except Exception as e:
         print(f"🚨 예측 중 오류 발생: {e}")
         raise HTTPException(status_code=500, detail=f"🚨 예측 중 오류 발생: {str(e)}")
