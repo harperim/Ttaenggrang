@@ -4,6 +4,7 @@ package com.ladysparks.ttaenggrang.data.remote
 import com.ladysparks.ttaenggrang.data.model.dto.BankHistoryDto
 import com.ladysparks.ttaenggrang.data.model.dto.BankItemDto
 import com.ladysparks.ttaenggrang.data.model.dto.BankManageDto
+import com.ladysparks.ttaenggrang.data.model.dto.ProductItemDto
 import com.ladysparks.ttaenggrang.data.model.dto.SavingSubscriptionDto
 import com.ladysparks.ttaenggrang.data.model.request.SavingSubscriptionsRequest
 import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
@@ -39,13 +40,13 @@ interface BankService {
 
     // 은행 상품 전체 조회
     @GET("savings-products")
-    suspend fun getBankItemAll(): Response<ApiResponse<List<BankItemDto>>>
+    suspend fun getBankItemAll(): Response<ApiResponse<List<ProductItemDto>>>
 
     // 은행 상품 가입
-//    @POST("savings-subscriptions")
-//    suspend fun subscribeSavings(@Body request: SavingSubscriptionDto): ApiResponse<SavingSubscriptionDto>
     @POST("savings-subscriptions")
-    suspend fun subscribeToSavings(@Body request: SavingSubscriptionsRequest): ApiResponse<SavingSubscriptionDto>
+    suspend fun subscribeSavings(@Body request: SavingSubscriptionDto): ApiResponse<SavingSubscriptionDto>
+//    @POST("savings-subscriptions")
+//    suspend fun subscribeToSavings(@Body request: SavingSubscriptionsRequest): ApiResponse<SavingSubscriptionDto>
 
 
 

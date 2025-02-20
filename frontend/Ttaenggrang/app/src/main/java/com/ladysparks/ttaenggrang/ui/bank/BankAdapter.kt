@@ -7,11 +7,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ladysparks.ttaenggrang.R
 import com.ladysparks.ttaenggrang.data.model.dto.BankItemDto
+import com.ladysparks.ttaenggrang.data.model.dto.ProductItemDto
 import com.ladysparks.ttaenggrang.util.NumberUtil
 
 class BankAdapter (
-    private var bankItemList: List<BankItemDto>,
-    private val onItemClick: (BankItemDto) -> Unit // 클릭 이벤트
+    private var bankItemList: List<ProductItemDto>,
+    private val onItemClick: (ProductItemDto) -> Unit // 클릭 이벤트
 ): RecyclerView.Adapter<BankAdapter.BankItemViewHolder>() {
 
     inner class BankItemViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
@@ -20,7 +21,7 @@ class BankAdapter (
         private val interestRate = itemView.findViewById<TextView>(R.id.textinterestRate)
         private val amount = itemView.findViewById<TextView>(R.id.textAmount)
 
-        fun bind(item: BankItemDto) {
+        fun bind(item: ProductItemDto) {
             itemName.text = item.name
             duration.text = "${item.durationWeeks} 주"
             interestRate.text = "${item.interestRate}%"
@@ -43,8 +44,8 @@ class BankAdapter (
 
     override fun getItemCount(): Int  = bankItemList.size
 
-    fun updateData(newList: List<BankItemDto?>) {
-        bankItemList = newList as List<BankItemDto>
+    fun updateData(newList: List<ProductItemDto?>) {
+        bankItemList = newList as List<ProductItemDto>
         notifyDataSetChanged()
     }
 

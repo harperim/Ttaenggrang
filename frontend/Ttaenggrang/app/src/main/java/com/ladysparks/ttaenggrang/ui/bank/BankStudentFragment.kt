@@ -13,6 +13,7 @@ import com.ladysparks.ttaenggrang.base.BaseFragment
 import com.ladysparks.ttaenggrang.data.model.dto.BankHistoryDto
 import com.ladysparks.ttaenggrang.data.model.dto.BankItemDto
 import com.ladysparks.ttaenggrang.data.model.dto.BankManageDto
+import com.ladysparks.ttaenggrang.data.model.dto.ProductItemDto
 import com.ladysparks.ttaenggrang.databinding.DialogAccountDetailBinding
 import com.ladysparks.ttaenggrang.databinding.DialogBankProductDetailBinding
 import com.ladysparks.ttaenggrang.databinding.FragmentBankStudentBinding
@@ -83,7 +84,7 @@ class BankStudentFragment : BaseFragment<FragmentBankStudentBinding>(
     }
 
     // 은행 상품 상세 다이얼로그
-    private fun showItemDialog(selectedItem: BankItemDto) {
+    private fun showItemDialog(selectedItem: ProductItemDto) {
         viewModel.fetchBankItems()
 
         val dialogBinding = DialogBankProductDetailBinding.inflate(layoutInflater)
@@ -104,10 +105,10 @@ class BankStudentFragment : BaseFragment<FragmentBankStudentBinding>(
 
         dialogBinding.btnYes.setOnClickListener {
 //            val selectedProductId = selectedItem.  // 선택한 상품 ID
-//            val selectedDay = "MONDAY"  // 예제: "월요일" 가입
-            val selectedName = selectedItem.name
+            val selectedDay = "MONDAY"  // 예제: "월요일" 가입
+            val selectedId = selectedItem.id
 
-            viewModel.subscribeToSavings(selectedName)
+            viewModel.subscribeToSavings( selectedId, selectedDay,)
 
             dialog.dismiss()
         }
