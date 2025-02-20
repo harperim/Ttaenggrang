@@ -55,7 +55,7 @@ class WeeklyReportDialog(
 
         // Progress Bar
         val progressValue = SharedPreferencesUtil.getValue(SharedPreferencesUtil.MY_ACHIEVEMENT_RATE, 0)
-        binding.progressbar.progress = progressValue
+        binding.progressbar.progress = progressValue.coerceIn(0, 100)
         binding.textProgressbar.text = "${progressValue} %"
         binding.textRank.text = "${SharedPreferencesUtil.getValue(SharedPreferencesUtil.MY_RANK, 1)} 위"
 

@@ -1,5 +1,6 @@
 package com.ladysparks.ttaenggrang.base
 
+import android.util.Log
 import com.ladysparks.ttaenggrang.data.model.request.TeacherSignInRequest
 import com.ladysparks.ttaenggrang.data.model.request.TeacherSignUpRequest
 import com.ladysparks.ttaenggrang.data.model.response.ApiResponse
@@ -29,6 +30,7 @@ class AddAuthInterceptor : Interceptor {
         val builder = request.newBuilder()
 
         val token = SharedPreferencesUtil.getValue(SharedPreferencesUtil.JWT_TOKEN_KEY, "")
+        Log.d("TAG", "intercept: Token Check ${token}")
         if (token.isNotEmpty()) {
             builder.addHeader("Authorization", "Bearer $token")  // ✅ JWT 토큰 추가
         }

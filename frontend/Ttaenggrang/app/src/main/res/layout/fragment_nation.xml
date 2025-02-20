@@ -35,10 +35,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:background="@color/backgroundGray"
                 android:id="@+id/imgClassPhoto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
