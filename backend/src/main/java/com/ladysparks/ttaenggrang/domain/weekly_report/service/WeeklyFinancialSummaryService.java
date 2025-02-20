@@ -150,8 +150,11 @@ public class WeeklyFinancialSummaryService {
         WeeklyFinancialSummaryDTO lastWeekReport = getRecentWeeklyReport(studentId, 1);
         WeeklyFinancialSummaryDTO twoWeeksAgoReport = getRecentWeeklyReport(studentId, 2);
 
-        int lastWeekInvestmentValue = investmentService.getInvestmentValueByWeeksAgo(studentId, 1);
-        int twoWeeksAgoInvestmentValue = investmentService.getInvestmentValueByWeeksAgo(studentId, 2);
+//        int lastWeekInvestmentValue = investmentService.getInvestmentValueByWeeksAgo(studentId, 1);
+//        int twoWeeksAgoInvestmentValue = investmentService.getInvestmentValueByWeeksAgo(studentId, 2);
+
+        int lastWeekInvestmentValue = lastWeekReport.getInvestmentReturn();
+        int twoWeeksAgoInvestmentValue = twoWeeksAgoReport.getInvestmentReturn();
 
         return FinancialGrowthDTO.builder()
                 .savingsGrowthRate(calculateGrowthRate(twoWeeksAgoReport.getSavingsAmount(), lastWeekReport.getSavingsAmount()))
@@ -167,8 +170,11 @@ public class WeeklyFinancialSummaryService {
         WeeklyFinancialSummaryDTO thisWeekReport = getRecentWeeklyReport(studentId, 0);
         WeeklyFinancialSummaryDTO lastWeekReport = getRecentWeeklyReport(studentId, 1);
 
-        int thisWeekInvestmentValue = investmentService.getInvestmentValueByWeeksAgo(studentId, 0);
-        int lastWeekInvestmentValue = investmentService.getInvestmentValueByWeeksAgo(studentId, 1);
+//        int thisWeekInvestmentValue = investmentService.getInvestmentValueByWeeksAgo(studentId, 0);
+//        int lastWeekInvestmentValue = investmentService.getInvestmentValueByWeeksAgo(studentId, 1);
+
+        int thisWeekInvestmentValue = thisWeekReport.getInvestmentReturn();
+        int lastWeekInvestmentValue = lastWeekReport.getInvestmentReturn();
 
         return FinancialGrowthDTO.builder()
                 .savingsGrowthRate(calculateGrowthRate(lastWeekReport.getSavingsAmount(), thisWeekReport.getSavingsAmount()))
