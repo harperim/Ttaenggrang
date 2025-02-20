@@ -101,11 +101,11 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
             ), // ✅ 헤더 컬럼 설정
             data = emptyList(), // ✅ 초기 데이터 없음
             onRowClickListener = { rowIndex, rowData ->
-                Toast.makeText(
-                    requireContext(),
-                    "클릭한 행: ${rowData.joinToString()}",
-                    Toast.LENGTH_SHORT
-                ).show()
+//                Toast.makeText(
+//                    requireContext(),
+//                    "클릭한 행: ${rowData.joinToString()}",
+//                    Toast.LENGTH_SHORT
+//                ).show()
 
                 val stockName = rowData[1] // 주식명 가져오기
                 val stockId = viewModel.stockList.value?.find { it.name == stockName }?.id

@@ -132,6 +132,7 @@ class BankManageStudentFragment : BaseFragment<FragmentBankManageStudentBinding>
         dialog.show()
     }
 
+    // 만기 적금 축하 다이얼로그
     private fun showAlertDialog() {
         val dialogBinding = DialogSavingPayoutBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext())
