@@ -116,7 +116,22 @@ class BankManageStudentFragment : BaseFragment<FragmentBankManageStudentBinding>
                 }
 
                 // ✅ 테이블 데이터 변환
-                val tableData = it.depositHistory.map { history ->
+//                val tableData = it.depositHistory.map { history ->
+//                    BaseTableRowModel(
+//                        listOf(
+//                            history.transactionDate,  // 날짜
+//                            history.transactionType,  // 거래내역
+//                            "${NumberUtil.formatWithComma(history.amount)}",  // 금액
+//                            "${history.interestRate}%",  // 이자율
+//                            "${NumberUtil.formatWithComma(history.balance)}"  // 잔액
+//                        )
+//                    )
+//                }
+//
+//                // ✅ 테이블 데이터 업데이트
+//                tableAdapter.updateData(tableData)
+//            }
+                val tableData = it.depositHistory.takeIf { it.isNotEmpty() }?.map { history ->
                     BaseTableRowModel(
                         listOf(
                             history.transactionDate,  // 날짜
@@ -126,10 +141,27 @@ class BankManageStudentFragment : BaseFragment<FragmentBankManageStudentBinding>
                             "${NumberUtil.formatWithComma(history.balance)}"  // 잔액
                         )
                     )
-                }
+                } ?: listOf(  // 💡 기본값 설정
+                    BaseTableRowModel(
+                        listOf("N/A", "납입 내역 없음", "-", "-", "-")
+                    )
+                )
 
-                // ✅ 테이블 데이터 업데이트
-                tableAdapter.updateData(tableData)
+                tableAdapter.updateData(tableData) // ✅ 테이블 데이터 업데이트
+            } ?: run {
+                // ✅ bankHistory가 null이면 기본값 설정
+                dialogBinding.textDialogTitle.text = "정보 없음"
+                dialogBinding.textDialogContent.text = "시작일: -"
+                dialogBinding.textDialogContent2.text = "만기일: -"
+                dialogBinding.textPayoutAmount2.text = "예상 지급액: -"
+
+                tableAdapter.updateData(
+                    listOf(
+                        BaseTableRowModel(
+                            listOf("N/A", "납입 내역 없음", "-", "-", "-")
+                        )
+                    )
+                )
             }
         }
         dialogBinding.btnNo.setOnClickListener { dialog.dismiss() }

@@ -30,11 +30,12 @@
     <!--주식 그래프-->
     <com.ladysparks.ttaenggrang.ui.component.LineChartComponent
         android:id="@+id/stockMiniChart"
-        android:layout_width="85dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/spacing_30"
         android:background="@color/foundation_black_50"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/textStockPrice"
         app:layout_constraintBottom_toBottomOf="@id/imageStock"
         app:layout_constraintStart_toEndOf="@id/textStockName"
         app:layout_constraintTop_toTopOf="@id/imageStock">
@@ -46,8 +47,9 @@
         style="@style/heading4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_10"
+        android:layout_marginStart="@dimen/spacing_20"
         android:text="100,000"
+        app:layout_constraintStart_toEndOf="@+id/stockMiniChart"
         app:layout_constraintBottom_toTopOf="@id/textStockChangeRate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/stockMiniChart" />

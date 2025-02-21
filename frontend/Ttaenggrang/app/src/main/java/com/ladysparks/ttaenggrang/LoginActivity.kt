@@ -91,8 +91,8 @@ class LoginActivity : BaseActivity() {
             lifecycleScope.launch {
                 runCatching {
 //                    RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "aa002", password = "1234"))
-                   // RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "hello1", password = "ssafy123", fcmToken = fcmToken))
-                    RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "hello2", password = "ssafy123", fcmToken = fcmToken))
+                   RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "hello1", password = "ssafy123", fcmToken = fcmToken))
+                    //RetrofitUtil.authService.loginStudent(StudentSignInRequest(username = "hello2", password = "ssafy123", fcmToken = fcmToken))
                 }.onSuccess {
                     showToast("학생 로그인 성공")
 
