@@ -155,6 +155,7 @@ class LoginActivity : BaseActivity() {
                         is StudentSignInResponse -> {
                             token = userData.token
                             account = userData.username
+                            SharedPreferencesUtil.putValue(SharedPreferencesUtil.USER_ID, userData.id)
                         }
                         is TeacherSignInResponse -> {
                             token = userData.token
@@ -167,6 +168,7 @@ class LoginActivity : BaseActivity() {
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.JWT_TOKEN_KEY, token)
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.IS_TEACHER, binding.checkBoxAgree.isChecked)
                     SharedPreferencesUtil.putValue(SharedPreferencesUtil.USER_ACCOUNT, account)
+
 
                     // 등록된 국가정보가 없을 경우, 다른 페이지로 이동
                     if(!hasNation && it.data is TeacherSignInResponse){
