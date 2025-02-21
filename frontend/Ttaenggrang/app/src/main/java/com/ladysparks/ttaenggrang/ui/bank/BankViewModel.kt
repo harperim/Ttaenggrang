@@ -16,6 +16,7 @@ import com.ladysparks.ttaenggrang.data.model.response.SavingPayoutResponse
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil
 import com.ladysparks.ttaenggrang.data.remote.RetrofitUtil.Companion.bankService
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class BankViewModel : ViewModel() {
 
@@ -107,29 +108,50 @@ class BankViewModel : ViewModel() {
     }
 
     // 특정 적금 내역
+//    fun fetchBankHistory(savingsSubscriptionId: Int) {
+//        viewModelScope.launch {
+//            runCatching {
+//                RetrofitUtil.bankService.getBankHistory(savingsSubscriptionId) // 네트워크 요청 실행
+//            }.onSuccess { response ->
+//                if (response.isSuccessful) {
+//                    response.body()?.let { apiResponse ->
+//                        _bankHistory.postValue(apiResponse.data) // ✅ postValue 사용하여 업데이트
+//                        Log.d("BankHistoryViewModel", "적금 내역 불러오기 성공: $apiResponse")
+//                    } ?: run {
+//                        _errorMessage.postValue("데이터를 불러올 수 없습니다.")
+//                        Log.e("BankHistoryViewModel", "적금 내역이 null입니다.")
+//                    }
+//                } else {
+//                    _errorMessage.postValue("서버 응답 오류: ${response.code()}")
+//                    Log.e("BankHistoryViewModel", "서버 응답 오류: ${response.code()}")
+//                }
+//            }.onFailure { e ->
+//                _errorMessage.postValue("네트워크 오류: ${e.message}")
+//                Log.e("BankHistoryViewModel", "네트워크 오류: ${e.message}")
+//            }
+//        }
+//    }
     fun fetchBankHistory(savingsSubscriptionId: Int) {
         viewModelScope.launch {
             runCatching {
-                RetrofitUtil.bankService.getBankHistory(savingsSubscriptionId) // 네트워크 요청 실행
+                bankService.getBankHistory(savingsSubscriptionId)
             }.onSuccess { response ->
-                if (response.isSuccessful) {
-                    response.body()?.let { apiResponse ->
-                        _bankHistory.postValue(apiResponse.data) // ✅ postValue 사용하여 업데이트
-                        Log.d("BankHistoryViewModel", "적금 내역 불러오기 성공: $apiResponse")
-                    } ?: run {
-                        _errorMessage.postValue("데이터를 불러올 수 없습니다.")
-                        Log.e("BankHistoryViewModel", "적금 내역이 null입니다.")
-                    }
+                if (response.isSuccessful && response.body()?.data != null) {
+                    _bankHistory.postValue(response.body()?.data)
                 } else {
-                    _errorMessage.postValue("서버 응답 오류: ${response.code()}")
-                    Log.e("BankHistoryViewModel", "서버 응답 오류: ${response.code()}")
+                    // ✅ 404 에러 또는 데이터 없음 처리
+                    _bankHistory.postValue(null)
                 }
             }.onFailure { e ->
-                _errorMessage.postValue("네트워크 오류: ${e.message}")
-                Log.e("BankHistoryViewModel", "네트워크 오류: ${e.message}")
+                if (e is HttpException && e.code() == 404) {
+                    _bankHistory.postValue(null) // ✅ 404 에러면 history를 null로 설정
+                } else {
+                    Log.e("BankViewModel", "fetchBankHistory 실패: ${e.message}", e)
+                }
             }
         }
     }
+
 
     // 전체 은행 상품 조회
     fun fetchBankItems() {
@@ -195,7 +217,7 @@ class BankViewModel : ViewModel() {
                 _payoutResult.postValue(response.data) // ✅ 성공 시 LiveData 업데이트
                 Log.d("BankViewModel", "적금 만기 지급 성공: ${response.data}")
             }.onFailure { error ->
-                _errorMessage.postValue("지급 요청 실패: ${error.message}")
+                //_errorMessage.postValue("지급 요청 실패: ${error.message}")
                 Log.e("BankViewModel", "적금 만기 지급 실패", error)
             }
         }

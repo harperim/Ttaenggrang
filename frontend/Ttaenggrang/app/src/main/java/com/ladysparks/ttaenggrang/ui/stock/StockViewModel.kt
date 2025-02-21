@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 class StockViewModel : ViewModel() {
     private val stockService: StockService = RetrofitUtil.stockService
 
+
     //주식 전체조회
     private val _stockList = MutableLiveData<List<StockDto>?>()
     val stockList: MutableLiveData<List<StockDto>?> get() = _stockList
@@ -578,6 +579,7 @@ class StockViewModel : ViewModel() {
         }
     }
 
+
     // ✅ 주식 상세 정보 설정 함수
     fun setSelectedStockInfo(stockId: Int) {
         val transactions = stockTransactionHistory.value ?: emptyList()
@@ -627,6 +629,8 @@ data class StockDetailInfo(
     val avgPurchasePrice: Int,
     val ownedShares: Int
 )
+
+
 
 
 

@@ -62,11 +62,11 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
 
         //뒤로가기
         binding.btnBack.setOnClickListener {
-//            parentFragmentManager.beginTransaction()
-//                .replace(R.id.fragment_container, StockStudentFragment())
-//                .addToBackStack(null)
-//                .commit()
-            parentFragmentManager.popBackStack()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, StockStudentFragment())
+                .addToBackStack(null)
+                .commit()
+            //parentFragmentManager.popBackStack()
 //            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 //            Log.d("DialogStack", "뒤로 가기 후 백스택 개수: ${parentFragmentManager.backStackEntryCount}")
         }
@@ -198,6 +198,10 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
                 }
             }
         }
+
+        val stockImageRes = stockImageMap[stockName] ?: R.drawable.ic_stock // 기본 이미지 설정 가능
+        dialogBinding.imageHeadStock.setImageResource(stockImageRes)
+
         // 닫기 버튼
         dialogBinding.btnClose.setOnClickListener { dialog.dismiss() }
         dialogBinding.btnCancel.setOnClickListener { dialog.dismiss() }
@@ -454,3 +458,18 @@ class StockManageStudentFragment : BaseFragment<FragmentStockManageStudentBindin
         }
     }
 }
+
+private val stockImageMap = mapOf(
+    "NEXON" to R.drawable.ic_stock_nexon,
+    "Nintendo" to R.drawable.ic_stock_nintendo,
+    "ROBLOX" to R.drawable.ic_stock_roblox,
+    "SM 엔터" to R.drawable.ic_stock_sm,
+    "JYP 엔터" to R.drawable.ic_stock_jyp,
+    "YG 엔터" to R.drawable.ic_stock_yg,
+    "음식 ETF" to R.drawable.ic_etf_food,
+    "게임 ETF" to R.drawable.ic_etf_game,
+    "엔터 ETF" to R.drawable.ic_etf_entertain,
+    "피자" to R.drawable.ic_stock_pizza,
+    "케이크" to R.drawable.ic_stock_cake,
+    "아이스크림" to R.drawable.ic_stock_icecream,
+)
