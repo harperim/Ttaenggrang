@@ -1,6 +1,6 @@
 # 💰 땡그랑 (초등 경제 교육 서비스)
 
-[<img src="./image/땡그랑 소개.png">](https://youtu.be/ZU994x_80P4)
+[<img src="https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/ba9b25834b6a7cf148924e4a0a34d6c2/%EB%95%A1%EA%B7%B8%EB%9E%91_%EC%86%8C%EA%B0%9C.png">](https://youtu.be/ZU994x_80P4)
 
 ### 👆 위 이미지 클릭하면 `앱 소개 영상` 감상 가능합니다 👆
 
