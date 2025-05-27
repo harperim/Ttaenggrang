@@ -1,6 +1,6 @@
 # 💰 땡그랑 (초등 경제 교육 서비스)
 
-[<img src="https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/ba9b25834b6a7cf148924e4a0a34d6c2/%EB%95%A1%EA%B7%B8%EB%9E%91_%EC%86%8C%EA%B0%9C.png">](https://youtu.be/ZU994x_80P4)
+[<img src="./docs/image/땡그랑 소개.png">](https://youtu.be/ZU994x_80P4)
 
 ### 👆 위 이미지 클릭하면 `앱 소개 영상` 감상 가능합니다 👆
 
@@ -121,7 +121,7 @@
 -   비 지도 학습을 통해 비슷한 유형끼리 군집화하여 소비 유형 분류 (소비형, 저축형, 투자형)
 -   지도학습을 추가로 진행하여 예측 데이터를 제공하고, 분류가 얼마나 잘 이루어지는지 테스트 98.89% 정확도 결과.
 
-![K-Means](https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/6571a2dbcae3ba6772cde58eab2636c8/Ai%ED%99%9C%EC%9A%A9.gif)
+![K-Means](./docs/image/Ai활용.gif)
 
 ### Open Ai 프롬프팅 전략
 
@@ -129,7 +129,7 @@
 
 ## 서비스 아키텍처
 
-![서비스 아키텍처](https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/3de1435069605ca93e51606b7cb52b53/%EC%8B%9C%EC%8A%A4%ED%85%9C_%EC%95%84%ED%82%A4%ED%85%8D%EC%B3%90.png)
+![서비스 아키텍처](./docs/image/시스템%20아키텍쳐.png)
 
 <br/>
 
@@ -147,13 +147,12 @@
 
 ## ERD
 
-![ERD](https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/d60756c13f70c006641e93fd4481c3d3/ERD.png)
+![ERD](./docs/image/ERD.png)
 
 ## Git
 
--   소스트리에서 브랜치 한눈에 보이게 캡쳐
-
-![Git](https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/20fbc796f59328d983f7a28983497c61/%EA%B9%83%ED%94%8C%EB%A1%9C%EC%9A%B0.gif)
+-   아래는 Sourcetree에서 확인한 브랜치 내역입니다.
+![Git](./docs/image/git_flow.gif)
 
 <br/>
 
@@ -161,12 +160,12 @@
 
 # 👨‍👩‍👧‍👦 개발 멤버 및 역할분담
 
-|                                                          **[정유진](https://github.com/breadbirds)**                                                          |                                                          **[박진현](https://github.com/breadbirds)**                                                          |                                                           **[서미지](https://github.com/mijisuh)**                                                            |                                                          **[이사랑](https://github.com/frame5562)**                                                           |                                                          **[임정인](https://github.com/breadbirds)**                                                          |                                                          **[최연지](https://github.com/yeonji3038)**                                                          |
+|                                                          **[정유진](https://github.com/breadbirds)**                                                          |                                                          **[박진현](https://github.com/iamjinhyeon)**                                                          |                                                           **[서미지](https://github.com/itsanisland)**                                                            |                                                          **[이사랑](https://github.com/frame5562)**                                                           |                                                          **[임정인](https://github.com/harperim)**                                                          |                                                          **[최연지](https://github.com/yeonji3038)**                                                          |
 | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| <img src="https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/8829ad7f56dc9eeef9e2cf06c4568b47/%EC%A0%95%EC%9C%A0%EC%A7%84.png" width="800"> | <img src="https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/88e2e5d29f1b1adddb708939b3c1f530/%EB%B0%95%EC%A7%84%ED%98%84.png" width="800"> | <img src="https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/6ed642814fe8fac68be256cc04546637/%EC%84%9C%EB%AF%B8%EC%A7%80.png" width="800"> | <img src="https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/85cf40b154dee2c6f104afbe9d27463d/%EC%9D%B4%EC%82%AC%EB%9E%91.png" width="800"> | <img src="https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/095b84c1b19aaa770f3fc73370d01599/%EC%9E%84%EC%A0%95%EC%9D%B8.png" width="800"> | <img src="https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/9fd987c3d9488c1734b0cb3486114922/%EC%B5%9C%EC%97%B0%EC%A7%80.png" width="800"> |
+| <img src="./docs/image/정유진.png"> | <img src="./docs/image/박진현.png"> | <img src="./docs/image/서미지.png"> | <img src="./docs/image/이사랑.png"> | <img src="./docs/image/임정인.png"> | <img src="./docs/image/최연지.png"> |
 |                                                                       Leader & Frontend                                                                       |                                                                           Frontend                                                                            |                                                                        Backend & Infra                                                                        |                                                                           Frontend                                                                            |                                                                            Backend                                                                            |                                                                            Backend                                                                            |
 
-![역할분담](https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/uploads/12bf8272476b4ab2d9228b808e5561d9/%ED%8C%80%EC%9B%90%EC%97%AD%ED%95%A0.png)
+![역할분담](./docs/image/팀원역할.png)
 
 <br/>
 
@@ -176,6 +175,6 @@
 
 -   [포팅메뉴얼](https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/%ED%8F%AC%ED%8C%85-%EB%A9%94%EB%89%B4%EC%96%BC)
 -   [Git](https://lab.ssafy.com/s12-webmobile4-sub1/S12P11D107/-/wikis/Git)
--   [화면 설계서]()
--   [ERD]()
--   [API 명세서]()
+-   [화면 설계서](https://www.figma.com/design/16E9xxHkVz0Iray1mDCXxy/%EB%95%A1%EA%B7%B8%EB%9E%91-%F0%9F%92%B0?node-id=629-18478&p=f&t=FvhdWhJP0l99fRVd-0)
+-   [ERD](https://www.erdcloud.com/d/feQGbFmFS8WJpQPAg)
+-   [API 명세서](https://www.notion.so/1a5e605dad4d813ca426d0b46c18993e?v=1a5e605dad4d81deafdc000c5e0ee43e)
